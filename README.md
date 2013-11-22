@@ -66,7 +66,7 @@ Future work and Limitations
 
 * HiveRunner does not allow the add jar statement. It is considered bad practice to keep that
 kind of environment specific code together with the business logic that we try to target
-with HiveRunner. Keep environment specific stuff in separate files and use your build/orkestration/workflow tool to run the right files in the right order in the right environment.
+with HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment.
 
 * HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
@@ -77,3 +77,8 @@ with HiveRunner. Keep environment specific stuff in separate files and use your 
 * HiveRunner currently uses in-memory Derby as metastore. It seems to be a real performance bottleneck. We've been trying to replace it with hsqldb but has yet to get it to work.
 
 * Currently the HiveServer is spun up and torn down for every test method. As a performance option it should be possible to instead clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By swithing between different strategies, sideffects/leakage could be ruled out when debugging a test case.
+
+
+TAGS
+=========
+Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
