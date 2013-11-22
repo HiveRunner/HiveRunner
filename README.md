@@ -10,7 +10,7 @@ Welcome to the open source project of HiveRunner. HiveRunner is a unit test fram
 - Source is currently subject to final internal review and will be pushed to this repo soon.
 - A pom file will be attached for building the binary artifact and as soon as we get around to it we will try to get the artifact up on maven central.
 
-HiveRunner is under constant development. We use it extensively in all our Hive projects. Feel free to suggest improvments both as Pull requests and as written requests.
+HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvments both as Pull requests and as written requests.
 
 
 A word from the inventors
@@ -37,7 +37,7 @@ Add the dependency of HiveRunner to your pom file. If you prefer Ivy, then you'r
 
 2. Look at the examples
 ----------
-Secondly: Look at the **HelloHiveRunner.java** reference test case to get a feeling for how a typical test case could look like. Note that if you're put of by the verbosity of the annotations, there's aleays a possibility to use the HiveShell in a more interactive mode. The **SerdeTest.java** interacts with the HiveShell to add a resource (test data) instead of using the annotation.
+Secondly: Look at the **HelloHiveRunner.java** reference test case to get a feeling for how a typical test case could look like. Note that if you're put of by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode. The **SerdeTest.java** interacts with the HiveShell to add a resource (test data) instead of using the annotation.
 
 Annotations and interactice mode can be mixed and matched, however you'll always need to include the @HiveSQL annotation e.g:
 
@@ -49,23 +49,20 @@ Note that the *autostart = false* is needed for the interactive mode. It can be 
 
 3. Understand a little bit of the order of execution
 ----------
-HiveRunner will in default mode setup and start the HiveShell
-before the test method is invoked. If autostart is deactivated the test case will have to call start.
-The order of execution will still be the same:
+HiveRunner will in default mode setup and start the HiveShell before the test method is invoked. If autostart == false, the HiveShell must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked. 
 
-1. Invoke the test method (only if @HiveSQL.autostart is disabled)
-2. Merge any @HiveProperties from the test case with the hive conf
-3. Start the HiveServer
-4. Copy all @HiveResource data into the temp file area for the test
-5. Execute all fields annotated with @HiveSetupScript
-6. Execute the script files given in the @HiveSQL annotation
-7. Inject the HiveShell into the field annotated with @HiveSQL
-8. Invoke the test method. (only if @HiveSQL.autostart is enabled)
+1. Merge any @HiveProperties from the test case with the hive conf
+2. Start the HiveServer
+3. Copy all @HiveResource data into the temp file area for the test
+4. Execute all fields annotated with @HiveSetupScript
+5. Execute the script files given in the @HiveSQL annotation
+
+The HiveShell field annotated with @HiveSQL will always be injected before the test method is invoked.
 
 
 Future work and Limitations
 ============
-* Currently HiveRunner is only released for Hive 0.12. If the need arrises we could probably create branches that supports other Hive versions and build them with maven classifiers.
+* Currently HiveRunner is only released for Hive 0.12. If the need arrises we could probably create branches that supports other Hive versions and distribute them with maven classifiers.
 
 * HiveRunner does not allow the add jar statement. It is considered bad practice to keep that
 kind of environment specific code together with the business logic that we try to target
