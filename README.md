@@ -77,3 +77,8 @@ Future work and Limitations
 * HiveRunner currently uses in-memory Derby as metastore. It seems to be a real performance bottleneck. We are looking to replace it with hsqldb in the near future.
 
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
+
+
+TAGS
+=========
+Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
