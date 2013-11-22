@@ -1,9 +1,9 @@
+![ScreenShot](/images/HiveRunnerSplash.png)
+
 HiveRunner
 ==========
 
 An Open Source unit test framework for hadoop hive queries based on JUnit4
-
-![ScreenShot](/images/HiveRunnerSplash.png)
 
 ==========
 
