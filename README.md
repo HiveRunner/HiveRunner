@@ -5,7 +5,7 @@ HiveRunner
 
 An Open Source unit test framework for hadoop hive queries based on JUnit4
 
-![Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
+[Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
 ==========
 
