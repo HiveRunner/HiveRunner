@@ -1,6 +1,6 @@
-![ScreenShot](/images/HiveRunnerSplash.png)
+[ScreenShot](/images/HiveRunnerSplash.png)
 
-![Please vote for our abstract at Hadoop Summit](https://hadoopsummit.uservoice.com/forums/196820-hadoop-deployment-and-operations/suggestions/5059395-hiverunner-zero-installation-open-source-unit-tes)
+[Please vote for our abstract at Hadoop Summit](https://hadoopsummit.uservoice.com/forums/196820-hadoop-deployment-and-operations/suggestions/5059395-hiverunner-zero-installation-open-source-unit-tes)
 
 HiveRunner
 ==========
@@ -43,9 +43,9 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
 
 2. Look at the examples
 ----------
-Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The ![com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
+Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
 
-Annotations and interactive mode can be mixed and matched, however you'll always need to include the ![com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
+Annotations and interactive mode can be mixed and matched, however you'll always need to include the [com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
 
          @HiveSQL(files = {"serdeTest/create_table.sql", "serdeTest/hql_custom_serde.sql"}, autoStart = false)
          public HiveShell hiveShell;
@@ -55,15 +55,15 @@ Note that the *autostart = false* is needed for the interactive mode. It can be 
 
 3. Understand a little bit of the order of execution
 ----------
-HiveRunner will in default mode setup and start the HiveShell before the test method is invoked. If autostart is set to false, the ![HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked.
+HiveRunner will in default mode setup and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked.
 
-1. Merge any ![@HiveProperties](/src/main/java/com/klarna/hiverunner/annotations/HiveProperties.java) from the test case with the hive conf
+1. Merge any [@HiveProperties](/src/main/java/com/klarna/hiverunner/annotations/HiveProperties.java) from the test case with the hive conf
 2. Start the HiveServer with the merged conf
-3. Copy all ![@HiveResource](/src/main/java/com/klarna/hiverunner/annotations/HiveResource.java) data into the temp file area for the test
-4. Execute all fields annotated with ![@HiveSetupScript](/src/main/java/com/klarna/hiverunner/annotations/HiveSetupScript.java)
-5. Execute the script files given in the ![@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation
+3. Copy all [@HiveResource](/src/main/java/com/klarna/hiverunner/annotations/HiveResource.java) data into the temp file area for the test
+4. Execute all fields annotated with [@HiveSetupScript](/src/main/java/com/klarna/hiverunner/annotations/HiveSetupScript.java)
+5. Execute the script files given in the [@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation
 
-The ![HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annotated with ![@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) will always be injected before the test method is invoked.
+The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annotated with [@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) will always be injected before the test method is invoked.
 
 
 Future work and Limitations
