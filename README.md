@@ -1,7 +1,11 @@
+![ScreenShot](/images/HiveRunnerSplash.png)
+
 HiveRunner
 ==========
 
 An Open Source unit test framework for hadoop hive queries based on JUnit4
+
+[Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
 ==========
 
@@ -65,7 +69,7 @@ Future work and Limitations
 ============
 * Currently HiveRunner is only released for Hive 0.12. If the need arises branches could be created supporting other Hive versions, distributing them with maven classifiers.
 
-* HiveRunner does not allow the add jar statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment.
+* HiveRunner does not allow the add jar statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
 
 * HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
