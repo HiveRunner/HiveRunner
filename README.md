@@ -13,8 +13,6 @@ An Open Source unit test framework for hadoop hive queries based on JUnit4
 
 Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
 
-A pom file is attached for building the binary artifact and we will try to get the artifact up on maven central as soon as we can.
-
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
@@ -31,6 +29,10 @@ Cook Book
 
 1. Include HiveRunner
 ----------
+Clone this repos and build with
+    
+    mvn install
+
 Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you're currently on your own, but then again, since you're using Ivy, you probably know what to do anyway.
 
     <dependency>
