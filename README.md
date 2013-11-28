@@ -78,6 +78,8 @@ Future work and Limitations
 
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
 
+* Redirect derby.log. It currently ends up in the build root dir.
+
 
 TAGS
 =========

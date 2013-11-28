@@ -1,0 +1,66 @@
+# Project files #
+#################
+*.iml
+*.ipr
+*.iws
+nbactions.xml
+/.idea/
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Maven target #
+################
+*/target/**
+
+# H2 db files #
+###############
+mem.h2.db
+mem.lock.db
+
+# HSQLDB files #
+################
+testdb.log
+testdb.properties
+testdb.script
+
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Temporary files #
+###################
+*~
+/target/
