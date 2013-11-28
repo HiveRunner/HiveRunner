@@ -43,7 +43,7 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
 
 2. Look at the examples
 ----------
-Look at the ![com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The ![com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
+Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The ![com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
 
 Annotations and interactive mode can be mixed and matched, however you'll always need to include the ![com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
 
