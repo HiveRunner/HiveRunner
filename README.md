@@ -5,7 +5,7 @@
 HiveRunner
 ==========
 
-Welcome to HiveRunner. A Zero installation open source unit testing of Hive applications
+Welcome to HiveRunner - Zero installation open source unit testing of Hive applications
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
