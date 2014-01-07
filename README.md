@@ -1,6 +1,6 @@
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
-[Please vote for our abstract at Hadoop Summit](https://hadoopsummit.uservoice.com/forums/196820-hadoop-deployment-and-operations/suggestions/5059395-hiverunner-zero-installation-open-source-unit-tes)
+Added branch Hive10 downgraded to support Hive 0.10.x. Built artifact will get classifier 'Hive10'.
 
 HiveRunner
 ==========
