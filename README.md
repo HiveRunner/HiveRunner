@@ -1,6 +1,5 @@
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
-Added branch Hive10 downgraded to support Hive 0.10.x. Built artifact will get classifier 'Hive10'.
 
 HiveRunner
 ==========
@@ -66,10 +65,14 @@ HiveRunner will in default mode setup and start the HiveShell before the test me
 The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annotated with [@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) will always be injected before the test method is invoked.
 
 
+Hive version compatibility
+============
+- Project trunk supports Hive 0.12.x (And probably Hive 0.11.x as well by downgrading the versions in the pom.xml)
+- Support for Hive 0.10.x implemented on branch 'Hive10' and distinguished by artifact classifier 'Hive10'.
+
+
 Future work and Limitations
 ============
-* Currently HiveRunner is only released for Hive 0.12. If the need arises branches could be created supporting other Hive versions, distributing them with maven classifiers.
-
 * HiveRunner does not allow the add jar statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
 
 * HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
