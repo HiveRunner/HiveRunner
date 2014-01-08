@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +60,9 @@ class HiveShellBase implements HiveShell {
         this.hiveServerContainer = hiveServerContainer;
         this.props = props;
         this.context = context;
-        this.setupScripts = setupScripts;
-        this.resources = resources;
-        this.scriptsUnderTest = scriptsUnderTest;
+        this.setupScripts = new ArrayList<>(setupScripts);
+        this.resources = new ArrayList<>(resources);
+        this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
     }
 
     @Override
@@ -100,6 +102,29 @@ class HiveShellBase implements HiveShell {
     public void addResource(String targetFile, String data) {
         assertNotStarted();
         resources.add(new HiveResource(targetFile, data));
+    }
+
+    @Override
+    public void addSetupScript(String script) {
+        assertNotStarted();
+        setupScripts.add(script);
+    }
+
+    @Override
+    public void addSetupScripts(Charset charset, File... scripts) {
+        assertNotStarted();
+        for (File script : scripts) {
+            try {
+                setupScripts.add(FileUtils.readFileToString(script, charset.name()));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to read setup script file '"  + script.getAbsolutePath() + "': " + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void addSetupScripts(File... scripts) {
+        addSetupScripts(Charset.defaultCharset(), scripts);
     }
 
     @Override

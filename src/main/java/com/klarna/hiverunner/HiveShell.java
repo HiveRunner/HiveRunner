@@ -21,6 +21,7 @@ import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.List;
 
 
@@ -91,6 +92,32 @@ public interface HiveShell {
      */
     void addResource(String targetFile, String data);
 
+    /**
+     * Add a hive script that will be executed when the hive shell is started
+     * Scripts will be executed in the order they are added.
+     *
+     * Note that execution order is not guaranteed with
+     * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
+     */
+    void addSetupScript(String script);
+
+    /**
+     * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
+     *
+     * Note that execution order is not guaranteed with
+     * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
+     */
+    void addSetupScripts(Charset charset, File... scripts);
+
+    /**
+     * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
+     *
+     * Default charset will be used to read the given files
+     *
+     * Note that execution order is not guaranteed with
+     * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
+     */
+    void addSetupScripts(File... scripts);
 
     /**
      * Get the test case sand box base dir
