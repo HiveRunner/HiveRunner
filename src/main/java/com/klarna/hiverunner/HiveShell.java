@@ -96,4 +96,11 @@ public interface HiveShell {
      * Get the test case sand box base dir
      */
     TemporaryFolder getBaseDir();
+
+    /**
+     * Resolve all substituted variables with the hive conf.
+     * @throws IllegalArgumentException if not all substitutes could be resolved
+     * @throws IllegalStateException if the HiveShell was not started yet.
+     */
+    String expandVariableSubstitutes(String expression);
 }

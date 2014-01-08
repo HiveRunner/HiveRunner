@@ -22,6 +22,7 @@ import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -104,6 +105,18 @@ class HiveShellBase implements HiveShell {
     @Override
     public TemporaryFolder getBaseDir() {
         return hiveServerContainer.getBaseDir();
+    }
+
+    @Override
+    public String expandVariableSubstitutes(String expression) {
+        assertStarted();
+        HiveConf hiveConf = getHiveConf();
+        Preconditions.checkNotNull(hiveConf);
+        try {
+            return new VariableSubstitution().substitute(hiveConf, expression);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Unable to expand '" + expression + "': " + e.getMessage(), e);
+        }
     }
 
     @Override

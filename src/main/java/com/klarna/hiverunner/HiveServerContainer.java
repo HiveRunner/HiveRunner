@@ -131,8 +131,8 @@ import java.util.Map;
         }
     }
 
-    public String expandVariableSubstitutes(String targetFile) {
-        return new VariableSubstitution().substitute(getClient().getHiveConf(), targetFile);
+    public String expandVariableSubstitutes(String expression) {
+        return new VariableSubstitution().substitute(getClient().getHiveConf(), expression);
     }
 
     /**
