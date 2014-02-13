@@ -16,7 +16,6 @@
 
 package com.klarna.hiverunner;
 
-import com.klarna.derby.DerbyUtils;
 import com.klarna.reflection.ReflectionUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStore;
@@ -121,7 +120,6 @@ import java.util.Map;
         } catch (Throwable e) {
             throw new IllegalStateException("Failed to reset to default schema: " + e.getMessage(), e);
         } finally {
-            DerbyUtils.dropDerbyDatabase(context.getMetaStoreUrl());
             client.shutdown();
             client = null;
 

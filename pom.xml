@@ -4,7 +4,7 @@
 
     <groupId>com.klarna</groupId>
     <artifactId>hiverunner</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>hsqldb-0.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -32,11 +32,20 @@
             <version>0.12.0</version>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>10.10.1.1</version>
         </dependency>
+-->
+
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.hive</groupId>

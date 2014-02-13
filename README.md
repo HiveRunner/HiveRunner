@@ -1,3 +1,7 @@
+Branch that explores the possibilities to use hsqldb instead of derby. At first glance it seems to work and performance
+is slightly better. Another improvement is that we no longer pollute our working dir with derby files from the test runs.
+
+
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
 
