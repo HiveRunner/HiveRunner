@@ -49,8 +49,17 @@ class StandaloneHiveServerContext implements HiveServerContext {
         this.metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
 
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
-        hiveConf.set("datanucleus.connectiondrivername", JDBCDriver.class.getName());
-        hiveConf.set("javax.jdo.option.ConnectionDriverName", JDBCDriver.class.getName());
+
+        // Set the hsqldb driver. datanucleus will
+        hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
+        hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
+
+        // No pooling needed. This will save us a lot of threads
+        hiveConf.set("datanucleus.connectionPoolingType", "None");
+
+        // Defaults to a 1000 millis sleep in
+        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
+        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
 

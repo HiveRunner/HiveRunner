@@ -32,20 +32,11 @@
             <version>0.12.0</version>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.10.1.1</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.1</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.hive</groupId>
@@ -56,8 +47,45 @@
                     <artifactId>derby</artifactId>
                     <groupId>org.apache.derby</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-api-jdo</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-core</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-rdbms</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>bonecp</artifactId>
+                    <groupId>com.jolbox</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+
+        <!-- The latest versions of datanucleus seams to be faster than the one included in hive -->
+        <dependency>
+            <artifactId>datanucleus-api-jdo</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.8</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>datanucleus-core</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.12</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>datanucleus-rdbms</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.11</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
