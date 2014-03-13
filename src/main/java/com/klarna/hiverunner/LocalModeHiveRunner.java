@@ -21,6 +21,11 @@ import org.junit.runners.model.InitializationError;
 
 /**
  * Runner to run hadoop bin in a parallel JVM. Used for debugging of the HiveRunner
+ * 
+ * This mode is highly experimental and might need a lot of tweeking of both the LocalModeContext as well as the pom.xml
+ * to run in your environment. It is generally not used during development of HiveQL, but as said above, more so when 
+ * exploring strange behaviours of the HiveRunner.
+ * 
  * NOTE: Don't forget to set the hadoop bin path property
  */
 public class LocalModeHiveRunner extends StandaloneHiveRunner {
