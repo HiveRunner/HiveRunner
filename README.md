@@ -39,6 +39,18 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
         <scope>test</scope>
     </dependency>
 
+Also explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.16</version>
+        <configuration>
+            <forkMode>always</forkMode>
+        </configuration>
+    </plugin>
+
+
 
 2. Look at the examples
 ----------
