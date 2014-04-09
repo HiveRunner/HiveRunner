@@ -124,9 +124,8 @@
 
     <build>
         <plugins>
-		
-	    <!-- forkMode:always resolves OOM error when running unit tests -->
-	    <plugin>
+            <!-- forkMode:always resolves OOM error when running unit tests -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.16</version>
