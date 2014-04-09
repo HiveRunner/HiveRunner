@@ -1,3 +1,9 @@
+Branch that explores the possibilities to use hsqldb instead of derby. At first glance it seems to work and performance
+is slightly better. Another improvement is that we no longer pollute our working dir with derby files from the test runs.
+
+The latest commit managed to shave half of the time from a reference project. It's getting faster but it's still slow by unit test terms.
+
+
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
 

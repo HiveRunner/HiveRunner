@@ -22,6 +22,7 @@ import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +60,9 @@ class HiveShellBase implements HiveShell {
         this.hiveServerContainer = hiveServerContainer;
         this.props = props;
         this.context = context;
-        this.setupScripts = setupScripts;
-        this.resources = resources;
-        this.scriptsUnderTest = scriptsUnderTest;
+        this.setupScripts = new ArrayList<>(setupScripts);
+        this.resources = new ArrayList<>(resources);
+        this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
     }
 
     @Override
@@ -102,8 +105,43 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
+    public void addSetupScript(String script) {
+        assertNotStarted();
+        setupScripts.add(script);
+    }
+
+    @Override
+    public void addSetupScripts(Charset charset, File... scripts) {
+        assertNotStarted();
+        for (File script : scripts) {
+            try {
+                setupScripts.add(FileUtils.readFileToString(script, charset.name()));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to read setup script file '"  + script.getAbsolutePath() + "': " + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void addSetupScripts(File... scripts) {
+        addSetupScripts(Charset.defaultCharset(), scripts);
+    }
+
+    @Override
     public TemporaryFolder getBaseDir() {
         return hiveServerContainer.getBaseDir();
+    }
+
+    @Override
+    public String expandVariableSubstitutes(String expression) {
+        assertStarted();
+        HiveConf hiveConf = getHiveConf();
+        Preconditions.checkNotNull(hiveConf);
+        try {
+            return new VariableSubstitution().substitute(hiveConf, expression);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Unable to expand '" + expression + "': " + e.getMessage(), e);
+        }
     }
 
     @Override

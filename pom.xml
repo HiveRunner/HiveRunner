@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.klarna</groupId>
     <artifactId>hiverunner</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.7.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -33,9 +32,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.10.1.1</version>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.1</version>
         </dependency>
 
         <dependency>
@@ -47,8 +46,45 @@
                     <artifactId>derby</artifactId>
                     <groupId>org.apache.derby</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-api-jdo</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-core</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>datanucleus-rdbms</artifactId>
+                    <groupId>org.datanucleus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>bonecp</artifactId>
+                    <groupId>com.jolbox</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+
+        <!-- The latest versions of datanucleus seams to be faster than the one included in hive -->
+        <dependency>
+            <artifactId>datanucleus-api-jdo</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.8</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>datanucleus-core</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.12</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>datanucleus-rdbms</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <version>3.2.11</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -106,6 +142,20 @@
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>hsqldb</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
