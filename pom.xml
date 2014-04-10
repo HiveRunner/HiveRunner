@@ -159,7 +159,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <classifier>hsqldb</classifier>
+                            <classifier>hive13-hadoop-1</classifier>
                         </configuration>
                     </execution>
                 </executions>
