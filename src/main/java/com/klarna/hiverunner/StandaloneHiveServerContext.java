@@ -51,6 +51,9 @@ class StandaloneHiveServerContext implements HiveServerContext {
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
 
+        // Set to true to resolve a NPE when trying to resolve the path to reduce.xml for UDF count
+        hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
+
         configureJavaSecurityRealm(hiveConf);
 
         configureJobTrackerMode(hiveConf);
