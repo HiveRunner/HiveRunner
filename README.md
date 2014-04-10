@@ -12,8 +12,8 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
-Branch hive13
-=============
+Branch information
+------------------
 This branch was created to integrate with Hive 0.13.0 built with the hadoop-1 profile 
 
 All tests pass!
