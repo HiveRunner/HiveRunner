@@ -50,6 +50,34 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
         </configuration>
     </plugin>
 
+as an alternative if this does not solve the OOM issues, try increase the -Xmx and -XX:MaxPermSize settings. For example:
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+            <forkCount>1</forkCount>
+            <reuseForks>false</reuseForks>
+            <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
+        </configuration>
+    </plugin>
+
+(please note that the forkMode option is deprecated and you should use forkCount and reuseForks instead)
+
+With forkCount and reuseForks there is a possibility to reduce the test execution time drastically, depending on your hardware. A plugin configuration which are using one
+fork per CPU core and reuse threads would look like:
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+            <forkCount>1C</forkCount>
+            <reuseForks>true</reuseForks>
+            <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
+        </configuration>
+    </plugin>
 
 
 2. Look at the examples
