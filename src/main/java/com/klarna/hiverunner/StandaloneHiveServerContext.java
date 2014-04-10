@@ -21,6 +21,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.shims.Hadoop20SShims;
 import org.apache.hadoop.hive.shims.ShimLoader;
+import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -45,14 +46,31 @@ class StandaloneHiveServerContext implements HiveServerContext {
     StandaloneHiveServerContext(TemporaryFolder basedir) {
         this.basedir = basedir;
 
-        this.metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
+        this.metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
 
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
+
+        // Set the hsqldb driver. datanucleus will
+        hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
+        hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
+
+        // No pooling needed. This will save us a lot of threads
+        hiveConf.set("datanucleus.connectionPoolingType", "None");
+
+        // Defaults to a 1000 millis sleep in
+        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
+        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
 
         // Set to true to resolve a NPE when trying to resolve the path to reduce.xml for UDF count
         hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
+
+        try {
+            Class.forName(JDBCDriver.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         configureJavaSecurityRealm(hiveConf);
 
@@ -113,12 +131,6 @@ class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
-
-        System.setProperty("derby.stream.error.files", newFile(basedir, "derby.log").getAbsolutePath());
-
-        // This does not seem to work. Derby seems to ignore this setting
-        System.setProperty("derby.system.home", basedir.getRoot().getAbsolutePath());
-
         conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
