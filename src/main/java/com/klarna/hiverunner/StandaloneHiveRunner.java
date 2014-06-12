@@ -34,8 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -149,11 +153,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
 
             final Field field = fields.iterator().next();
-            List<File> scripts = new ArrayList<File>();
+            List<Path> scripts = new ArrayList<Path>();
             HiveSQL annotation = field.getAnnotation(HiveSQL.class);
             for (String scriptFilePath : annotation.files()) {
-                File file = new File(Resources.getResource(scriptFilePath).toURI());
-                Preconditions.checkState(file.exists(), "File " + file.getAbsolutePath() + " does not exist");
+                Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
+                assertFileExists(file);
                 scripts.add(file);
             }
 
@@ -180,6 +184,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
+    private void assertFileExists(Path file) {
+        Preconditions.checkState(Files.exists(file), "File " + file + " does not exist");
+    }
+
 
     private void loadSetupScripts(Object testCase, HiveShellBuilder workFlowBuilder) {
         Set<Field> setupScriptFields = ReflectionUtils.getAllFields(testCase.getClass(),
@@ -187,12 +195,23 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
         for (Field setupScriptField : setupScriptFields) {
             if (isStringField(setupScriptField)) {
-                String script = ReflectionUtils.getFieldValue(testCase, setupScriptField.getName(), String.class);
+                String script = getMandatoryStringField(testCase, setupScriptField);
                 workFlowBuilder.addSetupScript(script);
+            } else if (isFileField(setupScriptField) || isPathField(setupScriptField)) {
+                Path path = getMandatoryPathFromField(testCase, setupScriptField);
+                workFlowBuilder.addSetupScript(readAll(path));
             } else {
                 throw new IllegalArgumentException(
-                        "Field annotated with @HiveSetupScript currently only supports type String");
+                        "Field annotated with @HiveSetupScript currently only supports type String, File and Path");
             }
+        }
+    }
+
+    private String readAll(Path path) {
+        try {
+            return new String(Files.readAllBytes(path));
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to read " + path + ": " + e.getMessage(), e);
         }
     }
 
@@ -205,21 +224,40 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             String targetFile = annotation.targetFile();
 
             if (isStringField(resourceField)) {
-                String data = ReflectionUtils.getFieldValue(testCase,
-                        resourceField.getName(), String.class);
+                String data = getMandatoryStringField(testCase, resourceField);
                 workFlowBuilder.addResource(targetFile, data);
-            } else if (isFileField(resourceField)) {
-                File dataFile = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), File.class);
-
-                Preconditions.checkArgument(dataFile.exists(), "File %s does not exist", dataFile.getAbsolutePath());
-
+            } else if (isFileField(resourceField) || isPathField(resourceField)) {
+                Path dataFile = getMandatoryPathFromField(testCase, resourceField);
                 workFlowBuilder.addResource(targetFile, dataFile);
-
             } else {
                 throw new IllegalArgumentException(
-                        "Fields annotated with @HiveResource currently only supports field type String or File");
+                        "Fields annotated with @HiveResource currently only supports field type String, File or Path");
             }
         }
+    }
+
+    private String getMandatoryStringField(Object testCase, Field resourceField) {
+        return ReflectionUtils.getFieldValue(testCase, resourceField.getName(), String.class);
+    }
+
+    private Path getMandatoryPathFromField(Object testCase, Field resourceField) {
+        Path path;
+        if (isFileField(resourceField)) {
+            File dataFile = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), File.class);
+            path = Paths.get(dataFile.toURI());
+        } else if (isPathField(resourceField)) {
+            path = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), Path.class);
+        } else {
+            throw new IllegalArgumentException(
+                    "Only Path or File type is allowed on annotated field " + resourceField);
+        }
+
+        Preconditions.checkArgument(Files.exists(path), "File %s does not exist", path);
+        return path;
+    }
+
+    private boolean isPathField(Field resourceField) {
+        return resourceField.getType().isAssignableFrom(Path.class);
     }
 
     private void loadProperties(Object testCase, HiveShellBuilder workFlowBuilder) {

@@ -27,6 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,13 @@ import static org.hamcrest.collection.IsArrayContaining.hasItemInArray;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveRunnerAnnotationsTest {
+
+    @HiveSetupScript
+    private File setupFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupFile.csv").getPath());
+
+    @HiveSetupScript
+    private Path setupPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupPath.csv").getPath());
+
 
     @HiveSetupScript
     private String setup = "create table bar (i int);";
@@ -49,11 +58,14 @@ public class HiveRunnerAnnotationsTest {
     @HiveSQL(files = {"hiveRunnerAnnotationsTest/hql1.sql"}, autoStart = false)
     private HiveShell hiveShell;
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/foo.csv")
+    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromString.csv")
     public String dataFromString = "1,B\n2,D\nE,F";
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/foo1.csv")
+    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromFile.csv")
     public File dataFromFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData.csv").getPath());
+
+    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromPath.csv")
+    public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").getPath());
 
     @Before
     public void setup() {
@@ -75,6 +87,21 @@ public class HiveRunnerAnnotationsTest {
     }
 
     @Test
+    public void testSetupScriptFromFile() {
+        List<String> actual = hiveShell.executeQuery("show tables");
+        String[] actualArray = actual.toArray(new String[0]);
+        assertThat(actualArray, hasItemInArray("fox"));
+    }
+
+    @Test
+    public void testSetupScriptFromPath() {
+        List<String> actual = hiveShell.executeQuery("show tables");
+        String[] actualArray = actual.toArray(new String[0]);
+        assertThat(actualArray, hasItemInArray("love"));
+    }
+
+
+    @Test
     public void testPropertiesLoaded() {
         Assert.assertEquals("value1", hiveShell.getHiveConf().get("key1"));
         Assert.assertEquals("value2", hiveShell.getHiveConf().get("key2"));
@@ -94,6 +121,13 @@ public class HiveRunnerAnnotationsTest {
         String[] actual = hiveShell.executeQuery("select * from foo").toArray(new String[0]);
         assertThat(actual, hasItemInArray("5\tF"));
         assertThat(actual, hasItemInArray("7\tW"));
+    }
+
+    @Test
+    public void testLoadPathResources() {
+        String[] actual = hiveShell.executeQuery("select * from foo").toArray(new String[0]);
+        assertThat(actual, hasItemInArray("8\tT"));
+        assertThat(actual, hasItemInArray("10\tQ"));
     }
 
 

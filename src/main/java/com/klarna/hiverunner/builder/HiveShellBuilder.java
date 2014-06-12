@@ -20,11 +20,11 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShellContainer;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,7 @@ public class HiveShellBuilder {
         this.setupScripts.add(script);
     }
 
-    public void addResource(String targetFile, File dataFile) {
+    public void addResource(String targetFile, Path dataFile) {
         resources.add(new HiveResource(targetFile, dataFile));
     }
 
@@ -65,13 +65,13 @@ public class HiveShellBuilder {
         resources.add(new HiveResource(targetFile, data));
     }
 
-    public void setScriptsUnderTest(List<File> scripts, Charset charset) {
-        for (File script : scripts) {
-            Preconditions.checkState(script.exists(), "File %s does not exist", script);
+    public void setScriptsUnderTest(List<Path> scripts, Charset charset) {
+        for (Path script : scripts) {
+            Preconditions.checkState(Files.exists(script), "File %s does not exist", script);
             try {
-                scriptsUnderTest.add(FileUtils.readFileToString(script, charset.name()));
+                scriptsUnderTest.add(new String(Files.readAllBytes(script), charset));
             } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to load script file '" + script.getAbsolutePath() + "'");
+                throw new IllegalArgumentException("Failed to load script file '" + script + "'");
             }
         }
     }

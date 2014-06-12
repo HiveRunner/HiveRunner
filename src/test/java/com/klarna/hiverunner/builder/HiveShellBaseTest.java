@@ -7,7 +7,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -42,7 +41,6 @@ public class HiveShellBaseTest {
         Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
-    @Ignore
     @Test(expected = IllegalArgumentException.class)
     public void unexpandableSubstitutesShouldThrowException() {
         HiveShell shell = createHiveShell(

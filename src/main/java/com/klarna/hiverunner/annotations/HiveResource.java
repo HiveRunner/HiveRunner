@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marks a field to contain test data input. The field might either be of type String or File.
+ * Marks a field to contain test data input. The field might either be of type String, File or Path.
  * The data will be copied into the specified target file by the HiveRunner engine.
  * <p/>
  * Please refer to {@link com.klarna.hiverunner.HelloHiveRunner} for further details.

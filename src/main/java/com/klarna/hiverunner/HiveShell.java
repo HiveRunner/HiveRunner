@@ -21,7 +21,9 @@ import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -90,6 +92,16 @@ public interface HiveShell {
      * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
      * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
      */
+    void addResource(String targetFile, Path sourceFile);
+
+
+    /**
+     * Copy test data into hdfs
+     * May only be called pre #start()
+     * <p/>
+     * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
+     * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     */
     void addResource(String targetFile, String data);
 
     /**
@@ -112,12 +124,32 @@ public interface HiveShell {
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
      *
+     * Note that execution order is not guaranteed with
+     * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
+     */
+    void addSetupScripts(Charset charset, Path... scripts);
+
+
+    /**
+     * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
+     *
      * Default charset will be used to read the given files
      *
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
     void addSetupScripts(File... scripts);
+
+    /**
+     * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
+     *
+     * Default charset will be used to read the given files
+     *
+     * Note that execution order is not guaranteed with
+     * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
+     */
+    void addSetupScripts(Path... scripts);
+
 
     /**
      * Get the test case sand box base dir
@@ -130,4 +162,6 @@ public interface HiveShell {
      * @throws IllegalStateException if the HiveShell was not started yet.
      */
     String expandVariableSubstitutes(String expression);
+
+    OutputStream getResourceOutputStream(String targetFile);
 }

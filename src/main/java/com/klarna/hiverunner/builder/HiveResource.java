@@ -18,7 +18,9 @@ package com.klarna.hiverunner.builder;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Representation of a resource configuration
@@ -26,21 +28,29 @@ import java.io.File;
 class HiveResource {
     private final String targetFile;
     private final String stringSource;
-    private final File fileSource;
+    private final Path fileSource;
+    private final ByteArrayOutputStream byteArrayOutputStream;
 
     HiveResource(String targetFile, String stringSource) {
-        this(targetFile, stringSource, null);
+        this(targetFile, stringSource, null, null);
     }
 
-    HiveResource(String targetFile, File fileSource) {
-        this(targetFile, null, fileSource);
+    HiveResource(String targetFile, Path fileSource) {
+        this(targetFile, null, fileSource, null);
     }
 
-    private HiveResource(String targetFile, String stringSource, File fileSource) {
+    HiveResource(String targetFile, ByteArrayOutputStream byteArrayOutputStream) {
+        this(targetFile, null, null, byteArrayOutputStream);
+    }
+
+    private HiveResource(String targetFile, String stringSource, Path fileSource,
+                         ByteArrayOutputStream byteArrayOutputStream) {
         this.targetFile = targetFile;
         this.stringSource = stringSource;
         this.fileSource = fileSource;
+        this.byteArrayOutputStream = byteArrayOutputStream;
     }
+
 
     String getTargetFile() {
         return targetFile;
@@ -50,13 +60,29 @@ class HiveResource {
         return stringSource;
     }
 
-    File getFileSource() {
+    Path getFileSource() {
         return fileSource;
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public ByteArrayOutputStream getOutputStream() {
+        return byteArrayOutputStream;
+    }
+
+    public boolean isOutputStreamResource() {
+        return this.getOutputStream() != null;
+    }
+
+    public boolean isFileResource() {
+        return this.getFileSource() != null;
+    }
+
+    public boolean isStringResource() {
+        return this.getStringSource() != null;
     }
 
 }

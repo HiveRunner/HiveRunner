@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
-import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;
@@ -28,9 +27,15 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +97,7 @@ class HiveShellBase implements HiveShell {
 
         executeSetupScripts();
 
-        copyResourcesToBaseDir();
+        prepareResources();
 
         executeScriptsUnderTest();
     }
@@ -111,19 +116,36 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public void addSetupScripts(Charset charset, File... scripts) {
+    public void addSetupScripts(Charset charset, Path... scripts) {
         assertNotStarted();
-        for (File script : scripts) {
+        for (Path script : scripts) {
+            assertFileExists(script);
             try {
-                setupScripts.add(FileUtils.readFileToString(script, charset.name()));
+                String join = new String(Files.readAllBytes(script), charset);
+                setupScripts.add(join);
             } catch (IOException e) {
-                throw new IllegalArgumentException("Unable to read setup script file '"  + script.getAbsolutePath() + "': " + e.getMessage(), e);
+                throw new IllegalArgumentException(
+                        "Unable to read setup script file '" + script + "': " + e.getMessage(), e);
             }
         }
     }
 
     @Override
+    public void addSetupScripts(Charset charset, File... scripts) {
+        Path[] paths = new Path[scripts.length];
+        for (int i = 0; i < paths.length; i++) {
+            paths[i] = Paths.get(scripts[i].toURI());
+        }
+        addSetupScripts(charset, paths);
+    }
+
+    @Override
     public void addSetupScripts(File... scripts) {
+        addSetupScripts(Charset.defaultCharset(), scripts);
+    }
+
+    @Override
+    public void addSetupScripts(Path... scripts) {
         addSetupScripts(Charset.defaultCharset(), scripts);
     }
 
@@ -144,6 +166,7 @@ class HiveShellBase implements HiveShell {
         }
     }
 
+
     @Override
     public void setProperty(String key, String value) {
         assertNotStarted();
@@ -157,7 +180,27 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
+    public OutputStream getResourceOutputStream(String targetFile) {
+        assertNotStarted();
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        OutputStream os = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                assertNotStarted();
+                byteArrayOutputStream.write(b);
+            }
+        };
+        resources.add(new HiveResource(targetFile, byteArrayOutputStream));
+        return os;
+    }
+
+    @Override
     public void addResource(String targetFile, File sourceFile) {
+        addResource(targetFile, Paths.get(sourceFile.toURI()));
+    }
+
+    @Override
+    public void addResource(String targetFile, Path sourceFile) {
         assertNotStarted();
         assertFileExists(sourceFile);
         resources.add(new HiveResource(targetFile, sourceFile));
@@ -170,31 +213,46 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    private void copyResourcesToBaseDir() {
+    private void prepareResources() {
         for (HiveResource resource : resources) {
             String expandedPath = hiveServerContainer.expandVariableSubstitutes(resource.getTargetFile());
 
-            File targetFile = new File(expandedPath);
+            assertResourcePreconditions(resource, expandedPath);
 
-            assertResourcePreconditions(resource, expandedPath, targetFile);
-
+            // Create file in the tmp dir
+            Path targetFile = Paths.get(expandedPath);
             try {
-                boolean isSourceStringType = resource.getFileSource() == null;
-
-                if (isSourceStringType) {
-                    FileUtils.write(targetFile, resource.getStringSource());
-                } else {
-                    FileUtils.copyFile(resource.getFileSource(), targetFile);
+                if (!Files.exists(targetFile)) {
+                    Files.createDirectories(targetFile.getParent());
+                    Files.createFile(targetFile);
                 }
             } catch (IOException e) {
-                throw new IllegalStateException("Failed to create resource file: " + expandedPath + " " + e
-                        .getMessage(), e);
+                throw new IllegalStateException("Unable to create resource file " + targetFile + ": " + e.getMessage(),
+                        e);
             }
 
-            logger.info("Created hive resource " + targetFile.getAbsolutePath());
+            try {
+                if (resource.isStringResource()) {
+                    Files.write(targetFile, resource.getStringSource().getBytes());
+                } else if (resource.isFileResource()) {
+                    Files.copy(resource.getFileSource(), targetFile,
+                            StandardCopyOption.REPLACE_EXISTING);
+                } else if (resource.isOutputStreamResource()) {
+                    OutputStream targetFileOutputStream = Files.newOutputStream(targetFile);
+                    targetFileOutputStream.write(resource.getOutputStream().toByteArray());
+                    resource.getOutputStream().close();
+                    targetFileOutputStream.close();
+                }
+            } catch (IOException e) {
+                logger.error("Failed to create resource target file: " + targetFile + " (" + resource.getTargetFile() +
+                        "): " + e.getMessage(), e);
+            }
+
+            logger.info("Created hive resource " + targetFile);
 
         }
     }
+
 
     private void executeScriptsUnderTest() {
         for (String script : scriptsUnderTest) {
@@ -207,27 +265,24 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    protected final void assertResourcePreconditions(HiveResource resource, String expandedPath, File targetFile) {
+    protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
-        boolean containsUnexpandedProperties = !expandedPath.matches(unexpandedPropertyPattern);
+        boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
 
-        Preconditions.checkArgument(containsUnexpandedProperties, "File path %s contains "
+        Preconditions.checkArgument(isUnexpanded, "File path %s contains "
                 + "unresolved references. Original arg was: %s", expandedPath, resource.getTargetFile());
 
-        boolean isTargetFileWithinTestDir = targetFile.getAbsolutePath()
-                .startsWith(hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
+        boolean isTargetFileWithinTestDir = expandedPath.startsWith(
+                hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
                 "All resource target files should be created in a subdirectory to the test case basedir : %s",
                 resource);
-
-        boolean isFileOrStringValueSet = resource.getFileSource() != null || resource.getStringSource() != null;
-        Preconditions.checkState(isFileOrStringValueSet, "Neither String nor File resource was set for %s", resource);
     }
 
-    protected final void assertFileExists(File sourceFile) {
-        Preconditions.checkArgument(
-                sourceFile.exists(), "File %s does not exist", sourceFile.getAbsolutePath());
+    protected final void assertFileExists(Path file) {
+        Preconditions.checkArgument(Files.exists(file), "File %s does not exist", file);
+        Preconditions.checkArgument(Files.isRegularFile(file), "%s is not a file", file);
     }
 
     protected final void assertNotStarted() {

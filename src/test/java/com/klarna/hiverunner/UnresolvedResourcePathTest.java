@@ -46,7 +46,7 @@ public class UnresolvedResourcePathTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void resourceFilePathShouldAlwaysBeInsideTempDir() {
-        shell.addResource("bar/baz.csv", "A,B,C");
+        shell.addResource("/bar/baz.csv", "A,B,C");
         shell.start();
     }
 
