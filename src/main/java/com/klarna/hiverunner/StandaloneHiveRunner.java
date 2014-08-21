@@ -126,11 +126,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
         hiveShellBuilder.setHiveServerContainer(hiveTestHarness);
 
-        loadResources(testCase, hiveShellBuilder);
+        loadAnnotatedResources(testCase, hiveShellBuilder);
 
-        loadProperties(testCase, hiveShellBuilder);
+        loadAnnotatedProperties(testCase, hiveShellBuilder);
 
-        loadSetupScripts(testCase, hiveShellBuilder);
+        loadAnnotatedSetupScripts(testCase, hiveShellBuilder);
 
         // Build shell
         final HiveShellContainer shell = hiveShellBuilder.buildShell();
@@ -189,7 +189,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
 
-    private void loadSetupScripts(Object testCase, HiveShellBuilder workFlowBuilder) {
+    private void loadAnnotatedSetupScripts(Object testCase, HiveShellBuilder workFlowBuilder) {
         Set<Field> setupScriptFields = ReflectionUtils.getAllFields(testCase.getClass(),
                 withAnnotation(HiveSetupScript.class));
 
@@ -215,7 +215,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void loadResources(Object testCase, HiveShellBuilder workFlowBuilder) {
+    private void loadAnnotatedResources(Object testCase, HiveShellBuilder workFlowBuilder) {
         Set<Field> fields = ReflectionUtils.getAllFields(testCase.getClass(), withAnnotation(HiveResource.class));
 
         for (Field resourceField : fields) {
@@ -260,7 +260,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         return resourceField.getType().isAssignableFrom(Path.class);
     }
 
-    private void loadProperties(Object testCase, HiveShellBuilder workFlowBuilder) {
+    private void loadAnnotatedProperties(Object testCase, HiveShellBuilder workFlowBuilder) {
         for (Field hivePropertyField : ReflectionUtils.getAllFields(testCase.getClass(),
                 withAnnotation(HiveProperties.class))) {
             Preconditions.checkState(isMapField(hivePropertyField),
