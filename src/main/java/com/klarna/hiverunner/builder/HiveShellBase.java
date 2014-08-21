@@ -281,6 +281,7 @@ class HiveShellBase implements HiveShell {
     }
 
     protected final void assertFileExists(Path file) {
+        Preconditions.checkNotNull(file, "File argument is null");
         Preconditions.checkArgument(Files.exists(file), "File %s does not exist", file);
         Preconditions.checkArgument(Files.isRegularFile(file), "%s is not a file", file);
     }
