@@ -19,7 +19,8 @@ package com.klarna.hiverunner.builder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -27,41 +28,34 @@ import java.nio.file.Path;
  */
 class HiveResource {
     private final String targetFile;
-    private final String stringSource;
-    private final Path fileSource;
     private final ByteArrayOutputStream byteArrayOutputStream;
 
-    HiveResource(String targetFile, String stringSource) {
-        this(targetFile, stringSource, null, null);
+    HiveResource(String targetFile) throws IOException {
+        this(targetFile, new ByteArrayOutputStream());
     }
 
-    HiveResource(String targetFile, Path fileSource) {
-        this(targetFile, null, fileSource, null);
+    HiveResource(String targetFile, Path dataFile) throws IOException {
+        this(targetFile, createOutputStream(Files.readAllBytes(dataFile)));
     }
 
-    HiveResource(String targetFile, ByteArrayOutputStream byteArrayOutputStream) {
-        this(targetFile, null, null, byteArrayOutputStream);
+    HiveResource(String targetFile, String data) throws IOException {
+        this(targetFile, createOutputStream(data.getBytes()));
     }
 
-    private HiveResource(String targetFile, String stringSource, Path fileSource,
-                         ByteArrayOutputStream byteArrayOutputStream) {
+    private HiveResource(String targetFile, ByteArrayOutputStream byteArrayOutputStream) {
         this.targetFile = targetFile;
-        this.stringSource = stringSource;
-        this.fileSource = fileSource;
         this.byteArrayOutputStream = byteArrayOutputStream;
     }
 
+    private static ByteArrayOutputStream createOutputStream(byte[] data) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos.write(data);
+        baos.close();
+        return baos;
+    }
 
     String getTargetFile() {
         return targetFile;
-    }
-
-    String getStringSource() {
-        return stringSource;
-    }
-
-    Path getFileSource() {
-        return fileSource;
     }
 
     @Override
@@ -71,18 +65,6 @@ class HiveResource {
 
     public ByteArrayOutputStream getOutputStream() {
         return byteArrayOutputStream;
-    }
-
-    public boolean isOutputStreamResource() {
-        return this.getOutputStream() != null;
-    }
-
-    public boolean isFileResource() {
-        return this.getFileSource() != null;
-    }
-
-    public boolean isStringResource() {
-        return this.getStringSource() != null;
     }
 
 }

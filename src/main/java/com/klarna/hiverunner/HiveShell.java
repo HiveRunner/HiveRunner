@@ -163,5 +163,13 @@ public interface HiveShell {
      */
     String expandVariableSubstitutes(String expression);
 
+    /**
+     * Open up a stream to write test data into hdfs.
+     *
+     * May only be called pre #start()
+     * No writes to the stream will be allowed post #start()
+     *
+     * @param targetFile The path to the target file relative to the hive work space
+     */
     OutputStream getResourceOutputStream(String targetFile);
 }

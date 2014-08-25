@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,13 +100,6 @@ class HiveShellBase implements HiveShell {
         prepareResources();
 
         executeScriptsUnderTest();
-    }
-
-
-    @Override
-    public void addResource(String targetFile, String data) {
-        assertNotStarted();
-        resources.add(new HiveResource(targetFile, data));
     }
 
     @Override
@@ -181,29 +174,41 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public OutputStream getResourceOutputStream(String targetFile) {
-        assertNotStarted();
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        OutputStream os = new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                assertNotStarted();
-                byteArrayOutputStream.write(b);
-            }
-        };
-        resources.add(new HiveResource(targetFile, byteArrayOutputStream));
-        return os;
+        try {
+            assertNotStarted();
+            HiveResource resource = new HiveResource(targetFile);
+            resources.add(resource);
+            OutputStream hiveShellStateAwareOutputStream = createPreStartOutputStream(resource.getOutputStream());
+            return hiveShellStateAwareOutputStream;
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void addResource(String targetFile, String data) {
+        try {
+            assertNotStarted();
+            resources.add(new HiveResource(targetFile, data));
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void addResource(String targetFile, Path sourceFile) {
+        try {
+            assertNotStarted();
+            assertFileExists(sourceFile);
+            resources.add(new HiveResource(targetFile, sourceFile));
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void addResource(String targetFile, File sourceFile) {
         addResource(targetFile, Paths.get(sourceFile.toURI()));
-    }
-
-    @Override
-    public void addResource(String targetFile, Path sourceFile) {
-        assertNotStarted();
-        assertFileExists(sourceFile);
-        resources.add(new HiveResource(targetFile, sourceFile));
     }
 
     private void executeSetupScripts() {
@@ -219,33 +224,19 @@ class HiveShellBase implements HiveShell {
 
             assertResourcePreconditions(resource, expandedPath);
 
-            // Create file in the tmp dir
             Path targetFile = Paths.get(expandedPath);
-            try {
-                if (!Files.exists(targetFile)) {
-                    Files.createDirectories(targetFile.getParent());
-                    Files.createFile(targetFile);
-                }
-            } catch (IOException e) {
-                throw new IllegalStateException("Unable to create resource file " + targetFile + ": " + e.getMessage(),
-                        e);
-            }
 
+            // Create target file in the tmp dir and write test data to it.
             try {
-                if (resource.isStringResource()) {
-                    Files.write(targetFile, resource.getStringSource().getBytes());
-                } else if (resource.isFileResource()) {
-                    Files.copy(resource.getFileSource(), targetFile,
-                            StandardCopyOption.REPLACE_EXISTING);
-                } else if (resource.isOutputStreamResource()) {
-                    OutputStream targetFileOutputStream = Files.newOutputStream(targetFile);
-                    targetFileOutputStream.write(resource.getOutputStream().toByteArray());
-                    resource.getOutputStream().close();
-                    targetFileOutputStream.close();
-                }
+                Files.createDirectories(targetFile.getParent());
+                OutputStream targetFileOutputStream = Files.newOutputStream(targetFile, StandardOpenOption.CREATE_NEW);
+                targetFileOutputStream.write(resource.getOutputStream().toByteArray());
+                resource.getOutputStream().close();
+                targetFileOutputStream.close();
             } catch (IOException e) {
-                logger.error("Failed to create resource target file: " + targetFile + " (" + resource.getTargetFile() +
-                        "): " + e.getMessage(), e);
+                throw new IllegalStateException(
+                        "Failed to create resource target file: " + targetFile + " (" + resource.getTargetFile() + "): "
+                                + e.getMessage(), e);
             }
 
             logger.info("Created hive resource " + targetFile);
@@ -290,8 +281,21 @@ class HiveShellBase implements HiveShell {
         Preconditions.checkState(!started, "HiveShell was already started");
     }
 
+
     protected final void assertStarted() {
         Preconditions.checkState(started, "HiveShell was not started");
     }
+
+    private OutputStream createPreStartOutputStream(final ByteArrayOutputStream resourceOutputStream) {
+        return new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                // It should not be possible to write to the stream after the shell has been started.
+                assertNotStarted();
+                resourceOutputStream.write(b);
+            }
+        };
+    }
+
 
 }

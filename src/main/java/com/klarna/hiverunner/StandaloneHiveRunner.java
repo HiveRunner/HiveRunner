@@ -111,7 +111,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
-    private HiveShellContainer createHiveServerContainer(final Object testCase, TemporaryFolder baseDir) {
+    private HiveShellContainer createHiveServerContainer(final Object testCase, TemporaryFolder baseDir)
+            throws IOException {
 
         final HiveServerContainer hiveTestHarness =
                 new HiveServerContainer();
@@ -215,7 +216,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void loadAnnotatedResources(Object testCase, HiveShellBuilder workFlowBuilder) {
+    private void loadAnnotatedResources(Object testCase, HiveShellBuilder workFlowBuilder) throws IOException {
         Set<Field> fields = ReflectionUtils.getAllFields(testCase.getClass(), withAnnotation(HiveResource.class));
 
         for (Field resourceField : fields) {

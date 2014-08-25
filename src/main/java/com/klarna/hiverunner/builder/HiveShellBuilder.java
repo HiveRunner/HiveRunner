@@ -57,11 +57,11 @@ public class HiveShellBuilder {
         this.setupScripts.add(script);
     }
 
-    public void addResource(String targetFile, Path dataFile) {
+    public void addResource(String targetFile, Path dataFile) throws IOException {
         resources.add(new HiveResource(targetFile, dataFile));
     }
 
-    public void addResource(String targetFile, String data) {
+    public void addResource(String targetFile, String data) throws IOException {
         resources.add(new HiveResource(targetFile, data));
     }
 
