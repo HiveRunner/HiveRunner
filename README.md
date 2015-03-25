@@ -33,9 +33,9 @@ Clone this repos and build with
 Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you're currently on your own, but then again, since you're using Ivy, you probably know what to do anyway.
 
     <dependency>
-        <groupId>com.klarna.hadoop</groupId>
-        <artifactId>hadoop-hiveunit</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <groupId>com.klarna</groupId>
+        <artifactId>hiverunner</artifactId>
+        <version>0.9.0-SNAPSHOT</version>
         <scope>test</scope>
     </dependency>
 
