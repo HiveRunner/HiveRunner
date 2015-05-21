@@ -70,13 +70,17 @@
                     <artifactId>calcite-core</artifactId>
                     <groupId>org.apache.calcite</groupId>
                 </exclusion>
-                <exclusion>
+                <!--<exclusion>
                     <artifactId>pentaho-aggdesigner-algorithm</artifactId>
                     <groupId>org.pentaho</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>eigenbase-properties</artifactId>
                     <groupId>eigenbase</groupId>
+                </exclusion>-->
+                <exclusion>
+                    <artifactId>calcite-avatica</artifactId>
+                    <groupId>org.apache.calcite</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
