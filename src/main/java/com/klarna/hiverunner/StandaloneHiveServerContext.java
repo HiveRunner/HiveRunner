@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.shims.Hadoop20SShims;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.hsqldb.jdbc.JDBCDriver;
+import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -62,6 +63,9 @@ class StandaloneHiveServerContext implements HiveServerContext {
         hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
+
+        // Set to true to resolve a NPE when trying to resolve the path to reduce.xml for UDF count
+        hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
 
         try {
             Class.forName(JDBCDriver.class.getName());
@@ -134,7 +138,7 @@ class StandaloneHiveServerContext implements HiveServerContext {
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
         createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
-        createAndSetFolderProperty(METASTOREDIRECTORY, "metastore", conf, basedir);
+        createAndSetFolderProperty("hive.metastore.metadb.dir", "metastore", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 
         conf.setBoolVar(HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, true);
@@ -146,7 +150,9 @@ class StandaloneHiveServerContext implements HiveServerContext {
 
     private File newFolder(TemporaryFolder basedir, String folder) {
         try {
-            return basedir.newFolder(folder);
+            File newFolder = basedir.newFolder(folder);
+            Assert.assertTrue(newFolder.setWritable(true, false));
+            return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
         }

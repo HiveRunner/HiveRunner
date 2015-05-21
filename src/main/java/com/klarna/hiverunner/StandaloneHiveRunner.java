@@ -24,6 +24,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.reflection.ReflectionUtils;
+import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -95,6 +96,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
         HiveShellContainer container = null;
+        Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
         try {
             container = createHiveServerContainer(target, temporaryFolder);
             base.evaluate();

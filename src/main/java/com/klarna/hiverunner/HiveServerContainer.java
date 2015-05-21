@@ -123,8 +123,6 @@ import java.util.Map;
             client.shutdown();
             client = null;
 
-            // Force reset of static field 'createDefaultDB' since Hive will not recreate the meta store otherwise.
-            ReflectionUtils.setStaticField(HiveMetaStore.HMSHandler.class, "createDefaultDB", false);
             LOGGER.info("Tore down HiveServer instance");
         }
     }

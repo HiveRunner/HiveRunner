@@ -41,8 +41,8 @@ public class HiveShellBaseTest {
         Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void unexpandableSubstitutesShouldThrowException() {
+    @Test
+    public void unexpandableSubstitutesWillSimplyNotBeExpanded() {
         HiveShell shell = createHiveShell(
                 "origin", "spanish"
         );

@@ -70,7 +70,7 @@ public class PartitionSupportTest {
                 hiveShell.executeQuery(String.format("select max(month) from %s", tableName)));
 
         Assert.assertEquals(
-                Arrays.asList("02"),
+                Arrays.asList("2"),
                 hiveShell.executeQuery(String.format("select min(month) from %s", tableName)));
     }
 
