@@ -13,6 +13,14 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
+
+
+# NOTE!
+<p style='color:red'>This version of HiveRunner is built for hive 14</p>
+<p style='color:red'>The master branch in this repo is proprietary to Klarna. Push to github should be done from the github-master branch.</p>
+# NOTE!
+---------
+
 A word from the inventors
 ---------
 HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
@@ -107,8 +115,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 Hive version compatibility
 ============
-- Project trunk supports Hive 0.12.x (And probably Hive 0.11.x as well by downgrading the versions in the pom.xml)
-- Support for Hive 0.10.x implemented on branch 'Hive10' and distinguished by artifact classifier 'Hive10'.
+- This version of HiveRunner is built for hive 14
 
 
 Future work and Limitations
