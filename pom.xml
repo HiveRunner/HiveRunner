@@ -28,6 +28,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tez.version>0.5.2.2.2.4.2-2</tez.version>
     </properties>
 
     <dependencies>
@@ -86,6 +87,24 @@
         </dependency>
 
         <dependency>
+            <artifactId>tez-dag</artifactId>
+            <groupId>org.apache.tez</groupId>
+            <version>${tez.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>tez-common</artifactId>
+            <groupId>org.apache.tez</groupId>
+            <version>${tez.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>tez-mapreduce</artifactId>
+            <groupId>org.apache.tez</groupId>
+            <version>${tez.version}</version>
+        </dependency>
+
+        <dependency>
             <artifactId>datanucleus-core</artifactId>
             <groupId>org.datanucleus</groupId>
             <version>3.2.12</version>
@@ -102,11 +121,6 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
         </dependency>
 
         <dependency>
