@@ -16,9 +16,7 @@
 
 package com.klarna.hiverunner;
 
-import com.klarna.reflection.ReflectionUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;

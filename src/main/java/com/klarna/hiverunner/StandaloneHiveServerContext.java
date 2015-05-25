@@ -16,11 +16,9 @@
 
 package com.klarna.hiverunner;
 
-import com.klarna.reflection.ReflectionUtils;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.shims.Hadoop20SShims;
-import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.tez.dag.api.TezConfiguration;
+import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
@@ -45,6 +43,7 @@ class StandaloneHiveServerContext implements HiveServerContext {
     private TemporaryFolder basedir;
 
     StandaloneHiveServerContext(TemporaryFolder basedir) {
+
         this.basedir = basedir;
 
         this.metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
@@ -64,19 +63,15 @@ class StandaloneHiveServerContext implements HiveServerContext {
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
 
-        // Set to true to resolve a NPE when trying to resolve the path to reduce.xml for UDF count
-        hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
-
         try {
             Class.forName(JDBCDriver.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
+        configureExecutionEngine(hiveConf);
 
         configureJavaSecurityRealm(hiveConf);
-
-        configureJobTrackerMode(hiveConf);
 
         configureSupportConcurrency(hiveConf);
 
@@ -91,11 +86,27 @@ class StandaloneHiveServerContext implements HiveServerContext {
         configureAssertionStatus(hiveConf);
     }
 
+    protected void configureExecutionEngine(HiveConf conf) {
+        // Tez configuration
+        conf.setVar(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE, "tez");
+
+        conf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
+        conf.set("fs.defaultFS", "file:///");
+        conf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
+        conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
+        conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, "target/dependency");
+        conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, "target/dependency");
+    }
+
     protected void configureJavaSecurityRealm(HiveConf hiveConf) {
-        // These two properties gets rid of: 'Unable to load realm info from SCDynamicStore'
+        // These three properties gets rid of: 'Unable to load realm info from SCDynamicStore'
         // which seems to have a timeout of about 5 secs.
         System.setProperty("java.security.krb5.realm", "");
         System.setProperty("java.security.krb5.kdc", "");
+        System.setProperty("java.security.krb5.conf", "/dev/null");
     }
 
     protected void configureAssertionStatus(HiveConf conf) {
@@ -115,21 +126,6 @@ class StandaloneHiveServerContext implements HiveServerContext {
         conf.setBoolVar(METASTORE_VALIDATE_CONSTRAINTS, true);
         conf.setBoolVar(METASTORE_VALIDATE_COLUMNS, true);
         conf.setBoolVar(METASTORE_VALIDATE_TABLES, true);
-    }
-
-    protected void configureJobTrackerMode(HiveConf conf) {
-        /*
-        * Overload shims to make sure that org.apache.hadoop.hive.ql.exec.MapRedTask#runningViaChild
-         * validates to false.
-         *
-         * Search for usage of org.apache.hadoop.hive.shims.HadoopShims#isLocalMode to find other affects of this.
-        */
-        ReflectionUtils.setStaticField(ShimLoader.class, "hadoopShims", new Hadoop20SShims() {
-            @Override
-            public boolean isLocalMode(Configuration conf) {
-                return false;
-            }
-        });
     }
 
     protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
