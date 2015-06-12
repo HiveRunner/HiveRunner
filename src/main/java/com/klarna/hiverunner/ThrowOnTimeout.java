@@ -1,19 +1,28 @@
 package com.klarna.hiverunner;
 
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DeclaredFailOnTimeout extends Statement {
+public class ThrowOnTimeout extends Statement {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThrowOnTimeout.class);
+
     private final Statement fOriginalStatement;
 
     private final long fTimeout;
+    private Object target;
 
-    public DeclaredFailOnTimeout(Statement originalStatement, long timeout) {
+    public ThrowOnTimeout(Statement originalStatement, long timeout, Object target) {
         fOriginalStatement = originalStatement;
         fTimeout = timeout;
+        this.target = target;
     }
 
     @Override
     public void evaluate() throws Throwable {
+
+        LOGGER.info("Starting timeout monitoring ({}s) of test case {}.", fTimeout/1000, target);
+
         StatementThread thread = evaluateStatement();
         if (!thread.fFinished) {
             throwExceptionForUnfinishedThread(thread);
