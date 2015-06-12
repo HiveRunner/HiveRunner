@@ -99,6 +99,10 @@ class StandaloneHiveServerContext implements HiveServerContext {
         conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
         conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, "target/dependency");
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, "target/dependency");
+        conf.set(TezConfiguration.TEZ_AM_DISABLE_CLIENT_VERSION_CHECK, "true");
+        conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
+        conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
     }
 
     protected void configureJavaSecurityRealm(HiveConf hiveConf) {
