@@ -40,35 +40,43 @@ public class NeverEndingTest {
     @Ignore
     @Test(expected = TimeoutException.class)
     public void neverEnd() throws InterruptedException {
-        load();
+        prepare();
+        hiveShell.executeQuery("select nonstop(bar) from foo");
     }
 
     private static int timeouts = 0;
 
-//    @Ignore
+    //    @Ignore
     @Test
     public void endOnSecondRun() throws InterruptedException {
+        prepare();
+
         if (timeouts == 0) {
             timeouts++;
-            load();
+            hiveShell.executeQuery("select nonstop(bar) from foo");
         }
         System.out.println("SUCCESS");
     }
 
-    private void load() {
-        System.out.println(hiveShell.getBaseDir().getRoot());
-        System.out.println(hiveShell.executeQuery("show databases"));
-        hiveShell.execute("create database baz");
-        System.out.println(hiveShell.executeQuery("describe database baz"));
-        hiveShell.execute("use baz");
+    private void prepare() {
+        String disableTimeout = System.getProperty("disableTimeout");
+        if (disableTimeout != null && Boolean.parseBoolean(disableTimeout)) {
+            System.out.println("Terminating test with success because timeout is disabled.");
+        } else {
+            System.out.println(hiveShell.getBaseDir().getRoot());
+            System.out.println(hiveShell.executeQuery("show databases"));
+            hiveShell.execute("create database baz");
+            System.out.println(hiveShell.executeQuery("describe database baz"));
+            hiveShell.execute("use baz");
 
-        hiveShell.execute("create temporary function nonstop as 'com.klarna.hiverunner.NeverEndingUdf'");
+            hiveShell.execute("create temporary function nonstop as 'com.klarna.hiverunner.NeverEndingUdf'");
 
-        hiveShell.execute("create table foo (bar string)");
+            hiveShell.execute("create table foo (bar string)");
 
-        hiveShell.execute("insert into table foo values ('a'), ('b'), ('c')");
+            hiveShell.execute("insert into table foo values ('a'), ('b'), ('c')");
 
-        hiveShell.executeQuery("select nonstop(bar) from foo");
+
+        }
     }
 
 }

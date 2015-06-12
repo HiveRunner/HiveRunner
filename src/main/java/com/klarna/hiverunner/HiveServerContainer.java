@@ -18,6 +18,7 @@ package com.klarna.hiverunner;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;
 import org.apache.thrift.TException;
@@ -114,10 +115,18 @@ import java.util.Map;
     public void tearDown() {
 
         try {
+            TezJobMonitor.killRunningJobs();
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to kill tez sessions: " + t.getMessage(), t);
+        }
+
+        try {
             client.clean();
         } catch (Throwable t){
             LOGGER.warn("Failed to clean up hive session: " + t.getMessage(), t);
         }
+
+
 
         try {
             // Reset to default schema

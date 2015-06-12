@@ -60,13 +60,35 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
-    private final int retries = 2;
-
+    private int retries = 2;
+    private int timeoutSeconds = 20;
     private int timeouts = 0;
+    private boolean timeoutEnabled = true;
+
     private HiveShellContainer container;
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+
+        String disableTimeoutProperty = "disableTimeout";
+        String disableTimeout = System.getProperty(disableTimeoutProperty);
+        timeoutEnabled = disableTimeout == null ? timeoutEnabled : !Boolean.parseBoolean(disableTimeout);
+
+        String timeoutRetriesProperty = "timeoutRetries";
+        String timeoutRetries = System.getProperty(timeoutRetriesProperty);
+        retries = timeoutRetries == null ? retries : Integer.parseInt(timeoutRetries);
+
+        String timeoutsSecondsProperty = "timeoutSeconds";
+        String timeoutSecondsStr = System.getProperty(timeoutsSecondsProperty);
+        timeoutSeconds = timeoutSecondsStr == null ? timeoutSeconds : Integer.parseInt(timeoutSecondsStr);
+
+        if (timeoutEnabled) {
+            System.out.println(String.format(
+                    "Timeout enabled. Setting timeout to %ss and retries to %s. Configurable via system properties '%s' and '%s'",
+                    timeoutSeconds, retries, timeoutRetriesProperty, timeoutsSecondsProperty));
+        } else {
+            System.out.println("Timeout disabled by system property 'disableTimeout=true'");
+        }
     }
 
     /**
@@ -98,7 +120,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
-        rules.add(createTimeoutRule(2 * 60 * 1000));
+        if (timeoutEnabled) {
+            rules.add(createTimeoutRule(timeoutSeconds * 1000));
+        }
         return rules;
     }
 
@@ -120,7 +144,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
             eachNotifier.fireTestStarted();
             try {
-                runTestUnit(methodBlock(method), description, eachNotifier);
+                runTestUnit(method, description, eachNotifier);
             } finally {
                 eachNotifier.fireTestFinished();
             }
@@ -130,8 +154,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
-    protected final void runTestUnit(Statement statement, Description description,
+    protected final void runTestUnit(FrameworkMethod method, Description description,
                                      EachTestNotifier notifier) {
+
+        Statement statement = methodBlock(method);
 
         try {
             statement.evaluate();
@@ -141,9 +167,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             if (++timeouts < retries) {
                 LOGGER.warn(e.getMessage() + ". number of timeouts (including this one): " + timeouts, e);
                 tearDown();
-                runTestUnit(statement, description, notifier);
+                runTestUnit(method, description, notifier);
             } else {
-                throw new TimeoutException(e.getMessage() + ". number of timeouts (including this one): " + timeouts, e);
+                throw new TimeoutException(e.getMessage() + ". number of timeouts (including this one): " + timeouts,
+                        e);
             }
         } catch (Throwable e) {
             notifier.addFailure(e);
