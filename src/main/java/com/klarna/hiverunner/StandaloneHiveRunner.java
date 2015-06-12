@@ -61,7 +61,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
     private int retries = 2;
-    private int timeoutSeconds = 20;
+    private int timeoutSeconds = 30;
     private int timeouts = 0;
     private boolean timeoutEnabled = true;
 
@@ -83,11 +83,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         timeoutSeconds = timeoutSecondsStr == null ? timeoutSeconds : Integer.parseInt(timeoutSecondsStr);
 
         if (timeoutEnabled) {
-            System.out.println(String.format(
-                    "Timeout enabled. Setting timeout to %ss and retries to %s. Configurable via system properties '%s' and '%s'",
+            LOGGER.warn(String.format(
+                    "Timeout enabled. Setting timeout to %ss and retries to %s. Configurable via system properties " +
+                            "'%s' and '%s'",
                     timeoutSeconds, retries, timeoutRetriesProperty, timeoutsSecondsProperty));
         } else {
-            System.out.println("Timeout disabled by system property 'disableTimeout=true'");
+            LOGGER.warn("Timeout disabled by system property 'disableTimeout=true'");
         }
     }
 
@@ -121,16 +122,16 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
         if (timeoutEnabled) {
-            rules.add(createTimeoutRule(timeoutSeconds * 1000));
+            rules.add(createTimeoutRule(timeoutSeconds * 1000, target));
         }
         return rules;
     }
 
-    private TestRule createTimeoutRule(final int timeout) {
+    private TestRule createTimeoutRule(final int timeout, final Object target) {
         return new TestRule() {
             @Override
             public Statement apply(Statement base, Description description) {
-                return new DeclaredFailOnTimeout(base, timeout);
+                return new ThrowOnTimeout(base, timeout, target);
             }
         };
     }
@@ -165,8 +166,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             notifier.addFailedAssumption(e);
         } catch (TimeoutException e) {
             if (++timeouts < retries) {
-                LOGGER.warn(e.getMessage() + ". number of timeouts (including this one): " + timeouts, e);
-                tearDown();
+                LOGGER.warn(String.format("%s.%s : %s. number of timeouts (including this one): %s",
+                        method.getMethod().getDeclaringClass().getName(), method.getMethod().getName(), e.getMessage(), timeouts), e);
+                tearDown(method);
                 runTestUnit(method, description, notifier);
             } else {
                 throw new TimeoutException(e.getMessage() + ". number of timeouts (including this one): " + timeouts,
@@ -184,20 +186,17 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         container = null;
         Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
         try {
-            System.out.println("SETTING UP");
+            LOGGER.info("Setting up {} in {}", target, temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
             base.evaluate();
-        } catch (Throwable t) {
-            LOGGER.error(t.getMessage(), t);
-            throw t;
         } finally {
-            tearDown();
+            tearDown(target);
         }
     }
 
-    private void tearDown() {
+    private void tearDown(Object target) {
         if (container != null) {
-            System.out.println("TEARING DOWN");
+            LOGGER.info("Tearing down {}", target);
             try {
                 container.tearDown();
             } catch (Exception e) {
