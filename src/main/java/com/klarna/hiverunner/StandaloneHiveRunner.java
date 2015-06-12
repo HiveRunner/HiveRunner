@@ -25,10 +25,15 @@ import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.reflection.ReflectionUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.internal.AssumptionViolatedException;
+import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
@@ -55,6 +60,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
+    private final int retries = 2;
+
+    private int timeouts = 0;
+    private HiveShellContainer container;
+
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
     }
@@ -74,12 +84,13 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         TestRule hiveRunnerRule = new TestRule() {
             @Override
             public Statement apply(final Statement base, Description description) {
-                return new Statement() {
+                Statement statement = new Statement() {
                     @Override
                     public void evaluate() throws Throwable {
                         evaluateStatement(target, testBaseDir, base);
                     }
                 };
+                return statement;
             }
         };
 
@@ -87,25 +98,83 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
-
+        rules.add(createTimeoutRule(2 * 60 * 1000));
         return rules;
+    }
+
+    private TestRule createTimeoutRule(final int timeout) {
+        return new TestRule() {
+            @Override
+            public Statement apply(Statement base, Description description) {
+                return new DeclaredFailOnTimeout(base, timeout);
+            }
+        };
+    }
+
+    @Override
+    protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+        Description description = describeChild(method);
+        if (method.getAnnotation(Ignore.class) != null) {
+            notifier.fireTestIgnored(description);
+        } else {
+            EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
+            eachNotifier.fireTestStarted();
+            try {
+                runTestUnit(methodBlock(method), description, eachNotifier);
+            } finally {
+                eachNotifier.fireTestFinished();
+            }
+        }
+    }
+
+    /**
+     * Runs a {@link Statement} that represents a leaf (aka atomic) test.
+     */
+    protected final void runTestUnit(Statement statement, Description description,
+                                     EachTestNotifier notifier) {
+
+        try {
+            statement.evaluate();
+        } catch (AssumptionViolatedException e) {
+            notifier.addFailedAssumption(e);
+        } catch (TimeoutException e) {
+            if (++timeouts < retries) {
+                LOGGER.warn(e.getMessage() + ". number of timeouts (including this one): " + timeouts, e);
+                tearDown();
+                runTestUnit(statement, description, notifier);
+            } else {
+                throw new TimeoutException(e.getMessage() + ". number of timeouts (including this one): " + timeouts, e);
+            }
+        } catch (Throwable e) {
+            notifier.addFailure(e);
+        }
     }
 
     /**
      * Drives the unit test.
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
-        HiveShellContainer container = null;
+        container = null;
         Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
         try {
+            System.out.println("SETTING UP");
             container = createHiveServerContainer(target, temporaryFolder);
             base.evaluate();
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw t;
         } finally {
-            if (container != null) {
+            tearDown();
+        }
+    }
+
+    private void tearDown() {
+        if (container != null) {
+            System.out.println("TEARING DOWN");
+            try {
                 container.tearDown();
+            } catch (Exception e) {
+                LOGGER.warn("Tear down failed: " + e.getMessage(), e);
             }
         }
     }

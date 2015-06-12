@@ -33,7 +33,7 @@ import java.util.Map;
  */
  public class HiveServerContainer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private HiveServer.HiveServerHandler client;
 
@@ -112,14 +112,22 @@ import java.util.Map;
      * Release all resources.
      */
     public void tearDown() {
+
+        try {
+            client.clean();
+        } catch (Throwable t){
+            LOGGER.warn("Failed to clean up hive session: " + t.getMessage(), t);
+        }
+
         try {
             // Reset to default schema
             client.execute("USE default");
         } catch (Throwable e) {
-            throw new IllegalStateException("Failed to reset to default schema: " + e.getMessage(), e);
+            LOGGER.warn("Failed to reset to default schema: " + e.getMessage(), e);
         } finally {
-            client.shutdown();
+            HiveServer.HiveServerHandler c = client;
             client = null;
+            c.shutdown();
 
             LOGGER.info("Tore down HiveServer instance");
         }
