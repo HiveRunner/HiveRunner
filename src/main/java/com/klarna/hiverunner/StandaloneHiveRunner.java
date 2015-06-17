@@ -25,10 +25,15 @@ import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.reflection.ReflectionUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.internal.AssumptionViolatedException;
+import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
@@ -55,8 +60,35 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
+    private int retries = 2;
+    private int timeoutSeconds = 30;
+    private boolean timeoutEnabled = true;
+
+    private HiveShellContainer container;
+
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+
+        String disableTimeoutProperty = "disableTimeout";
+        String disableTimeout = System.getProperty(disableTimeoutProperty);
+        timeoutEnabled = disableTimeout == null ? timeoutEnabled : !Boolean.parseBoolean(disableTimeout);
+
+        String timeoutRetriesProperty = "timeoutRetries";
+        String timeoutRetries = System.getProperty(timeoutRetriesProperty);
+        retries = timeoutRetries == null ? retries : Integer.parseInt(timeoutRetries);
+
+        String timeoutsSecondsProperty = "timeoutSeconds";
+        String timeoutSecondsStr = System.getProperty(timeoutsSecondsProperty);
+        timeoutSeconds = timeoutSecondsStr == null ? timeoutSeconds : Integer.parseInt(timeoutSecondsStr);
+
+        if (timeoutEnabled) {
+            LOGGER.warn(String.format(
+                    "Timeout enabled. Setting timeout to %ss and retries to %s. Configurable via system properties " +
+                            "'%s' and '%s'",
+                    timeoutSeconds, retries, timeoutRetriesProperty, timeoutsSecondsProperty));
+        } else {
+            LOGGER.warn("Timeout disabled by system property 'disableTimeout=true'");
+        }
     }
 
     /**
@@ -74,12 +106,13 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         TestRule hiveRunnerRule = new TestRule() {
             @Override
             public Statement apply(final Statement base, Description description) {
-                return new Statement() {
+                Statement statement = new Statement() {
                     @Override
                     public void evaluate() throws Throwable {
                         evaluateStatement(target, testBaseDir, base);
                     }
                 };
+                return statement;
             }
         };
 
@@ -87,25 +120,86 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
-
+        if (timeoutEnabled) {
+            rules.add(getTimeoutRule(timeoutSeconds * 1000, getName()));
+        }
         return rules;
+    }
+
+    private TestRule getTimeoutRule(final int timeoutMillis, final Object target) {
+        return new TestRule() {
+            @Override
+            public Statement apply(Statement base, Description description) {
+                return new ThrowOnTimeout(base, timeoutMillis, target);
+            }
+        };
+    }
+
+    @Override
+    protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+        Description description = describeChild(method);
+        if (method.getAnnotation(Ignore.class) != null) {
+            notifier.fireTestIgnored(description);
+        } else {
+            EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
+            eachNotifier.fireTestStarted();
+            try {
+                runTestMethod(method, eachNotifier, retries);
+            } finally {
+                eachNotifier.fireTestFinished();
+            }
+        }
+    }
+
+
+    /**
+     * Runs a {@link Statement} that represents a leaf (aka atomic) test.
+     */
+    protected final void runTestMethod(FrameworkMethod method,
+                                       EachTestNotifier notifier, int retriesLeft) {
+
+        Statement statement = methodBlock(method);
+
+        try {
+            statement.evaluate();
+        } catch (AssumptionViolatedException e) {
+            notifier.addFailedAssumption(e);
+        } catch (TimeoutException e) {
+            if (--retriesLeft >= 0) {
+                LOGGER.warn(String.format("%s : %s. Will attempt retry %s more times.",
+                        getName(), e.getMessage(), retriesLeft), e);
+                tearDown();
+                runTestMethod(method, notifier, retriesLeft);
+            } else {
+                notifier.addFailure(e);
+            }
+        } catch (Throwable e) {
+            notifier.addFailure(e);
+        }
     }
 
     /**
      * Drives the unit test.
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
-        HiveShellContainer container = null;
+        container = null;
         Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
         try {
+            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
             base.evaluate();
-        } catch (Throwable t) {
-            LOGGER.error(t.getMessage(), t);
-            throw t;
         } finally {
-            if (container != null) {
+            tearDown();
+        }
+    }
+
+    private void tearDown() {
+        if (container != null) {
+            LOGGER.info("Tearing down {}", getName());
+            try {
                 container.tearDown();
+            } catch (Throwable e) {
+                LOGGER.warn("Tear down failed: " + e.getMessage(), e);
             }
         }
     }

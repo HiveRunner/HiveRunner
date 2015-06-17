@@ -18,6 +18,7 @@ package com.klarna.hiverunner;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.service.HiveServer;
 import org.apache.thrift.TException;
@@ -31,9 +32,9 @@ import java.util.Map;
 /**
  * HiveServer wrapper
  */
- public class HiveServerContainer {
+public class HiveServerContainer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private HiveServer.HiveServerHandler client;
 
@@ -110,18 +111,36 @@ import java.util.Map;
 
     /**
      * Release all resources.
+     *
+     * This call will never throw an exception as it makes no sense doing that in the tear down phase.
      */
     public void tearDown() {
+
+        try {
+            TezJobMonitor.killRunningJobs();
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to kill tez sessions: " + t.getMessage(), t);
+        }
+
         try {
             // Reset to default schema
             client.execute("USE default");
-        } catch (Throwable e) {
-            throw new IllegalStateException("Failed to reset to default schema: " + e.getMessage(), e);
-        } finally {
-            client.shutdown();
-            client = null;
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to reset to default schema" + t.getMessage(), t);
+        }
 
-            LOGGER.info("Tore down HiveServer instance");
+        try {
+            client.clean();
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to clean up hive session: " + t.getMessage(), t);
+        }
+
+        try {
+            client.shutdown();
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to shutdown hive server: " + t.getMessage(), t);
+        } finally {
+            client = null;
         }
     }
 
