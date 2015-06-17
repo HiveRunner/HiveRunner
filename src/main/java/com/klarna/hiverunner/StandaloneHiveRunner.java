@@ -121,12 +121,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
         if (timeoutEnabled) {
-            rules.add(getTimoutRule(timeoutSeconds * 1000, getName()));
+            rules.add(getTimeoutRule(timeoutSeconds * 1000, getName()));
         }
         return rules;
     }
 
-    private TestRule getTimoutRule(final int timeoutMillis, final Object target) {
+    private TestRule getTimeoutRule(final int timeoutMillis, final Object target) {
         return new TestRule() {
             @Override
             public Statement apply(Statement base, Description description) {
