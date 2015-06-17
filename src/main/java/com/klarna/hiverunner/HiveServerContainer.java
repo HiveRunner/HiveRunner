@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * HiveServer wrapper
  */
- public class HiveServerContainer {
+public class HiveServerContainer {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
@@ -111,6 +111,8 @@ import java.util.Map;
 
     /**
      * Release all resources.
+     *
+     * This call will never throw an exception as it makes no sense doing that in the tear down phase.
      */
     public void tearDown() {
 
@@ -121,24 +123,24 @@ import java.util.Map;
         }
 
         try {
+            // Reset to default schema
+            client.execute("USE default");
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to reset to default schema" + t.getMessage(), t);
+        }
+
+        try {
             client.clean();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             LOGGER.warn("Failed to clean up hive session: " + t.getMessage(), t);
         }
 
-
-
         try {
-            // Reset to default schema
-            client.execute("USE default");
-        } catch (Throwable e) {
-            LOGGER.warn("Failed to reset to default schema: " + e.getMessage(), e);
+            client.shutdown();
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to shutdown hive server: " + t.getMessage(), t);
         } finally {
-            HiveServer.HiveServerHandler c = client;
             client = null;
-            c.shutdown();
-
-            LOGGER.info("Tore down HiveServer instance");
         }
     }
 
