@@ -7,13 +7,16 @@ import org.slf4j.LoggerFactory;
 public class ThrowOnTimeout extends Statement {
     private static final Logger LOGGER = LoggerFactory.getLogger(ThrowOnTimeout.class);
 
-    private final Statement fOriginalStatement;
+    private final Statement originalStatement;
 
     private final long fTimeout;
     private Object target;
 
+    private Throwable statementException;
+    private boolean finished = false;
+
     public ThrowOnTimeout(Statement originalStatement, long timeout, Object target) {
-        fOriginalStatement = originalStatement;
+        this.originalStatement = originalStatement;
         fTimeout = timeout;
         this.target = target;
     }
@@ -21,71 +24,33 @@ public class ThrowOnTimeout extends Statement {
     @Override
     public void evaluate() throws Throwable {
 
-        LOGGER.info("Starting timeout monitoring ({}s) of test case {}.", fTimeout/1000, target);
+        LOGGER.warn("Starting timeout monitoring ({}s) of test case {}.", fTimeout / 1000, target);
 
-        StatementThread thread = evaluateStatement();
-        if (!thread.fFinished) {
-            throwExceptionForUnfinishedThread(thread);
-        }
-    }
+        Thread statementThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    originalStatement.evaluate();
+                    finished = true;
+                } catch (InterruptedException e) {
+                    // don't log the InterruptedException
+                } catch (Throwable e) {
+                    synchronized (target) {
+                        statementException = e;
+                    }
+                }
+            }
+        });
 
-    private StatementThread evaluateStatement() throws InterruptedException {
-        StatementThread thread = new StatementThread(fOriginalStatement);
-        thread.start();
-        thread.join(fTimeout);
-        if (!thread.fFinished) {
-            thread.recordStackTrace();
-        }
-        thread.interrupt();
-        return thread;
-    }
+        statementThread.start();
+        statementThread.join(fTimeout);
 
-    private void throwExceptionForUnfinishedThread(StatementThread thread)
-            throws Throwable {
-        if (thread.fExceptionThrownByOriginalStatement != null) {
-            throw thread.fExceptionThrownByOriginalStatement;
-        } else {
-            throwTimeoutException(thread);
-        }
-    }
-
-    private void throwTimeoutException(StatementThread thread) throws Exception {
-        Exception exception = new TimeoutException(String.format(
-                "test timed out after %d milliseconds", fTimeout));
-        exception.setStackTrace(thread.getRecordedStackTrace());
-        throw exception;
-    }
-
-    private static class StatementThread extends Thread {
-        private final Statement fStatement;
-
-        private boolean fFinished = false;
-
-        private Throwable fExceptionThrownByOriginalStatement = null;
-
-        private StackTraceElement[] fRecordedStackTrace = null;
-
-        public StatementThread(Statement statement) {
-            fStatement = statement;
-        }
-
-        public void recordStackTrace() {
-            fRecordedStackTrace = getStackTrace();
-        }
-
-        public StackTraceElement[] getRecordedStackTrace() {
-            return fRecordedStackTrace;
-        }
-
-        @Override
-        public void run() {
-            try {
-                fStatement.evaluate();
-                fFinished = true;
-            } catch (InterruptedException e) {
-                // don't log the InterruptedException
-            } catch (Throwable e) {
-                fExceptionThrownByOriginalStatement = e;
+        synchronized (target) {
+            if (statementException != null) {
+                throw statementException;
+            } else if (!finished) {
+                statementThread.interrupt();
+                throw new TimeoutException(String.format("test timed out after %d milliseconds", fTimeout));
             }
         }
     }

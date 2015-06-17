@@ -62,7 +62,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private int retries = 2;
     private int timeoutSeconds = 30;
-    private int timeouts = 0;
     private boolean timeoutEnabled = true;
 
     private HiveShellContainer container;
@@ -122,16 +121,16 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
         if (timeoutEnabled) {
-            rules.add(createTimeoutRule(timeoutSeconds * 1000, target));
+            rules.add(getTimoutRule(timeoutSeconds * 1000, getName()));
         }
         return rules;
     }
 
-    private TestRule createTimeoutRule(final int timeout, final Object target) {
+    private TestRule getTimoutRule(final int timeoutMillis, final Object target) {
         return new TestRule() {
             @Override
             public Statement apply(Statement base, Description description) {
-                return new ThrowOnTimeout(base, timeout, target);
+                return new ThrowOnTimeout(base, timeoutMillis, target);
             }
         };
     }
@@ -145,18 +144,19 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
             eachNotifier.fireTestStarted();
             try {
-                runTestUnit(method, description, eachNotifier);
+                runTestMethod(method, eachNotifier, retries);
             } finally {
                 eachNotifier.fireTestFinished();
             }
         }
     }
 
+
     /**
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
-    protected final void runTestUnit(FrameworkMethod method, Description description,
-                                     EachTestNotifier notifier) {
+    protected final void runTestMethod(FrameworkMethod method,
+                                       EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -165,14 +165,13 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         } catch (AssumptionViolatedException e) {
             notifier.addFailedAssumption(e);
         } catch (TimeoutException e) {
-            if (++timeouts < retries) {
-                LOGGER.warn(String.format("%s.%s : %s. number of timeouts (including this one): %s",
-                        method.getMethod().getDeclaringClass().getName(), method.getMethod().getName(), e.getMessage(), timeouts), e);
-                tearDown(method);
-                runTestUnit(method, description, notifier);
+            if (--retriesLeft >= 0) {
+                LOGGER.warn(String.format("%s : %s. Will attempt retry %s more times.",
+                        getName(), e.getMessage(), retriesLeft), e);
+                tearDown();
+                runTestMethod(method, notifier, retriesLeft);
             } else {
-                throw new TimeoutException(e.getMessage() + ". number of timeouts (including this one): " + timeouts,
-                        e);
+                notifier.addFailure(e);
             }
         } catch (Throwable e) {
             notifier.addFailure(e);
@@ -186,20 +185,20 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         container = null;
         Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
         try {
-            LOGGER.info("Setting up {} in {}", target, temporaryFolder.getRoot().getAbsolutePath());
+            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
             base.evaluate();
         } finally {
-            tearDown(target);
+            tearDown();
         }
     }
 
-    private void tearDown(Object target) {
+    private void tearDown() {
         if (container != null) {
-            LOGGER.info("Tearing down {}", target);
+            LOGGER.info("Tearing down {}", getName());
             try {
                 container.tearDown();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.warn("Tear down failed: " + e.getMessage(), e);
             }
         }
