@@ -178,7 +178,6 @@
                     <forkCount>1C</forkCount>
                     <reuseForks>true</reuseForks>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
-                    <!--<forkedProcessTimeoutInSeconds>30</forkedProcessTimeoutInSeconds>-->
                 </configuration>
             </plugin>
             <plugin>
