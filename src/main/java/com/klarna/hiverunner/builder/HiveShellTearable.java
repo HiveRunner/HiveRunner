@@ -38,10 +38,7 @@ class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
     @Override
     public void tearDown() {
-//        assertStarted();
         hiveServerContainer.tearDown();
 
     }
-
-
 }
