@@ -19,7 +19,6 @@ package com.klarna.hiverunner.builder;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShellContainer;
-import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 
 import java.util.List;
 import java.util.Map;
