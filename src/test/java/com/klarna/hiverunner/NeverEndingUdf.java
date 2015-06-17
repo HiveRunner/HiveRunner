@@ -10,12 +10,13 @@ import java.security.SecureRandom;
 
 public class NeverEndingUdf extends UDF {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public Text evaluate(Text value) {
         LOGGER.warn("Entering infinite loop");
         while (true) {
-            LOGGER.debug("Looping and generating random seed: {}", new SecureRandom(value.copyBytes()).generateSeed(12332123));
+            LOGGER.debug("Looping and generating random seed: {}",
+                    new SecureRandom(value.copyBytes()).generateSeed(12332123));
         }
     }
 }
