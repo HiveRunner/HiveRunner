@@ -59,22 +59,22 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
-    private static final String HIVE_EXECUTION_ENGINE_PROPERTY_NAME = "hive.execution.engine";
+    private static final String HIVE_EXECUTION_ENGINE_PROPERTY_NAME = "hiveExecutionEngine";
     private static final String MAP_REDUCE="mr";
     private static final String TEZ="tez";
 
     private int retries = 2;
     private int timeoutSeconds = 30;
-    private boolean timeoutEnabled = true;
+    private boolean timeoutEnabled = false;
 
     private HiveShellContainer container;
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
 
-        String disableTimeoutProperty = "disableTimeout";
-        String disableTimeout = System.getProperty(disableTimeoutProperty);
-        timeoutEnabled = disableTimeout == null ? timeoutEnabled : !Boolean.parseBoolean(disableTimeout);
+        String enableTimeoutProperty = "enableTimeout";
+        String enableTimeout = System.getProperty(enableTimeoutProperty);
+        timeoutEnabled = enableTimeout == null ? timeoutEnabled : Boolean.parseBoolean(enableTimeout);
 
         String timeoutRetriesProperty = "timeoutRetries";
         String timeoutRetries = System.getProperty(timeoutRetriesProperty);
@@ -90,7 +90,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                             "'%s' and '%s'",
                     timeoutSeconds, retries, timeoutRetriesProperty, timeoutsSecondsProperty));
         } else {
-            LOGGER.warn("Timeout disabled by system property 'disableTimeout=true'");
+            LOGGER.warn("Timeout disabled.");
         }
     }
 

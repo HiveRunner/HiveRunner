@@ -81,11 +81,6 @@ fork per CPU core and reuse threads would look like:
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-            <systemPropertyVariables>
-                <disableTimeout>false</disableTimeout>
-                <timeoutSeconds>30</timeoutSeconds>
-                <timeoutRetries>2</timeoutRetries>
-            </systemPropertyVariables>
             <forkCount>1C</forkCount>
             <reuseForks>true</reuseForks>
             <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
@@ -100,14 +95,28 @@ By default, HiveRunner uses mapreduce as the execution engine for hive. If you w
         <version>2.17</version>
         <configuration>
             <systemPropertyVariables>
-               <hive.execution.engine>tez</hive.execution.engine>
+               <hiveExecutionEngine>tez</hiveExecutionEngine>
             </systemPropertyVariables>
         </configuration>
     </plugin>
 
-Timeout - By default, HiveRunner will timeout a test after 30s and retry that test two times. This is to cover for the bug
+Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
-The timeout may be configured with 'timeoutSeconds' and 'timeoutRetries'. Timouts may be disabled with 'disableTimeout'
+The timeout feature can be configured via the 'enableTimeout', 'timeoutSeconds' and 'timeoutRetries' properties.
+A configuration which enables timeouts after 30 seconds and allows 2 retries would look like
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+            <systemPropertyVariables>
+                <enableTimeout>true</enableTimeout>
+                <timeoutSeconds>30</timeoutSeconds>
+                <timeoutRetries>2</timeoutRetries>
+            </systemPropertyVariables>
+        </configuration>
+    </plugin>
 
 
 2. Look at the examples
