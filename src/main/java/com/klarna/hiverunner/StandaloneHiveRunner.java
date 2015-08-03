@@ -59,6 +59,9 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
+    private static final String HIVE_EXECUTION_ENGINE_PROPERTY_NAME = "hive.execution.engine";
+    private static final String MAP_REDUCE="mr";
+    private static final String TEZ="tez";
 
     private int retries = 2;
     private int timeoutSeconds = 30;
@@ -95,7 +98,15 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Override this to provide another context.
      */
     protected HiveServerContext getContext(TemporaryFolder basedir) {
-        return new StandaloneHiveServerContext(basedir);
+        String executionEngine = System.getProperty(HIVE_EXECUTION_ENGINE_PROPERTY_NAME, MAP_REDUCE);
+        switch(executionEngine) {
+            case MAP_REDUCE:
+                return new MapReduceStandaloneHiveServerContext(basedir);
+            case TEZ:
+                return new TezStandaloneHiveServerContext(basedir);
+            default:
+                throw new IllegalArgumentException("Invalid value of system property '"+HIVE_EXECUTION_ENGINE_PROPERTY_NAME+"': '" + executionEngine + "'. Only '"+MAP_REDUCE+"' and '"+TEZ+"' are allowed");
+        }
     }
 
     @Override
