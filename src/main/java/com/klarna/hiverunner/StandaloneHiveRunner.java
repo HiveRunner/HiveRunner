@@ -23,6 +23,7 @@ import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -59,53 +60,31 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
-    private static final String HIVE_EXECUTION_ENGINE_PROPERTY_NAME = "hiveExecutionEngine";
-    private static final String MAP_REDUCE="mr";
-    private static final String TEZ="tez";
+    private final HiveRunnerConfig config;
 
-    private int retries = 2;
-    private int timeoutSeconds = 30;
-    private boolean timeoutEnabled = false;
+    private int retries;
+    private int timeoutSeconds;
+    private boolean timeoutEnabled;
 
     private HiveShellContainer container;
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
-
-        String enableTimeoutProperty = "enableTimeout";
-        String enableTimeout = System.getProperty(enableTimeoutProperty);
-        timeoutEnabled = enableTimeout == null ? timeoutEnabled : Boolean.parseBoolean(enableTimeout);
-
-        String timeoutRetriesProperty = "timeoutRetries";
-        String timeoutRetries = System.getProperty(timeoutRetriesProperty);
-        retries = timeoutRetries == null ? retries : Integer.parseInt(timeoutRetries);
-
-        String timeoutsSecondsProperty = "timeoutSeconds";
-        String timeoutSecondsStr = System.getProperty(timeoutsSecondsProperty);
-        timeoutSeconds = timeoutSecondsStr == null ? timeoutSeconds : Integer.parseInt(timeoutSecondsStr);
-
-        if (timeoutEnabled) {
-            LOGGER.warn(String.format(
-                    "Timeout enabled. Setting timeout to %ss and retries to %s. Configurable via system properties " +
-                            "'%s' and '%s'",
-                    timeoutSeconds, retries, timeoutRetriesProperty, timeoutsSecondsProperty));
-        } else {
-            LOGGER.warn("Timeout disabled.");
-        }
+        config = new HiveRunnerConfig();
     }
 
     /**
      * Override this to provide another context.
      */
     protected HiveServerContext getContext(TemporaryFolder basedir) {
-        String executionEngine = System.getProperty(HIVE_EXECUTION_ENGINE_PROPERTY_NAME, MAP_REDUCE);
-        switch(executionEngine) {
-            case MAP_REDUCE:
-                return new MapReduceStandaloneHiveServerContext(basedir);
-            case TEZ:
+        String executionEngine = config.getHiveExecutionEngine();
+        switch (executionEngine) {
+            case HiveRunnerConfig.TEZ:
+                LOGGER.info("Using execution engine TEZ");
                 return new TezStandaloneHiveServerContext(basedir);
             default:
-                throw new IllegalArgumentException("Invalid value of system property '"+HIVE_EXECUTION_ENGINE_PROPERTY_NAME+"': '" + executionEngine + "'. Only '"+MAP_REDUCE+"' and '"+TEZ+"' are allowed");
+                LOGGER.info("Using execution engine MAP REDUCE");
+                return new MapReduceStandaloneHiveServerContext(basedir);
         }
     }
 
