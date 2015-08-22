@@ -30,6 +30,8 @@ public class HiveRunnerConfig {
     private boolean timeoutEnabled;
     private int timeoutRetries;
     private int timeoutSeconds;
+
+
     private String hiveExecutionEngine;
 
     public HiveRunnerConfig() {
@@ -70,6 +72,19 @@ public class HiveRunnerConfig {
     private static int get(String property, int defaultValue) {
         String value = System.getProperty(property);
         return value == null ? defaultValue : Integer.parseInt(value);
+    }
+
+
+    public boolean isTimeoutEnabled() {
+        return timeoutEnabled;
+    }
+
+    public int getTimeoutRetries() {
+        return timeoutRetries;
+    }
+
+    public int getTimeoutSeconds() {
+        return timeoutSeconds;
     }
 
 

@@ -71,6 +71,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
         config = new HiveRunnerConfig();
+        timeoutEnabled = config.isTimeoutEnabled();
+        retries = config.getTimeoutRetries();
+        timeoutSeconds = config.getTimeoutSeconds();
     }
 
     /**
