@@ -16,6 +16,7 @@
 
 package com.klarna.hiverunner;
 
+import com.google.common.collect.Sets;
 import com.klarna.hiverunner.annotations.HiveProperties;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -93,19 +95,16 @@ public class HelloHiveRunner {
 
     @Test
     public void testTablesCreated() {
-        List<String> expected = Arrays.asList("foo", "foo_prim");
-        List<String> actual = hiveShell.executeQuery("show tables");
-
-        Collections.sort(expected);
-        Collections.sort(actual);
+        HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
+        HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testSelectFromCtas() {
-        List<String> expected = Arrays.asList("Hello", "World", "!");
-        List<String> actual = hiveShell.executeQuery("select a.s from (select s, i from foo_prim order by i) a");
+        HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
+        HashSet<String> actual = Sets.newHashSet("select a.s from (select s, i from foo_prim order by i) a");
         Assert.assertEquals(expected, actual);
     }
 
