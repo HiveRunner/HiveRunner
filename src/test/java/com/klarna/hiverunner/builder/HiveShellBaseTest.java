@@ -5,7 +5,7 @@ import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.service.HiveServer;
+import org.apache.hive.service.cli.CLIService;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,8 @@ public class HiveShellBaseTest {
                 "animal", "fox"
         );
         shell.start();
-        Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
+        Assert.assertEquals("The spanish fox",
+                shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
     @Test
@@ -47,7 +48,8 @@ public class HiveShellBaseTest {
                 "origin", "spanish"
         );
         shell.start();
-        Assert.assertEquals("The spanish ${hiveconf:animal}", shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
+        Assert.assertEquals("The spanish ${hiveconf:animal}",
+                shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
     @Test
@@ -62,7 +64,8 @@ public class HiveShellBaseTest {
 
         );
         shell.start();
-        Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
+        Assert.assertEquals("The spanish fox",
+                shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -110,14 +113,15 @@ public class HiveShellBaseTest {
 
     private HiveShell createHiveShell(String... keyValues) {
         Map<String, String> hiveConf = MapUtils.putAll(new HashMap(), keyValues);
+        HiveConf conf = createHiveconf(hiveConf);
+
+        CLIService client = Mockito.mock(CLIService.class);
 
         HiveServerContainer container = Mockito.mock(HiveServerContainer.class);
-        HiveServer.HiveServerHandler client = Mockito.mock(HiveServer.HiveServerHandler.class);
-        HiveServerContext context = Mockito.mock(HiveServerContext.class);
-
+        Mockito.when(container.getHiveConf()).thenReturn(conf);
         Mockito.when(container.getClient()).thenReturn(client);
-        HiveConf conf = createHiveconf(hiveConf);
-        Mockito.when(client.getHiveConf()).thenReturn(conf);
+
+        HiveServerContext context = Mockito.mock(HiveServerContext.class);
         Mockito.when(context.getHiveConf()).thenReturn(conf);
 
         List<String> setupScripts = Arrays.asList();
@@ -137,7 +141,6 @@ public class HiveShellBaseTest {
         }
         return hiveConf;
     }
-
 
 
 }

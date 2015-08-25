@@ -16,16 +16,24 @@
 
 package com.klarna.hiverunner;
 
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
-import org.apache.hadoop.hive.service.HiveServer;
-import org.apache.thrift.TException;
+import org.apache.hive.service.Service;
+import org.apache.hive.service.cli.CLIService;
+import org.apache.hive.service.cli.HiveSQLException;
+import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.RowSet;
+import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.server.HiveServer2;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +44,15 @@ public class HiveServerContainer {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
-    private HiveServer.HiveServerHandler client;
-
+    private CLIService client;
     private HiveServerContext context;
+    private SessionHandle sessionHandle;
+    private HiveServer2 hiveServer2;
 
     HiveServerContainer() {
     }
 
-    public HiveServer.HiveServerHandler getClient() {
+    public CLIService getClient() {
         return client;
     }
 
@@ -64,12 +73,25 @@ public class HiveServerContainer {
         }
 
         try {
-            client = new HiveServer.HiveServerHandler(hiveConf);
-        } catch (MetaException e) {
+            hiveServer2 = new HiveServer2();
+            hiveServer2.init(hiveConf);
+
+            // Locate the ClIService in the HiveServer2
+            for (Service service : hiveServer2.getServices()) {
+                if (service instanceof CLIService) {
+                    client = (CLIService) service;
+                }
+            }
+
+            Preconditions.checkNotNull(client, "ClIService was not initialized by HiveServer2");
+
+            sessionHandle = client.openSession("noUser", "noPassword", null);
+        } catch (Exception e) {
             throw new IllegalStateException("Failed to create HiveServer :" + e.getMessage(), e);
         }
 
-        // Smoke test HiveServer started
+        // Ping hive server before we do anything more with it! If validation
+        // is switched on, this will fail if metastorage is not set up properly
         pingHiveServer();
     }
 
@@ -78,17 +100,18 @@ public class HiveServerContainer {
         return context.getBaseDir();
     }
 
-
-    /**
-     * Executes a single hql statement.
-     * @param hiveql to execute
-     * @return the result of the statement
-     */
-    public List<String> executeQuery(String hiveql) {
+    public List<Object[]> executeStatement(String hiveql) {
         try {
-            client.execute(hiveql);
-            return client.fetchAll();
-        } catch (TException e) {
+            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
+            List<Object[]> resultSet = new ArrayList<>();
+            if (handle.hasResultSet()) {
+                RowSet rowSet = client.fetchResults(handle);
+                for (Object[] row : rowSet) {
+                    resultSet.add(row.clone());
+                }
+            }
+            return resultSet;
+        } catch (HiveSQLException e) {
             throw new IllegalStateException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
         }
     }
@@ -99,14 +122,8 @@ public class HiveServerContainer {
      */
     public void executeScript(String hiveql) {
         for (String statement : splitStatements(hiveql)) {
-            try {
-                client.execute(statement);
-            } catch (TException e) {
-                throw new IllegalStateException(
-                        "Failed to executeQuery Hive query " + statement + ": " + e.getMessage(), e);
-            }
+            executeStatement(statement);
         }
-
     }
 
     /**
@@ -116,6 +133,7 @@ public class HiveServerContainer {
      */
     public void tearDown() {
 
+
         try {
             TezJobMonitor.killRunningJobs();
         } catch (Throwable t) {
@@ -124,45 +142,46 @@ public class HiveServerContainer {
 
         try {
             // Reset to default schema
-            client.execute("USE default");
-        } catch (Throwable t) {
-            LOGGER.warn("Failed to reset to default schema" + t.getMessage(), t);
+            executeScript("USE default;");
+        } catch (Throwable e) {
+            LOGGER.warn("Failed to reset to default schema: " + e.getMessage(), e);
+        }
+        try {
+            client.closeSession(sessionHandle);
+        } catch (Throwable e) {
+            LOGGER.warn("Failed to close client session: " + e.getMessage(), e);
         }
 
         try {
-            client.clean();
-        } catch (Throwable t) {
-            LOGGER.warn("Failed to clean up hive session: " + t.getMessage(), t);
+            hiveServer2.stop();
+        } catch (Throwable e) {
+            LOGGER.warn("Failed to stop HiveServer2: " + e.getMessage(), e);
         }
 
-        try {
-            client.shutdown();
-        } catch (Throwable t) {
-            LOGGER.warn("Failed to shutdown hive server: " + t.getMessage(), t);
-        } finally {
-            client = null;
-        }
+        hiveServer2 = null;
+        client = null;
+        sessionHandle = null;
+
+        LOGGER.info("Tore down HiveServer instance");
     }
 
     public String expandVariableSubstitutes(String expression) {
-        return new VariableSubstitution().substitute(getClient().getHiveConf(), expression);
+        return new VariableSubstitution().substitute(getHiveConf(), expression);
     }
 
     /**
      * Package protected due to testability convenience.
      */
-    String[] splitStatements(String hiveql) {
-        return hiveql.split("(?<=[^\\\\]);");
+    List<String> splitStatements(String hiveql) {
+        return Arrays.asList(hiveql.split("\\s?(?<=[^\\\\]);[\\s;]*"));
     }
 
     private void pingHiveServer() {
-        // Ping hive server before we do anything more with it! If validation
-        // is switched on, this will fail if metastorage is not set up properly
-        try {
-            client.execute("SHOW TABLES");
-        } catch (TException e) {
-            throw new IllegalStateException("Failed to ping HiveServer: " + e.getMessage(), e);
-        }
+        executeStatement("SHOW TABLES");
+    }
+
+    public HiveConf getHiveConf() {
+        return hiveServer2.getHiveConf();
     }
 
 

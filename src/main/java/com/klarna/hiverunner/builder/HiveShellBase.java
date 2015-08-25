@@ -16,13 +16,13 @@
 
 package com.klarna.hiverunner.builder;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
-import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,21 +71,31 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public List<String> executeQuery(String s) {
-        assertStarted();
-        return hiveServerContainer.executeQuery(s);
+    public List<String> executeQuery(String hql) {
+        return executeQuery(hql, "\t", "NULL");
     }
 
     @Override
-    public void execute(String s) {
+    public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
-        hiveServerContainer.executeScript(s);
+
+        List<Object[]> resultSet = executeStatement(hql);
+        List<String> result = new ArrayList<>();
+        for (Object[] objects : resultSet) {
+            result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));
+        }
+        return result;
     }
 
     @Override
-    public HiveServer.HiveServerHandler getClient() {
+    public List<Object[]> executeStatement(String hql) {
+        return hiveServerContainer.executeStatement(hql);
+    }
+
+    @Override
+    public void execute(String hql) {
         assertStarted();
-        return hiveServerContainer.getClient();
+        hiveServerContainer.executeScript(hql);
     }
 
     @Override
@@ -169,7 +179,7 @@ class HiveShellBase implements HiveShell {
     @Override
     public HiveConf getHiveConf() {
         assertStarted();
-        return hiveServerContainer.getClient().getHiveConf();
+        return hiveServerContainer.getHiveConf();
     }
 
     @Override

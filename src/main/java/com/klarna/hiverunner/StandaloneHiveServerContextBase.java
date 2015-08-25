@@ -48,7 +48,13 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
 
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
 
-        // Set the hsqldb driver. datanucleus will
+        // Turn of dependency to calcite library
+        hiveConf.setBoolVar(HIVE_CBO_ENABLED, false);
+
+        // Disable to get rid of clean up exception when stopping the Session.
+        hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
+
+        // Set the hsqldb driver
         hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
         hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
 

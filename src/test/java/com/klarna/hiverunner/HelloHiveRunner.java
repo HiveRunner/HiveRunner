@@ -27,8 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,9 +100,29 @@ public class HelloHiveRunner {
     }
 
     @Test
+    public void testSelectFromFooWithCustomDelimiter() {
+        HashSet<String> expected = Sets.newHashSet("3,!", "2,World", "1,Hello", "N/A,bar");
+        HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("select * from foo", ",", "N/A"));
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSelectFromFooWithTypeCheck() {
+
+        List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
+
+        Assert.assertArrayEquals(new Object[]{null, "bar"}, actual.get(0));
+        Assert.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(1));
+        Assert.assertArrayEquals(new Object[]{2, "World"}, actual.get(2));
+        Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(3));
+    }
+
+
+    @Test
     public void testSelectFromCtas() {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
-        HashSet<String> actual = Sets.newHashSet("select a.s from (select s, i from foo_prim order by i) a");
+        HashSet<String> actual = Sets.newHashSet(hiveShell
+                .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
         Assert.assertEquals(expected, actual);
     }
 

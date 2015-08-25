@@ -17,7 +17,6 @@
 package com.klarna.hiverunner;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.service.HiveServer;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -39,7 +38,21 @@ public interface HiveShell {
      * <p/>
      * May only be called post #start()
      */
-    List<String> executeQuery(String script);
+    List<String> executeQuery(String hql);
+
+    /**
+     * Executes a single query.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith);
+
+    /**
+     * Execute a single hive query
+     * <p/>
+     * May only be called post #start()
+     */
+    List<Object[]> executeStatement(String hql);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
@@ -47,13 +60,6 @@ public interface HiveShell {
      * May only be called post #start()
      */
     void execute(String script);
-
-    /**
-     * Direct access to hive client.
-     * <p/>
-     * May only be called post #start()
-     */
-    HiveServer.HiveServerHandler getClient();
 
     /**
      * Start the shell. May only be called once. The test engine will by default call this method,
@@ -159,7 +165,7 @@ public interface HiveShell {
     /**
      * Resolve all substituted variables with the hive conf.
      * @throws IllegalArgumentException if not all substitutes could be resolved
-     * @throws IllegalStateException if the HiveShell was not started yet.
+     * @throws IllegalStateException    if the HiveShell was not started yet.
      */
     String expandVariableSubstitutes(String expression);
 
@@ -168,7 +174,6 @@ public interface HiveShell {
      *
      * May only be called pre #start()
      * No writes to the stream will be allowed post #start()
-     *
      * @param targetFile The path to the target file relative to the hive work space
      */
     OutputStream getResourceOutputStream(String targetFile);

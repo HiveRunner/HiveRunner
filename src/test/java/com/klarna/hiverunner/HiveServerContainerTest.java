@@ -28,14 +28,28 @@ public class HiveServerContainerTest {
     public void testSplitBasic() {
         String str = "foo;bar;baz";
         List expected = Arrays.asList("foo", "bar", "baz");
-        Assert.assertEquals(expected, Arrays.asList(new HiveServerContainer().splitStatements(str)));
+        Assert.assertEquals(expected, new HiveServerContainer().splitStatements(str));
     }
 
     @Test
     public void testDontSplitBackslashSemicolon() {
         String str = "bar\\;baz";
         List expected = Arrays.asList("bar\\;baz");
-        Assert.assertEquals(expected, Arrays.asList(new HiveServerContainer().splitStatements(str)));
+        Assert.assertEquals(expected, new HiveServerContainer().splitStatements(str));
+    }
+
+    @Test
+    public void test() {
+        String str = "a;b;;;c    c;d;e;f ;    ;g";
+        List expected = Arrays.asList("a", "b", "c    c","d","e","f","g");
+        Assert.assertEquals(expected, new HiveServerContainer().splitStatements(str));
+    }
+
+    @Test
+    public void testEscaped() {
+        String str = "a;b \\;;;c    c;d;e;f ;    ;g";
+        List expected = Arrays.asList("a", "b \\;", "c    c","d","e","f","g");
+        Assert.assertEquals(expected, new HiveServerContainer().splitStatements(str));
     }
 
     /**

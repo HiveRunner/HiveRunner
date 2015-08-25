@@ -80,6 +80,7 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts = 0;
 
+    @Ignore
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void throwOnSecondRun() {
         if (throwOnSecondRunTimouts == 0) {
@@ -102,6 +103,7 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts2 = 0;
 
+    @Ignore
     @Test(expected = TimeoutException.class)
     public void throwOnSecondRun2() {
         if (throwOnSecondRunTimouts2 == 0) {
@@ -123,6 +125,7 @@ public class TimeoutAndRetryTest {
 
     private static int endOnSecondRunTimeouts = 0;
 
+    @Ignore
     @Test
     public void endOnSecondRun() {
         if (endOnSecondRunTimeouts == 0) {
