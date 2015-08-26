@@ -35,7 +35,7 @@ public class ResourceOutputStreamTest {
     public void itShouldBePossibleToAddAResourceByOutputStream() throws IOException {
 
         OutputStream resourceOutputStream =
-                 shell.getResourceOutputStream("${hiveconf:hadoop.tmp.dir}/baz/foo.bar");
+                shell.getResourceOutputStream("${hiveconf:hadoop.tmp.dir}/baz/foo.bar");
 
         resourceOutputStream.write("Foo\nBar\nBaz".getBytes());
 
@@ -56,7 +56,10 @@ public class ResourceOutputStreamTest {
 
         SequenceFile.Writer sequenceFileWriter = createSequenceFileWriter(resourceOutputStream);
 
-        appendToSequenceFile(sequenceFileWriter, "Foo", "Bar", "Baz");
+        sequenceFileWriter.append(NullWritable.get(), new Text("Foo"));
+        sequenceFileWriter.append(NullWritable.get(), new Text("Bar"));
+        sequenceFileWriter.append(NullWritable.get(), new Text("\\N"));
+        sequenceFileWriter.append(NullWritable.get(), new Text("Baz"));
 
         shell.addSetupScript("" +
                 "create table foobar(str string) " +
@@ -65,23 +68,16 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("Foo", "Bar", "Baz"), shell.executeQuery("select * from foobar"));
+        Assert.assertEquals(Arrays.asList("Foo", "Bar", "_NULL_", "Baz"),
+                shell.executeQuery("select * from foobar", "\t", "_NULL_"));
     }
 
-    private void appendToSequenceFile(SequenceFile.Writer sequenceFileWriter, String... payloads) throws IOException {
-        for (String payload : payloads) {
-            sequenceFileWriter.append(NullWritable.get(), new Text(payload));
-        }
-    }
 
     private SequenceFile.Writer createSequenceFileWriter(OutputStream resourceOutputStream) throws IOException {
-        return SequenceFile.createWriter(
-                    new Configuration(),
-                    new FSDataOutputStream(resourceOutputStream),
-                    NullWritable.class,
-                    Text.class,
-                    SequenceFile.CompressionType.NONE,
-                    null
-            );
+        return SequenceFile.createWriter(new Configuration(),
+                SequenceFile.Writer.stream(new FSDataOutputStream(resourceOutputStream, null)),
+                SequenceFile.Writer.keyClass(NullWritable.class),
+                SequenceFile.Writer.valueClass(Text.class));
     }
+
 }
