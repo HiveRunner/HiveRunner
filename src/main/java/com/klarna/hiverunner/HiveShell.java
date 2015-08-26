@@ -175,6 +175,8 @@ public interface HiveShell {
      * May only be called pre #start()
      * No writes to the stream will be allowed post #start()
      * @param targetFile The path to the target file relative to the hive work space
+     * See {@link com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for example of how to work
+     * with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);
 }
