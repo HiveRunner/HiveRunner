@@ -91,7 +91,8 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
     }
 
     /**
-     * Empty by design. Keeping it as an empty protected method intended for overriding in order to follow the convention established earlier by pelle.
+     * Empty by design. Keeping it as an empty protected method intended for overriding in order to follow the convention
+     * established earlier.
      * @param conf the configuration to modify
      */
     protected void configureExecutionEngine(HiveConf conf) {
@@ -140,7 +141,7 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         createAndSetFolderProperty("hive.vs", "vs", conf, basedir);
     }
 
-    private File newFolder(TemporaryFolder basedir, String folder) {
+    File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
             Assert.assertTrue(newFolder.setWritable(true, false));

@@ -16,11 +16,7 @@
 
 package com.klarna.hiverunner;
 
-import com.klarna.reflection.ReflectionUtils;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.shims.Hadoop20SShims;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -30,29 +26,12 @@ class MapReduceStandaloneHiveServerContext extends StandaloneHiveServerContextBa
 
     MapReduceStandaloneHiveServerContext(TemporaryFolder basedir) {
         super(basedir);
-
-        configureQueryPlanner();
-        configureJobTrackerMode();
     }
 
-    private void configureQueryPlanner() {
-        // Set to true to resolve a NPE when trying to resolve the path to reduce.xml for UDF count
+    @Override
+    protected void configureExecutionEngine(HiveConf conf) {
+        super.configureExecutionEngine(conf);
+        conf.setVar(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE, "mr");
         hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
-    }
-
-    // This is so peculiar that I'd rather keep it a private method than having a protected empty method in the base class.
-    private void configureJobTrackerMode() {
-        /*
-        * Overload shims to make sure that org.apache.hadoop.hive.ql.exec.MapRedTask#runningViaChild
-         * validates to false.
-         *
-         * Search for usage of org.apache.hadoop.hive.shims.HadoopShims#isLocalMode to find other affects of this.
-        */
-        ReflectionUtils.setStaticField(ShimLoader.class, "hadoopShims", new Hadoop20SShims() {
-            @Override
-            public boolean isLocalMode(Configuration conf) {
-                return false;
-            }
-        });
     }
 }
