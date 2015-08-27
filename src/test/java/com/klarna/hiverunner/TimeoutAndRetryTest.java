@@ -16,7 +16,9 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +31,14 @@ import org.junit.runner.RunWith;
  */
 @RunWith(StandaloneHiveRunner.class)
 public class TimeoutAndRetryTest {
+
+    @HiveRunnerSetup
+    public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
+        setTimeoutEnabled(true);
+        setTimeoutSeconds(15);
+        setTimeoutRetries(2);
+    }};
+
 
     /**
      * Define the script files under test. The files will be loaded in the given order.
@@ -80,7 +90,6 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts = 0;
 
-    @Ignore
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void throwOnSecondRun() {
         if (throwOnSecondRunTimouts == 0) {
@@ -103,7 +112,6 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts2 = 0;
 
-    @Ignore
     @Test(expected = TimeoutException.class)
     public void throwOnSecondRun2() {
         if (throwOnSecondRunTimouts2 == 0) {
@@ -125,7 +133,6 @@ public class TimeoutAndRetryTest {
 
     private static int endOnSecondRunTimeouts = 0;
 
-    @Ignore
     @Test
     public void endOnSecondRun() {
         if (endOnSecondRunTimeouts == 0) {

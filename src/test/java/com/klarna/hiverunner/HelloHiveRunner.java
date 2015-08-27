@@ -19,8 +19,10 @@ package com.klarna.hiverunner;
 import com.google.common.collect.Sets;
 import com.klarna.hiverunner.annotations.HiveProperties;
 import com.klarna.hiverunner.annotations.HiveResource;
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,6 +42,15 @@ import java.util.Map;
 @RunWith(StandaloneHiveRunner.class)
 public class HelloHiveRunner {
 
+
+    /**
+     * Explicit test class configuration of the HiveRunner runtime.
+     * See {@link HiveRunnerConfig} for further details.
+     */
+    @HiveRunnerSetup
+    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
+        setHiveExecutionEngine(HiveRunnerConfig.MAP_REDUCE);
+    }};
 
     /**
      * Cater for all the parameters in the script that we want to test.
@@ -87,7 +98,8 @@ public class HelloHiveRunner {
      */
     @HiveSQL(files = {
             "helloHiveRunner/create_table.sql",
-            "helloHiveRunner/create_ctas.sql"}, encoding = "UTF-8")
+            "helloHiveRunner/create_ctas.sql"
+    }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
 

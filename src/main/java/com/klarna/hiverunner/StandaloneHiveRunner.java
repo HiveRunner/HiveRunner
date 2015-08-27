@@ -17,9 +17,11 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
 import com.google.common.io.Resources;
 import com.klarna.hiverunner.annotations.HiveProperties;
 import com.klarna.hiverunner.annotations.HiveResource;
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
@@ -53,6 +55,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.reflections.ReflectionUtils.withAnnotation;
+import static org.reflections.ReflectionUtils.withType;
 
 /**
  * JUnit 4 runner that runs hive sql on a HiveServer residing in this JVM. No external dependencies needed.
@@ -60,26 +63,18 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
-    private final HiveRunnerConfig config;
-
-    private int retries;
-    private int timeoutSeconds;
-    private boolean timeoutEnabled;
 
     private HiveShellContainer container;
+    private HiveRunnerConfig config;
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
-        config = new HiveRunnerConfig();
-        timeoutEnabled = config.isTimeoutEnabled();
-        retries = config.getTimeoutRetries();
-        timeoutSeconds = config.getTimeoutSeconds();
+        // Make sure to load the config early in the test life cycle since it's used in multiple places.
+        config = getHiveRunnerConfig(clazz);
     }
 
-    /**
-     * Override this to provide another context.
-     */
-    protected HiveServerContext getContext(TemporaryFolder basedir) {
+
+    private HiveServerContext getContext(HiveRunnerConfig config, TemporaryFolder basedir) {
         String executionEngine = config.getHiveExecutionEngine();
         switch (executionEngine) {
             case HiveRunnerConfig.TEZ:
@@ -113,20 +108,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
-        if (timeoutEnabled) {
-            rules.add(getTimeoutRule(timeoutSeconds * 1000, getName()));
-        }
+        rules.add(ThrowOnTimeout.create(config, getName()));
         return rules;
     }
 
-    private TestRule getTimeoutRule(final int timeoutMillis, final Object target) {
-        return new TestRule() {
-            @Override
-            public Statement apply(Statement base, Description description) {
-                return new ThrowOnTimeout(base, timeoutMillis, target);
-            }
-        };
-    }
 
     @Override
     protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
@@ -137,7 +122,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
             eachNotifier.fireTestStarted();
             try {
-                runTestMethod(method, eachNotifier, retries);
+                runTestMethod(method, eachNotifier, config.getTimeoutRetries());
             } finally {
                 eachNotifier.fireTestFinished();
             }
@@ -158,6 +143,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         } catch (AssumptionViolatedException e) {
             notifier.addFailedAssumption(e);
         } catch (TimeoutException e) {
+            /*
+             TimeoutException thrown by ThrowOnTimeout statement. Handling is kept in this class since this is where the
+             retry needs to be triggered in order to get the right tear down and test setup between retries.
+              */
             if (--retriesLeft >= 0) {
                 LOGGER.warn(String.format("%s : %s. Will attempt retry %s more times.",
                         getName(), e.getMessage(), retriesLeft), e);
@@ -210,7 +199,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
 
-        HiveServerContext context = getContext(baseDir);
+        HiveServerContext context = getContext(config, baseDir);
 
         hiveShellBuilder.setContext(context);
 
@@ -233,6 +222,28 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
 
         return shell;
+    }
+
+    private HiveRunnerConfig getHiveRunnerConfig(Class testCase) {
+        Set<Field> fields = ReflectionUtils.getAllFields(testCase,
+                Predicates.and(
+                        withAnnotation(HiveRunnerSetup.class),
+                        withType(HiveRunnerConfig.class)));
+
+        Preconditions.checkState(fields.size() <= 1,
+                "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
+
+        HiveRunnerConfig config;
+
+        if (fields.size() == 1) {
+            final Field field = fields.iterator().next();
+            config = ReflectionUtils.getStaticFieldValue(testCase, field.getName(), HiveRunnerConfig.class);
+        } else {
+            config = new HiveRunnerConfig();
+        }
+
+        return config;
+
     }
 
     private HiveShellField loadScriptUnderTest(final Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
@@ -284,10 +295,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                 withAnnotation(HiveSetupScript.class));
 
         for (Field setupScriptField : setupScriptFields) {
-            if (isStringField(setupScriptField)) {
-                String script = getMandatoryStringField(testCase, setupScriptField);
+            if (ReflectionUtils.isOfType(setupScriptField, String.class)) {
+                String script = ReflectionUtils.getFieldValue(testCase, setupScriptField.getName(), String.class);
                 workFlowBuilder.addSetupScript(script);
-            } else if (isFileField(setupScriptField) || isPathField(setupScriptField)) {
+            } else if (ReflectionUtils.isOfType(setupScriptField, File.class) || ReflectionUtils.isOfType(setupScriptField, Path.class)) {
                 Path path = getMandatoryPathFromField(testCase, setupScriptField);
                 workFlowBuilder.addSetupScript(readAll(path));
             } else {
@@ -313,10 +324,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             HiveResource annotation = resourceField.getAnnotation(HiveResource.class);
             String targetFile = annotation.targetFile();
 
-            if (isStringField(resourceField)) {
-                String data = getMandatoryStringField(testCase, resourceField);
+            if (ReflectionUtils.isOfType(resourceField, String.class)) {
+                String data = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), String.class);
                 workFlowBuilder.addResource(targetFile, data);
-            } else if (isFileField(resourceField) || isPathField(resourceField)) {
+            } else if (ReflectionUtils.isOfType(resourceField, File.class) || ReflectionUtils.isOfType(resourceField, Path.class)) {
                 Path dataFile = getMandatoryPathFromField(testCase, resourceField);
                 workFlowBuilder.addResource(targetFile, dataFile);
             } else {
@@ -326,16 +337,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private String getMandatoryStringField(Object testCase, Field resourceField) {
-        return ReflectionUtils.getFieldValue(testCase, resourceField.getName(), String.class);
-    }
-
     private Path getMandatoryPathFromField(Object testCase, Field resourceField) {
         Path path;
-        if (isFileField(resourceField)) {
+        if (ReflectionUtils.isOfType(resourceField, File.class)) {
             File dataFile = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), File.class);
             path = Paths.get(dataFile.toURI());
-        } else if (isPathField(resourceField)) {
+        } else if (ReflectionUtils.isOfType(resourceField, Path.class)) {
             path = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), Path.class);
         } else {
             throw new IllegalArgumentException(
@@ -346,31 +353,16 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         return path;
     }
 
-    private boolean isPathField(Field resourceField) {
-        return resourceField.getType().isAssignableFrom(Path.class);
-    }
-
     private void loadAnnotatedProperties(Object testCase, HiveShellBuilder workFlowBuilder) {
         for (Field hivePropertyField : ReflectionUtils.getAllFields(testCase.getClass(),
                 withAnnotation(HiveProperties.class))) {
-            Preconditions.checkState(isMapField(hivePropertyField),
+            Preconditions.checkState(ReflectionUtils.isOfType(hivePropertyField, Map.class),
                     "Field annotated with @HiveProperties should be of type Map<String, String>");
             workFlowBuilder.putAllProperties(
                     ReflectionUtils.getFieldValue(testCase, hivePropertyField.getName(), Map.class));
         }
     }
 
-    private boolean isStringField(Field setupScriptField) {
-        return setupScriptField.getType().isAssignableFrom(String.class);
-    }
-
-    private boolean isFileField(Field resourceField) {
-        return resourceField.getType().isAssignableFrom(File.class);
-    }
-
-    private boolean isMapField(Field hivePropertyField) {
-        return hivePropertyField.getType().isAssignableFrom(Map.class);
-    }
 
     /**
      * Used as a handle for the HiveShell field in the test case so that we may set it once the

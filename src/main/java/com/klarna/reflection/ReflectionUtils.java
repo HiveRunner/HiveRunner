@@ -61,8 +61,16 @@ public final class ReflectionUtils {
     }
 
     public static <T> T getFieldValue(Object testCase, String name, Class<T> type) {
+        return getFieldValue(testCase, testCase.getClass(), name, type);
+    }
+
+    public static <T> T getStaticFieldValue(Class testCaseClass, String name, Class<T> type) {
+        return getFieldValue(null, testCaseClass, name, type);
+    }
+
+    private static <T> T getFieldValue(Object testCase, Class testCaseClass, String name, Class<T> type) {
         try {
-            Field field = testCase.getClass().getDeclaredField(name);
+            Field field = testCaseClass.getDeclaredField(name);
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             Object value = field.get(testCase);
@@ -70,10 +78,15 @@ public final class ReflectionUtils {
             return (T) value;
         } catch (NoSuchFieldException e) {
             throw new IllegalArgumentException(
-                    "Failed to lookup field '" + name + "' for object '" + testCase + "': " + e.getMessage(), e);
+                    "Failed to lookup field '" + name + "' for '" + testCaseClass + "': " + e.getMessage(), e);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(
-                    "Failed to get value of field '" + name + "' for object '" + testCase + "': " + e.getMessage(), e);
+                    "Failed to get value of field '" + name + "' for '" + testCaseClass + "': " + e.getMessage(), e);
         }
     }
+
+    public static boolean isOfType(Field setupScriptField, Class type) {
+        return setupScriptField.getType().isAssignableFrom(type);
+    }
+
 }

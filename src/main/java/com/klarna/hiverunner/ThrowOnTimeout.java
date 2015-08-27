@@ -1,5 +1,9 @@
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.config.HiveRunnerConfig;
+import org.apache.commons.lang.time.StopWatch;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,31 +13,37 @@ public class ThrowOnTimeout extends Statement {
 
     private final Statement originalStatement;
 
-    private final long fTimeout;
+    private final HiveRunnerConfig config;
     private Object target;
 
     private Throwable statementException;
     private boolean finished = false;
 
-    public ThrowOnTimeout(Statement originalStatement, long timeout, Object target) {
+    public ThrowOnTimeout(Statement originalStatement, HiveRunnerConfig config, Object target) {
         this.originalStatement = originalStatement;
-        fTimeout = timeout;
+        this.config = config;
         this.target = target;
     }
 
     @Override
     public void evaluate() throws Throwable {
 
-        LOGGER.warn("Starting timeout monitoring ({}s) of test case {}.", fTimeout / 1000, target);
+        final StopWatch stopWatch = new StopWatch();
+
+        if (config.isTimeoutEnabled()) {
+            LOGGER.warn("Starting timeout monitoring ({}s) of test case {}.", config.getTimeoutSeconds(), target);
+        }
 
         Thread statementThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    stopWatch.start();
                     originalStatement.evaluate();
                     finished = true;
                 } catch (InterruptedException e) {
-                    // don't log the InterruptedException
+                    // Ignore the InterruptedException
+                    LOGGER.debug(e.getMessage(), e);
                 } catch (Throwable e) {
                     synchronized (target) {
                         statementException = e;
@@ -43,15 +53,38 @@ public class ThrowOnTimeout extends Statement {
         });
 
         statementThread.start();
-        statementThread.join(fTimeout);
+        statementThread.join(config.getTimeoutSeconds() * 1000);
 
         synchronized (target) {
             if (statementException != null) {
                 throw statementException;
             } else if (!finished) {
-                statementThread.interrupt();
-                throw new TimeoutException(String.format("test timed out after %d milliseconds", fTimeout));
+                if (config.isTimeoutEnabled()) {
+                    statementThread.interrupt();
+                    throw new TimeoutException(
+                            String.format("test timed out after %d seconds", config.getTimeoutSeconds()));
+                } else {
+                    LOGGER.warn(
+                            "Test ran for {} seconds. Timeout disabled. See class {} for configuration options.",
+                            stopWatch.getTime() / 1000, HiveRunnerConfig.class.getName());
+
+                    statementThread.join(0);
+
+                    if (statementException != null) {
+                        throw statementException;
+                    }
+
+                }
             }
         }
+    }
+
+    public static TestRule create(final HiveRunnerConfig config, final Object target) {
+        return new TestRule() {
+            @Override
+            public Statement apply(Statement base, Description description) {
+                return new ThrowOnTimeout(base, config, target);
+            }
+        };
     }
 }
