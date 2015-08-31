@@ -65,12 +65,15 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
     private HiveShellContainer container;
-    private HiveRunnerConfig config;
+
+    /**
+     * We need to init config because we're going to pass
+     * it around before it is actually fully loaded from the testcase.
+     */
+    private HiveRunnerConfig config = new HiveRunnerConfig();
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
-        // Make sure to load the config early in the test life cycle since it's used in multiple places.
-        config = getHiveRunnerConfig(clazz);
     }
 
 
@@ -109,9 +112,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
         rules.add(ThrowOnTimeout.create(config, getName()));
+
+        /*
+         Make sure hive runner config rule is the first rule on the list to be executed so that any subsequent
+         statements has access to the final config.
+          */
+        rules.add(getHiveRunnerConfigRule(target));
         return rules;
     }
-
 
     @Override
     protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
@@ -224,28 +232,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         return shell;
     }
 
-    private HiveRunnerConfig getHiveRunnerConfig(Class testCase) {
-        Set<Field> fields = ReflectionUtils.getAllFields(testCase,
-                Predicates.and(
-                        withAnnotation(HiveRunnerSetup.class),
-                        withType(HiveRunnerConfig.class)));
-
-        Preconditions.checkState(fields.size() <= 1,
-                "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
-
-        HiveRunnerConfig config;
-
-        if (fields.size() == 1) {
-            final Field field = fields.iterator().next();
-            config = ReflectionUtils.getStaticFieldValue(testCase, field.getName(), HiveRunnerConfig.class);
-        } else {
-            config = new HiveRunnerConfig();
-        }
-
-        return config;
-
-    }
-
     private HiveShellField loadScriptUnderTest(final Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
         try {
             Set<Field> fields = ReflectionUtils.getAllFields(
@@ -298,7 +284,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             if (ReflectionUtils.isOfType(setupScriptField, String.class)) {
                 String script = ReflectionUtils.getFieldValue(testCase, setupScriptField.getName(), String.class);
                 workFlowBuilder.addSetupScript(script);
-            } else if (ReflectionUtils.isOfType(setupScriptField, File.class) || ReflectionUtils.isOfType(setupScriptField, Path.class)) {
+            } else if (ReflectionUtils.isOfType(setupScriptField, File.class) ||
+                    ReflectionUtils.isOfType(setupScriptField, Path.class)) {
                 Path path = getMandatoryPathFromField(testCase, setupScriptField);
                 workFlowBuilder.addSetupScript(readAll(path));
             } else {
@@ -327,7 +314,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             if (ReflectionUtils.isOfType(resourceField, String.class)) {
                 String data = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), String.class);
                 workFlowBuilder.addResource(targetFile, data);
-            } else if (ReflectionUtils.isOfType(resourceField, File.class) || ReflectionUtils.isOfType(resourceField, Path.class)) {
+            } else if (ReflectionUtils.isOfType(resourceField, File.class) ||
+                    ReflectionUtils.isOfType(resourceField, Path.class)) {
                 Path dataFile = getMandatoryPathFromField(testCase, resourceField);
                 workFlowBuilder.addResource(targetFile, dataFile);
             } else {
@@ -361,6 +349,32 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             workFlowBuilder.putAllProperties(
                     ReflectionUtils.getFieldValue(testCase, hivePropertyField.getName(), Map.class));
         }
+    }
+
+    private TestRule getHiveRunnerConfigRule(final Object target) {
+        return new TestRule() {
+            @Override
+            public Statement apply(Statement base, Description description) {
+                Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
+                        Predicates.and(
+                                withAnnotation(HiveRunnerSetup.class),
+                                withType(HiveRunnerConfig.class)));
+
+                Preconditions.checkState(fields.size() <= 1,
+                        "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
+
+                /*
+                 Override the config with test case config. Taking care to not replace the config instance since it
+                  has been passes around and referenced by some of the other test rules.
+                  */
+                if (!fields.isEmpty()) {
+                    config.override(ReflectionUtils
+                            .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
+                }
+
+                return base;
+            }
+        };
     }
 
 

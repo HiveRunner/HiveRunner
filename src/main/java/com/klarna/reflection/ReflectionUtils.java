@@ -16,9 +16,11 @@
 
 package com.klarna.reflection;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
 /**
@@ -61,17 +63,21 @@ public final class ReflectionUtils {
     }
 
     public static <T> T getFieldValue(Object testCase, String name, Class<T> type) {
-        return getFieldValue(testCase, testCase.getClass(), name, type);
+        return getFieldValue(testCase, testCase.getClass(), name, type, false);
     }
 
     public static <T> T getStaticFieldValue(Class testCaseClass, String name, Class<T> type) {
-        return getFieldValue(null, testCaseClass, name, type);
+        return getFieldValue(null, testCaseClass, name, type, true);
     }
 
-    private static <T> T getFieldValue(Object testCase, Class testCaseClass, String name, Class<T> type) {
+    private static <T> T getFieldValue(Object testCase, Class testCaseClass, String name, Class<T> type, boolean isStatic) {
         try {
             Field field = testCaseClass.getDeclaredField(name);
             boolean accessible = field.isAccessible();
+
+            Preconditions.checkState(field.getType().isAssignableFrom(type), "Field %s must be assignable from ", type);
+            Preconditions.checkState(!isStatic || Modifier.isStatic(field.getModifiers()), "Field %s must be static ", field);
+
             field.setAccessible(true);
             Object value = field.get(testCase);
             field.setAccessible(accessible);
