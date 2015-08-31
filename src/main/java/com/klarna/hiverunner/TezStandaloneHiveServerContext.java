@@ -47,23 +47,11 @@ class TezStandaloneHiveServerContext extends StandaloneHiveServerContextBase {
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
     }
 
-    @Override
-    protected void configureMapReduceOptimizations(HiveConf conf) {
-        super.configureMapReduceOptimizations(conf);
-        /*
-        General attempts to strip of unnecessary functionality to speed up test execution and increase stability
-         */
-        conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
-        conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
-        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
-        conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
-        conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
-        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
-        conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
-    }
 
     @Override
     protected void configureExecutionEngine(HiveConf conf) {
+        super.configureExecutionEngine(conf);
+
         /*
         Enable tez execution engine
          */
@@ -80,6 +68,17 @@ class TezStandaloneHiveServerContext extends StandaloneHiveServerContextBase {
         Set to be able to run tests offline
          */
         conf.set(TezConfiguration.TEZ_AM_DISABLE_CLIENT_VERSION_CHECK, "true");
+
+        /*
+        General attempts to strip of unnecessary functionality to speed up test execution and increase stability
+         */
+        conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
+        conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
+        conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
 
     }
 }
