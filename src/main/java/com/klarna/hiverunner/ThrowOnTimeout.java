@@ -31,7 +31,7 @@ public class ThrowOnTimeout extends Statement {
         final StopWatch stopWatch = new StopWatch();
 
         if (config.isTimeoutEnabled()) {
-            LOGGER.warn("Starting timeout monitoring ({}s) of test case {}.", config.getTimeoutSeconds(), target);
+            LOGGER.info("Starting timeout monitoring ({}s) of test case {}.", config.getTimeoutSeconds(), target);
         }
 
         Thread statementThread = new Thread(new Runnable() {
@@ -64,8 +64,7 @@ public class ThrowOnTimeout extends Statement {
                     throw new TimeoutException(
                             String.format("test timed out after %d seconds", config.getTimeoutSeconds()));
                 } else {
-                    LOGGER.warn(
-                            "Test ran for {} seconds. Timeout disabled. See class {} for configuration options.",
+                    LOGGER.warn("Test ran for {} seconds. Timeout disabled. See class {} for configuration options.",
                             stopWatch.getTime() / 1000, HiveRunnerConfig.class.getName());
 
                     statementThread.join();

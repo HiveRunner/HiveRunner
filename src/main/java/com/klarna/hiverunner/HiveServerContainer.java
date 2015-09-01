@@ -136,26 +136,33 @@ public class HiveServerContainer {
 
         try {
             TezJobMonitor.killRunningJobs();
-        } catch (Throwable t) {
-            LOGGER.warn("Failed to kill tez sessions: " + t.getMessage(), t);
+        } catch (Throwable e) {
+            LOGGER.warn("Failed to kill tez session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+            LOGGER.debug(e.getMessage(), e);
         }
 
         try {
             // Reset to default schema
             executeScript("USE default;");
         } catch (Throwable e) {
-            LOGGER.warn("Failed to reset to default schema: " + e.getMessage(), e);
+            LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
+                    ". Turn on log level debug for stacktrace");
+            LOGGER.debug(e.getMessage(), e);
         }
+
         try {
             client.closeSession(sessionHandle);
         } catch (Throwable e) {
-            LOGGER.warn("Failed to close client session: " + e.getMessage(), e);
+            LOGGER.warn(
+                    "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+            LOGGER.debug(e.getMessage(), e);
         }
 
         try {
             hiveServer2.stop();
         } catch (Throwable e) {
-            LOGGER.warn("Failed to stop HiveServer2: " + e.getMessage(), e);
+            LOGGER.warn("Failed to stop HiveServer2: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+            LOGGER.debug(e.getMessage(), e);
         }
 
         hiveServer2 = null;
