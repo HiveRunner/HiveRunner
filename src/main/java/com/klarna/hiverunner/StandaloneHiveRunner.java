@@ -27,6 +27,7 @@ import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+import org.apache.log4j.MDC;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
@@ -91,7 +92,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     @Override
     protected List<TestRule> getTestRules(final Object target) {
-
         final TemporaryFolder testBaseDir = new TemporaryFolder();
 
         TestRule hiveRunnerRule = new TestRule() {
@@ -127,12 +127,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         if (method.getAnnotation(Ignore.class) != null) {
             notifier.fireTestIgnored(description);
         } else {
+            setLogContext(method);
             EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
             eachNotifier.fireTestStarted();
             try {
                 runTestMethod(method, eachNotifier, config.getTimeoutRetries());
             } finally {
                 eachNotifier.fireTestFinished();
+                clearLogContext();
             }
         }
     }
@@ -156,8 +158,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
              retry needs to be triggered in order to get the right tear down and test setup between retries.
               */
             if (--retriesLeft >= 0) {
-                LOGGER.warn(String.format("%s : %s. Will attempt retry %s more times.",
-                        getName(), e.getMessage(), retriesLeft), e);
+                LOGGER.warn(
+                        "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
+                        retriesLeft);
+                LOGGER.debug(e.getMessage(), e);
                 tearDown();
                 runTestMethod(method, notifier, retriesLeft);
             } else {
@@ -377,6 +381,15 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         };
     }
 
+    private void clearLogContext() {
+        MDC.clear();
+    }
+
+    private void setLogContext(FrameworkMethod method) {
+        MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
+        MDC.put("testClass", getTestClass().getJavaClass().getName());
+        MDC.put("testMethod", method.getName());
+    }
 
     /**
      * Used as a handle for the HiveShell field in the test case so that we may set it once the

@@ -45,7 +45,7 @@ import java.util.Map;
  * HiveShell implementation delegating to HiveServerContainer
  */
 class HiveShellBase implements HiveShell {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(HiveShellBase.class);
 
     protected boolean started = false;
 
@@ -223,7 +223,7 @@ class HiveShellBase implements HiveShell {
 
     private void executeSetupScripts() {
         for (String setupScript : setupScripts) {
-            logger.info("Executing script: " + setupScript);
+            logger.debug("Executing script: " + setupScript);
             hiveServerContainer.executeScript(setupScript);
         }
     }
@@ -249,7 +249,7 @@ class HiveShellBase implements HiveShell {
                                 + e.getMessage(), e);
             }
 
-            logger.info("Created hive resource " + targetFile);
+            logger.debug("Created hive resource " + targetFile);
 
         }
     }
