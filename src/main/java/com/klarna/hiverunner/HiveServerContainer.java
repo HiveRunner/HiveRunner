@@ -17,6 +17,7 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
@@ -32,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class HiveServerContainer {
      * @param hiveql hive script statements.
      */
     public void executeScript(String hiveql) {
-        for (String statement : splitStatements(hiveql)) {
+        for (String statement : StatementsSplitter.splitStatements(hiveql)) {
             executeStatement(statement);
         }
     }
@@ -174,13 +174,6 @@ public class HiveServerContainer {
 
     public String expandVariableSubstitutes(String expression) {
         return new VariableSubstitution().substitute(getHiveConf(), expression);
-    }
-
-    /**
-     * Package protected due to testability convenience.
-     */
-    List<String> splitStatements(String hiveql) {
-        return Arrays.asList(hiveql.split("\\s?(?<=[^\\\\]);[\\s;]*"));
     }
 
     private void pingHiveServer() {
