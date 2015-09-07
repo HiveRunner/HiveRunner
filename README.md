@@ -87,7 +87,7 @@ fork per CPU core and reuse threads would look like:
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -119,6 +119,10 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
     </plugin>
 
 
+### Logging
+src/main/resources/log4j.properties confogures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.   
+
+
 2. Look at the examples
 ----------
 Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
@@ -129,6 +133,10 @@ Annotations and interactive mode can be mixed and matched, however you'll always
          public HiveShell hiveShell;
 
 Note that the *autostart = false* is needed for the interactive mode. It can be left out when running with only annotations.
+
+### Sequence files
+If you work with __sequence files__ (Or anything else than regular text files) make sure to take a look at [ResourceOutputStreamTest](/src/test/java/com/klarna/hiverunner/ResourceOutputStreamTest.java) 
+for an example of how to use the new method [HiveShell](src/main/java/com/klarna/hiverunner/HiveShell.java)\#getResourceOutputStream to manage test input data. 
 
 
 3. Understand a little bit of the order of execution
@@ -146,7 +154,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 Hive version compatibility
 ============
-- This version of HiveRunner is built for hive 14
+- This version of HiveRunner is built for hive 14.
 
 
 Future work and Limitations
@@ -156,16 +164,24 @@ Future work and Limitations
 * HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
 * Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead as for a whole test case. Feedback is always welcome!
+
 * The interactive API of HiveShell should support as much as the annotated DSL. Currently some features are not implemented in the HiveShell but only available via annotations.
+
+    __DONE:__ _HiveShell now includes all the features of the annotations and then some!_
  
 * Clean up the logs
+     
+    __DONE:__ _There's now a working log4j.properties here: src/main/resources/log4j.properties_
 
 * HiveRunner currently uses in-memory Derby as metastore. It seems to be a real performance bottleneck. We are looking to replace it with hsqldb in the near future.
+   
+    __DONE:__ _This version of HiveRunner uses an in-memory hsqldb instead of derby. It's faster and more reliant!_  
 
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
 
 * Redirect derby.log. It currently ends up in the build root dir.
 
+    __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
 TAGS
 =========
