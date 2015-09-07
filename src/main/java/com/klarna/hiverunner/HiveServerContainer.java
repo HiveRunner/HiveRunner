@@ -112,7 +112,7 @@ public class HiveServerContainer {
             }
             return resultSet;
         } catch (HiveSQLException e) {
-            throw new IllegalStateException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
         }
     }
 
