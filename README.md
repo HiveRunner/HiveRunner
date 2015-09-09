@@ -14,13 +14,6 @@ HiveRunner is under constant development. We use it extensively in all our Hive 
 
 
 
-
-# NOTE!
-<p style='color:red'>This version of HiveRunner is built for hive 14</p>
-<p style='color:red'>The master branch in this repo is proprietary to Klarna. Push to github should be done from the github-master branch.</p>
-# NOTE!
----------
-
 A word from the inventors
 ---------
 HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
