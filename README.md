@@ -13,12 +13,6 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
-
-
-# NOTE!
-<p style='color:red'>This version of HiveRunner is built for hive 14</p>
-<p style='color:red'>The master branch in this repo is proprietary to Klarna. Push to github should be done from the github-master branch.</p>
-# NOTE!
 ---------
 
 A word from the inventors
