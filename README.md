@@ -177,6 +177,17 @@ Future work and Limitations
 
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
+
+
+Change Log (From version 2.2.0 and onwards)
+==========
+### __2.2.0__
+* Added support for setting hivevar:s via HiveShell 
+
+
+
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
+
+

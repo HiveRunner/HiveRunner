@@ -74,8 +74,23 @@ public interface HiveShell {
      * Set a HiveConf property.
      * <p/>
      * May only be called pre #start()
+     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} intstead
      */
     void setProperty(String key, String value);
+
+    /**
+     * Set HiveConf property.
+     * <p/>
+     * May only be called pre #start()
+     */
+    void setHiveConfValue(String key, String value);
+
+    /**
+     * Set Hive variable.
+     * <p/>
+     * May only be called pre #start()
+     */
+    void setHiveVarValue(String var, String value);
 
     /**
      * Get the current HiveConf from hive
@@ -179,4 +194,6 @@ public interface HiveShell {
      * with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);
+
+
 }

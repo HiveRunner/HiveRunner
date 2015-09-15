@@ -22,7 +22,7 @@ import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,8 @@ class HiveShellBase implements HiveShell {
 
     protected final HiveServerContainer hiveServerContainer;
 
-    protected final Map<String, String> props;
+    protected final Map<String, String> hiveConf;
+    protected final Map<String, String> hiveVars;
     protected final HiveServerContext context;
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
@@ -63,11 +65,13 @@ class HiveShellBase implements HiveShell {
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest) {
         this.hiveServerContainer = hiveServerContainer;
-        this.props = props;
+        this.hiveConf = props;
         this.context = context;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
+        this.hiveVars = new HashMap<>();
+
     }
 
     @Override
@@ -103,7 +107,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        hiveServerContainer.init(props, context);
+        hiveServerContainer.init(hiveConf, hiveVars, context);
 
         executeSetupScripts();
 
@@ -162,18 +166,18 @@ class HiveShellBase implements HiveShell {
         assertStarted();
         HiveConf hiveConf = getHiveConf();
         Preconditions.checkNotNull(hiveConf);
-        try {
-            return new VariableSubstitution().substitute(hiveConf, expression);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("Unable to expand '" + expression + "': " + e.getMessage(), e);
-        }
+        return hiveServerContainer.getVariableSubstitution().substitute(hiveConf, expression);
     }
-
 
     @Override
     public void setProperty(String key, String value) {
+        setHiveConfValue(key, value);
+    }
+
+    @Override
+    public void setHiveConfValue(String key, String value) {
         assertNotStarted();
-        props.put(key, value);
+        hiveConf.put(key, value);
     }
 
     @Override
@@ -193,6 +197,12 @@ class HiveShellBase implements HiveShell {
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void setHiveVarValue(String var, String value) {
+        assertNotStarted();
+        hiveVars.put(var, value);
     }
 
     @Override
