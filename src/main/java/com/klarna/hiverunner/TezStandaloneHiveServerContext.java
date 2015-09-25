@@ -16,6 +16,7 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
@@ -28,8 +29,8 @@ import java.io.File;
  */
 class TezStandaloneHiveServerContext extends StandaloneHiveServerContextBase {
 
-    TezStandaloneHiveServerContext(TemporaryFolder basedir) {
-        super(basedir);
+    TezStandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+        super(basedir, hiveRunnerConfig);
     }
 
     @Override

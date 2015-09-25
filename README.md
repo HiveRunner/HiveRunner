@@ -87,18 +87,23 @@ fork per CPU core and reuse threads would look like:
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the 
+System property hiveconf_hive.execution.engine to 'tez'.
 
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-            <systemPropertyVariables>
-               <hiveExecutionEngine>tez</hiveExecutionEngine>
-            </systemPropertyVariables>
-        </configuration>
-    </plugin>
+
+(Any hive conf property may be overridden by prefixing it with 'hiveconf_')
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
 
 Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.

@@ -16,13 +16,17 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
@@ -34,13 +38,15 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
  */
 abstract class StandaloneHiveServerContextBase implements HiveServerContext {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContextBase.class);
+
     private String metaStorageUrl;
 
     protected HiveConf hiveConf = new HiveConf();
 
     private TemporaryFolder basedir;
 
-    StandaloneHiveServerContextBase(TemporaryFolder basedir) {
+    StandaloneHiveServerContextBase(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
 
         this.basedir = basedir;
 
@@ -88,6 +94,11 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         configureCheckForDefaultDb(hiveConf);
 
         configureAssertionStatus(hiveConf);
+
+        for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
+            hiveConf.set(hiveConfEntry.getKey(), hiveConfEntry.getValue());
+        }
+
     }
 
     /**
@@ -193,6 +204,5 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
         conf.set(key, newFolder(basedir, folder).getAbsolutePath());
     }
-
 
 }

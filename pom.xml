@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.klarna</groupId>
@@ -171,7 +172,11 @@
                     <reuseForks>true</reuseForks>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
                     <systemProperties>
-                        <hiveExecutionEngine>mr</hiveExecutionEngine>
+                        <!--
+                        Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
+                        -->
+                        <hiveconf_hive.execution.engine>mr</hiveconf_hive.execution.engine>
+                        <!--<hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>-->
                         <enableTimeout>false</enableTimeout>
                         <timeoutSeconds>30</timeoutSeconds>
                         <timeoutRetries>2</timeoutRetries>

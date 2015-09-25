@@ -16,6 +16,7 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 
@@ -24,8 +25,8 @@ import org.junit.rules.TemporaryFolder;
  */
 class MapReduceStandaloneHiveServerContext extends StandaloneHiveServerContextBase {
 
-    MapReduceStandaloneHiveServerContext(TemporaryFolder basedir) {
-        super(basedir);
+    MapReduceStandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+        super(basedir, hiveRunnerConfig);
     }
 
     @Override

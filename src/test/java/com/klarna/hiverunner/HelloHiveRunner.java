@@ -49,7 +49,7 @@ public class HelloHiveRunner {
      */
     @HiveRunnerSetup
     public final HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
-        setHiveExecutionEngine(HiveRunnerConfig.MAP_REDUCE);
+        setHiveExecutionEngine("mr");
     }};
 
     /**
