@@ -105,14 +105,24 @@ public class HiveServerContainer {
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
-                RowSet rowSet = client.fetchResults(handle);
-                for (Object[] row : rowSet) {
-                    resultSet.add(row.clone());
-                }
+
+                /*
+                fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to
+                continuously fetch the result set until all rows are fetched.
+                */
+                RowSet rowSet;
+                do {
+                    rowSet = client.fetchResults(handle);
+                    for (Object[] row : rowSet) {
+                        resultSet.add(row.clone());
+                    }
+                } while (rowSet.numRows() > 0);
+
             }
             return resultSet;
         } catch (HiveSQLException e) {
-            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
+                    e);
         }
     }
 
