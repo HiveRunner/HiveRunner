@@ -188,6 +188,18 @@ Future work and Limitations
 
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
+
+Known Issues
+=====================
+
+### IOException in Hive 0.14.0
+Described in this issue: https://github.com/klarna/HiveRunner/issues/3
+
+This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects. 
+Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
+
+
+
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
