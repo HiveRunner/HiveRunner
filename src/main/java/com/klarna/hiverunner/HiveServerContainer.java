@@ -111,12 +111,11 @@ public class HiveServerContainer {
                 continuously fetch the result set until all rows are fetched.
                 */
                 RowSet rowSet;
-                do {
-                    rowSet = client.fetchResults(handle);
+                while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
                     for (Object[] row : rowSet) {
                         resultSet.add(row.clone());
                     }
-                } while (rowSet.numRows() > 0);
+                }
 
             }
             return resultSet;
