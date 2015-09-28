@@ -24,6 +24,8 @@ import org.junit.rules.TemporaryFolder;
  */
 public interface HiveServerContext {
 
+    void init();
+
     String getMetaStoreUrl();
 
     HiveConf getHiveConf();

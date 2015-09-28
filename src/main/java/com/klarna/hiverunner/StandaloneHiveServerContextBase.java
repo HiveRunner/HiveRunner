@@ -45,39 +45,19 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
     protected HiveConf hiveConf = new HiveConf();
 
     private TemporaryFolder basedir;
+    private final HiveRunnerConfig hiveRunnerConfig;
 
     StandaloneHiveServerContextBase(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
-
         this.basedir = basedir;
+        this.hiveRunnerConfig = hiveRunnerConfig;
+    }
 
-        this.metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+    @Override
+    public final void init() {
 
-        hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
+        configureMiscHiveSettings();
 
-        // Turn of dependency to calcite library
-        hiveConf.setBoolVar(HIVE_CBO_ENABLED, false);
-
-        // Disable to get rid of clean up exception when stopping the Session.
-        hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
-
-        // Set the hsqldb driver
-        hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
-        hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
-
-        // No pooling needed. This will save us a lot of threads
-        hiveConf.set("datanucleus.connectionPoolingType", "None");
-
-        // Defaults to a 1000 millis sleep in
-        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
-        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
-
-        hiveConf.setVar(HADOOPBIN, "NO_BIN!");
-
-        try {
-            Class.forName(JDBCDriver.class.getName());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        configureMetaStore(hiveConf);
 
         configureExecutionEngine(hiveConf);
 
@@ -87,18 +67,36 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
 
         configureFileSystem(basedir, hiveConf);
 
-        configureMetaStoreValidation(hiveConf);
-
         configureMapReduceOptimizations(hiveConf);
 
         configureCheckForDefaultDb(hiveConf);
 
         configureAssertionStatus(hiveConf);
 
+        overrideHiveConf(hiveConf);
+
+    }
+
+    protected void configureMiscHiveSettings() {
+        hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
+
+        // Turn of dependency to calcite library
+        hiveConf.setBoolVar(HIVE_CBO_ENABLED, false);
+
+        // Disable to get rid of clean up exception when stopping the Session.
+        hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
+
+        // Defaults to a 1000 millis sleep in
+        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
+        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
+
+        hiveConf.setVar(HADOOPBIN, "NO_BIN!");
+    }
+
+    protected void overrideHiveConf(HiveConf hiveConf) {
         for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
             hiveConf.set(hiveConfEntry.getKey(), hiveConfEntry.getValue());
         }
-
     }
 
     /**
@@ -130,7 +128,22 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
     }
 
-    protected void configureMetaStoreValidation(HiveConf conf) {
+    protected void configureMetaStore(HiveConf conf) {
+
+        try {
+            Class.forName(JDBCDriver.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Set the hsqldb driver
+        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+        hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
+        hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
+
+        // No pooling needed. This will save us a lot of threads
+        hiveConf.set("datanucleus.connectionPoolingType", "None");
+
         conf.setBoolVar(METASTORE_VALIDATE_CONSTRAINTS, true);
         conf.setBoolVar(METASTORE_VALIDATE_COLUMNS, true);
         conf.setBoolVar(METASTORE_VALIDATE_TABLES, true);

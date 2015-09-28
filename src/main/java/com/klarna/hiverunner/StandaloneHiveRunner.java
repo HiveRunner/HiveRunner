@@ -81,16 +81,21 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     private HiveServerContext getContext(HiveRunnerConfig config, TemporaryFolder basedir) {
         String executionEngine = config.getHiveExecutionEngine();
 
+        HiveServerContext context;
         switch (executionEngine) {
             case "tez":
                 LOGGER.info("Using execution engine TEZ");
-                return new TezStandaloneHiveServerContext(basedir, config);
+                context = new TezStandaloneHiveServerContext(basedir, config);
+                break;
             case "mr":
                 LOGGER.info("Using execution engine MAP REDUCE");
-                return new MapReduceStandaloneHiveServerContext(basedir, config);
+                context = new MapReduceStandaloneHiveServerContext(basedir, config);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported execution engine '" + executionEngine + "'. Supported engines are [tez|mr]. ");
         }
+        context.init();
+        return context;
     }
 
     @Override
