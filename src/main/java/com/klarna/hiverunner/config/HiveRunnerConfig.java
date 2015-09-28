@@ -81,17 +81,26 @@ public class HiveRunnerConfig {
     public static final String TIMEOUT_RETRIES_PROPERTY_NAME = "timeoutRetries";
     public static final int TIMEOUT_RETRIES_DEFAULT = 2;
 
+    /**
+     * Suffix used to flag a system property to be a hiveconf setting.
+     */
+    public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
+
 
     private Map<String, Object> config = new HashMap<>();
 
     private Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
     public HiveRunnerConfig() {
-        config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT));
-        config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT));
-        config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT));
+        this(System.getProperties());
+    }
 
-        hiveConfSystemOverride = loadSystemConfig();
+    public HiveRunnerConfig(Properties systemProperties) {
+        config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
+        config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
+        config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
+
+        hiveConfSystemOverride = loadSystemConfig(systemProperties);
     }
 
     public boolean isTimeoutEnabled() {
@@ -107,7 +116,7 @@ public class HiveRunnerConfig {
     }
 
     public String getHiveExecutionEngine() {
-        String executionEngine = getString(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname);
+        String executionEngine = hiveConfSystemOverride.get(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname);
         return executionEngine == null ? HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.getDefaultValue() : executionEngine;
     }
 
@@ -141,25 +150,25 @@ public class HiveRunnerConfig {
     }
 
     private String load(String property, String defaultValue,
-                        List<String> validValues) {
-        String value = load(property, defaultValue);
+                        List<String> validValues, Properties sysProperty) {
+        String value = load(property, defaultValue, sysProperty);
         Preconditions.checkArgument(validValues.contains(value),
                 "Invalid value of system property '" + property + "': Only values '" + validValues + "' are allowed");
         return value;
     }
 
-    private static boolean load(String property, boolean defaultValue) {
-        String value = System.getProperty(property);
+    private static boolean load(String property, boolean defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : Boolean.parseBoolean(value);
     }
 
-    private static String load(String property, String defaultValue) {
-        String value = System.getProperty(property);
+    private static String load(String property, String defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : value;
     }
 
-    private static int load(String property, int defaultValue) {
-        String value = System.getProperty(property);
+    private static int load(String property, int defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : Integer.parseInt(value);
     }
 
@@ -177,17 +186,13 @@ public class HiveRunnerConfig {
         return (String) config.get(key);
     }
 
-    private Map<String, String> loadSystemConfig() {
-        Properties systemProperties = System.getProperties();
-
+    private Map<String, String> loadSystemConfig(Properties systemProperties) {
         Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
-        for (Object key : systemProperties.keySet()) {
-            String sysPropertyName = (String) key;
-            String value = systemProperties.getProperty(sysPropertyName);
-            if (sysPropertyName.startsWith("hiveconf_")) {
-                String varName = sysPropertyName.substring("hiveconf_".length());
-                hiveConfSystemOverride.put(varName, value);
+        for (String sysKey : systemProperties.stringPropertyNames()) {
+            if (sysKey.startsWith(HIVECONF_SYSTEM_OVERRIDE_PREFIX)) {
+                String hiveConfKey = sysKey.substring(HIVECONF_SYSTEM_OVERRIDE_PREFIX.length());
+                hiveConfSystemOverride.put(hiveConfKey, systemProperties.getProperty(sysKey));
             }
         }
 
