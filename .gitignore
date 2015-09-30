@@ -48,6 +48,7 @@ testdb.script
 ######################
 *.log
 *.sqlite
+metastore_db
 
 # OS generated files #
 ######################
