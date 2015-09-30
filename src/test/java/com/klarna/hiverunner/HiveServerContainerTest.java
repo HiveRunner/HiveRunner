@@ -32,14 +32,14 @@ public class HiveServerContainerTest {
 
     @Test
     public void testGetBasedir() {
-        container.init(new HashMap<String, String>(), new MapReduceStandaloneHiveServerContext(basedir,
+        container.init(new HashMap<String, String>(), new StandaloneHiveServerContext(basedir,
                 new HiveRunnerConfig()));
         Assert.assertEquals(basedir.getRoot(), container.getBaseDir().getRoot());
     }
 
     @Test
     public void testExecuteStatementMR() {
-        container.init(new HashMap<String, String>(), new MapReduceStandaloneHiveServerContext(basedir,
+        container.init(new HashMap<String, String>(), new StandaloneHiveServerContext(basedir,
                 new HiveRunnerConfig()));
         List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
@@ -48,7 +48,7 @@ public class HiveServerContainerTest {
 
     @Test
     public void testExecuteStatementTez() {
-        container.init(new HashMap<String, String>(), new TezStandaloneHiveServerContext(basedir, new HiveRunnerConfig()));
+        container.init(new HashMap<String, String>(), new StandaloneHiveServerContext(basedir, new HiveRunnerConfig()));
         List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
@@ -56,7 +56,7 @@ public class HiveServerContainerTest {
 
     @Test
     public void testTearDownShouldNotThrowException() {
-        container.init(new HashMap<String, String>(), new TezStandaloneHiveServerContext(basedir, new HiveRunnerConfig()));
+        container.init(new HashMap<String, String>(), new StandaloneHiveServerContext(basedir, new HiveRunnerConfig()));
         container.tearDown();
         container.tearDown();
         container.tearDown();
@@ -64,7 +64,7 @@ public class HiveServerContainerTest {
 
     @Test(expected = HiveSQLException.class)
     public void testInvalidQuery() throws Throwable {
-        container.init(new HashMap<String, String>(), new MapReduceStandaloneHiveServerContext(basedir,
+        container.init(new HashMap<String, String>(), new StandaloneHiveServerContext(basedir,
                 new HiveRunnerConfig()));
         try {
             container.executeStatement("use foo");
