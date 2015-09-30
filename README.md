@@ -189,6 +189,19 @@ Future work and Limitations
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
 
+Change log
+==============
+### 2.3.0
+
+Merged tez and mr context into the same context again. Now, the same test suite may alter between execution engines by doing 
+E.g: 
+
+     hive> set hive.execution.engine=tez;
+     hive> [some query]
+     hive> set hive.execution.engine=mr;
+     hive> [some query]
+
+
 Known Issues
 =====================
 
