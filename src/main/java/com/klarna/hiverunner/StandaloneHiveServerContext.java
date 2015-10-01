@@ -34,9 +34,14 @@ import java.util.UUID;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 
 /**
- * Abstract base class responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
+ * Abstract base class responsible for common configuration for running the HiveServer within this JVM with zero
+ * external dependencies.
  * <p/>
  * This class contains a bunch of methods meant to be overridden in order to create slightly different contexts.
+ *
+ * This context configures HiveRunner for both mr and tez. There's nothing contradicting with those configurations so
+ * they may coexist in order to allow test cases to alter execution engines within the same test by
+ * E.g: 'set hive.execution.engine=tez;'.
  */
 public class StandaloneHiveServerContext implements HiveServerContext {
 
