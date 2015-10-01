@@ -45,7 +45,7 @@ public class HiveServerContainer {
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private CLIService client;
-    private HiveServerContext context;
+    private final HiveServerContext context;
     private SessionHandle sessionHandle;
     private HiveServer2 hiveServer2;
 
