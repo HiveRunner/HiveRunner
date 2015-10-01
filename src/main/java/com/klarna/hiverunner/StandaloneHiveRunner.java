@@ -95,6 +95,10 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             }
         };
 
+        /*
+         *  Note that rules will be executed in reverse order to how they're added.
+         */
+
         List<TestRule> rules = new ArrayList<TestRule>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);

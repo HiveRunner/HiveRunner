@@ -39,7 +39,7 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
  * <p/>
  * This class contains a bunch of methods meant to be overridden in order to create slightly different contexts.
  *
- * This context configures HiveRunner for both mr and tez. There's nothing contradicting with those configurations so
+ * This context configures HiveServer for both mr and tez. There's nothing contradicting with those configurations so
  * they may coexist in order to allow test cases to alter execution engines within the same test by
  * E.g: 'set hive.execution.engine=tez;'.
  */
@@ -62,7 +62,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     @Override
     public final void init() {
 
-        configureMiscHiveSettings();
+        configureMiscHiveSettings(hiveConf);
 
         configureMetaStore(hiveConf);
 
@@ -84,7 +84,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     }
 
-    protected void configureMiscHiveSettings() {
+    protected void configureMiscHiveSettings(HiveConf hiveConf) {
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
 
         // Turn of dependency to calcite library
@@ -236,12 +236,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp file: " + e.getMessage(), e);
         }
-    }
-
-
-    @Override
-    public String getMetaStoreUrl() {
-        return metaStorageUrl;
     }
 
     public HiveConf getHiveConf() {
