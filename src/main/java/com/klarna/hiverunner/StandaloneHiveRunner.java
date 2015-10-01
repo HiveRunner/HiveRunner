@@ -78,12 +78,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
 
-    private HiveServerContext getContext(HiveRunnerConfig config, TemporaryFolder basedir) {
-        HiveServerContext context = new StandaloneHiveServerContext(basedir, config);
-        context.init();
-        return context;
-    }
-
     @Override
     protected List<TestRule> getTestRules(final Object target) {
         final TemporaryFolder testBaseDir = new TemporaryFolder();
@@ -198,16 +192,13 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     private HiveShellContainer createHiveServerContainer(final Object testCase, TemporaryFolder baseDir)
             throws IOException {
 
-        final HiveServerContainer hiveTestHarness =
-                new HiveServerContainer();
+        HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
+
+        final HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
 
         HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
-
-        HiveServerContext context = getContext(config, baseDir);
-
-        hiveShellBuilder.setContext(context);
 
         hiveShellBuilder.setHiveServerContainer(hiveTestHarness);
 

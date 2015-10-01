@@ -29,10 +29,9 @@ import java.util.Map;
 class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
     HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> props,
-                      HiveServerContext context,
                       List<String> setupScripts, List<HiveResource> resources,
                       List<String> scriptsUnderTest) {
-        super(hiveServerContainer, props, context, setupScripts, resources, scriptsUnderTest);
+        super(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest);
     }
 
     @Override

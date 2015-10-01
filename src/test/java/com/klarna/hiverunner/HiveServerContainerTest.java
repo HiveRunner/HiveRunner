@@ -22,10 +22,9 @@ public class HiveServerContainerTest {
 
     @Before
     public void setup() {
-        container = new HiveServerContainer();
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
-        context.init();
-        container.init(new HashMap<String, String>(), context);
+        container = new HiveServerContainer(context);
+        container.init(new HashMap<String, String>());
     }
 
     @After
