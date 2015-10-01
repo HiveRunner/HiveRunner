@@ -52,19 +52,17 @@ class HiveShellBase implements HiveShell {
     protected final HiveServerContainer hiveServerContainer;
 
     protected final Map<String, String> props;
-    protected final HiveServerContext context;
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
 
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> props,
-                  HiveServerContext context, List<String> setupScripts,
+                  List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest) {
         this.hiveServerContainer = hiveServerContainer;
         this.props = props;
-        this.context = context;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
@@ -103,7 +101,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        hiveServerContainer.init(props, context);
+        hiveServerContainer.init(props);
 
         executeSetupScripts();
 

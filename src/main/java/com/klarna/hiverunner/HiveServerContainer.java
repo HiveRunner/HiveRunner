@@ -45,11 +45,12 @@ public class HiveServerContainer {
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private CLIService client;
-    private HiveServerContext context;
+    private final HiveServerContext context;
     private SessionHandle sessionHandle;
     private HiveServer2 hiveServer2;
 
-    HiveServerContainer() {
+    HiveServerContainer(HiveServerContext context) {
+        this.context = context;
     }
 
     public CLIService getClient() {
@@ -59,11 +60,10 @@ public class HiveServerContainer {
     /**
      * Will start the HiveServer.
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
-     * @param context    The context configuring the HiveServer and it's environment
      */
-    public void init(Map<String, String> testConfig, HiveServerContext context) {
+    public void init(Map<String, String> testConfig) {
 
-        this.context = context;
+        context.init();
 
         HiveConf hiveConf = context.getHiveConf();
 

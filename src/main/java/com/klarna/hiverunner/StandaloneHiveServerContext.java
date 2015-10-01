@@ -18,6 +18,8 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.tez.dag.api.TezConfiguration;
+import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
@@ -32,13 +34,18 @@ import java.util.UUID;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 
 /**
- * Abstract base class responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
+ * Abstract base class responsible for common configuration for running the HiveServer within this JVM with zero
+ * external dependencies.
  * <p/>
  * This class contains a bunch of methods meant to be overridden in order to create slightly different contexts.
+ *
+ * This context configures HiveServer for both mr and tez. There's nothing contradicting with those configurations so
+ * they may coexist in order to allow test cases to alter execution engines within the same test by
+ * E.g: 'set hive.execution.engine=tez;'.
  */
-abstract class StandaloneHiveServerContextBase implements HiveServerContext {
+public class StandaloneHiveServerContext implements HiveServerContext {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContextBase.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContext.class);
 
     private String metaStorageUrl;
 
@@ -47,7 +54,7 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
     private TemporaryFolder basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
-    StandaloneHiveServerContextBase(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+    StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
         this.hiveRunnerConfig = hiveRunnerConfig;
     }
@@ -55,19 +62,19 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
     @Override
     public final void init() {
 
-        configureMiscHiveSettings();
+        configureMiscHiveSettings(hiveConf);
 
         configureMetaStore(hiveConf);
 
-        configureExecutionEngine(hiveConf);
+        configureMrExecutionEngine(hiveConf);
+
+        configureTezExecutionEngine(hiveConf);
 
         configureJavaSecurityRealm(hiveConf);
 
         configureSupportConcurrency(hiveConf);
 
         configureFileSystem(basedir, hiveConf);
-
-        configureMapReduceOptimizations(hiveConf);
 
         configureCheckForDefaultDb(hiveConf);
 
@@ -77,7 +84,7 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
 
     }
 
-    protected void configureMiscHiveSettings() {
+    protected void configureMiscHiveSettings(HiveConf hiveConf) {
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
 
         // Turn of dependency to calcite library
@@ -85,10 +92,6 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
 
         // Disable to get rid of clean up exception when stopping the Session.
         hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
-
-        // Defaults to a 1000 millis sleep in
-        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
-        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
 
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
     }
@@ -99,12 +102,48 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         }
     }
 
-    /**
-     * Empty by design. Keeping it as an empty protected method intended for overriding in order to follow the convention
-     * established earlier.
-     * @param conf the configuration to modify
-     */
-    protected void configureExecutionEngine(HiveConf conf) {
+    protected void configureMrExecutionEngine(HiveConf conf) {
+
+        /*
+        * Switch off all optimizers otherwise we didn't
+        * manage to contain the map reduction within this JVM.
+        */
+        conf.setBoolVar(HIVE_INFER_BUCKET_SORT, false);
+        conf.setBoolVar(HIVEMETADATAONLYQUERIES, false);
+        conf.setBoolVar(HIVEOPTINDEXFILTER, false);
+        conf.setBoolVar(HIVECONVERTJOIN, false);
+        conf.setBoolVar(HIVESKEWJOIN, false);
+
+        // Defaults to a 1000 millis sleep in. We can speed up the tests a bit by setting this to 1 millis instead.
+        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
+        hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
+
+        hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
+    }
+
+    protected void configureTezExecutionEngine(HiveConf conf) {
+        /*
+        Tez local mode settings
+         */
+        conf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
+        conf.set("fs.defaultFS", "file:///");
+        conf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
+
+        /*
+        Set to be able to run tests offline
+         */
+        conf.set(TezConfiguration.TEZ_AM_DISABLE_CLIENT_VERSION_CHECK, "true");
+
+        /*
+        General attempts to strip of unnecessary functionality to speed up test execution and increase stability
+         */
+        conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
+        conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
+        conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
+        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+        conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
     }
 
     protected void configureJavaSecurityRealm(HiveConf hiveConf) {
@@ -163,6 +202,22 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
         createAndSetFolderProperty("hive.vs", "vs", conf, basedir);
+
+
+
+        /*
+            Tez specific configurations below
+         */
+        /*
+            Tez will upload a hive-exec.jar to this location.
+            It looks like it will do this only once per test suite so it makes sense to keep this in a central location
+            rather than in the tmp dir of each test.
+         */
+        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir");
+
+        conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
+        conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
+
     }
 
     File newFolder(TemporaryFolder basedir, String folder) {
@@ -181,23 +236,6 @@ abstract class StandaloneHiveServerContextBase implements HiveServerContext {
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp file: " + e.getMessage(), e);
         }
-    }
-
-    protected void configureMapReduceOptimizations(HiveConf conf) {
-        /*
-        * Switch off all optimizers otherwise we didn't
-        * manage to contain the map reduction within this JVM.
-        */
-        conf.setBoolVar(HIVE_INFER_BUCKET_SORT, false);
-        conf.setBoolVar(HIVEMETADATAONLYQUERIES, false);
-        conf.setBoolVar(HIVEOPTINDEXFILTER, false);
-        conf.setBoolVar(HIVECONVERTJOIN, false);
-        conf.setBoolVar(HIVESKEWJOIN, false);
-    }
-
-    @Override
-    public String getMetaStoreUrl() {
-        return metaStorageUrl;
     }
 
     public HiveConf getHiveConf() {
