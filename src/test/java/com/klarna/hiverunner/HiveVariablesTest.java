@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
-public class HivePropertiesTest {
+public class HiveVariablesTest {
 
     @HiveSQL(files = {}, autoStart = false)
     public HiveShell shell;
