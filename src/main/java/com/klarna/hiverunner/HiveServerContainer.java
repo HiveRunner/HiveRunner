@@ -21,6 +21,7 @@ import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -48,6 +49,7 @@ public class HiveServerContainer {
     private HiveServerContext context;
     private SessionHandle sessionHandle;
     private HiveServer2 hiveServer2;
+    private SessionState currentSessionState;
 
     HiveServerContainer() {
     }
@@ -60,8 +62,9 @@ public class HiveServerContainer {
      * Will start the HiveServer.
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
      * @param context    The context configuring the HiveServer and it's environment
+     * @param hiveVars       HiveVars to pass on to the HiveServer for this session
      */
-    public void init(Map<String, String> testConfig, HiveServerContext context) {
+    public void init(Map<String, String> testConfig, Map<String, String> hiveVars, HiveServerContext context) {
 
         this.context = context;
 
@@ -86,6 +89,10 @@ public class HiveServerContainer {
             Preconditions.checkNotNull(client, "ClIService was not initialized by HiveServer2");
 
             sessionHandle = client.openSession("noUser", "noPassword", null);
+
+            SessionState sessionState = client.getSessionManager().getSession(sessionHandle).getSessionState();
+            currentSessionState = sessionState;
+            currentSessionState.setHiveVariables(hiveVars);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to create HiveServer :" + e.getMessage(), e);
         }
@@ -112,7 +119,8 @@ public class HiveServerContainer {
             }
             return resultSet;
         } catch (HiveSQLException e) {
-            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
+                    e);
         }
     }
 
@@ -173,7 +181,7 @@ public class HiveServerContainer {
     }
 
     public String expandVariableSubstitutes(String expression) {
-        return new VariableSubstitution().substitute(getHiveConf(), expression);
+        return getVariableSubstitution().substitute(getHiveConf(), expression);
     }
 
     private void pingHiveServer() {
@@ -184,6 +192,11 @@ public class HiveServerContainer {
         return hiveServer2.getHiveConf();
     }
 
-
+    public VariableSubstitution getVariableSubstitution() {
+        // Make sure to set the session state for this thread before returning the VariableSubstitution. If not set,
+        // hivevar:s will not be evaluated.
+        SessionState.setCurrentSessionState(currentSessionState);
+        return new VariableSubstitution();
+    }
 }
 
