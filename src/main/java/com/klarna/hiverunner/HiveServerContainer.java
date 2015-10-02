@@ -62,8 +62,9 @@ public class HiveServerContainer {
      * Will start the HiveServer.
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
      * @param context    The context configuring the HiveServer and it's environment
+     * @param hiveVars       HiveVars to pass on to the HiveServer for this session
      */
-    public void init(Map<String, String> testConfig, Map<String, String> vars, HiveServerContext context) {
+    public void init(Map<String, String> testConfig, Map<String, String> hiveVars, HiveServerContext context) {
 
         this.context = context;
 
@@ -91,7 +92,7 @@ public class HiveServerContainer {
 
             SessionState sessionState = client.getSessionManager().getSession(sessionHandle).getSessionState();
             currentSessionState = sessionState;
-            currentSessionState.setHiveVariables(vars);
+            currentSessionState.setHiveVariables(hiveVars);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to create HiveServer :" + e.getMessage(), e);
         }
