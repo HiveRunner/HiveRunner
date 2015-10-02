@@ -60,12 +60,12 @@ class HiveShellBase implements HiveShell {
     protected final List<String> scriptsUnderTest;
 
 
-    HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> props,
+    HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
                   HiveServerContext context, List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest) {
         this.hiveServerContainer = hiveServerContainer;
-        this.hiveConf = props;
+        this.hiveConf = hiveConf;
         this.context = context;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
