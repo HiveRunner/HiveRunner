@@ -86,7 +86,7 @@ public class HiveShellBaseTest {
         List<HiveResource> hiveResources = Arrays.asList();
         List<String> scriptsUnderTest = Arrays.asList();
 
-        return new HiveShellBase(container, hiveConf, context, setupScripts, hiveResources, scriptsUnderTest);
+        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest);
     }
 
 

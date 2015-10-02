@@ -46,12 +46,13 @@ public class HiveServerContainer {
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private CLIService client;
-    private HiveServerContext context;
+    private final HiveServerContext context;
     private SessionHandle sessionHandle;
     private HiveServer2 hiveServer2;
     private SessionState currentSessionState;
 
-    HiveServerContainer() {
+    HiveServerContainer(HiveServerContext context) {
+        this.context = context;
     }
 
     public CLIService getClient() {
@@ -61,12 +62,11 @@ public class HiveServerContainer {
     /**
      * Will start the HiveServer.
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
-     * @param context    The context configuring the HiveServer and it's environment
      * @param hiveVars       HiveVars to pass on to the HiveServer for this session
      */
-    public void init(Map<String, String> testConfig, Map<String, String> hiveVars, HiveServerContext context) {
+    public void init(Map<String, String> testConfig, Map<String, String> hiveVars) {
 
-        this.context = context;
+        context.init();
 
         HiveConf hiveConf = context.getHiveConf();
 
@@ -112,9 +112,16 @@ public class HiveServerContainer {
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
-                RowSet rowSet = client.fetchResults(handle);
-                for (Object[] row : rowSet) {
-                    resultSet.add(row.clone());
+
+                /*
+                fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to
+                continuously fetch the result set until all rows are fetched.
+                */
+                RowSet rowSet;
+                while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
+                    for (Object[] row : rowSet) {
+                        resultSet.add(row.clone());
+                    }
                 }
             }
             return resultSet;

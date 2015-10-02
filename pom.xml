@@ -3,7 +3,7 @@
 
     <groupId>com.klarna</groupId>
     <artifactId>hiverunner</artifactId>
-    <version>2.2.0-SNAPSHOT</version>
+    <version>2.3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -15,8 +15,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:${git.repo}</connection>
-        <developerConnection>scm:git:${git.repo}</developerConnection>
+        <connection>scm:${git.repo}</connection>
+        <developerConnection>scm:${git.repo}</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -171,7 +171,11 @@
                     <reuseForks>true</reuseForks>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
                     <systemProperties>
-                        <hiveExecutionEngine>mr</hiveExecutionEngine>
+                        <!--
+                        Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
+                        -->
+                        <hiveconf_hive.execution.engine>mr</hiveconf_hive.execution.engine>
+                        <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
                         <enableTimeout>false</enableTimeout>
                         <timeoutSeconds>30</timeoutSeconds>
                         <timeoutRetries>2</timeoutRetries>

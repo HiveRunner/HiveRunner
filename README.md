@@ -13,6 +13,12 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
+
+
+# NOTE!
+<p style='color:red'>This version of HiveRunner is built for hive 14</p>
+<p style='color:red'>The master branch in this repo is proprietary to Klarna. Push to github should be done from the github-master branch.</p>
+# NOTE!
 ---------
 
 A word from the inventors
@@ -81,18 +87,23 @@ fork per CPU core and reuse threads would look like:
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the 
+System property hiveconf_hive.execution.engine to 'tez'.
 
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-            <systemPropertyVariables>
-               <hiveExecutionEngine>tez</hiveExecutionEngine>
-            </systemPropertyVariables>
-        </configuration>
-    </plugin>
+
+(Any hive conf property may be overridden by prefixing it with 'hiveconf_')
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
 
 Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
@@ -178,16 +189,33 @@ Future work and Limitations
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
 
-
 Change Log (From version 2.2.0 and onwards)
-==========
+==============
 ### __2.2.0__
 * Added support for setting hivevar:s via HiveShell 
 
+
+### __2.3.0__
+
+Merged tez and mr context into the same context again. Now, the same test suite may alter between execution engines by doing 
+E.g: 
+
+     hive> set hive.execution.engine=tez;
+     hive> [some query]
+     hive> set hive.execution.engine=mr;
+     hive> [some query]
+
+
+Known Issues
+=====================
+
+### IOException in Hive 0.14.0
+Described in this issue: https://github.com/klarna/HiveRunner/issues/3
+
+This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects. 
+Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
 
 
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
-
-

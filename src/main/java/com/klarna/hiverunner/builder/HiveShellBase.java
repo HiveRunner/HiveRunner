@@ -107,7 +107,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        hiveServerContainer.init(hiveConf, hiveVars, context);
+        hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
 
@@ -168,6 +168,7 @@ class HiveShellBase implements HiveShell {
         Preconditions.checkNotNull(hiveConf);
         return hiveServerContainer.getVariableSubstitution().substitute(hiveConf, expression);
     }
+
 
     @Override
     public void setProperty(String key, String value) {
