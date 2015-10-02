@@ -28,7 +28,7 @@ public class HiveVariablesTest {
 
     @Test
     public void substitutedVariablesShouldBeExpanded() {
-        shell.setProperty("origin", "spanish");
+        shell.setHiveConfValue("origin", "spanish");
         shell.start();
 
         Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} fox"));
@@ -36,6 +36,20 @@ public class HiveVariablesTest {
 
     @Test
     public void nestedSubstitutesShouldBeExpanded() {
+        shell.setHiveVarValue("origin", "${hiveconf:origin2}");
+        shell.setHiveConfValue("origin2", "spanish");
+        shell.setHiveConfValue("animal", "fox");
+        shell.setHiveConfValue("origin_animal", "${hivevar:origin} ${hiveconf:animal}");
+        shell.setHiveConfValue("substitute", "origin_animal");
+        shell.start();
+
+        Assert.assertEquals("The spanish fox",
+                shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void nestedSubstitutesShouldBeExpandedUsingDeprecatedSetProperty() {
         shell.setHiveVarValue("origin", "${hiveconf:origin2}");
         shell.setProperty("origin2", "spanish");
         shell.setProperty("animal", "fox");
@@ -49,7 +63,7 @@ public class HiveVariablesTest {
 
     @Test
     public void unexpandableSubstitutesShouldNotBeExpanded() {
-        shell.setProperty("origin", "spanish");
+        shell.setHiveConfValue("origin", "spanish");
         shell.start();
         Assert.assertEquals("The spanish ${hiveconf:animal}",
                 shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
