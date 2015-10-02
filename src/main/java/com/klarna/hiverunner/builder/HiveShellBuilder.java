@@ -72,8 +72,7 @@ public class HiveShellBuilder {
     }
 
     public HiveShellContainer buildShell() {
-        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources,
-                scriptsUnderTest);
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest);
     }
 }
 

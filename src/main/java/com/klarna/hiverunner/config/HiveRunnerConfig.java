@@ -48,14 +48,6 @@ public class HiveRunnerConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerConfig.class);
 
-
-    /**
-     * What execution engine hive should use. Available are 'mr' (map reduce) and 'tez'
-     *
-     * Defaults to 'mr'
-     */
-    public static final String HIVE_EXECUTION_ENGINE_DEFAULT = HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.defaultStrVal;
-
     /**
      * Enable timeout. Some versions of tez has proven to not always terminate. By enabling timeout,
      * HiveRunner will kill the current query and attempt to retry the test case a configurable number of times.
@@ -91,10 +83,18 @@ public class HiveRunnerConfig {
 
     private Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
+    /**
+     * Construct a HiveRunnerConfig that will override hiveConf with
+     * System properties of the format 'hiveconf_[hiveconf property name]'.
+     */
     public HiveRunnerConfig() {
         this(System.getProperties());
     }
 
+    /**
+     * Construct a HiveRunnerConfig that will override hiveConf with
+     * the given properties of the format 'hiveconf_[hiveconf property name]'.
+     */
     public HiveRunnerConfig(Properties systemProperties) {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
@@ -115,6 +115,9 @@ public class HiveRunnerConfig {
         return getInteger(TIMEOUT_SECONDS_PROPERTY_NAME);
     }
 
+    /**
+     * Get the configured hive.execution.engine. If not set it will default to the default value of HiveConf
+     */
     public String getHiveExecutionEngine() {
         String executionEngine = hiveConfSystemOverride.get(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname);
         return executionEngine == null ? HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.getDefaultValue() : executionEngine;

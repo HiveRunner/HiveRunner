@@ -13,14 +13,6 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
-
-
-# NOTE!
-<p style='color:red'>This version of HiveRunner is built for hive 14</p>
-<p style='color:red'>The master branch in this repo is proprietary to Klarna. Push to github should be done from the github-master branch.</p>
-# NOTE!
----------
-
 A word from the inventors
 ---------
 HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
@@ -115,11 +107,11 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-            <systemPropertyVariables>
+            <systemProperties>
                 <enableTimeout>true</enableTimeout>
                 <timeoutSeconds>30</timeoutSeconds>
                 <timeoutRetries>2</timeoutRetries>
-            </systemPropertyVariables>
+            </systemProperties>
         </configuration>
     </plugin>
 
@@ -191,9 +183,12 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
-### __2.2.0__
-* Added support for setting hivevar:s via HiveShell 
+### __2.4.0__
 
+Enabled any hiveconf variables to be set as System properties by using the naming convention
+hiveconf_[HiveConf property name]. E.g: hiveconf_hive.execution.engine
+
+Fixed bug: Results sets bigger than 100 rows only returned the first 100 rows. 
 
 ### __2.3.0__
 
@@ -206,15 +201,53 @@ E.g:
      hive> [some query]
 
 
+### __2.2.0__
+* Added support for setting hivevar:s via HiveShell 
+
+
+
+
 Known Issues
 =====================
 
 ### IOException in Hive 0.14.0
 Described in this issue: https://github.com/klarna/HiveRunner/issues/3
 
-This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects. 
+This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects.
+You can do this in the surefire plugin:
+ 
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.17</version>
+              <configuration>
+                  <systemProperties>
+                      <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                  </systemProperties>
+              </configuration>
+          </plugin>
+ 
 Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
 
+
+### Tez queries do not terminate
+Tez will at times forget the process id of a random DAG. This will cause the query to never terminate. To get around this there is 
+a timeout and retry functionality implemented in HiveRunner:
+ 
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>2.17</version>
+             <configuration>
+                 <systemProperties>
+                     <enableTimeout>true</enableTimeout>
+                     <timeoutSeconds>30</timeoutSeconds>
+                     <timeoutRetries>2</timeoutRetries>
+                     </systemProperties>
+             </configuration>
+         </plugin>
+         
+Make sure to set the timeoutSeconds to that of your slowest test in the test suite and then add some padding.
 
 TAGS
 =========
