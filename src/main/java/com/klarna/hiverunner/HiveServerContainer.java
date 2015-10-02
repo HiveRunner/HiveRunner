@@ -181,7 +181,7 @@ public class HiveServerContainer {
     }
 
     public String expandVariableSubstitutes(String expression) {
-        return new VariableSubstitution().substitute(getHiveConf(), expression);
+        return getVariableSubstitution().substitute(getHiveConf(), expression);
     }
 
     private void pingHiveServer() {
