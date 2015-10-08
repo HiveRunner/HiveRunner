@@ -28,7 +28,7 @@ import java.util.Map;
  * com.klarna.hiverunner.StandaloneHiveRunner} uses the {@link StandaloneHiveServerContext} to create a context with
  * zero external dependencies.
  *
- * By implemeneting other contexts you may e.g. point hiveserver to a different metastore, pre installed external hadoop
+ * By implementing other contexts you may e.g. point hiveserver to a different metastore, pre installed external hadoop
  * instance etc.
  */
 public interface HiveServerContext {
