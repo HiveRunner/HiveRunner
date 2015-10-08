@@ -34,8 +34,7 @@ import java.util.UUID;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 
 /**
- * Abstract base class responsible for common configuration for running the HiveServer within this JVM with zero
- * external dependencies.
+ * Responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
  * <p/>
  * This class contains a bunch of methods meant to be overridden in order to create slightly different contexts.
  *
