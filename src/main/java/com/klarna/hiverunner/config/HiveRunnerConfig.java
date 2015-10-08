@@ -153,8 +153,8 @@ public class HiveRunnerConfig {
     }
 
     private String load(String property, String defaultValue,
-                        List<String> validValues, Properties sysProperty) {
-        String value = load(property, defaultValue, sysProperty);
+                        List<String> validValues, Properties sysProperties) {
+        String value = load(property, defaultValue, sysProperties);
         Preconditions.checkArgument(validValues.contains(value),
                 "Invalid value of system property '" + property + "': Only values '" + validValues + "' are allowed");
         return value;
