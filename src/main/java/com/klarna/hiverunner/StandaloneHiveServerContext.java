@@ -168,16 +168,18 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
+        String jdbcDriver = JDBCDriver.class.getName();
+
         try {
-            Class.forName(JDBCDriver.class.getName());
+            Class.forName(jdbcDriver);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
         // Set the hsqldb driver
         metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
-        hiveConf.set("datanucleus.connectiondrivername", "org.hsqldb.jdbc.JDBCDriver");
-        hiveConf.set("javax.jdo.option.ConnectionDriverName", "org.hsqldb.jdbc.JDBCDriver");
+        hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
+        hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
         // No pooling needed. This will save us a lot of threads
         hiveConf.set("datanucleus.connectionPoolingType", "None");
