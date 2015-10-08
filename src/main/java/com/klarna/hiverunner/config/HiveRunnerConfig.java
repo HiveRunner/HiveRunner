@@ -100,7 +100,7 @@ public class HiveRunnerConfig {
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
 
-        hiveConfSystemOverride = loadSystemConfig(systemProperties);
+        hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
 
     public boolean isTimeoutEnabled() {
@@ -189,7 +189,7 @@ public class HiveRunnerConfig {
         return (String) config.get(key);
     }
 
-    private Map<String, String> loadSystemConfig(Properties systemProperties) {
+    private Map<String, String> loadHiveConfSystemOverrides(Properties systemProperties) {
         Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
         for (String sysKey : systemProperties.stringPropertyNames()) {
