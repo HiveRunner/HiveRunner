@@ -35,7 +35,7 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
     <dependency>
         <groupId>com.klarna</groupId>
         <artifactId>hiverunner</artifactId>
-        <version>0.9-SNAPSHOT</version>
+        <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
     </dependency>
 
@@ -44,7 +44,7 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.17</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
