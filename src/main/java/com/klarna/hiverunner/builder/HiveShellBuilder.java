@@ -35,15 +35,10 @@ import java.util.Map;
  */
 public class HiveShellBuilder {
     private List<String> scriptsUnderTest = new ArrayList<String>();
-    private HiveServerContext context;
     private Map<String, String> props = new HashMap<String, String>();
     private HiveServerContainer hiveServerContainer;
     private List<HiveResource> resources = new ArrayList<HiveResource>();
     private List<String> setupScripts = new ArrayList<String>();
-
-    public void setContext(HiveServerContext context) {
-        this.context = context;
-    }
 
     public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
         this.hiveServerContainer = hiveServerContainer;
@@ -77,8 +72,7 @@ public class HiveShellBuilder {
     }
 
     public HiveShellContainer buildShell() {
-        return new HiveShellTearable(hiveServerContainer, props, context, setupScripts, resources,
-                scriptsUnderTest);
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest);
     }
 }
 

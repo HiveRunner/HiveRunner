@@ -17,7 +17,6 @@
 package com.klarna.hiverunner.builder;
 
 import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShellContainer;
 
 import java.util.List;
@@ -28,16 +27,14 @@ import java.util.Map;
  */
 class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
-    HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> props,
-                      HiveServerContext context,
+    HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
                       List<String> setupScripts, List<HiveResource> resources,
                       List<String> scriptsUnderTest) {
-        super(hiveServerContainer, props, context, setupScripts, resources, scriptsUnderTest);
+        super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest);
     }
 
     @Override
     public void tearDown() {
         hiveServerContainer.tearDown();
-
     }
 }

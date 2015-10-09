@@ -19,10 +19,8 @@ package com.klarna.hiverunner.builder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.session.SessionState;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,19 +52,18 @@ class HiveShellBase implements HiveShell {
 
     protected final Map<String, String> hiveConf;
     protected final Map<String, String> hiveVars;
-    protected final HiveServerContext context;
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
 
 
-    HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
-                  HiveServerContext context, List<String> setupScripts,
+    HiveShellBase(HiveServerContainer hiveServerContainer,
+                  Map<String, String> hiveConf,
+                  List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
-        this.context = context;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
@@ -107,7 +104,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        hiveServerContainer.init(hiveConf, hiveVars, context);
+        hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
 

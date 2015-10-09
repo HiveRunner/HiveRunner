@@ -13,8 +13,6 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
----------
-
 A word from the inventors
 ---------
 HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
@@ -37,7 +35,7 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
     <dependency>
         <groupId>com.klarna</groupId>
         <artifactId>hiverunner</artifactId>
-        <version>0.9-SNAPSHOT</version>
+        <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
     </dependency>
 
@@ -46,7 +44,7 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.17</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
@@ -81,18 +79,23 @@ fork per CPU core and reuse threads would look like:
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the 
+System property hiveconf_hive.execution.engine to 'tez'.
 
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-            <systemPropertyVariables>
-               <hiveExecutionEngine>tez</hiveExecutionEngine>
-            </systemPropertyVariables>
-        </configuration>
-    </plugin>
+
+(Any hive conf property may be overridden by prefixing it with 'hiveconf_')
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
 
 Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
@@ -104,11 +107,11 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-            <systemPropertyVariables>
+            <systemProperties>
                 <enableTimeout>true</enableTimeout>
                 <timeoutSeconds>30</timeoutSeconds>
                 <timeoutRetries>2</timeoutRetries>
-            </systemPropertyVariables>
+            </systemProperties>
         </configuration>
     </plugin>
 
@@ -178,16 +181,74 @@ Future work and Limitations
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
 
-
 Change Log (From version 2.2.0 and onwards)
-==========
+==============
+### __2.4.0__
+
+Enabled any hiveconf variables to be set as System properties by using the naming convention
+hiveconf_[HiveConf property name]. E.g: hiveconf_hive.execution.engine
+
+Fixed bug: Results sets bigger than 100 rows only returned the first 100 rows. 
+
+### __2.3.0__
+
+Merged tez and mr context into the same context again. Now, the same test suite may alter between execution engines by doing 
+E.g: 
+
+     hive> set hive.execution.engine=tez;
+     hive> [some query]
+     hive> set hive.execution.engine=mr;
+     hive> [some query]
+
+
 ### __2.2.0__
 * Added support for setting hivevar:s via HiveShell 
 
 
 
+
+Known Issues
+=====================
+
+### IOException in Hive 0.14.0
+Described in this issue: https://github.com/klarna/HiveRunner/issues/3
+
+This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects.
+You can do this in the surefire plugin:
+ 
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.17</version>
+              <configuration>
+                  <systemProperties>
+                      <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                  </systemProperties>
+              </configuration>
+          </plugin>
+ 
+Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
+
+
+### Tez queries do not terminate
+Tez will at times forget the process id of a random DAG. This will cause the query to never terminate. To get around this there is 
+a timeout and retry functionality implemented in HiveRunner:
+ 
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>2.17</version>
+             <configuration>
+                 <systemProperties>
+                     <enableTimeout>true</enableTimeout>
+                     <timeoutSeconds>30</timeoutSeconds>
+                     <timeoutRetries>2</timeoutRetries>
+                     </systemProperties>
+             </configuration>
+         </plugin>
+         
+Make sure to set the timeoutSeconds to that of your slowest test in the test suite and then add some padding.
+
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
-
-
