@@ -15,8 +15,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:${git.repo}</connection>
-        <developerConnection>scm:git:${git.repo}</developerConnection>
+        <connection>scm:${git.repo}</connection>
+        <developerConnection>scm:${git.repo}</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
