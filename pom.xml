@@ -38,6 +38,12 @@
             <artifactId>hive-jdbc</artifactId>
             <version>${hive.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.hive.hcatalog</groupId>
+            <artifactId>hive-webhcat-java-client</artifactId>
+            <version>${hive.version}</version>
+        </dependency>
 
 
         <dependency>

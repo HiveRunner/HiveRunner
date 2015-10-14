@@ -16,6 +16,7 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.data.TableDataBuilder;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 
@@ -196,5 +197,7 @@ public interface HiveShell {
      */
     OutputStream getResourceOutputStream(String targetFile);
 
+    // TODO DM javadoc
+    TableDataBuilder insertInto(String databaseName, String tableName);
 
 }

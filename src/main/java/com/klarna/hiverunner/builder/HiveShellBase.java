@@ -20,7 +20,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.TableDataBuilder;
+import com.klarna.hiverunner.data.TableDataInserterFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hive.hcatalog.api.HCatClient;
+import org.apache.hive.hcatalog.api.HCatTable;
+import org.apache.hive.hcatalog.common.HCatException;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,6 +231,27 @@ class HiveShellBase implements HiveShell {
     @Override
     public void addResource(String targetFile, File sourceFile) {
         addResource(targetFile, Paths.get(sourceFile.toURI()));
+    }
+
+    @Override
+    public TableDataBuilder insertInto(String databaseName, String tableName) {
+        HCatClient client = null;
+        HCatTable table;
+        try {
+            client = HCatClient.create(getHiveConf());
+            table = client.getTable(databaseName, tableName);
+        } catch (HCatException e) {
+            throw new RuntimeException("Unable to get table from the metastore.", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (HCatException e) {
+                    throw new RuntimeException("Unable close client.", e);
+                }
+            }
+        }
+        return new TableDataBuilder(table, new TableDataInserterFactory(getHiveConf(), databaseName, tableName));
     }
 
     private void executeSetupScripts() {
