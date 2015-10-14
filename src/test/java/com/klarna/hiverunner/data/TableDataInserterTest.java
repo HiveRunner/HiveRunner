@@ -1,11 +1,13 @@
 package com.klarna.hiverunner.data;
 
+import static com.google.common.collect.ImmutableMap.of;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
 import org.apache.hive.hcatalog.data.HCatRecord;
@@ -13,8 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
@@ -38,20 +40,16 @@ public class TableDataInserterTest {
 
   @Test
   public void insertsRowsIntoExistingTable() {
-    List<HCatRecord> records1 = new ArrayList<>();
-    records1.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("aa", "bb"))));
-    records1.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("aa2", "bb2"))));
-
-    List<HCatRecord> records2 = new ArrayList<>();
-    records2.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("cc", "dd"))));
-
-    List<HCatRecord> records3 = new ArrayList<>();
-    records3.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("ee", "ff"))));
+    Multimap<Map<String, String>, HCatRecord> data = ImmutableMultimap
+        .<Map<String, String>, HCatRecord> builder()
+        .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "aa", "bb")))
+        .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "aa2", "bb2")))
+        .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "cc", "dd")))
+        .put(of("local_date", "2015-10-15"), new DefaultHCatRecord(asList((Object) "ee", "ff")))
+        .build();
 
     TableDataInserter inserter = new TableDataInserter(TEST_DB, TEST_TABLE, hiveShell.getHiveConf());
-    inserter.insert(ImmutableMap.of("local_date", "2015-10-14"), records1);
-    inserter.insert(ImmutableMap.of("local_date", "2015-10-14"), records2);
-    inserter.insert(ImmutableMap.of("local_date", "2015-10-15"), records3);
+    inserter.insert(data);
 
     List<String> result = hiveShell.executeQuery("select * from testdb.test_table");
     Collections.sort(result);

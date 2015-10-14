@@ -1,9 +1,9 @@
 package com.klarna.hiverunner.data;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hive.hcatalog.api.HCatTable;
 import org.apache.hive.hcatalog.common.HCatException;
 import org.apache.hive.hcatalog.data.HCatRecord;
 import org.apache.hive.hcatalog.data.transfer.DataTransferFactory;
@@ -12,6 +12,7 @@ import org.apache.hive.hcatalog.data.transfer.WriteEntity;
 import org.apache.hive.hcatalog.data.transfer.WriterContext;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 class TableDataInserter {
 
@@ -25,7 +26,15 @@ class TableDataInserter {
     config = Maps.fromProperties(conf.getAllProperties());
   }
 
-  void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> records) {
+  void insert(Multimap<Map<String, String>, HCatRecord> data) {
+    Iterator<Map<String, String>> iterator = data.keySet().iterator();
+    while (iterator.hasNext()) {
+      Map<String, String> partitionSpec = iterator.next();
+      insert(partitionSpec, data.get(partitionSpec));
+    }
+  }
+
+  private void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> records) {
     WriteEntity entity = new WriteEntity.Builder()
         .withDatabase(databaseName)
         .withTable(tableName)
