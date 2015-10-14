@@ -1,13 +1,12 @@
 package com.klarna.hiverunner.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
-import org.apache.hadoop.hive.metastore.Warehouse;
-import org.apache.hadoop.hive.metastore.api.MetaException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.hcatalog.api.HCatTable;
 import org.apache.hive.hcatalog.common.HCatException;
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
@@ -15,151 +14,101 @@ import org.apache.hive.hcatalog.data.HCatRecord;
 import org.apache.hive.hcatalog.data.schema.HCatFieldSchema;
 import org.apache.hive.hcatalog.data.schema.HCatSchema;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 
-public class TableDataBuilder {
-
-  static final String UNPARTITIONED = "UNPARTITIONED";
+/**
+ * A fluent builder class for creating a list of records to be inserted into a table.
+ */
+public abstract class TableDataBuilder<T> {
 
   private final HCatSchema schema;
-  private final List<HCatFieldSchema> partitionColumns;
-  private final TableDataInserterFactory tableDataInserterFactory;
+  protected final TableDataInserter inserter;
 
-  private final Map<String, List<HCatRecord>> partitions = new HashMap<>();
-
-  private HCatRecord record;
+  protected HCatRecord record;
   private List<String> names;
 
-  public TableDataBuilder(HCatTable table, TableDataInserterFactory tableDataInserterFactory) {
-    schema = createSchema(table);
-    partitionColumns = table.getPartCols();
-    this.tableDataInserterFactory = tableDataInserterFactory;
+  public static TableDataBuilder<?> create(HCatTable table, HiveConf conf) {
+    TableDataInserter inserter = new TableDataInserter(table.getDbName(), table.getTableName(), conf);
+    if (table.getPartCols().size() > 0) {
+      return new PartitionedTableDataBuilder(table, inserter);
+    }
+    return new UnpartitionedTableDataBuilder(table, inserter);
+  }
+
+  TableDataBuilder(HCatTable table, TableDataInserter inserter) {
+    schema = new HCatSchema(ImmutableList
+        .<HCatFieldSchema> builder()
+        .addAll(table.getCols())
+        .addAll(table.getPartCols())
+        .build());
+    this.inserter = inserter;
     withAllColumns();
   }
 
-  private static HCatSchema createSchema(HCatTable table) {
-    List<HCatFieldSchema> allColumns = new ArrayList<>();
-    allColumns.addAll(table.getCols());
-    allColumns.addAll(table.getPartCols());
-    return new HCatSchema(allColumns);
-  }
-
-  public TableDataBuilder withColumns(String... names) {
+  public TableDataBuilder<T> withColumns(String... names) {
     this.names = new ArrayList<>();
     for (String name : names) {
-      if (!schema.getFieldNames().contains(name)) {
-        throw new IllegalArgumentException("Column " + name + " does not exist");
-      }
+      checkColumn(name);
       this.names.add(name);
     }
     return this;
   }
 
-  public TableDataBuilder withAllColumns() {
+  public TableDataBuilder<T> withAllColumns() {
     names = schema.getFieldNames();
     return this;
   }
 
-  public TableDataBuilder newRow() {
+  public TableDataBuilder<T> newRow() {
     flushRow();
     record = new DefaultHCatRecord(schema.size());
     return this;
   }
 
-  public TableDataBuilder addRow(Object... values) {
+  public TableDataBuilder<T> addRow(Object... values) {
     newRow();
-    if (values.length != names.size()) {
-      throw new IllegalArgumentException("Expected " + names.size() + " values, got " + values.length);
-    }
+    checkArgument(values.length == names.size(), "Expected %d values, got %d", names.size(), values.length);
     for (int i = 0; i < values.length; i++) {
       set(names.get(i), values[i]);
     }
     return this;
   }
 
-  public TableDataBuilder copyRow(Object... values) {
+  public TableDataBuilder<T> copyRow() {
+    checkState(record != null, "No row to copy.");
     HCatRecord copy = new DefaultHCatRecord(new ArrayList<>(record.getAll()));
     flushRow();
     record = copy;
     return this;
   }
 
-  public TableDataBuilder set(String name, Object value) {
+  public TableDataBuilder<T> set(String name, Object value) {
+    checkColumn(name);
     try {
       record.set(name, schema, value);
     } catch (HCatException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e); // should never happen
     }
     return this;
   }
 
-  TableData build() {
-    flushRow();
-
-    List<HCatRecord> records = partitions.get(UNPARTITIONED);
-    if (records != null) {
-      return new TableData(records);
-    }
-    Map<Map<String, String>, List<HCatRecord>> partitionRecords = new HashMap<>();
-    for (Entry<String, List<HCatRecord>> partition : partitions.entrySet()) {
-      partitionRecords.put(getPartitionSpec(partition.getKey()), partition.getValue());
-    }
-    return new TableData(partitionRecords);
-  }
-
-  public void commit() {
-    TableData tableData = build();
-    tableData.commit(tableDataInserterFactory.newInstance());
-  }
-
-  private void flushRow() {
-    if (record != null) {
-      String partitionSpec = getPartitionName();
-      List<HCatRecord> partitionRecords = partitions.get(partitionSpec);
-      if (partitionRecords == null) {
-        partitionRecords = new ArrayList<>();
-        partitions.put(partitionSpec, partitionRecords);
-      }
-      partitionRecords.add(record);
-    }
-  }
-
-  private String getPartitionName() {
-    if (partitionColumns.size() == 0) {
-      return UNPARTITIONED;
-    }
-
-    Map<String, String> partitionSpec = new HashMap<>();
-    for (HCatFieldSchema partitionColumn : partitionColumns) {
-      String name = partitionColumn.getName();
-      Object value;
-      try {
-        value = record.get(name, schema);
-      } catch (HCatException e) {
-        throw new RuntimeException(e);
-      }
-      if (value == null) {
-        throw new IllegalStateException("Partition value for column '" + name + "' must not be null.");
-      }
-      partitionSpec.put(name, value.toString());
-    }
-    return getPartitionName(partitionSpec);
-  }
-
-  static String getPartitionName(Map<String, String> partitionSpec) {
+  protected Object get(String name) {
+    checkColumn(name);
     try {
-      return Warehouse.makePartName(partitionSpec, false);
-    } catch (MetaException e) {
-      throw new IllegalStateException("Unable to create partition name", e);
+      return record.get(name, schema);
+    } catch (HCatException e) {
+      throw new RuntimeException(e); // should never happen
     }
   }
 
-  static Map<String, String> getPartitionSpec(String partitionName) {
-    try {
-      return Warehouse.makeSpecFromName(partitionName);
-    } catch (MetaException e) {
-      throw new IllegalStateException("Unable to create partition spec", e);
-    }
+  protected abstract void flushRow();
+
+  protected abstract T build();
+
+  public abstract void commit();
+
+  private void checkColumn(String name) {
+    checkArgument(schema.getFieldNames().contains(name), "Column %s does not exist", name);
   }
 
 }

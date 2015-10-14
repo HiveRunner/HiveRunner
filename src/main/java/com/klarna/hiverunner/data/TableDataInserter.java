@@ -2,6 +2,8 @@ package com.klarna.hiverunner.data;
 
 import java.util.Map;
 
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hive.hcatalog.api.HCatTable;
 import org.apache.hive.hcatalog.common.HCatException;
 import org.apache.hive.hcatalog.data.HCatRecord;
 import org.apache.hive.hcatalog.data.transfer.DataTransferFactory;
@@ -9,24 +11,27 @@ import org.apache.hive.hcatalog.data.transfer.HCatWriter;
 import org.apache.hive.hcatalog.data.transfer.WriteEntity;
 import org.apache.hive.hcatalog.data.transfer.WriterContext;
 
-public class TableDataInserter {
+import com.google.common.collect.Maps;
 
-  private final Map<String, String> config;
+class TableDataInserter {
+
   private final String databaseName;
   private final String tableName;
+  private final Map<String, String> config;
 
-  TableDataInserter(Map<String, String> config, String databaseName, String tableName) {
+  TableDataInserter(String databaseName, String tableName, HiveConf conf) {
     this.databaseName = databaseName;
     this.tableName = tableName;
-    this.config = config;
+    config = Maps.fromProperties(conf.getAllProperties());
   }
 
-  public void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> records) {
+  void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> records) {
     WriteEntity entity = new WriteEntity.Builder()
         .withDatabase(databaseName)
         .withTable(tableName)
         .withPartition(partitionSpec)
         .build();
+
     try {
       WriterContext context = DataTransferFactory.getHCatWriter(entity, config).prepareWrite();
       HCatWriter writer = DataTransferFactory.getHCatWriter(context);

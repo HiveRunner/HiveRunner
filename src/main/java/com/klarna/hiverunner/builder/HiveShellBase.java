@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.TableDataBuilder;
-import com.klarna.hiverunner.data.TableDataInserterFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.hcatalog.api.HCatClient;
 import org.apache.hive.hcatalog.api.HCatTable;
@@ -234,7 +233,8 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public TableDataBuilder insertInto(String databaseName, String tableName) {
+    public TableDataBuilder<?> insertInto(String databaseName, String tableName) {
+        assertStarted();
         HCatClient client = null;
         HCatTable table;
         try {
@@ -251,7 +251,7 @@ class HiveShellBase implements HiveShell {
                 }
             }
         }
-        return new TableDataBuilder(table, new TableDataInserterFactory(getHiveConf(), databaseName, tableName));
+        return TableDataBuilder.create(table, getHiveConf());
     }
 
     private void executeSetupScripts() {

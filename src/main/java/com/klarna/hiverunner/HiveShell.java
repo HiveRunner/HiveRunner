@@ -197,7 +197,14 @@ public interface HiveShell {
      */
     OutputStream getResourceOutputStream(String targetFile);
 
-    // TODO DM javadoc
+    /**
+     * Returns a {@link TableDataBuilder} that allows programmatically inserting data into a table in a fluent manner.
+     * <p/>
+     * May only be called post #start()
+     * @param databaseName The database name
+     * @param tableName The table name
+     * @return
+     */
     TableDataBuilder insertInto(String databaseName, String tableName);
 
 }

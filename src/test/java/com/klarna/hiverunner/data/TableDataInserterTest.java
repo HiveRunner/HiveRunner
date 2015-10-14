@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
 import org.apache.hive.hcatalog.data.HCatRecord;
@@ -16,7 +15,6 @@ import org.junit.runner.RunWith;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
@@ -40,9 +38,6 @@ public class TableDataInserterTest {
 
   @Test
   public void insertsRowsIntoExistingTable() {
-
-    Map<String, String> properties = Maps.fromProperties(hiveShell.getHiveConf().getAllProperties());
-
     List<HCatRecord> records1 = new ArrayList<>();
     records1.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("aa", "bb"))));
     records1.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("aa2", "bb2"))));
@@ -53,7 +48,7 @@ public class TableDataInserterTest {
     List<HCatRecord> records3 = new ArrayList<>();
     records3.add(new DefaultHCatRecord(new ArrayList<Object>(Lists.newArrayList("ee", "ff"))));
 
-    TableDataInserter inserter = new TableDataInserter(properties, TEST_DB, TEST_TABLE);
+    TableDataInserter inserter = new TableDataInserter(TEST_DB, TEST_TABLE, hiveShell.getHiveConf());
     inserter.insert(ImmutableMap.of("local_date", "2015-10-14"), records1);
     inserter.insert(ImmutableMap.of("local_date", "2015-10-14"), records2);
     inserter.insert(ImmutableMap.of("local_date", "2015-10-15"), records3);
