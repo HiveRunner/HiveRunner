@@ -75,16 +75,16 @@ class TableDataBuilder {
     return this;
   }
 
-  TableDataBuilder addRows(File file) throws IOException {
+  TableDataBuilder addRows(File file) {
     return addRows(new TsvFileParser().parse(file));
   }
 
-  TableDataBuilder addRows(File file, String delimiter, Object nullValue) throws IOException {
+  TableDataBuilder addRows(File file, String delimiter, Object nullValue) {
     return addRows(new TsvFileParser().withDlimiter(delimiter).withNullValue(nullValue).parse(file));
   }
 
-  TableDataBuilder addRows(File file, FileParser fileParser, String... columnNames) throws IOException {
-    return addRows(fileParser.parse(file, columnNames));
+  TableDataBuilder addRows(File file, FileParser fileParser) {
+    return addRows(fileParser.parse(file, names));
   }
 
   private TableDataBuilder addRows(List<Object[]> rows) {

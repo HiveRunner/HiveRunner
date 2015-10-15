@@ -121,21 +121,37 @@ public final class InsertIntoTable {
     return this;
   }
 
-  // TODO DM javadoc
-  public InsertIntoTable addRows(File file) throws IOException {
+  /**
+   * Adds all rows from the file specified. 
+   * @param file - the file to read the data from.
+   * @return {@code this}
+   */
+  public InsertIntoTable addRows(File file) {
     builder.addRows(file);
     return this;
   }
 
-  // TODO DM javadoc
-  public InsertIntoTable addRows(File file, String delimiter, Object nullValue) throws IOException {
+  /**
+   * Adds all rows from the file specified.
+   * @param file - the file to read the data from.
+   * @param delimiter - a column delimiter
+   * @param nullValue - value to be treated as null in the source data.
+   * @return {@code this}
+   * @throws IOException
+   */
+  public InsertIntoTable addRows(File file, String delimiter, Object nullValue) {
     builder.addRows(file, delimiter, nullValue);
     return this;
   }
 
-  // TODO DM javadoc
-  public InsertIntoTable addRows(File file, FileParser fileParser, String... columnNames) throws IOException {
-    builder.addRows(file, fileParser, columnNames);
+  /**
+   * Adds all rows from the file specified.
+   * @param file - file to read the data from.
+   * @param fileParser - parser to be used to parse the file.
+   * @return
+   */
+  public InsertIntoTable addRows(File file, FileParser fileParser) {
+    builder.addRows(file, fileParser);
     return this;
   }
 

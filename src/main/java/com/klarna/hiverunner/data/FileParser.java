@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface FileParser {
 
-  List<Object[]> parse(File file, String... names);
+  List<Object[]> parse(File file, Object... names);
 
 }

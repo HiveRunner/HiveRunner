@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.google.common.base.Splitter;
 
 public class TsvFileParser implements FileParser {
 
   private static final String DEFAULT_DELIMITER = "\t";
-  private static final String EMPTY_STRING = "";
   private Charset charset;
   private String delimiter;
   private Object nullValue = null;
@@ -40,13 +41,12 @@ public class TsvFileParser implements FileParser {
   }
 
   @Override
-  public List<Object[]> parse(File file, String... names) {
+  public List<Object[]> parse(File file, Object... names) {
     try {
       List<Object[]> records = new ArrayList<>();
       List<String> allLines = Files.readAllLines(file.toPath(), charset);
       for (String line : allLines) {
-        List<Object> columnList = parseRow(line);
-        records.add(columnList.toArray());
+        records.add(parseRow(line).toArray());
       }
       return records;
     } catch (IOException e) {
@@ -59,8 +59,8 @@ public class TsvFileParser implements FileParser {
     List<Object> columnList = new ArrayList<>();
     while (iterator.hasNext()) {
       String column = iterator.next();
-      if (EMPTY_STRING.equals(column)) {
-        columnList.add(nullValue);
+      if (ObjectUtils.equals(nullValue, column)) {
+        columnList.add(null);
       } else {
         columnList.add(column);
       }
