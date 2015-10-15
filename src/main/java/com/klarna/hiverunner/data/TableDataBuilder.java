@@ -3,6 +3,10 @@ package com.klarna.hiverunner.data;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +74,25 @@ public abstract class TableDataBuilder<T> {
     checkArgument(values.length == names.size(), "Expected %d values, got %d", names.size(), values.length);
     for (int i = 0; i < values.length; i++) {
       set(names.get(i), values[i]);
+    }
+    return this;
+  }
+
+  public TableDataBuilder<T> addRows(File file) throws IOException {
+    return addRows(new TsvFileParser().parse(file));
+  }
+
+  public TableDataBuilder<T> addRows(File file, String delimiter, Object nullValue) throws IOException {
+    return addRows(new TsvFileParser().withDlimiter(delimiter).withNullValue(nullValue).parse(file));
+  }
+
+  public TableDataBuilder<T> addRows(File file, FileParser fileParser, String... columnNames) throws IOException {
+    return addRows(fileParser.parse(file, columnNames));
+  }
+
+  private TableDataBuilder<T> addRows(List<Object[]> rows) {
+    for (Object[] row : rows) {
+      addRow(row);
     }
     return this;
   }
