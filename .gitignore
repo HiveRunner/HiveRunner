@@ -64,3 +64,10 @@ Thumbs.db
 ###################
 *~
 /target/
+
+# Eclipse #
+###########
+.classpath
+.project
+.settings/
+
