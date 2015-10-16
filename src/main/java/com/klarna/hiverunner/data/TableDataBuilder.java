@@ -5,11 +5,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hive.hcatalog.api.HCatTable;
 import org.apache.hive.hcatalog.common.HCatException;
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
@@ -76,15 +77,15 @@ class TableDataBuilder {
   }
 
   TableDataBuilder addRows(File file) {
-    return addRows(new TsvFileParser().parse(file));
+    return addRows(file, new TsvFileParser());
   }
 
   TableDataBuilder addRows(File file, String delimiter, Object nullValue) {
-    return addRows(new TsvFileParser().withDlimiter(delimiter).withNullValue(nullValue).parse(file));
+    return addRows(file, new TsvFileParser().withDelimiter(delimiter).withNullValue(nullValue));
   }
 
   TableDataBuilder addRows(File file, FileParser fileParser) {
-    return addRows(fileParser.parse(file, names));
+    return addRows(fileParser.parse(file, schema, names));
   }
 
   private TableDataBuilder addRows(List<Object[]> rows) {
@@ -104,11 +105,23 @@ class TableDataBuilder {
 
   TableDataBuilder set(String name, Object value) {
     checkColumn(name);
+    PrimitiveTypeInfo typeInfo;
     try {
-      Object converted = Converters.convert(value, schema.get(name).getTypeInfo());
+      typeInfo = schema.get(name).getTypeInfo();
+    } catch (HCatException e) {
+      throw new IllegalArgumentException("Error getting type info for " + name, e);
+    }
+    Object converted;
+    try {
+      converted = Converters.convert(value, typeInfo);
+    } catch (ConversionException e) {
+      throw new IllegalArgumentException("Invalid value for " + name + ". Got '" + value + "' ("
+          + value.getClass().getSimpleName() + "). Expected " + typeInfo.getTypeName() + ".", e);
+    }
+    try {
       row.set(name, schema, converted);
     } catch (HCatException e) {
-      throw new RuntimeException(e); // should never happen
+      throw new RuntimeException("Error setting value for " + name, e);
     }
     return this;
   }
@@ -118,7 +131,7 @@ class TableDataBuilder {
     try {
       return row.get(name, schema);
     } catch (HCatException e) {
-      throw new RuntimeException(e); // should never happen
+      throw new RuntimeException("Error getting value for " + name, e);
     }
   }
 

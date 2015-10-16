@@ -34,7 +34,7 @@ class TableDataInserter {
     }
   }
 
-  private void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> records) {
+  private void insert(Map<String, String> partitionSpec, Iterable<HCatRecord> rows) {
     WriteEntity entity = new WriteEntity.Builder()
         .withDatabase(databaseName)
         .withTable(tableName)
@@ -46,7 +46,7 @@ class TableDataInserter {
       HCatWriter writer = DataTransferFactory.getHCatWriter(context);
 
       try {
-        writer.write(records.iterator());
+        writer.write(rows.iterator());
       } catch (HCatException e) {
         writer.abort(context);
         throw e;

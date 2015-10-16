@@ -1,7 +1,6 @@
 package com.klarna.hiverunner.data;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.hcatalog.api.HCatClient;
@@ -122,8 +121,10 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Adds all rows from the file specified. 
-   * @param file - the file to read the data from.
+   * Adds all rows from the TSV file specified. The default delimiter is tab and the default null value is an empty
+   * string.
+   *
+   * @param file The file to read the data from.
    * @return {@code this}
    */
   public InsertIntoTable addRows(File file) {
@@ -132,12 +133,12 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Adds all rows from the file specified.
-   * @param file - the file to read the data from.
-   * @param delimiter - a column delimiter
-   * @param nullValue - value to be treated as null in the source data.
+   * Adds all rows from the TSV file specified, using the provided delimiter and null value.
+   *
+   * @param file The file to read the data from.
+   * @param delimiter A column delimiter.
+   * @param nullValue Value to be treated as null in the source data.
    * @return {@code this}
-   * @throws IOException
    */
   public InsertIntoTable addRows(File file, String delimiter, Object nullValue) {
     builder.addRows(file, delimiter, nullValue);
@@ -145,10 +146,11 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Adds all rows from the file specified.
-   * @param file - file to read the data from.
-   * @param fileParser - parser to be used to parse the file.
-   * @return
+   * Adds all rows from the file specified, using the provided parser.
+   *
+   * @param file File to read the data from.
+   * @param fileParser Parser to be used to parse the file.
+   * @return {@code this}
    */
   public InsertIntoTable addRows(File file, FileParser fileParser) {
     builder.addRows(file, fileParser);
@@ -156,7 +158,7 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Flushes the current row and creates a new row will the same values.
+   * Flushes the current row and creates a new row with the same values.
    *
    * @return {@code this}
    */
@@ -168,7 +170,7 @@ public final class InsertIntoTable {
   /**
    * Set the given column name to the given value.
    *
-   * @param name The field name to set.
+   * @param name The column name to set.
    * @param value the value to set.
    * @return {@code this}
    * @throws IllegalArgumentException if a column name does not exist in the table.

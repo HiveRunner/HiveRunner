@@ -203,7 +203,6 @@ public interface HiveShell {
      * May only be called post #start()
      * @param databaseName The database name
      * @param tableName The table name
-     * @return
      */
     InsertIntoTable insertInto(String databaseName, String tableName);
 
