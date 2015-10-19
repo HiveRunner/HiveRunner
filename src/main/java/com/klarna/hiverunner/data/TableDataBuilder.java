@@ -76,15 +76,15 @@ class TableDataBuilder {
     return this;
   }
 
-  TableDataBuilder addRows(File file) {
-    return addRows(file, new TsvFileParser());
+  TableDataBuilder addRowsFromTsvFile(File file) {
+    return addRowsFromFile(file, new TsvFileParser());
   }
 
-  TableDataBuilder addRows(File file, String delimiter, Object nullValue) {
-    return addRows(file, new TsvFileParser().withDelimiter(delimiter).withNullValue(nullValue));
+  TableDataBuilder addRowsFromDelimitedFile(File file, String delimiter, Object nullValue) {
+    return addRowsFromFile(file, new TsvFileParser().withDelimiter(delimiter).withNullValue(nullValue));
   }
 
-  TableDataBuilder addRows(File file, FileParser fileParser) {
+  TableDataBuilder addRowsFromFile(File file, FileParser fileParser) {
     return addRows(fileParser.parse(file, schema, names));
   }
 

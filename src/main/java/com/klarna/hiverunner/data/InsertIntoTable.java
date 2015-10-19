@@ -127,8 +127,8 @@ public final class InsertIntoTable {
    * @param file The file to read the data from.
    * @return {@code this}
    */
-  public InsertIntoTable addRows(File file) {
-    builder.addRows(file);
+  public InsertIntoTable addRowsFromTsvFile(File file) {
+    builder.addRowsFromTsvFile(file);
     return this;
   }
 
@@ -140,8 +140,8 @@ public final class InsertIntoTable {
    * @param nullValue Value to be treated as null in the source data.
    * @return {@code this}
    */
-  public InsertIntoTable addRows(File file, String delimiter, Object nullValue) {
-    builder.addRows(file, delimiter, nullValue);
+  public InsertIntoTable addRowsFromDelimitedFile(File file, String delimiter, Object nullValue) {
+    builder.addRowsFromDelimitedFile(file, delimiter, nullValue);
     return this;
   }
 
@@ -152,8 +152,8 @@ public final class InsertIntoTable {
    * @param fileParser Parser to be used to parse the file.
    * @return {@code this}
    */
-  public InsertIntoTable addRows(File file, FileParser fileParser) {
-    builder.addRows(file, fileParser);
+  public InsertIntoTable addRowsFromFile(File file, FileParser fileParser) {
+    builder.addRowsFromFile(file, fileParser);
     return this;
   }
 
