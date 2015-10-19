@@ -205,6 +205,10 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
+### __T.B.C__
+
+Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
+
 ### __2.4.0__
 
 Enabled any hiveconf variables to be set as System properties by using the naming convention
