@@ -142,7 +142,7 @@ public class InsertIntoTableIntegrationTest {
         .append(")")
         .append("stored as orc")
         .toString());
-    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromTsvFile(dataFile).commit();
+    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromTsv(dataFile).commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
     assertArrayEquals(new String[] { "a1", "b1", "c1", "d1", "e1" }, result.get(0));
@@ -163,7 +163,7 @@ public class InsertIntoTableIntegrationTest {
         .append(")")
         .append("stored as orc")
         .toString());
-    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromDelimitedFile(dataFile, ",", "NULL").commit();
+    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromDelimited(dataFile, ",", "NULL").commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
     assertArrayEquals(new String[] { "a1", "b1", "c1", "d1", null }, result.get(0));
@@ -186,7 +186,7 @@ public class InsertIntoTableIntegrationTest {
     hiveShell
         .insertInto("test_db", "test_table")
         .withAllColumns()
-        .addRowsFromFile(dataFile, new TsvFileParser().withDelimiter(",").withNullValue("NULL"))
+        .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(",").withNullValue("NULL"))
         .commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());

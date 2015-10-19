@@ -152,8 +152,8 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
         .withColumns("c1", "p1").addRow("v1", "p1")       // add { "v1", null, null, "p1" }
         .withAllColumns().addRow("v1", "v2", "v3", "p1")  // add { "v1", "v2", "v3", "p1" }
         .copyRow().set("c1", "v4")                        // add { "v4", "v2", "v3", "p1" }
-        .addRowsFromTsvFile(file)                         // parses TSV data out of a file resource
-        .addRowsFromFile(file, fileParser)                // parses custom data out of a file resource
+        .addRowsFromTsv(file)                             // parses TSV data out of a file resource
+        .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
         .commit();
 
 See [com.klarna.hiverunner.InsertIntoTableTest](/src/test/java/com/klarna/hiverunner/InsertIntoTableTest.java) for a simple working example.

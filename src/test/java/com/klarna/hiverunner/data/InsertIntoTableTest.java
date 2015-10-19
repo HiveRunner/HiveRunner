@@ -65,16 +65,16 @@ public class InsertIntoTableTest {
 
   @Test
   public void addRows() {
-    insert.addRowsFromTsvFile(any(File.class));
+    insert.addRowsFromTsv(any(File.class));
 
-    verify(builder).addRowsFromTsvFile(any(File.class));
+    verify(builder).addRowsFromTsv(any(File.class));
   }
 
   @Test
   public void addRowsWithFileParser() {
-    insert.addRowsFromFile(any(File.class), any(FileParser.class));
+    insert.addRowsFrom(any(File.class), any(FileParser.class));
 
-    verify(builder).addRowsFromFile(any(File.class), any(FileParser.class));
+    verify(builder).addRowsFrom(any(File.class), any(FileParser.class));
   }
 
   @Test
