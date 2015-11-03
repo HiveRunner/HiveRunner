@@ -19,15 +19,14 @@ public final class InsertIntoTable {
 
   /**
    * Factory method for creating an {@link InsertIntoTable}.
-   * <p/>
-   * This method is intended to be called via {@link HiveShell#insertInto(String, String)}.
    *
    * @param databaseName The database name.
    * @param tableName The table name.
-   * @param conf The {@link HiveConf}.
+   * @param hiveShell The {@link HiveShell}.
    * @return InsertIntoTable
    */
-  public static InsertIntoTable newInstance(String databaseName, String tableName, HiveConf conf) {
+  public static InsertIntoTable newInstance(String databaseName, String tableName, HiveShell hiveShell) {
+    HiveConf conf = hiveShell.getHiveConf();
     TableDataBuilder builder = new TableDataBuilder(getHCatTable(databaseName, tableName, conf));
     TableDataInserter inserter = new TableDataInserter(databaseName, tableName, conf);
     return new InsertIntoTable(builder, inserter);

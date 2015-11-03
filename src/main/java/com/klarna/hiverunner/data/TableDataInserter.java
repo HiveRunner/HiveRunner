@@ -42,16 +42,11 @@ class TableDataInserter {
         .build();
 
     try {
-      WriterContext context = DataTransferFactory.getHCatWriter(entity, config).prepareWrite();
+      HCatWriter master = DataTransferFactory.getHCatWriter(entity, config);
+      WriterContext context = master.prepareWrite();
       HCatWriter writer = DataTransferFactory.getHCatWriter(context);
-
-      try {
-        writer.write(rows.iterator());
-      } catch (HCatException e) {
-        writer.abort(context);
-        throw e;
-      }
-      writer.commit(context);
+      writer.write(rows.iterator());
+      master.commit(context);
     } catch (HCatException e) {
       throw new RuntimeException(e);
     }
