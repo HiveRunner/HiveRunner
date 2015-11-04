@@ -205,7 +205,7 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
-### __T.B.C__
+### __2.5.0__
 
 Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
 
