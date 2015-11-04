@@ -20,6 +20,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.InsertIntoTable;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -226,6 +227,12 @@ class HiveShellBase implements HiveShell {
     @Override
     public void addResource(String targetFile, File sourceFile) {
         addResource(targetFile, Paths.get(sourceFile.toURI()));
+    }
+
+    @Override
+    public InsertIntoTable insertInto(String databaseName, String tableName) {
+        assertStarted();
+        return InsertIntoTable.newInstance(databaseName, tableName, getHiveConf());
     }
 
     private void executeSetupScripts() {

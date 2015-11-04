@@ -135,6 +135,28 @@ Note that the *autostart = false* is needed for the interactive mode. It can be 
 If you work with __sequence files__ (Or anything else than regular text files) make sure to take a look at [ResourceOutputStreamTest](/src/test/java/com/klarna/hiverunner/ResourceOutputStreamTest.java) 
 for an example of how to use the new method [HiveShell](src/main/java/com/klarna/hiverunner/HiveShell.java)\#getResourceOutputStream to manage test input data. 
 
+### Programatically create test input data
+
+Test data can be programmatically inserted into any Hive table using `HiveShell.insertInto(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
+
+    hiveShell.execute("create database test_db");
+    hiveShell.execute("create table test_db.test_table ("
+        + "c1 string,"
+        + "c2 string,"
+        + "c3 string"
+        + ")"
+        + "partitioned by (p1 string)"
+        + "stored as orc");
+
+    hiveShell.insertInto("test_db", "test_table")
+        .withColumns("c1", "p1").addRow("v1", "p1")       // add { "v1", null, null, "p1" }
+        .withAllColumns().addRow("v1", "v2", "v3", "p1")  // add { "v1", "v2", "v3", "p1" }
+        .copyRow().set("c1", "v4")                        // add { "v4", "v2", "v3", "p1" }
+        .addRowsFromTsv(file)                             // parses TSV data out of a file resource
+        .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
+        .commit();
+
+See [com.klarna.hiverunner.InsertIntoTableIntegrationTest](/src/test/java/com/klarna/hiverunner/InsertIntoTableIntegrationTest.java) for working examples.
 
 3. Understand a little bit of the order of execution
 ----------
@@ -183,6 +205,10 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
+### __T.B.C__
+
+Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
+
 ### __2.4.0__
 
 Enabled any hiveconf variables to be set as System properties by using the naming convention
