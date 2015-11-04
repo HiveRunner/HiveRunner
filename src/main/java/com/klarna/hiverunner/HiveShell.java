@@ -16,6 +16,7 @@
 
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.data.InsertIntoTable;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 
@@ -196,5 +197,13 @@ public interface HiveShell {
      */
     OutputStream getResourceOutputStream(String targetFile);
 
+    /**
+     * Returns an {@link InsertIntoTable} that allows programmatically inserting data into a table in a fluent manner.
+     * <p/>
+     * May only be called post #start()
+     * @param databaseName The database name
+     * @param tableName The table name
+     */
+    InsertIntoTable insertInto(String databaseName, String tableName);
 
 }

@@ -137,7 +137,7 @@ for an example of how to use the new method [HiveShell](src/main/java/com/klarna
 
 ### Programatically create test input data
 
-Test data can be programmatically inserted into any Hive table using `InsertIntoTable.newInstance(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
+Test data can be programmatically inserted into any Hive table using `HiveShell.insertInto(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
 
     hiveShell.execute("create database test_db");
     hiveShell.execute("create table test_db.test_table ("
@@ -148,8 +148,7 @@ Test data can be programmatically inserted into any Hive table using `InsertInto
         + "partitioned by (p1 string)"
         + "stored as orc");
 
-    InsertIntoTable
-        .newInstance("test_db", "test_table", hiveShell)
+    hiveShell.insertInto("test_db", "test_table")
         .withColumns("c1", "p1").addRow("v1", "p1")       // add { "v1", null, null, "p1" }
         .withAllColumns().addRow("v1", "v2", "v3", "p1")  // add { "v1", "v2", "v3", "p1" }
         .copyRow().set("c1", "v4")                        // add { "v4", "v2", "v3", "p1" }
@@ -208,7 +207,7 @@ Change Log (From version 2.2.0 and onwards)
 ==============
 ### __T.B.C__
 
-Added support with `InsertIntoTable.newInstance` for fluently generating test data in a table storage format agnostic manner.
+Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
 
 ### __2.4.0__
 

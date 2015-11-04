@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.data.InsertIntoTable;
 import com.klarna.hiverunner.data.TsvFileParser;
 
 @RunWith(StandaloneHiveRunner.class)
@@ -25,17 +24,17 @@ public class InsertIntoTableIntegrationTest {
   public void before() {
     hiveShell.execute("create database test_db");
   }
-
+  
   @Test
   public void insertDataIntoOrcPartitionedTable() {
     testInsertDataIntoPartitionedTable("orc");
   }
-
+  
   @Test
   public void insertDataIntoTextPartitionedTable() {
     testInsertDataIntoPartitionedTable("textfile");
   }
-
+  
   @Test
   public void insertDataIntoSequenceFilePartitionedTable() {
     testInsertDataIntoPartitionedTable("sequencefile");
@@ -50,8 +49,8 @@ public class InsertIntoTableIntegrationTest {
         .append("stored as " + storedAs)
         .toString());
 
-    InsertIntoTable
-        .newInstance("test_db", "test_table", hiveShell)
+    hiveShell
+        .insertInto("test_db", "test_table")
         .addRow("v1", "p1")
         .addRow("v2", "p1")
         .addRow("v3", "p2")
@@ -90,8 +89,8 @@ public class InsertIntoTableIntegrationTest {
         .append("stored as orc")
         .toString());
 
-    InsertIntoTable
-        .newInstance("test_db", "test_table", hiveShell)
+    hiveShell
+        .insertInto("test_db", "test_table")
         .newRow()
         .set("c0", "foo")
         .set("c1", "true")
@@ -143,9 +142,7 @@ public class InsertIntoTableIntegrationTest {
         .append(")")
         .append("stored as orc")
         .toString());
-
-    InsertIntoTable.newInstance("test_db", "test_table", hiveShell).withAllColumns().addRowsFromTsv(dataFile).commit();
-
+    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromTsv(dataFile).commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
     assertArrayEquals(new String[] { "a1", "b1", "c1", "d1", "e1" }, result.get(0));
@@ -166,13 +163,7 @@ public class InsertIntoTableIntegrationTest {
         .append(")")
         .append("stored as orc")
         .toString());
-
-    InsertIntoTable
-        .newInstance("test_db", "test_table", hiveShell)
-        .withAllColumns()
-        .addRowsFromDelimited(dataFile, ",", "NULL")
-        .commit();
-
+    hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromDelimited(dataFile, ",", "NULL").commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
     assertArrayEquals(new String[] { "a1", "b1", "c1", "d1", null }, result.get(0));
@@ -192,13 +183,11 @@ public class InsertIntoTableIntegrationTest {
         .append(")")
         .append("stored as orc")
         .toString());
-
-    InsertIntoTable
-        .newInstance("test_db", "test_table", hiveShell)
+    hiveShell
+        .insertInto("test_db", "test_table")
         .withAllColumns()
         .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(",").withNullValue("NULL"))
         .commit();
-
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
     assertArrayEquals(new String[] { "a1", "b1", "c1", "d1", null }, result.get(0));
