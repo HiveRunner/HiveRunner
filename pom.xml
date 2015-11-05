@@ -15,9 +15,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:${git.repo}</connection>
-        <developerConnection>scm:git:${git.repo}</developerConnection>
-        <tag>HEAD</tag>
+        <connection>scm:git:git@github.com:klarna/HiveRunner.git</connection>
+        <developerConnection>scm:git:git@github.com:klarna/HiveRunner.git</developerConnection>
+        <url>git@github.com:klarna/HiveRunner.git</url>
     </scm>
 
     <properties>
