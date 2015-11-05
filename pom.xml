@@ -5,6 +5,9 @@
     <artifactId>hiverunner</artifactId>
     <version>2.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>HiveRunner</name>
+    <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
+    <url>https://github.com/klarna/HiveRunner</url>
 
     <licenses>
         <license>
@@ -13,6 +16,21 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Per Ullberg</name>
+            <email>per.ullberg@klarna.com</email>
+            <organization>Klarna</organization>
+            <organizationUrl>http://www.klarna.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Thomas Larsson</name>
+            <email>thomas.larsson@klarna.com</email>
+            <organization>Klarna</organization>
+            <organizationUrl>http://www.klarna.com</organizationUrl>
+        </developer>
+    </developers>
 
     <scm>
         <connection>scm:git:git@github.com:klarna/HiveRunner.git</connection>
