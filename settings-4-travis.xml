@@ -1,0 +1,20 @@
+<settings>
+    <profiles>
+        <profile>
+            <id>travis-profile</id>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>Central Repository</name>
+                    <url>https://repo.maven.apache.org/maven2</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>travis-profile</activeProfile>
+    </activeProfiles>
+</settings>  
