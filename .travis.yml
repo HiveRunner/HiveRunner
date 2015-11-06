@@ -1,0 +1,5 @@
+language: java
+notifications:
+  email:
+    - per.ullberg@klarna.com
+    - thomas.larsson@klarna.com
