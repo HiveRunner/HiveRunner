@@ -1,7 +1,7 @@
 sudo: false
 language: java
-before_install: mvn help:effective-pom --global-settings settings-4-travis.xml
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings settings-4-travis.xml
+script: mvn test -B --global-settings settings-4-travis.xml
 notifications:
   email:
     - per.ullberg@klarna.com
