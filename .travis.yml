@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 language: java
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings settings-4-travis.xml
 script: mvn test -B --global-settings settings-4-travis.xml -X -e
