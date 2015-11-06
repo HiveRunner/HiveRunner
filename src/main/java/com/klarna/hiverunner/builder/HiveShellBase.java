@@ -101,6 +101,35 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
+    public void executeScript(File file) {
+        assertStarted();
+        executeScript(Charset.defaultCharset(), file);
+    }
+
+    @Override
+    public void executeScript(Path path) {
+        assertStarted();
+        executeScript(Charset.defaultCharset(), path);
+    }
+
+    @Override
+    public void executeScript(Charset charset, File file) {
+        assertStarted();
+        executeScript(charset, Paths.get(file.toURI()));
+    }
+
+    @Override
+    public void executeScript(Charset charset, Path path) {
+        assertStarted();
+        assertFileExists(path);
+        try {
+            execute(new String(Files.readAllBytes(path), charset));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to read setup script file '" + path + "': " + e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void start() {
         assertNotStarted();
         started = true;
