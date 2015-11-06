@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=release_to_maven_central)](https://travis-ci.org/klarna/HiveRunner)
+
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
 
