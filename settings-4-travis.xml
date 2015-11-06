@@ -2,14 +2,26 @@
     <profiles>
         <profile>
             <id>travis-profile</id>
+            <!--
+            It seems that the settings.xml that is used by default when building using Travis CI includes the codehaus
+            repository. This repository does not exist any more so this can cause builds to fail during dependency resolution.
+            By configuring this repository, we seem to be able to override this repo, setting the enabled properties to false.
+            -->
             <repositories>
                 <repository>
+                    <releases>
+                        <enabled>false</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
                     <snapshots>
                         <enabled>false</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>fail</checksumPolicy>
                     </snapshots>
-                    <id>central</id>
-                    <name>Central Repository</name>
-                    <url>https://repo.maven.apache.org/maven2</url>
+                    <id>codehaus-snapshots</id>
+                    <name>Codehaus (snapshots)</name>
+                    <url>https://nexus.codehaus.org/snapshots/</url>
                 </repository>
             </repositories>
         </profile>
