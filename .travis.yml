@@ -1,5 +1,6 @@
 sudo: false
 language: java
+before_install: mvn help:effective-pom
 notifications:
   email:
     - per.ullberg@klarna.com
