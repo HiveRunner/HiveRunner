@@ -35,7 +35,7 @@ public class TimeoutAndRetryTest {
     @HiveRunnerSetup
     public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
         setTimeoutEnabled(true);
-        setTimeoutSeconds(45);
+        setTimeoutSeconds(30);
         setTimeoutRetries(2);
     }};
 
