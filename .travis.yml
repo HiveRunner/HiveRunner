@@ -1,8 +1,14 @@
 sudo: false
 language: java
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings settings-4-travis.xml
-script: mvn test -B --global-settings settings-4-travis.xml
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings
+  settings-4-travis.xml
+script: mvn verify -B --global-settings settings-4-travis.xml -Prelease
 notifications:
   email:
-    - per.ullberg@klarna.com
-    - thomas.larsson@klarna.com
+  - per.ullberg@klarna.com
+  - thomas.larsson@klarna.com
+before_install:
+- openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
+  -in secring.gpg.enc -out secring.gpg -d
+- openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
+  -in pubring.gpg.enc -out pubring.gpg -d
