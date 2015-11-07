@@ -271,6 +271,10 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <homedir>${project.basedir}</homedir>
+                                    <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

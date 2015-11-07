@@ -2,7 +2,7 @@ sudo: false
 language: java
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings
   settings-4-travis.xml
-script: mvn verify -B --global-settings settings-4-travis.xml
+script: mvn verify -B --global-settings settings-4-travis.xml -Prelease
 notifications:
   email:
   - per.ullberg@klarna.com
@@ -11,3 +11,6 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
   -in secrets.tar.enc -out secrets.tar -d
 - tar xvf secrets.tar
+env:
+  global:
+    secure: cKI7jcWf7IqRDDg0ba3bMh5vsGNE1ZkQo6QFfhx6pWZz1V/PUcNR7vAYg1HpmrOftWROe39IkNmtBGoHND6WD+1ZBueg2cidCyTgdzkrBkWRYYYQHEw6l3Fc9amMr8aVEzefvDpPT5vgT73B3yOnsOCUKIXLefsgTyDQQxwIWBc=
