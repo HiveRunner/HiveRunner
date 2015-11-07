@@ -7,3 +7,6 @@ notifications:
   email:
   - per.ullberg@klarna.com
   - thomas.larsson@klarna.com
+before_install:
+- openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
+  -in secring.gpg.enc -out secring.gpg -d
