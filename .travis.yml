@@ -2,7 +2,7 @@ sudo: false
 language: java
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings
   settings-4-travis.xml
-script: mvn verify -B --global-settings settings-4-travis.xml -Prelease
+script: mvn deploy -B --global-settings settings-4-travis.xml -Prelease
 notifications:
   email:
   - per.ullberg@klarna.com
@@ -13,4 +13,6 @@ before_install:
 - tar xvf secrets.tar
 env:
   global:
-    secure: cKI7jcWf7IqRDDg0ba3bMh5vsGNE1ZkQo6QFfhx6pWZz1V/PUcNR7vAYg1HpmrOftWROe39IkNmtBGoHND6WD+1ZBueg2cidCyTgdzkrBkWRYYYQHEw6l3Fc9amMr8aVEzefvDpPT5vgT73B3yOnsOCUKIXLefsgTyDQQxwIWBc=
+  - secure: cKI7jcWf7IqRDDg0ba3bMh5vsGNE1ZkQo6QFfhx6pWZz1V/PUcNR7vAYg1HpmrOftWROe39IkNmtBGoHND6WD+1ZBueg2cidCyTgdzkrBkWRYYYQHEw6l3Fc9amMr8aVEzefvDpPT5vgT73B3yOnsOCUKIXLefsgTyDQQxwIWBc=
+  - secure: TQMg46hnAtFPWr2tcr5PNoVMlvwdAFn6kT6KeeBme8RvdNjo+pYFCnmwI4t3jQ5JCt6ZlGhAcahcneD9fjhyPjIMCmXh6KQgZszzYO6wLVrwTxrkVkuXxo42mO5lwpZaVOLXxeXPSx3Bu5JMxUB+uR9CQey9NgcGKS5xZ6cWyjs=
+  - secure: eVxHW6lRDOIQlJ6tk2Sncl/kOCSXU3HiuEXaA7vfC1pVECOxKdRhXZTOJGfyxXO4P8PU+xDasQbYnkK3i/07TtA1YgZRDV3O/1FKmAeepfHm8kjgol1f4HiNTjUeC5cCUso0IIzoUXEuUzJvklkH2cLtbZqTAuZub2L3NSCx6oE=
