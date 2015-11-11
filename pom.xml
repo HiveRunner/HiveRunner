@@ -36,6 +36,7 @@
         <connection>scm:git:git@github.com:klarna/HiveRunner.git</connection>
         <developerConnection>scm:git:git@github.com:klarna/HiveRunner.git</developerConnection>
         <url>git@github.com:klarna/HiveRunner.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
@@ -296,6 +297,7 @@
                             <autoVersionSubmodules>true</autoVersionSubmodules>
                             <useReleaseProfile>false</useReleaseProfile>
                             <releaseProfiles>release</releaseProfiles>
+                            <localCheckout>true</localCheckout>
                             <goals>deploy</goals>
                         </configuration>
                     </plugin>
