@@ -4,6 +4,7 @@ env:
   global:
   - secure: cKI7jcWf7IqRDDg0ba3bMh5vsGNE1ZkQo6QFfhx6pWZz1V/PUcNR7vAYg1HpmrOftWROe39IkNmtBGoHND6WD+1ZBueg2cidCyTgdzkrBkWRYYYQHEw6l3Fc9amMr8aVEzefvDpPT5vgT73B3yOnsOCUKIXLefsgTyDQQxwIWBc=
   - secure: TQMg46hnAtFPWr2tcr5PNoVMlvwdAFn6kT6KeeBme8RvdNjo+pYFCnmwI4t3jQ5JCt6ZlGhAcahcneD9fjhyPjIMCmXh6KQgZszzYO6wLVrwTxrkVkuXxo42mO5lwpZaVOLXxeXPSx3Bu5JMxUB+uR9CQey9NgcGKS5xZ6cWyjs=
+  - secure: JDwUN8BRgku4XLPho+4f6Wt3fkK4OeilPlL9V+HPLGRM2C0kOqVlyJLPQ/sLoASdugzM9eEVT5pQLoPEmbSg7yIH9KgXKVr3ubnaZOBUVUu4rG2rYnCLlIcCQH9GhxNtwbiFxR5uFzL49d7lULFIvA18G47YYGCp3Tp62OW9LTk=
 before_install:
 - openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
   -in secrets.tar.enc -out secrets.tar -d
