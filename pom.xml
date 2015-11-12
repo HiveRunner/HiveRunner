@@ -40,7 +40,6 @@
     </scm>
 
     <properties>
-        <project.scm.id>github</project.scm.id>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tez.version>0.7.0</tez.version>
         <hive.version>0.14.0</hive.version>
