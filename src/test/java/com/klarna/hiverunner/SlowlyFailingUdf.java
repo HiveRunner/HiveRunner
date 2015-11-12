@@ -14,7 +14,7 @@ public class SlowlyFailingUdf extends UDF {
 
     public Text evaluate(Text value) throws InterruptedException {
         /**
-         * Sleep a little while so that the timout thread will have time to take the synchronize lock
+         * Sleep a little while so that the timeout thread will have time to take the synchronize lock
          */
         Thread.sleep(1000);
         // Fail!
