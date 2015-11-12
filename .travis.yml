@@ -14,5 +14,4 @@ install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-s
 script: mvn deploy -B --global-settings settings-4-travis.xml -Prelease
 notifications:
   email:
-  - per.ullberg@klarna.com
-  - thomas.larsson@klarna.com
+  - hiverunner.e@klarna.com
