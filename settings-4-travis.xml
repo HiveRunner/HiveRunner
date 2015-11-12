@@ -5,11 +5,6 @@
             <username>${env.OSSRH_USERNAME}</username>
             <password>${env.OSSRH_PASSWORD}</password>
         </server>
-        <server>
-            <id>github</id>
-            <username>${env.GITHUB_USERNAME}</username>
-            <password>${env.GITHUB_PASSWORD}</password>
-        </server>
     </servers>
     <profiles>
         <profile>
