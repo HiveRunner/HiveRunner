@@ -66,15 +66,14 @@ public class ThrowOnTimeout extends Statement {
                 } else {
                     LOGGER.warn("Test ran for {} seconds. Timeout disabled. See class {} for configuration options.",
                             stopWatch.getTime() / 1000, HiveRunnerConfig.class.getName());
-
-                    statementThread.join();
-
-                    if (statementException != null) {
-                        throw statementException;
-                    }
-
                 }
             }
+        }
+
+        statementThread.join();
+
+        if (statementException != null) {
+            throw statementException;
         }
     }
 

@@ -205,6 +205,11 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
+
+### __2.5.1__
+
+Fixed  deadlock in ThrowOnTimeout.java that occured when running with long running test case and disabled timeout.
+
 ### __2.5.0__
 
 Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
