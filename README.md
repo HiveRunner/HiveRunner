@@ -183,6 +183,10 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
+### __2.4.1__
+
+Fixed  deadlock in ThrowOnTimeout.java that occured when running with long running test case and disabled timeout.
+
 ### __2.4.0__
 
 Enabled any hiveconf variables to be set as System properties by using the naming convention
