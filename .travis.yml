@@ -1,0 +1,17 @@
+sudo: false
+language: java
+env:
+  global:
+  - secure: TQMg46hnAtFPWr2tcr5PNoVMlvwdAFn6kT6KeeBme8RvdNjo+pYFCnmwI4t3jQ5JCt6ZlGhAcahcneD9fjhyPjIMCmXh6KQgZszzYO6wLVrwTxrkVkuXxo42mO5lwpZaVOLXxeXPSx3Bu5JMxUB+uR9CQey9NgcGKS5xZ6cWyjs=
+  - secure: JDwUN8BRgku4XLPho+4f6Wt3fkK4OeilPlL9V+HPLGRM2C0kOqVlyJLPQ/sLoASdugzM9eEVT5pQLoPEmbSg7yIH9KgXKVr3ubnaZOBUVUu4rG2rYnCLlIcCQH9GhxNtwbiFxR5uFzL49d7lULFIvA18G47YYGCp3Tp62OW9LTk=
+  - secure: hJAdSghL7u8JslD1e5C/P7c+kb6bDEjxqmYxKUjCXnpTw1VAnGOtpdTcCSCGCvGZ751J2aaquN8Y3cmmbfdRlCHReP0KQoORAXhE0FlkuNjWFQ0GBaO9v4qstd7uL6sLu78R8oVeoOWxuZvVSIPWH++MYoOt7OF7uqFrGZ4WkvA=
+before_install:
+- openssl aes-256-cbc -K $encrypted_382bb9e66443_key -iv $encrypted_382bb9e66443_iv
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings
+  settings-4-travis.xml
+script: mvn deploy -B --global-settings settings-4-travis.xml -Prelease
+notifications:
+  email:
+  - hiverunner.e@klarna.com

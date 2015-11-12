@@ -5,6 +5,9 @@
     <artifactId>hiverunner</artifactId>
     <version>2.5.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>HiveRunner</name>
+    <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
+    <url>https://github.com/klarna/HiveRunner</url>
 
     <licenses>
         <license>
@@ -14,9 +17,23 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Per Ullberg</name>
+            <organization>Klarna</organization>
+            <organizationUrl>http://www.klarna.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Thomas Larsson</name>
+            <organization>Klarna</organization>
+            <organizationUrl>http://www.klarna.com</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
-        <connection>scm:git:${git.repo}</connection>
-        <developerConnection>scm:git:${git.repo}</developerConnection>
+        <connection>scm:git:https://github.com/klarna/HiveRunner.git</connection>
+        <developerConnection>scm:git:https://github.com/klarna/HiveRunner.git</developerConnection>
+        <url>git@github.com:klarna/HiveRunner.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -173,9 +190,7 @@
                 <version>2.17</version>
                 <configuration>
                     <!-- Hiverunner need this for some queries-->
-                    <forkCount>1C</forkCount>
-                    <reuseForks>true</reuseForks>
-                    <argLine>-Xmx2048m -XX:MaxPermSize=512m</argLine>
+                    <argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
                     <systemProperties>
                         <!--
                         Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
@@ -199,6 +214,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -210,4 +226,68 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.3</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <homedir>${project.basedir}</homedir>
+                                    <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

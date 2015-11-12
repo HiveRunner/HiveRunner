@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=release_to_maven_central)](https://travis-ci.org/klarna/HiveRunner)
+
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
 
@@ -283,3 +285,48 @@ Make sure to set the timeoutSeconds to that of your slowest test in the test sui
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
+
+
+Releasing hiverunner to maven central
+=====================================
+
+Deployment to Sonatype OSSRH using maven and travis-ci
+------------------------------------------------------
+
+HiveRunner has been setup to build continuously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to maven central.
+The following steps were involved.
+
+* A Sonatype OSSRH (Open Source Software Repository Hosting) account has been created for user "klarna.odin".
+* The OSSRH username and password were encrypted according to http://docs.travis-ci.com/user/encryption-keys/
+* A special maven settings.xml file was created that uses the encrypted environment variables in the ossrh server definition.
+* A Gnu PGP keypair was created locally according to http://central.sonatype.org/pages/working-with-pgp-signatures.html
+* The pubring.gpg and secring.gpg were tar'ed into secrets.tar
+* The secrets.tar was encrypted according to http://docs.travis-ci.com/user/encrypting-files/
+* The GPG_PASSPHRASE variable was encrypted for travis usage.
+* The pom has had sections added to it according to instructions from http://central.sonatype.org/pages/apache-maven.html
+* A .travis.yml build file has been added
+
+The above steps are enough for deploying to sonatype/maven central.
+Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
+
+
+Playbook for making a release
+-----------------------------
+Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment
+
+* Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
+* Commit, tag with release number, push
+
+
+     git commit -m "Setting version number before releasing"
+     git tag -a v2.5.0 -m "HiveRunner-2.5.0"
+     git push origin --tags
+
+* Travis builds and deploys
+* Follow the http://central.sonatype.org/pages/releasing-the-deployment.html guide to promote the staged release to maven central.
+* Change version number to next snapshot version
+* Commit and push
+
+
+     git commit -m "Setting version to next development version"
+     git push origin
