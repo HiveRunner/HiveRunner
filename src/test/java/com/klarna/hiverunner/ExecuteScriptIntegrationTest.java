@@ -37,7 +37,7 @@ public class ExecuteScriptIntegrationTest {
       out.println("insert into table test_db.test_table values ('v1');");
     }
 
-    hiveShell.executeScript(file);
+    hiveShell.execute(file);
 
     List<String> result = hiveShell.executeQuery("select c0 from test_db.test_table");
 

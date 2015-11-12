@@ -101,25 +101,25 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public void executeScript(File file) {
+    public void execute(File file) {
         assertStarted();
-        executeScript(Charset.defaultCharset(), file);
+        execute(Charset.defaultCharset(), file);
     }
 
     @Override
-    public void executeScript(Path path) {
+    public void execute(Path path) {
         assertStarted();
-        executeScript(Charset.defaultCharset(), path);
+        execute(Charset.defaultCharset(), path);
     }
 
     @Override
-    public void executeScript(Charset charset, File file) {
+    public void execute(Charset charset, File file) {
         assertStarted();
-        executeScript(charset, Paths.get(file.toURI()));
+        execute(charset, Paths.get(file.toURI()));
     }
 
     @Override
-    public void executeScript(Charset charset, Path path) {
+    public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
         try {

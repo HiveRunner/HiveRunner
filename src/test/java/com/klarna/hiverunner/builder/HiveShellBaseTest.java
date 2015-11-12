@@ -82,7 +82,7 @@ public class HiveShellBaseTest {
 
       HiveShell shell = createHiveShell();
       shell.start();
-      shell.executeScript(file);
+      shell.execute(file);
 
       verify(container).executeScript(hql);
     }
@@ -96,7 +96,7 @@ public class HiveShellBaseTest {
 
       HiveShell shell = createHiveShell();
       shell.start();
-      shell.executeScript(UTF_8, file);
+      shell.execute(UTF_8, file);
 
       verify(container).executeScript(hql);
     }
@@ -110,7 +110,7 @@ public class HiveShellBaseTest {
 
       HiveShell shell = createHiveShell();
       shell.start();
-      shell.executeScript(Paths.get(file.toURI()));
+      shell.execute(Paths.get(file.toURI()));
 
       verify(container).executeScript(hql);
     }
@@ -124,7 +124,7 @@ public class HiveShellBaseTest {
 
       HiveShell shell = createHiveShell();
       shell.start();
-      shell.executeScript(UTF_8, Paths.get(file.toURI()));
+      shell.execute(UTF_8, Paths.get(file.toURI()));
 
       verify(container).executeScript(hql);
     }
@@ -135,7 +135,7 @@ public class HiveShellBaseTest {
 
       HiveShell shell = createHiveShell();
       shell.start();
-      shell.executeScript(UTF_8, Paths.get(file.toURI()));
+      shell.execute(UTF_8, Paths.get(file.toURI()));
     }
     
     @Test(expected = IllegalStateException.class)
@@ -143,7 +143,7 @@ public class HiveShellBaseTest {
       File file = new File(tempFolder.getRoot(), "script.hql");
       
       HiveShell shell = createHiveShell();
-      shell.executeScript(UTF_8, Paths.get(file.toURI()));
+      shell.execute(UTF_8, Paths.get(file.toURI()));
     }
 
     private HiveShell createHiveShell(String... keyValues) {

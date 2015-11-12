@@ -68,7 +68,7 @@ public interface HiveShell {
      * <p/>
      * May only be called post #start()
      */
-    void executeScript(File file);
+    void execute(File file);
     
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'.
@@ -76,21 +76,21 @@ public interface HiveShell {
      * <p/>
      * May only be called post #start()
      */
-    void executeScript(Path path);
+    void execute(Path path);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
      * <p/>
      * May only be called post #start()
      */
-    void executeScript(Charset charset, File file);
+    void execute(Charset charset, File file);
     
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
      * <p/>
      * May only be called post #start()
      */
-    void executeScript(Charset charset, Path path);
+    void execute(Charset charset, Path path);
 
     /**
      * Start the shell. May only be called once. The test engine will by default call this method,
