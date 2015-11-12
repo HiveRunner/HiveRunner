@@ -288,10 +288,10 @@ Releasing hiverunner to maven central
 Deployment to Sonatype OSSRH using maven and travis-ci
 ------------------------------------------------------
 
-HiveRunner has been setup to build continously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to maven central.
+HiveRunner has been setup to build continuously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to maven central.
 The following steps were involved.
 
-* A Sonatype OSSRH (Open Source Software Repository Hosting) acocunt has been created for user "klarna.odin".
+* A Sonatype OSSRH (Open Source Software Repository Hosting) account has been created for user "klarna.odin".
 * The OSSRH username and password were encrypted according to http://docs.travis-ci.com/user/encryption-keys/
 * A special maven settings.xml file was created that uses the encrypted environment variables in the ossrh server definition.
 * A Gnu PGP keypair was created locally according to http://central.sonatype.org/pages/working-with-pgp-signatures.html
