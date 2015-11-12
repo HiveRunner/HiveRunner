@@ -317,16 +317,18 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
 * Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
 * Commit, tag with release number, push
 
-
-     git commit -m "Setting version number before releasing"
-     git tag -a v2.5.0 -m "HiveRunner-2.5.0"
-     git push origin --tags
+```
+      git commit -m "Setting version number before releasing"
+      git tag -a v2.5.0 -m "HiveRunner-2.5.0"
+      git push origin --tags
+```
 
 * Travis builds and deploys
 * Follow the http://central.sonatype.org/pages/releasing-the-deployment.html guide to promote the staged release to maven central.
 * Change version number to next snapshot version
 * Commit and push
 
-
+```
      git commit -m "Setting version to next development version"
      git push origin
+```
