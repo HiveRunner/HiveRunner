@@ -20,13 +20,11 @@
     <developers>
         <developer>
             <name>Per Ullberg</name>
-            <email>per.ullberg@klarna.com</email>
             <organization>Klarna</organization>
             <organizationUrl>http://www.klarna.com</organizationUrl>
         </developer>
         <developer>
             <name>Thomas Larsson</name>
-            <email>thomas.larsson@klarna.com</email>
             <organization>Klarna</organization>
             <organizationUrl>http://www.klarna.com</organizationUrl>
         </developer>
