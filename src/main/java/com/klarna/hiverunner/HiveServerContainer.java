@@ -21,6 +21,7 @@ import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
 import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -45,11 +46,13 @@ public class HiveServerContainer {
     private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private CLIService client;
-    private HiveServerContext context;
+    private final HiveServerContext context;
     private SessionHandle sessionHandle;
     private HiveServer2 hiveServer2;
+    private SessionState currentSessionState;
 
-    HiveServerContainer() {
+    HiveServerContainer(HiveServerContext context) {
+        this.context = context;
     }
 
     public CLIService getClient() {
@@ -59,11 +62,11 @@ public class HiveServerContainer {
     /**
      * Will start the HiveServer.
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
-     * @param context    The context configuring the HiveServer and it's environment
+     * @param hiveVars       HiveVars to pass on to the HiveServer for this session
      */
-    public void init(Map<String, String> testConfig, HiveServerContext context) {
+    public void init(Map<String, String> testConfig, Map<String, String> hiveVars) {
 
-        this.context = context;
+        context.init();
 
         HiveConf hiveConf = context.getHiveConf();
 
@@ -86,6 +89,10 @@ public class HiveServerContainer {
             Preconditions.checkNotNull(client, "ClIService was not initialized by HiveServer2");
 
             sessionHandle = client.openSession("noUser", "noPassword", null);
+
+            SessionState sessionState = client.getSessionManager().getSession(sessionHandle).getSessionState();
+            currentSessionState = sessionState;
+            currentSessionState.setHiveVariables(hiveVars);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to create HiveServer :" + e.getMessage(), e);
         }
@@ -105,14 +112,22 @@ public class HiveServerContainer {
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
-                RowSet rowSet = client.fetchResults(handle);
-                for (Object[] row : rowSet) {
-                    resultSet.add(row.clone());
+
+                /*
+                fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to
+                continuously fetch the result set until all rows are fetched.
+                */
+                RowSet rowSet;
+                while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
+                    for (Object[] row : rowSet) {
+                        resultSet.add(row.clone());
+                    }
                 }
             }
             return resultSet;
         } catch (HiveSQLException e) {
-            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
+                    e);
         }
     }
 
@@ -173,7 +188,7 @@ public class HiveServerContainer {
     }
 
     public String expandVariableSubstitutes(String expression) {
-        return new VariableSubstitution().substitute(getHiveConf(), expression);
+        return getVariableSubstitution().substitute(getHiveConf(), expression);
     }
 
     private void pingHiveServer() {
@@ -184,6 +199,11 @@ public class HiveServerContainer {
         return hiveServer2.getHiveConf();
     }
 
-
+    public VariableSubstitution getVariableSubstitution() {
+        // Make sure to set the session state for this thread before returning the VariableSubstitution. If not set,
+        // hivevar:s will not be evaluated.
+        SessionState.setCurrentSessionState(currentSessionState);
+        return new VariableSubstitution();
+    }
 }
 

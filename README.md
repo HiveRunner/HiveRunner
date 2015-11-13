@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=release_to_maven_central)](https://travis-ci.org/klarna/HiveRunner)
+
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
 
@@ -12,8 +14,6 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
-
----------
 
 A word from the inventors
 ---------
@@ -35,9 +35,9 @@ Clone this repos and build with
 Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you're currently on your own, but then again, since you're using Ivy, you probably know what to do anyway.
 
     <dependency>
-        <groupId>com.klarna.hadoop</groupId>
-        <artifactId>hadoop-hiveunit</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <groupId>com.klarna</groupId>
+        <artifactId>hiverunner</artifactId>
+        <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
     </dependency>
 
@@ -46,7 +46,7 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.17</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
@@ -81,18 +81,23 @@ fork per CPU core and reuse threads would look like:
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the property hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the 
+System property hiveconf_hive.execution.engine to 'tez'.
 
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-            <systemPropertyVariables>
-               <hiveExecutionEngine>tez</hiveExecutionEngine>
-            </systemPropertyVariables>
-        </configuration>
-    </plugin>
+
+(Any hive conf property may be overridden by prefixing it with 'hiveconf_')
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
 
 Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
@@ -104,11 +109,11 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-            <systemPropertyVariables>
+            <systemProperties>
                 <enableTimeout>true</enableTimeout>
                 <timeoutSeconds>30</timeoutSeconds>
                 <timeoutRetries>2</timeoutRetries>
-            </systemPropertyVariables>
+            </systemProperties>
         </configuration>
     </plugin>
 
@@ -132,6 +137,28 @@ Note that the *autostart = false* is needed for the interactive mode. It can be 
 If you work with __sequence files__ (Or anything else than regular text files) make sure to take a look at [ResourceOutputStreamTest](/src/test/java/com/klarna/hiverunner/ResourceOutputStreamTest.java) 
 for an example of how to use the new method [HiveShell](src/main/java/com/klarna/hiverunner/HiveShell.java)\#getResourceOutputStream to manage test input data. 
 
+### Programatically create test input data
+
+Test data can be programmatically inserted into any Hive table using `HiveShell.insertInto(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
+
+    hiveShell.execute("create database test_db");
+    hiveShell.execute("create table test_db.test_table ("
+        + "c1 string,"
+        + "c2 string,"
+        + "c3 string"
+        + ")"
+        + "partitioned by (p1 string)"
+        + "stored as orc");
+
+    hiveShell.insertInto("test_db", "test_table")
+        .withColumns("c1", "p1").addRow("v1", "p1")       // add { "v1", null, null, "p1" }
+        .withAllColumns().addRow("v1", "v2", "v3", "p1")  // add { "v1", "v2", "v3", "p1" }
+        .copyRow().set("c1", "v4")                        // add { "v4", "v2", "v3", "p1" }
+        .addRowsFromTsv(file)                             // parses TSV data out of a file resource
+        .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
+        .commit();
+
+See [com.klarna.hiverunner.InsertIntoTableIntegrationTest](/src/test/java/com/klarna/hiverunner/InsertIntoTableIntegrationTest.java) for working examples.
 
 3. Understand a little bit of the order of execution
 ----------
@@ -177,6 +204,131 @@ Future work and Limitations
 
     __DONE:__ _Derby is gone -> derby.log is gone!_ 
 
+
+Change Log (From version 2.2.0 and onwards)
+==============
+
+### __2.5.1__
+
+Fixed  deadlock in ThrowOnTimeout.java that occured when running with long running test case and disabled timeout.
+
+### __2.5.0__
+
+Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
+
+### __2.4.0__
+
+Enabled any hiveconf variables to be set as System properties by using the naming convention
+hiveconf_[HiveConf property name]. E.g: hiveconf_hive.execution.engine
+
+Fixed bug: Results sets bigger than 100 rows only returned the first 100 rows. 
+
+### __2.3.0__
+
+Merged tez and mr context into the same context again. Now, the same test suite may alter between execution engines by doing 
+E.g: 
+
+     hive> set hive.execution.engine=tez;
+     hive> [some query]
+     hive> set hive.execution.engine=mr;
+     hive> [some query]
+
+
+### __2.2.0__
+* Added support for setting hivevar:s via HiveShell 
+
+
+
+
+Known Issues
+=====================
+
+### IOException in Hive 0.14.0
+Described in this issue: https://github.com/klarna/HiveRunner/issues/3
+
+This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects.
+You can do this in the surefire plugin:
+ 
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.17</version>
+              <configuration>
+                  <systemProperties>
+                      <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                  </systemProperties>
+              </configuration>
+          </plugin>
+ 
+Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
+
+
+### Tez queries do not terminate
+Tez will at times forget the process id of a random DAG. This will cause the query to never terminate. To get around this there is 
+a timeout and retry functionality implemented in HiveRunner:
+ 
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>2.17</version>
+             <configuration>
+                 <systemProperties>
+                     <enableTimeout>true</enableTimeout>
+                     <timeoutSeconds>30</timeoutSeconds>
+                     <timeoutRetries>2</timeoutRetries>
+                     </systemProperties>
+             </configuration>
+         </plugin>
+         
+Make sure to set the timeoutSeconds to that of your slowest test in the test suite and then add some padding.
+
 TAGS
 =========
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
+
+
+Releasing hiverunner to maven central
+=====================================
+
+Deployment to Sonatype OSSRH using maven and travis-ci
+------------------------------------------------------
+
+HiveRunner has been setup to build continuously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to maven central.
+The following steps were involved.
+
+* A Sonatype OSSRH (Open Source Software Repository Hosting) account has been created for user "klarna.odin".
+* The OSSRH username and password were encrypted according to http://docs.travis-ci.com/user/encryption-keys/
+* A special maven settings.xml file was created that uses the encrypted environment variables in the ossrh server definition.
+* A Gnu PGP keypair was created locally according to http://central.sonatype.org/pages/working-with-pgp-signatures.html
+* The pubring.gpg and secring.gpg were tar'ed into secrets.tar
+* The secrets.tar was encrypted according to http://docs.travis-ci.com/user/encrypting-files/
+* The GPG_PASSPHRASE variable was encrypted for travis usage.
+* The pom has had sections added to it according to instructions from http://central.sonatype.org/pages/apache-maven.html
+* A .travis.yml build file has been added
+
+The above steps are enough for deploying to sonatype/maven central.
+Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
+
+
+Playbook for making a release
+-----------------------------
+Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment
+
+* Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
+* Commit, tag with release number, push
+
+```
+      git commit -m "Setting version number before releasing"
+      git tag -a v2.5.0 -m "HiveRunner-2.5.0"
+      git push origin --tags
+```
+
+* Travis builds and deploys
+* Follow the http://central.sonatype.org/pages/releasing-the-deployment.html guide to promote the staged release to maven central.
+* Change version number to next snapshot version
+* Commit and push
+
+```
+     git commit -m "Setting version to next development version"
+     git push origin
+```

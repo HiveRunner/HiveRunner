@@ -2,13 +2,14 @@ package com.klarna.hiverunner.config;
 
 
 import com.google.common.base.Preconditions;
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -23,7 +24,7 @@ import java.util.Map;
  *      &lt;configuration>
  *          ...
  *          &lt;systemProperties>
- *              &lt;hiveExecutionEngine>tez&lt;/hiveExecutionEngine>
+ *              &lt;hiveconf_any.hive.conf>1000&lt;/hiveconf_any.hive.conf>
  *              &lt;enableTimeout>false&lt;/enableTimeout>
  *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
  *              &lt;timeoutRetries>2&lt;/timeoutRetries>
@@ -42,22 +43,10 @@ import java.util.Map;
  *      }};
  * </pre>
  * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
- *
  */
 public class HiveRunnerConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerConfig.class);
-
-
-    /**
-     * What execution engine hive should use. Available are 'mr' (map reduce) and 'tez'
-     *
-     * Defaults to 'mr'
-     */
-    public static final String HIVE_EXECUTION_ENGINE_PROPERTY_NAME = "hiveExecutionEngine";
-    public static final String MAP_REDUCE = "mr";
-    public static final String TEZ = "tez";
-    public static final String HIVE_EXECUTION_ENGINE_DEFAULT = MAP_REDUCE;
 
     /**
      * Enable timeout. Some versions of tez has proven to not always terminate. By enabling timeout,
@@ -84,16 +73,34 @@ public class HiveRunnerConfig {
     public static final String TIMEOUT_RETRIES_PROPERTY_NAME = "timeoutRetries";
     public static final int TIMEOUT_RETRIES_DEFAULT = 2;
 
+    /**
+     * Suffix used to flag a system property to be a hiveconf setting.
+     */
+    public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
+
 
     private Map<String, Object> config = new HashMap<>();
 
-    public HiveRunnerConfig() {
-        config.put(HIVE_EXECUTION_ENGINE_PROPERTY_NAME, load(HIVE_EXECUTION_ENGINE_PROPERTY_NAME,
-                HIVE_EXECUTION_ENGINE_DEFAULT, Arrays.asList(MAP_REDUCE, TEZ)));
+    private Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
-        config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT));
-        config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT));
-        config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT));
+    /**
+     * Construct a HiveRunnerConfig that will override hiveConf with
+     * System properties of the format 'hiveconf_[hiveconf property name]'.
+     */
+    public HiveRunnerConfig() {
+        this(System.getProperties());
+    }
+
+    /**
+     * Construct a HiveRunnerConfig that will override hiveConf with
+     * the given properties of the format 'hiveconf_[hiveconf property name]'.
+     */
+    public HiveRunnerConfig(Properties systemProperties) {
+        config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
+        config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
+        config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
+
+        hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
 
     public boolean isTimeoutEnabled() {
@@ -108,8 +115,16 @@ public class HiveRunnerConfig {
         return getInteger(TIMEOUT_SECONDS_PROPERTY_NAME);
     }
 
+    /**
+     * Get the configured hive.execution.engine. If not set it will default to the default value of HiveConf
+     */
     public String getHiveExecutionEngine() {
-        return getString(HIVE_EXECUTION_ENGINE_PROPERTY_NAME);
+        String executionEngine = hiveConfSystemOverride.get(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname);
+        return executionEngine == null ? HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.getDefaultValue() : executionEngine;
+    }
+
+    public Map<String, String> getHiveConfSystemOverride() {
+        return hiveConfSystemOverride;
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
@@ -125,7 +140,7 @@ public class HiveRunnerConfig {
     }
 
     public void setHiveExecutionEngine(String executionEngine) {
-        config.put(HIVE_EXECUTION_ENGINE_PROPERTY_NAME, executionEngine);
+        hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
     /**
@@ -134,28 +149,29 @@ public class HiveRunnerConfig {
      */
     public void override(HiveRunnerConfig hiveRunnerConfig) {
         this.config.putAll(hiveRunnerConfig.config);
+        this.hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
     }
 
     private String load(String property, String defaultValue,
-                        List<String> validValues) {
-        String value = load(property, defaultValue);
+                        List<String> validValues, Properties sysProperties) {
+        String value = load(property, defaultValue, sysProperties);
         Preconditions.checkArgument(validValues.contains(value),
                 "Invalid value of system property '" + property + "': Only values '" + validValues + "' are allowed");
         return value;
     }
 
-    private static boolean load(String property, boolean defaultValue) {
-        String value = System.getProperty(property);
+    private static boolean load(String property, boolean defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : Boolean.parseBoolean(value);
     }
 
-    private static String load(String property, String defaultValue) {
-        String value = System.getProperty(property);
+    private static String load(String property, String defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : value;
     }
 
-    private static int load(String property, int defaultValue) {
-        String value = System.getProperty(property);
+    private static int load(String property, int defaultValue, Properties sysProperties) {
+        String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : Integer.parseInt(value);
     }
 
@@ -172,4 +188,19 @@ public class HiveRunnerConfig {
     private String getString(String key) {
         return (String) config.get(key);
     }
+
+    private Map<String, String> loadHiveConfSystemOverrides(Properties systemProperties) {
+        Map<String, String> hiveConfSystemOverride = new HashMap<>();
+
+        for (String sysKey : systemProperties.stringPropertyNames()) {
+            if (sysKey.startsWith(HIVECONF_SYSTEM_OVERRIDE_PREFIX)) {
+                String hiveConfKey = sysKey.substring(HIVECONF_SYSTEM_OVERRIDE_PREFIX.length());
+                hiveConfSystemOverride.put(hiveConfKey, systemProperties.getProperty(sysKey));
+            }
+        }
+
+        return hiveConfSystemOverride;
+    }
+
+
 }

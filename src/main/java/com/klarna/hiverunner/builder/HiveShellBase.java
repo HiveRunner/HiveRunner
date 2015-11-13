@@ -19,10 +19,9 @@ package com.klarna.hiverunner.builder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.InsertIntoTable;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,23 +51,25 @@ class HiveShellBase implements HiveShell {
 
     protected final HiveServerContainer hiveServerContainer;
 
-    protected final Map<String, String> props;
-    protected final HiveServerContext context;
+    protected final Map<String, String> hiveConf;
+    protected final Map<String, String> hiveVars;
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
 
 
-    HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> props,
-                  HiveServerContext context, List<String> setupScripts,
+    HiveShellBase(HiveServerContainer hiveServerContainer,
+                  Map<String, String> hiveConf,
+                  List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest) {
         this.hiveServerContainer = hiveServerContainer;
-        this.props = props;
-        this.context = context;
+        this.hiveConf = hiveConf;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
+        this.hiveVars = new HashMap<>();
+
     }
 
     @Override
@@ -103,7 +105,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        hiveServerContainer.init(props, context);
+        hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
 
@@ -162,18 +164,18 @@ class HiveShellBase implements HiveShell {
         assertStarted();
         HiveConf hiveConf = getHiveConf();
         Preconditions.checkNotNull(hiveConf);
-        try {
-            return new VariableSubstitution().substitute(hiveConf, expression);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("Unable to expand '" + expression + "': " + e.getMessage(), e);
-        }
+        return hiveServerContainer.getVariableSubstitution().substitute(hiveConf, expression);
     }
-
 
     @Override
     public void setProperty(String key, String value) {
+        setHiveConfValue(key, value);
+    }
+
+    @Override
+    public void setHiveConfValue(String key, String value) {
         assertNotStarted();
-        props.put(key, value);
+        hiveConf.put(key, value);
     }
 
     @Override
@@ -193,6 +195,12 @@ class HiveShellBase implements HiveShell {
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void setHiveVarValue(String var, String value) {
+        assertNotStarted();
+        hiveVars.put(var, value);
     }
 
     @Override
@@ -219,6 +227,12 @@ class HiveShellBase implements HiveShell {
     @Override
     public void addResource(String targetFile, File sourceFile) {
         addResource(targetFile, Paths.get(sourceFile.toURI()));
+    }
+
+    @Override
+    public InsertIntoTable insertInto(String databaseName, String tableName) {
+        assertStarted();
+        return InsertIntoTable.newInstance(databaseName, tableName, getHiveConf());
     }
 
     private void executeSetupScripts() {

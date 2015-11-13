@@ -24,49 +24,7 @@ public class HiveShellBaseTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    @Test
-    public void substitutedVariablesShouldBeExpanded() {
-        HiveShell shell = createHiveShell("origin", "spanish");
-        shell.start();
-        Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} fox"));
-    }
 
-    @Test
-    public void multipleSubstitutesShouldBeExpanded() {
-        HiveShell shell = createHiveShell(
-                "origin", "spanish",
-                "animal", "fox"
-        );
-        shell.start();
-        Assert.assertEquals("The spanish fox",
-                shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
-    }
-
-    @Test
-    public void unexpandableSubstitutesWillSimplyNotBeExpanded() {
-        HiveShell shell = createHiveShell(
-                "origin", "spanish"
-        );
-        shell.start();
-        Assert.assertEquals("The spanish ${hiveconf:animal}",
-                shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
-    }
-
-    @Test
-    public void nestedSubstitutesShouldBeExpanded() {
-        HiveShell shell = createHiveShell(
-                "origin", "${origin2}",
-                "origin2", "spanish",
-                "animal", "fox",
-                "origin_animal", "${origin} ${animal}",
-                "substitute", "origin_animal"
-
-
-        );
-        shell.start();
-        Assert.assertEquals("The spanish fox",
-                shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
-    }
 
     @Test(expected = IllegalStateException.class)
     public void variableSubstitutionShouldBlowUpIfShellIsNotStarted() {
@@ -128,7 +86,7 @@ public class HiveShellBaseTest {
         List<HiveResource> hiveResources = Arrays.asList();
         List<String> scriptsUnderTest = Arrays.asList();
 
-        return new HiveShellBase(container, hiveConf, context, setupScripts, hiveResources, scriptsUnderTest);
+        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest);
     }
 
 

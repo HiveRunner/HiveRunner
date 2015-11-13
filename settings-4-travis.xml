@@ -1,0 +1,39 @@
+<settings>
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>${env.OSSRH_USERNAME}</username>
+            <password>${env.OSSRH_PASSWORD}</password>
+        </server>
+    </servers>
+    <profiles>
+        <profile>
+            <id>travis-profile</id>
+            <!--
+            It seems that the settings.xml that is used by default when building using Travis CI includes the codehaus
+            repository. This repository does not exist any more so this can cause builds to fail during dependency resolution.
+            By configuring this repository, we seem to be able to override this repo, setting the enabled properties to false.
+            -->
+            <repositories>
+                <repository>
+                    <releases>
+                        <enabled>false</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>fail</checksumPolicy>
+                    </snapshots>
+                    <id>codehaus-snapshots</id>
+                    <name>Codehaus (snapshots)</name>
+                    <url>https://nexus.codehaus.org/snapshots/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>travis-profile</activeProfile>
+    </activeProfiles>
+</settings>  
