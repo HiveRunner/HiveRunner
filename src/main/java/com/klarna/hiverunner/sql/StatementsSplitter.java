@@ -5,31 +5,29 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import com.google.common.io.LineReader;
-
-
 /**
- * Splits hive sql statements into excutable elements.
+ * Splits hive sql statements into executable elements.
  *
  * Input will be split on ';'.
  * ';' in comments (--) or quotes (' or ") will be ignored.
  *
  * Trailing whitespaces and empty elements caused by multiple ';' will be removed.
- *
+ * <p/>
  * E.g:
  * foo;bar
  * baz -- comment with ;
  * 'fox;';
  * love
- *
+ * <p/>
  * will be split into
- *
+ * <p/>
  * [foo,
  * bar
  * baz -- comment with ;
  * 'fox;',
  * love]
- *
+ * <p/>
+ * Full line comments are stripped from script files as is the case with both {@code hive -f} and {@code beeline}. 
  */
 public class StatementsSplitter {
 
