@@ -179,7 +179,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 Hive version compatibility
 ============
 - This version of HiveRunner is built for hive 14.
-- It includes two compatibility modes so that it can closely match the behaviour of both the Hive CLI and Beeline interactive shells.
+- Compatibility modes are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells.
 
 
 Future work and Limitations
