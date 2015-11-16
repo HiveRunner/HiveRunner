@@ -247,6 +247,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             final boolean isAutoStart = annotation.autoStart();
 
             hiveShellBuilder.setScriptsUnderTest(scripts, charset);
+            hiveShellBuilder.setCompatibilityMode(annotation.compatibilityMode());
 
             return new HiveShellField() {
                 @Override

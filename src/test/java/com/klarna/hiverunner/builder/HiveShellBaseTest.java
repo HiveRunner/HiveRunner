@@ -1,8 +1,10 @@
 package com.klarna.hiverunner.builder;
 
+import com.klarna.hiverunner.CompatibilityMode;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.CLIService;
@@ -86,7 +88,7 @@ public class HiveShellBaseTest {
         List<HiveResource> hiveResources = Arrays.asList();
         List<String> scriptsUnderTest = Arrays.asList();
 
-        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest);
+        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest, CompatibilityMode.HIVE_CLI);
     }
 
 

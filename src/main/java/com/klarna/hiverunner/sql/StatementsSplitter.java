@@ -41,6 +41,7 @@ public class StatementsSplitter {
     /**
      * Splits expression on ';'.
      * ';' within quotes (" or ') or comments ( -- ) are ignored.
+     * Full line comments are stripped from script files as is the case with both {@code hive -f} and {@code beeline}. 
      */
     public static List<String> splitStatements(String expression) {
         StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS, true);
@@ -54,7 +55,7 @@ public class StatementsSplitter {
                 // Close statement and start a new one
                 case ";":
                     // Only add statement that is not empty
-                    statement = filterComments(statement);
+                    statement = CommentUtil.filterComments(statement);
                     if (isValidStatement(statement)) {
                         statements.add(statement.trim());
                     }
@@ -82,22 +83,11 @@ public class StatementsSplitter {
         }
 
         // Only add statement that is not empty
-        statement = filterComments(statement);
+        statement = CommentUtil.filterComments(statement);
         if (isValidStatement(statement)) {
             statements.add(statement);
         }
         return statements;
-    }
-
-    private static String filterComments(String statement) {
-      StringBuilder newStatement = new StringBuilder(statement.length());
-      for (String line : statement.split("\n")) {
-        if (!line.trim().startsWith("--")) {
-          newStatement.append(line);
-          newStatement.append('\n');
-        }
-      }
-      return newStatement.toString().trim();
     }
 
     private static boolean isValidStatement(String statement) {

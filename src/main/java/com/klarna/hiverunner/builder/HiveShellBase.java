@@ -18,9 +18,11 @@ package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.CompatibilityMode;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -56,19 +58,22 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
+    protected final CompatibilityMode compatibilityMode;
 
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
                   List<String> setupScripts,
                   List<HiveResource> resources,
-                  List<String> scriptsUnderTest) {
+                  List<String> scriptsUnderTest,
+                  CompatibilityMode compatibilityMode) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
+        this.compatibilityMode = compatibilityMode;
 
     }
 
@@ -81,7 +86,7 @@ class HiveShellBase implements HiveShell {
     public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
 
-        List<Object[]> resultSet = executeStatement(hql);
+        List<Object[]> resultSet = executeStatement(compatibilityMode.transform(hql));
         List<String> result = new ArrayList<>();
         for (Object[] objects : resultSet) {
             result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));

@@ -17,6 +17,7 @@
 package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.CompatibilityMode;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShellContainer;
@@ -39,6 +40,7 @@ public class HiveShellBuilder {
     private HiveServerContainer hiveServerContainer;
     private List<HiveResource> resources = new ArrayList<HiveResource>();
     private List<String> setupScripts = new ArrayList<String>();
+    private CompatibilityMode compatibilityMode = CompatibilityMode.HIVE_CLI;
 
     public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
         this.hiveServerContainer = hiveServerContainer;
@@ -70,9 +72,13 @@ public class HiveShellBuilder {
             }
         }
     }
+    
+    public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
+      this.compatibilityMode = compatibilityMode;
+    }
 
     public HiveShellContainer buildShell() {
-        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest);
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, compatibilityMode);
     }
 }
 
