@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import com.google.common.io.LineReader;
+
 
 /**
  * Splits hive sql statements into excutable elements.
@@ -52,6 +54,7 @@ public class StatementsSplitter {
                 // Close statement and start a new one
                 case ";":
                     // Only add statement that is not empty
+                    statement = filterComments(statement);
                     if (isValidStatement(statement)) {
                         statements.add(statement.trim());
                     }
@@ -79,10 +82,22 @@ public class StatementsSplitter {
         }
 
         // Only add statement that is not empty
+        statement = filterComments(statement);
         if (isValidStatement(statement)) {
             statements.add(statement);
         }
         return statements;
+    }
+
+    private static String filterComments(String statement) {
+      StringBuilder newStatement = new StringBuilder(statement.length());
+      for (String line : statement.split("\n")) {
+        if (!line.trim().startsWith("--")) {
+          newStatement.append(line);
+          newStatement.append('\n');
+        }
+      }
+      return newStatement.toString().trim();
     }
 
     private static boolean isValidStatement(String statement) {
