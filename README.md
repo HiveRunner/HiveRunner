@@ -28,11 +28,8 @@ Cook Book
 
 1. Include HiveRunner
 ----------
-Clone this repos and build with
-    
-    mvn install
 
-Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you're currently on your own, but then again, since you're using Ivy, you probably know what to do anyway.
+HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file.
 
     <dependency>
         <groupId>com.klarna</groupId>
@@ -40,6 +37,12 @@ Add the dependency of HiveRunner to your pom file.  If you prefer Ivy, then you'
         <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
     </dependency>
+
+Alternatively, if you want to build from source, clone this repo and build with
+
+     mvn install
+
+Then add the dependency as mentioned above.
 
 Also explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
 
