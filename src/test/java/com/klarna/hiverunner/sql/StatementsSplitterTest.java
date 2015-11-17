@@ -79,31 +79,6 @@ public class StatementsSplitterTest {
         List expected = Arrays.asList("foo -- b;ar\nbaz");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
-    
-    @Test
-    public void testFullLineCommentFirstLine() {
-      // See HIVE-8396
-      String str = "-- force next step to use a single reducer\nset mapred.reduce.tasks=1;";
-      List expected = Arrays.asList("set mapred.reduce.tasks=1");
-      Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
-    }
-    
-    @Test
-    public void testFullLineCommentLastLine() {
-      // See HIVE-8396
-      String str = "set mapred.reduce.tasks=1;\n-- force next step to use a single reducer";
-      List expected = Arrays.asList("set mapred.reduce.tasks=1");
-      Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
-    }
-    
-    @Test
-    public void testFullLineComment() {
-      // See HIVE-8396
-      String str = "-- force next step to use a single reducer";
-      List expected = Arrays.asList();
-      Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
-    }
-
 
     @Test
     public void testRealLifeExample() {
@@ -139,18 +114,8 @@ public class StatementsSplitterTest {
                         "  -- PRIMARY KEY() -- there no natural primary key for this table, should we add one, e.g. " +
                         "rowno?\n" +
                         "  )";
-        
-        String expectedStatment =
-            "CREATE TABLE ${hiveconf:TARGET_SCHEMA_NAME}.pacc_pstatus (\n" +
-                "  cid\tstring, -- The cid of the transaction the balance change is connected to\n" +
-                "  create_date string , -- the date of the pstatus change\n" +
-                "  old_pstatus string, -- The pstatus before the change\n" +
-                "  new_pstatus string, -- The pstatus after the change\n" +
-                "  manual boolean -- true of the pstatus change is manual, currently false for all changes " +
-                "since we can't know about manual pstatus changes\n" +
-                "  )";
 
-        Assert.assertEquals(Arrays.asList(expectedStatment),
+        Assert.assertEquals(Arrays.asList(firstStatment),
                 StatementsSplitter.splitStatements(firstStatment + ";\n"));
     }
 

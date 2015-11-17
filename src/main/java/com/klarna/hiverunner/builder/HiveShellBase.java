@@ -86,7 +86,7 @@ class HiveShellBase implements HiveShell {
     public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
 
-        List<Object[]> resultSet = executeStatement(compatibilityMode.transform(hql));
+        List<Object[]> resultSet = executeStatement(compatibilityMode.transformStatement(hql));
         List<String> result = new ArrayList<>();
         for (Object[] objects : resultSet) {
             result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));
@@ -102,7 +102,7 @@ class HiveShellBase implements HiveShell {
     @Override
     public void execute(String hql) {
         assertStarted();
-        hiveServerContainer.executeScript(hql);
+        hiveServerContainer.executeScript(compatibilityMode.transformScript(hql));
     }
 
     @Override

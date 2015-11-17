@@ -8,26 +8,51 @@ import org.junit.Test;
 public class CompatibilityModeTest {
 
   @Test
-  public void testFullLineCommentAndSetBeeLine() {
+  public void testFullLineCommentAndSetStatementBeeLine() {
     String hql = "-- hello\nset x=1;";
-    assertThat(CompatibilityMode.BEELINE.transform(hql), is("set x=1;"));
+    assertThat(CompatibilityMode.BEELINE.transformStatement(hql), is("set x=1;"));
   }
 
   @Test
-  public void testFullLineCommentBeeLine() {
-    String hql = "-- hello";
-    assertThat(CompatibilityMode.BEELINE.transform(hql), is(""));
-  }
-
-  @Test
-  public void testFullLineCommentAndSetHiveCli() {
+  public void testFullLineCommentAndSetStatementHiveCli() {
     String hql = "-- hello\nset x=1;";
-    assertThat(CompatibilityMode.HIVE_CLI.transform(hql), is(hql));
+    assertThat(CompatibilityMode.HIVE_CLI.transformStatement(hql), is(hql));
   }
 
   @Test
-  public void testFullLineCommentHiveCli() {
+  public void testFullLineCommentStatementBeeLine() {
     String hql = "-- hello";
-    assertThat(CompatibilityMode.HIVE_CLI.transform(hql), is(hql));
+    assertThat(CompatibilityMode.BEELINE.transformStatement(hql), is(""));
   }
+
+  @Test
+  public void testFullLineCommentStatementHiveCli() {
+    String hql = "-- hello";
+    assertThat(CompatibilityMode.HIVE_CLI.transformStatement(hql), is(hql));
+  }
+
+  @Test
+  public void testFullLineCommentAndSetScriptBeeLine() {
+    String hql = "-- hello\nset x=1;";
+    assertThat(CompatibilityMode.BEELINE.transformScript(hql), is("set x=1;"));
+  }
+
+  @Test
+  public void testFullLineCommentAndSetScriptHiveCli() {
+    String hql = "-- hello\nset x=1;";
+    assertThat(CompatibilityMode.HIVE_CLI.transformScript(hql), is("set x=1;"));
+  }
+
+  @Test
+  public void testFullLineCommentScriptBeeLine() {
+    String hql = "-- hello";
+    assertThat(CompatibilityMode.BEELINE.transformScript(hql), is(""));
+  }
+
+  @Test
+  public void testFullLineCommentScriptHiveCli() {
+    String hql = "-- hello";
+    assertThat(CompatibilityMode.HIVE_CLI.transformScript(hql), is(""));
+  }
+  
 }

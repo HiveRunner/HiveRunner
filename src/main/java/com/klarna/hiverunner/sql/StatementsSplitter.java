@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
  * baz -- comment with ;
  * 'fox;',
  * love]
- * <p/>
- * Full line comments are stripped from script files as is the case with both {@code hive -f} and {@code beeline}. 
  */
 public class StatementsSplitter {
 
@@ -53,7 +51,6 @@ public class StatementsSplitter {
                 // Close statement and start a new one
                 case ";":
                     // Only add statement that is not empty
-                    statement = CommentUtil.filterComments(statement);
                     if (isValidStatement(statement)) {
                         statements.add(statement.trim());
                     }
@@ -81,7 +78,6 @@ public class StatementsSplitter {
         }
 
         // Only add statement that is not empty
-        statement = CommentUtil.filterComments(statement);
         if (isValidStatement(statement)) {
             statements.add(statement);
         }
