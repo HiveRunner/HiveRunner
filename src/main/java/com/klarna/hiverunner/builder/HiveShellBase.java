@@ -86,7 +86,7 @@ class HiveShellBase implements HiveShell {
     public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
 
-        List<Object[]> resultSet = executeStatement(compatibilityMode.transformStatement(hql));
+        List<Object[]> resultSet = executeStatement(hql);
         List<String> result = new ArrayList<>();
         for (Object[] objects : resultSet) {
             result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));
@@ -96,13 +96,17 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<Object[]> executeStatement(String hql) {
-        return hiveServerContainer.executeStatement(hql);
+        return executeStatementWithCompatibilityMode(hql);
+    }
+    
+    private List<Object[]> executeStatementWithCompatibilityMode(String hql) {
+      return hiveServerContainer.executeStatement(compatibilityMode.transformStatement(hql));
     }
 
     @Override
     public void execute(String hql) {
         assertStarted();
-        hiveServerContainer.executeScript(compatibilityMode.transformScript(hql));
+        executeScriptWithCompatibilityMode(hql);
     }
 
     @Override
@@ -243,7 +247,7 @@ class HiveShellBase implements HiveShell {
     private void executeSetupScripts() {
         for (String setupScript : setupScripts) {
             logger.debug("Executing script: " + setupScript);
-            hiveServerContainer.executeScript(setupScript);
+            executeScriptWithCompatibilityMode(setupScript);
         }
     }
 
@@ -277,7 +281,7 @@ class HiveShellBase implements HiveShell {
     private void executeScriptsUnderTest() {
         for (String script : scriptsUnderTest) {
             try {
-                hiveServerContainer.executeScript(script);
+              executeScriptWithCompatibilityMode(script);
             } catch (Exception e) {
                 throw new IllegalStateException(
                         "Failed to executeScript '" + script + "': " + e.getMessage(), e);
@@ -285,6 +289,10 @@ class HiveShellBase implements HiveShell {
         }
     }
 
+    private void executeScriptWithCompatibilityMode(String script) {
+          hiveServerContainer.executeScript(compatibilityMode.transformScript(script));
+    }
+    
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
