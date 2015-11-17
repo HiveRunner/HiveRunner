@@ -216,7 +216,7 @@ Change Log (From version 2.2.0 and onwards)
 
 Introduced compatibility modes to emulate different handling of full line comments in `hive` and `beeline` shells.
 
-Now strips full line comments for exectuted scripts to match the behaviour of the `hive -f` file option. 
+Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
 
 ### __2.5.1__
 
