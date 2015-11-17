@@ -3,7 +3,8 @@ package com.klarna.hiverunner;
 /**
  * Attempt to accurately emulate the behaviours (good and bad) of different Hive shells. Currently the {@code hive}
  * interactive shell (which HiveRunner uses) has an annoying issue where it blows up on some full line comments
- * (HIVE-8396). Beeline does not suffer from this and instead simply removes them. The implementations provided here
+ * (HIVE-8396). Beeline does not suffer from this and instead simply removes them. Full line comments are stripped from
+ * script files as is the case with both {@code hive -f} and {@code beeline -f}. The implementations provided here
  * replicate these modes of operation.
  */
 public enum CompatibilityMode {

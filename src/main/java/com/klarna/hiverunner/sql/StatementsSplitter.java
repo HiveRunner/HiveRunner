@@ -37,7 +37,6 @@ public class StatementsSplitter {
     /**
      * Splits expression on ';'.
      * ';' within quotes (" or ') or comments ( -- ) are ignored.
-     * Full line comments are stripped from script files as is the case with both {@code hive -f} and {@code beeline}. 
      */
     public static List<String> splitStatements(String expression) {
         StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS, true);
