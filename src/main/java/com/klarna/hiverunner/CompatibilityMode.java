@@ -50,8 +50,7 @@ public enum CompatibilityMode {
 
   public abstract String transformScript(String script);
 
-  // Visible for testing only
-  static String filterFullLineComments(String statement) {
+  private static String filterFullLineComments(String statement) {
     StringBuilder newStatement = new StringBuilder(statement.length());
     for (String line : statement.split("\n")) {
       if (!line.trim().startsWith("--")) {
