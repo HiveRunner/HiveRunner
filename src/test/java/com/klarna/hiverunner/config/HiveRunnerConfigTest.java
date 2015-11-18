@@ -4,6 +4,8 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.klarna.hiverunner.CompatibilityMode;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -65,6 +67,22 @@ public class HiveRunnerConfigTest {
         Assert.assertEquals(678, config.getTimeoutRetries());
     }
 
+    @Test
+    public void testCompatibilityMode() {
+      Properties sysProps = new Properties();
+      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "BEELINE");
+      HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+    }
+
+    @Test
+    public void testSetCompatibilityMode() {
+      HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
+      config.setCompatibilityMode(CompatibilityMode.HIVE_CLI);
+      Assert.assertEquals(CompatibilityMode.HIVE_CLI, config.getCompatibilityMode());
+      config.setCompatibilityMode(CompatibilityMode.BEELINE);
+      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+    }
 
     @Test
     public void testEnableTimeoutDefault() {
@@ -82,6 +100,13 @@ public class HiveRunnerConfigTest {
     public void testTimeoutRetriesDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
         Assert.assertEquals(HiveRunnerConfig.TIMEOUT_RETRIES_DEFAULT, config.getTimeoutRetries());
+    }
+    
+    @Test
+    public void testCompatibilityModeDefault() {
+        HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
+        Assert.assertEquals(CompatibilityMode.HIVE_CLI, CompatibilityMode.valueOf(HiveRunnerConfig.COMPATIBILITY_MODE_DEFAULT));
+        Assert.assertEquals(CompatibilityMode.HIVE_CLI, config.getCompatibilityMode());
     }
 
 }

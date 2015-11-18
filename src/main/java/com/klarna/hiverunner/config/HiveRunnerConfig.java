@@ -30,6 +30,7 @@ import java.util.Properties;
  *              &lt;enableTimeout>false&lt;/enableTimeout>
  *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
  *              &lt;timeoutRetries>2&lt;/timeoutRetries>
+ *              &lt;compatibilityMode>BEELINE&lt;/timeoutRetries>
  *          &lt;/systemProperties>
  *      &lt;/configuration>
  * &lt;/plugin>
@@ -42,6 +43,7 @@ import java.util.Properties;
  *          setTimeoutEnabled(true);
  *          setTimeoutSeconds(15);
  *          setTimeoutRetries(2);
+ *          setCompatibilityMode(CompatibilityMode.BEELINE);
  *      }};
  * </pre>
  * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
@@ -140,7 +142,7 @@ public class HiveRunnerConfig {
      * between different clients.
      */
     public CompatibilityMode getCompatibilityMode() {
-      return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME));
+        return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME));
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
@@ -160,7 +162,7 @@ public class HiveRunnerConfig {
     }
 
     public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
-      config.put(COMPATIBILITY_MODE_PROPERTY_NAME, compatibilityMode.name());
+        config.put(COMPATIBILITY_MODE_PROPERTY_NAME, compatibilityMode.name());
     }
     
     /**
