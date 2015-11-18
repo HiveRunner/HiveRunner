@@ -5,8 +5,6 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.CompatibilityMode;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +28,7 @@ import java.util.Properties;
  *              &lt;enableTimeout>false&lt;/enableTimeout>
  *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
  *              &lt;timeoutRetries>2&lt;/timeoutRetries>
- *              &lt;compatibilityMode>BEELINE&lt;/timeoutRetries>
+ *              &lt;compatibilityMode>BEELINE&lt;/compatibilityMode>
  *          &lt;/systemProperties>
  *      &lt;/configuration>
  * &lt;/plugin>
@@ -49,8 +47,6 @@ import java.util.Properties;
  * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
  */
 public class HiveRunnerConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerConfig.class);
 
     /**
      * Enable timeout. Some versions of tez has proven to not always terminate. By enabling timeout,
@@ -83,7 +79,9 @@ public class HiveRunnerConfig {
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
     /**
-     * Suffix used to flag a system property to be a hiveconf setting.
+     * The shell {@link CompatibilityMode}.
+     * 
+     * Defaults to {@code HIVE_CLI}
      */
     public static final String COMPATIBILITY_MODE_PROPERTY_NAME = "compatibilityMode";
     public static final String COMPATIBILITY_MODE_DEFAULT = CompatibilityMode.HIVE_CLI.name();
