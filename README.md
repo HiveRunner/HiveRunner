@@ -211,6 +211,10 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
+### __2.6.0-SNAPSHOT__
+
+Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...)
+
 ### __2.5.1__
 
 Fixed  deadlock in ThrowOnTimeout.java that occured when running with long running test case and disabled timeout.
