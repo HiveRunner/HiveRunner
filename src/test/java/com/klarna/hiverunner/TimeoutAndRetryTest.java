@@ -25,9 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Hive Runner Reference implementation.
- * <p/>
- * All HiveRunner tests should run with the StandaloneHiveRunner
+ * Test cases for verifying the Timeout functionality of HiveRunner.
+ *
+ * Due to timing issues these test cases may fail on a low resource test environment. In that case try raising the
+ * Timeout by setting the 'TimeoutAndRetryTest.timeout.seconds' property in pom.xml or by passing it via command line
+ * like -DTimeoutAndRetryTest.timeout.seconds=60
  */
 @RunWith(StandaloneHiveRunner.class)
 public class TimeoutAndRetryTest {
@@ -35,7 +37,8 @@ public class TimeoutAndRetryTest {
     @HiveRunnerSetup
     public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
         setTimeoutEnabled(true);
-        setTimeoutSeconds(30);
+        String timoutSeconds = System.getProperty("TimeoutAndRetryTest.timeout.seconds");
+        setTimeoutSeconds(timoutSeconds == null ? 30 : Integer.parseInt(timoutSeconds));
         setTimeoutRetries(2);
     }};
 
