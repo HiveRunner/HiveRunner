@@ -1,12 +1,15 @@
 package com.klarna.hiverunner.builder;
 
+import static com.google.common.base.Charsets.UTF_8;
+import static org.mockito.Mockito.verify;
+
+import com.google.common.io.Files;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.CLIService;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -14,6 +17,7 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +28,7 @@ public class HiveShellBaseTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-
+    private HiveServerContainer container;
 
     @Test(expected = IllegalStateException.class)
     public void variableSubstitutionShouldBlowUpIfShellIsNotStarted() {
@@ -69,13 +73,86 @@ public class HiveShellBaseTest {
         shell.addSetupScripts(tempFolder.newFile("foo"));
     }
 
+    @Test
+    public void executeScriptFile() throws IOException {
+      String hql = "use default;";
+
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      Files.write(hql, file, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+      shell.execute(file);
+
+      verify(container).executeScript(hql);
+    }
+
+    @Test
+    public void executeScriptCharsetFile() throws IOException {
+      String hql = "use default;";
+
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      Files.write(hql, file, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+      shell.execute(UTF_8, file);
+
+      verify(container).executeScript(hql);
+    }
+    
+    @Test
+    public void executeScriptPath() throws IOException {
+      String hql = "use default;";
+
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      Files.write(hql, file, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+      shell.execute(Paths.get(file.toURI()));
+
+      verify(container).executeScript(hql);
+    }
+
+    @Test
+    public void executeScriptCharsetPath() throws IOException {
+      String hql = "use default;";
+
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      Files.write(hql, file, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+      shell.execute(UTF_8, Paths.get(file.toURI()));
+
+      verify(container).executeScript(hql);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void executeScriptFileNotExists() throws IOException {
+      File file = new File(tempFolder.getRoot(), "script.hql");
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+      shell.execute(UTF_8, Paths.get(file.toURI()));
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void executeScriptNotStarted() throws IOException {
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      
+      HiveShell shell = createHiveShell();
+      shell.execute(UTF_8, Paths.get(file.toURI()));
+    }
+
     private HiveShell createHiveShell(String... keyValues) {
         Map<String, String> hiveConf = MapUtils.putAll(new HashMap(), keyValues);
         HiveConf conf = createHiveconf(hiveConf);
 
         CLIService client = Mockito.mock(CLIService.class);
 
-        HiveServerContainer container = Mockito.mock(HiveServerContainer.class);
+        container = Mockito.mock(HiveServerContainer.class);
         Mockito.when(container.getHiveConf()).thenReturn(conf);
         Mockito.when(container.getClient()).thenReturn(client);
 
