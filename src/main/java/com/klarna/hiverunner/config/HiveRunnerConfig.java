@@ -140,7 +140,7 @@ public class HiveRunnerConfig {
      * between different clients.
      */
     public CompatibilityMode getCompatibilityMode() {
-        return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME));
+        return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME).toUpperCase());
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
