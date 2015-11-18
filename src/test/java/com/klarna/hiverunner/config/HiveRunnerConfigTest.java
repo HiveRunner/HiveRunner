@@ -73,6 +73,14 @@ public class HiveRunnerConfigTest {
       sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "BEELINE");
       HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
       Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+
+      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "beeline");
+      config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+
+      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "BeElInE");
+      config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
     }
 
     @Test
