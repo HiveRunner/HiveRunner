@@ -63,6 +63,36 @@ public interface HiveShell {
     void execute(String script);
 
     /**
+     * Executes a hive script. The script may contain multiple statements delimited by ';'.
+     * Default charset will be used to read the given files.
+     * <p/>
+     * May only be called post #start()
+     */
+    void execute(File file);
+    
+    /**
+     * Executes a hive script. The script may contain multiple statements delimited by ';'.
+     * Default charset will be used to read the given files.
+     * <p/>
+     * May only be called post #start()
+     */
+    void execute(Path path);
+
+    /**
+     * Executes a hive script. The script may contain multiple statements delimited by ';'
+     * <p/>
+     * May only be called post #start()
+     */
+    void execute(Charset charset, File file);
+    
+    /**
+     * Executes a hive script. The script may contain multiple statements delimited by ';'
+     * <p/>
+     * May only be called post #start()
+     */
+    void execute(Charset charset, Path path);
+
+    /**
      * Start the shell. May only be called once. The test engine will by default call this method,
      * Set {@link com.klarna.hiverunner.annotations.HiveSQL#autoStart()} to false to explicitly control
      * when to start from the test case.
