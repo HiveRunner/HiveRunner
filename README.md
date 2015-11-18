@@ -122,7 +122,7 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
 
 
 ### Logging
-src/main/resources/log4j.properties confogures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.   
+src/main/resources/log4j.properties configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
 
 
 2. Look at the examples
