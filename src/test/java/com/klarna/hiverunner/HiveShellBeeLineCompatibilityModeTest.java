@@ -24,12 +24,19 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveShellBeeLineCompatibilityModeTest {
 
-  @HiveSQL(files = {}, encoding = "UTF-8", compatibilityMode = CompatibilityMode.BEELINE)
+  @HiveRunnerSetup
+  public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
+      setCompatibilityMode(CompatibilityMode.BEELINE);
+  }};
+  
+  @HiveSQL(files = {}, encoding = "UTF-8")
   private HiveShell beeLineShell;
 
   /** Failure described in HIVE-8396 should be avoided for beeline. */

@@ -201,6 +201,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         final HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
 
         HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
+        hiveShellBuilder.setCompatibilityMode(config.getCompatibilityMode());
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
 
@@ -247,7 +248,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             final boolean isAutoStart = annotation.autoStart();
 
             hiveShellBuilder.setScriptsUnderTest(scripts, charset);
-            hiveShellBuilder.setCompatibilityMode(annotation.compatibilityMode());
 
             return new HiveShellField() {
                 @Override

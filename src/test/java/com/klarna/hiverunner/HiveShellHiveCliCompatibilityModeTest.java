@@ -24,12 +24,19 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveShellHiveCliCompatibilityModeTest {
 
-  @HiveSQL(files = {}, encoding = "UTF-8", compatibilityMode = CompatibilityMode.HIVE_CLI)
+  @HiveRunnerSetup
+  public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
+      setCompatibilityMode(CompatibilityMode.HIVE_CLI);
+  }};
+  
+  @HiveSQL(files = {}, encoding = "UTF-8")
   private HiveShell hiveCliShell;
 
   /** Retains the behaviour described in HIVE-8396. */

@@ -19,8 +19,6 @@ package com.klarna.hiverunner.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import com.klarna.hiverunner.CompatibilityMode;
-
 /**
  * Marks a field (of type HiveShell) in a unit test. This field with its annotation is mandatory.
  * The HiveRunner will set the HiveShell instance before each test method is called.
@@ -48,9 +46,4 @@ public @interface HiveSQL {
      */
     String encoding() default "";
     
-    /**
-     * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
-     * between different clients.
-     */
-    CompatibilityMode compatibilityMode() default CompatibilityMode.HIVE_CLI;
 }

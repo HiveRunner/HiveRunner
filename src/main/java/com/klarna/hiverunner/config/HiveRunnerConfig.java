@@ -2,6 +2,8 @@ package com.klarna.hiverunner.config;
 
 
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.CompatibilityMode;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,11 @@ public class HiveRunnerConfig {
      */
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
+    /**
+     * Suffix used to flag a system property to be a hiveconf setting.
+     */
+    public static final String COMPATIBILITY_MODE_PROPERTY_NAME = "compatibilityMode";
+    public static final String COMPATIBILITY_MODE_DEFAULT = CompatibilityMode.HIVE_CLI.name();
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -99,6 +106,7 @@ public class HiveRunnerConfig {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
+        config.put(COMPATIBILITY_MODE_PROPERTY_NAME, load(COMPATIBILITY_MODE_PROPERTY_NAME, COMPATIBILITY_MODE_DEFAULT, systemProperties));
 
         hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
@@ -126,6 +134,14 @@ public class HiveRunnerConfig {
     public Map<String, String> getHiveConfSystemOverride() {
         return hiveConfSystemOverride;
     }
+    
+    /**
+     * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
+     * between different clients.
+     */
+    public CompatibilityMode getCompatibilityMode() {
+      return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME));
+    }
 
     public void setTimeoutEnabled(boolean isEnabled) {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, isEnabled);
@@ -143,6 +159,10 @@ public class HiveRunnerConfig {
         hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
+    public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
+      config.put(COMPATIBILITY_MODE_PROPERTY_NAME, compatibilityMode.name());
+    }
+    
     /**
      * Copy values from the inserted config to this config. Note that if properties has not been explicitly set,
      * the defaults will apply.
@@ -201,6 +221,5 @@ public class HiveRunnerConfig {
 
         return hiveConfSystemOverride;
     }
-
 
 }
