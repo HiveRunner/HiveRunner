@@ -28,7 +28,7 @@ import java.util.Properties;
  *              &lt;enableTimeout>false&lt;/enableTimeout>
  *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
  *              &lt;timeoutRetries>2&lt;/timeoutRetries>
- *              &lt;compatibilityMode>BEELINE&lt;/compatibilityMode>
+ *              &lt;commandShellEmulation>BEELINE&lt;/commandShellEmulation>
  *          &lt;/systemProperties>
  *      &lt;/configuration>
  * &lt;/plugin>
@@ -41,7 +41,7 @@ import java.util.Properties;
  *          setTimeoutEnabled(true);
  *          setTimeoutSeconds(15);
  *          setTimeoutRetries(2);
- *          setCompatibilityMode(CompatibilityMode.BEELINE);
+ *          setCommandShellEmulation(CommandShellEmulation.BEELINE);
  *      }};
  * </pre>
  * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
