@@ -2,7 +2,7 @@ package com.klarna.hiverunner.config;
 
 
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CompatibilityMode;
+import com.klarna.hiverunner.CommandShellEmulation;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 
@@ -79,12 +79,12 @@ public class HiveRunnerConfig {
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
     /**
-     * The shell {@link CompatibilityMode}.
+     * The shell's {@link CommandShellEmulation}.
      * 
      * Defaults to {@code HIVE_CLI}
      */
-    public static final String COMPATIBILITY_MODE_PROPERTY_NAME = "compatibilityMode";
-    public static final String COMPATIBILITY_MODE_DEFAULT = CompatibilityMode.HIVE_CLI.name();
+    public static final String COMMAND_SHELL_EMULATION_PROPERTY_NAME = "commandShellEmulation";
+    public static final String COMMAND_SHELL_EMULATION_DEFAULT = CommandShellEmulation.HIVE_CLI.name();
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -106,7 +106,7 @@ public class HiveRunnerConfig {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
-        config.put(COMPATIBILITY_MODE_PROPERTY_NAME, load(COMPATIBILITY_MODE_PROPERTY_NAME, COMPATIBILITY_MODE_DEFAULT, systemProperties));
+        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, load(COMMAND_SHELL_EMULATION_PROPERTY_NAME, COMMAND_SHELL_EMULATION_DEFAULT, systemProperties));
 
         hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
@@ -139,8 +139,8 @@ public class HiveRunnerConfig {
      * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
      * between different clients.
      */
-    public CompatibilityMode getCompatibilityMode() {
-        return CompatibilityMode.valueOf(getString(COMPATIBILITY_MODE_PROPERTY_NAME).toUpperCase());
+    public CommandShellEmulation getCommandShellEmulation() {
+        return CommandShellEmulation.valueOf(getString(COMMAND_SHELL_EMULATION_PROPERTY_NAME).toUpperCase());
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
@@ -159,8 +159,8 @@ public class HiveRunnerConfig {
         hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
-    public void setCompatibilityMode(CompatibilityMode compatibilityMode) {
-        config.put(COMPATIBILITY_MODE_PROPERTY_NAME, compatibilityMode.name());
+    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
+        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, commandShellEmulation.name());
     }
     
     /**

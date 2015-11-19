@@ -22,7 +22,7 @@ package com.klarna.hiverunner;
  * script files as is the case with both {@code hive -f} and {@code beeline -f}. The implementations provided here
  * replicate these modes of operation.
  */
-public enum CompatibilityMode {
+public enum CommandShellEmulation {
   HIVE_CLI {
     @Override
     public String transformStatement(String statement) {

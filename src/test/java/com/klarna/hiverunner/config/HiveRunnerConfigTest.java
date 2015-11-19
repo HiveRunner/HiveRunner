@@ -4,7 +4,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.klarna.hiverunner.CompatibilityMode;
+import com.klarna.hiverunner.CommandShellEmulation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,28 +68,28 @@ public class HiveRunnerConfigTest {
     }
 
     @Test
-    public void testCompatibilityMode() {
+    public void testCommandShellEmulation() {
       Properties sysProps = new Properties();
-      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "BEELINE");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BEELINE");
       HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
 
-      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "beeline");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "beeline");
       config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
 
-      sysProps.put(HiveRunnerConfig.COMPATIBILITY_MODE_PROPERTY_NAME, "BeElInE");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BeElInE");
       config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
     }
 
     @Test
-    public void testSetCompatibilityMode() {
+    public void testSetCommandShellEmulation() {
       HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-      config.setCompatibilityMode(CompatibilityMode.HIVE_CLI);
-      Assert.assertEquals(CompatibilityMode.HIVE_CLI, config.getCompatibilityMode());
-      config.setCompatibilityMode(CompatibilityMode.BEELINE);
-      Assert.assertEquals(CompatibilityMode.BEELINE, config.getCompatibilityMode());
+      config.setCommandShellEmulation(CommandShellEmulation.HIVE_CLI);
+      Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
+      config.setCommandShellEmulation(CommandShellEmulation.BEELINE);
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
     }
 
     @Test
@@ -111,10 +111,10 @@ public class HiveRunnerConfigTest {
     }
     
     @Test
-    public void testCompatibilityModeDefault() {
+    public void testCommandShellEmulationDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-        Assert.assertEquals(CompatibilityMode.HIVE_CLI, CompatibilityMode.valueOf(HiveRunnerConfig.COMPATIBILITY_MODE_DEFAULT));
-        Assert.assertEquals(CompatibilityMode.HIVE_CLI, config.getCompatibilityMode());
+        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, CommandShellEmulation.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATION_DEFAULT));
+        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
     }
 
 }

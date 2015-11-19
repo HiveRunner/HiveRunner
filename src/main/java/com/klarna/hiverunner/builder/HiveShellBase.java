@@ -18,7 +18,7 @@ package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CompatibilityMode;
+import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
@@ -58,7 +58,7 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
-    protected final CompatibilityMode compatibilityMode;
+    protected final CommandShellEmulation commandShellEmulation;
 
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
@@ -66,14 +66,14 @@ class HiveShellBase implements HiveShell {
                   List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest,
-                  CompatibilityMode compatibilityMode) {
+                  CommandShellEmulation commandShellEmulation) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
-        this.compatibilityMode = compatibilityMode;
+        this.commandShellEmulation = commandShellEmulation;
 
     }
 
@@ -96,17 +96,17 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<Object[]> executeStatement(String hql) {
-        return executeStatementWithCompatibilityMode(hql);
+        return executeStatementWithCommandShellEmulation(hql);
     }
     
-    private List<Object[]> executeStatementWithCompatibilityMode(String hql) {
-      return hiveServerContainer.executeStatement(compatibilityMode.transformStatement(hql));
+    private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
+      return hiveServerContainer.executeStatement(commandShellEmulation.transformStatement(hql));
     }
 
     @Override
     public void execute(String hql) {
         assertStarted();
-        executeScriptWithCompatibilityMode(hql);
+        executeScriptWithCommandShellEmulation(hql);
     }
 
     @Override
@@ -276,7 +276,7 @@ class HiveShellBase implements HiveShell {
     private void executeSetupScripts() {
         for (String setupScript : setupScripts) {
             logger.debug("Executing script: " + setupScript);
-            executeScriptWithCompatibilityMode(setupScript);
+            executeScriptWithCommandShellEmulation(setupScript);
         }
     }
 
@@ -310,7 +310,7 @@ class HiveShellBase implements HiveShell {
     private void executeScriptsUnderTest() {
         for (String script : scriptsUnderTest) {
             try {
-              executeScriptWithCompatibilityMode(script);
+              executeScriptWithCommandShellEmulation(script);
             } catch (Exception e) {
                 throw new IllegalStateException(
                         "Failed to executeScript '" + script + "': " + e.getMessage(), e);
@@ -318,8 +318,8 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    private void executeScriptWithCompatibilityMode(String script) {
-          hiveServerContainer.executeScript(compatibilityMode.transformScript(script));
+    private void executeScriptWithCommandShellEmulation(String script) {
+          hiveServerContainer.executeScript(commandShellEmulation.transformScript(script));
     }
     
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {

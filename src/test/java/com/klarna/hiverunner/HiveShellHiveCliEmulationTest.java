@@ -29,60 +29,58 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 @RunWith(StandaloneHiveRunner.class)
-public class HiveShellBeeLineCompatibilityModeTest {
+public class HiveShellHiveCliEmulationTest {
 
   @HiveRunnerSetup
   public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-      setCompatibilityMode(CompatibilityMode.BEELINE);
+      setCommandShellEmulation(CommandShellEmulation.HIVE_CLI);
   }};
   
   @HiveSQL(files = {}, encoding = "UTF-8")
-  private HiveShell beeLineShell;
+  private HiveShell hiveCliShell;
 
-  /** Failure described in HIVE-8396 should be avoided for beeline. */
-  @Test
+  /** Retains the behaviour described in HIVE-8396. */
+  @Test(expected = IllegalArgumentException.class)
   public void testQueryStripFullLineCommentFirstLine() {
-    beeLineShell.executeQuery("-- a\nset x=1");
-    List<String> results = beeLineShell.executeQuery("set x");
-    assertThat(results, is(Arrays.asList("x=1")));
+    hiveCliShell.executeQuery("-- a\nset x=1");
   }
 
-  /** Beeline strips comment before assignment. */
+  /** Hive CLI captures comment as value. */
   @Test
   public void testQueryStripFullLineCommentNested() {
-    beeLineShell.executeQuery("set x=\n-- a\n1");
-    List<String> results = beeLineShell.executeQuery("set x");
-    assertThat(results, is(Arrays.asList("x=1")));
+    hiveCliShell.executeQuery("set x=\n-- a\n1");
+    List<String> results = hiveCliShell.executeQuery("set x");
+    assertThat(results, is(Arrays.asList("x=-- a", "1")));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testQueryStripFullLineComment() {
-    beeLineShell.executeQuery("-- a");
+    hiveCliShell.executeQuery("-- a");
   }
 
   @Test
   public void testScriptStripFullLineCommentFirstLine() {
-    beeLineShell.execute("-- a\nset x=1;");
-    List<String> results = beeLineShell.executeQuery("set x");
+    hiveCliShell.execute("-- a\nset x=1;");
+    List<String> results = hiveCliShell.executeQuery("set x");
     assertThat(results, is(Arrays.asList("x=1")));
   }
 
   @Test
   public void testScriptStripFullLineCommentLastLine() {
-    beeLineShell.execute("set x=1;\n-- a");
-    List<String> results = beeLineShell.executeQuery("set x");
+    hiveCliShell.execute("set x=1;\n-- a");
+    List<String> results = hiveCliShell.executeQuery("set x");
     assertThat(results, is(Arrays.asList("x=1")));
   }
 
   @Test
   public void testScriptStripFullLineComment() {
-    beeLineShell.execute("-- a");
+    hiveCliShell.execute("-- a");
   }
 
   @Test
   public void testScriptStripFullLineCommentNested() {
-    beeLineShell.execute("set x=\n-- a\n1;");
-    List<String> results = beeLineShell.executeQuery("set x");
+    hiveCliShell.execute("set x=\n-- a\n1;");
+    List<String> results = hiveCliShell.executeQuery("set x");
     assertThat(results, is(Arrays.asList("x=1")));
   }
 

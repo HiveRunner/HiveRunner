@@ -1,6 +1,6 @@
 package com.klarna.hiverunner.builder;
 
-import com.klarna.hiverunner.CompatibilityMode;
+import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
 import static org.mockito.Mockito.verify;
 
@@ -165,7 +165,7 @@ public class HiveShellBaseTest {
         List<HiveResource> hiveResources = Arrays.asList();
         List<String> scriptsUnderTest = Arrays.asList();
 
-        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest, CompatibilityMode.HIVE_CLI);
+        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest, CommandShellEmulation.HIVE_CLI);
     }
 
 
