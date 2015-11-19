@@ -103,7 +103,7 @@ public class StatementsSplitterTest {
 
     @Test
     public void realLifeWithComments() {
-        String firstStatment =
+        String firstStatement =
                 "CREATE TABLE ${hiveconf:TARGET_SCHEMA_NAME}.pacc_pstatus (\n" +
                         "  cid\tstring, -- The cid of the transaction the balance change is connected to\n" +
                         "  create_date string , -- the date of the pstatus change\n" +
@@ -115,8 +115,8 @@ public class StatementsSplitterTest {
                         "rowno?\n" +
                         "  )";
 
-        Assert.assertEquals(Arrays.asList(firstStatment),
-                StatementsSplitter.splitStatements(firstStatment + ";\n"));
+        Assert.assertEquals(Arrays.asList(firstStatement),
+                StatementsSplitter.splitStatements(firstStatement + ";\n"));
     }
 
 

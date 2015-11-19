@@ -201,7 +201,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         final HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
 
         HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
-        hiveShellBuilder.setCompatibilityMode(config.getCommandShellEmulation());
+        hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulation());
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
 

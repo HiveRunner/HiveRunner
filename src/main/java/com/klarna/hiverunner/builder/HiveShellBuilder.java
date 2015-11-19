@@ -19,7 +19,6 @@ package com.klarna.hiverunner.builder;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShellContainer;
 
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class HiveShellBuilder {
         }
     }
     
-    public void setCompatibilityMode(CommandShellEmulation commandShellEmulation) {
+    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
       this.commandShellEmulation = commandShellEmulation;
     }
 
