@@ -190,7 +190,7 @@
                 <version>2.17</version>
                 <configuration>
                     <!-- Hiverunner need this for some queries-->
-                    <argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                     <systemProperties>
                         <!--
                         Any hive conf property may be overridden here by suffixing it with 'hiveconf_'

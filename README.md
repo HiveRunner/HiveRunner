@@ -230,9 +230,9 @@ Change Log (From version 2.2.0 and onwards)
 ### __2.6.0-SNAPSHOT__
 
 * Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells.
+Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
 
-* Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
-Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...)
+* Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...)
 
 ### __2.5.1__
 
