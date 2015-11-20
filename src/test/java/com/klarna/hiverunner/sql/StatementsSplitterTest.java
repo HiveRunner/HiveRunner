@@ -80,7 +80,6 @@ public class StatementsSplitterTest {
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
-
     @Test
     public void testRealLifeExample() {
         String firstStatamenet =
@@ -104,7 +103,7 @@ public class StatementsSplitterTest {
 
     @Test
     public void realLifeWithComments() {
-        String firstStatamenet =
+        String firstStatement =
                 "CREATE TABLE ${hiveconf:TARGET_SCHEMA_NAME}.pacc_pstatus (\n" +
                         "  cid\tstring, -- The cid of the transaction the balance change is connected to\n" +
                         "  create_date string , -- the date of the pstatus change\n" +
@@ -116,8 +115,8 @@ public class StatementsSplitterTest {
                         "rowno?\n" +
                         "  )";
 
-        Assert.assertEquals(Arrays.asList(firstStatamenet),
-                StatementsSplitter.splitStatements(firstStatamenet + ";\n"));
+        Assert.assertEquals(Arrays.asList(firstStatement),
+                StatementsSplitter.splitStatements(firstStatement + ";\n"));
     }
 
 

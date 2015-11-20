@@ -2,9 +2,9 @@ package com.klarna.hiverunner.config;
 
 
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.CommandShellEmulation;
+
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Properties;
  *              &lt;enableTimeout>false&lt;/enableTimeout>
  *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
  *              &lt;timeoutRetries>2&lt;/timeoutRetries>
+ *              &lt;commandShellEmulation>BEELINE&lt;/commandShellEmulation>
  *          &lt;/systemProperties>
  *      &lt;/configuration>
  * &lt;/plugin>
@@ -40,13 +41,12 @@ import java.util.Properties;
  *          setTimeoutEnabled(true);
  *          setTimeoutSeconds(15);
  *          setTimeoutRetries(2);
+ *          setCommandShellEmulation(CommandShellEmulation.BEELINE);
  *      }};
  * </pre>
  * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
  */
 public class HiveRunnerConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerConfig.class);
 
     /**
      * Enable timeout. Some versions of tez has proven to not always terminate. By enabling timeout,
@@ -78,6 +78,13 @@ public class HiveRunnerConfig {
      */
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
+    /**
+     * The shell's {@link CommandShellEmulation}.
+     * 
+     * Defaults to {@code HIVE_CLI}
+     */
+    public static final String COMMAND_SHELL_EMULATION_PROPERTY_NAME = "commandShellEmulation";
+    public static final String COMMAND_SHELL_EMULATION_DEFAULT = CommandShellEmulation.HIVE_CLI.name();
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -99,6 +106,7 @@ public class HiveRunnerConfig {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
+        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, load(COMMAND_SHELL_EMULATION_PROPERTY_NAME, COMMAND_SHELL_EMULATION_DEFAULT, systemProperties));
 
         hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
@@ -126,6 +134,14 @@ public class HiveRunnerConfig {
     public Map<String, String> getHiveConfSystemOverride() {
         return hiveConfSystemOverride;
     }
+    
+    /**
+     * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
+     * between different clients.
+     */
+    public CommandShellEmulation getCommandShellEmulation() {
+        return CommandShellEmulation.valueOf(getString(COMMAND_SHELL_EMULATION_PROPERTY_NAME).toUpperCase());
+    }
 
     public void setTimeoutEnabled(boolean isEnabled) {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, isEnabled);
@@ -143,6 +159,10 @@ public class HiveRunnerConfig {
         hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
+    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
+        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, commandShellEmulation.name());
+    }
+    
     /**
      * Copy values from the inserted config to this config. Note that if properties has not been explicitly set,
      * the defaults will apply.
@@ -201,6 +221,5 @@ public class HiveRunnerConfig {
 
         return hiveConfSystemOverride;
     }
-
 
 }
