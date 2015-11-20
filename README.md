@@ -181,7 +181,7 @@ Hive version compatibility
 - This version of HiveRunner is built for hive 14.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
-      <plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.17</version>
@@ -191,7 +191,7 @@ Hive version compatibility
                   <commandShellEmulation>BEELINE</commandShellEmulation>
               </systemProperties>
           </configuration>
-      </plugin>
+        </plugin>
 
   Or provided on the command line using a system property:
 
