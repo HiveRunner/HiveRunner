@@ -106,7 +106,7 @@
         </dependency>
 
 
-        <!-- The latest versions of datanucleus seams to be faster than the one included in hive -->
+        <!-- The latest versions of datanucleus seems to be faster than the one included in hive -->
         <dependency>
             <artifactId>datanucleus-api-jdo</artifactId>
             <groupId>org.datanucleus</groupId>
@@ -145,13 +145,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-contrib</artifactId>
             <version>${hive.version}</version>
@@ -169,6 +162,13 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
 

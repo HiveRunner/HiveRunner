@@ -4,6 +4,8 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.klarna.hiverunner.CommandShellEmulation;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -65,6 +67,30 @@ public class HiveRunnerConfigTest {
         Assert.assertEquals(678, config.getTimeoutRetries());
     }
 
+    @Test
+    public void testCommandShellEmulation() {
+      Properties sysProps = new Properties();
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BEELINE");
+      HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "beeline");
+      config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BeElInE");
+      config = new HiveRunnerConfig(new Properties(sysProps));
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+    }
+
+    @Test
+    public void testSetCommandShellEmulation() {
+      HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
+      config.setCommandShellEmulation(CommandShellEmulation.HIVE_CLI);
+      Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
+      config.setCommandShellEmulation(CommandShellEmulation.BEELINE);
+      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+    }
 
     @Test
     public void testEnableTimeoutDefault() {
@@ -82,6 +108,13 @@ public class HiveRunnerConfigTest {
     public void testTimeoutRetriesDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
         Assert.assertEquals(HiveRunnerConfig.TIMEOUT_RETRIES_DEFAULT, config.getTimeoutRetries());
+    }
+    
+    @Test
+    public void testCommandShellEmulationDefault() {
+        HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
+        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, CommandShellEmulation.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATION_DEFAULT));
+        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
     }
 
 }

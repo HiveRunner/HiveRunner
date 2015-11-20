@@ -1,5 +1,6 @@
 package com.klarna.hiverunner.builder;
 
+import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
 import static org.mockito.Mockito.verify;
 
@@ -7,6 +8,7 @@ import com.google.common.io.Files;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.CLIService;
@@ -163,7 +165,7 @@ public class HiveShellBaseTest {
         List<HiveResource> hiveResources = Arrays.asList();
         List<String> scriptsUnderTest = Arrays.asList();
 
-        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest);
+        return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest, CommandShellEmulation.HIVE_CLI);
     }
 
 

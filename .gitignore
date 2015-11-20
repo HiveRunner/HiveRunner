@@ -5,9 +5,6 @@
 *.iws
 nbactions.xml
 /.idea/
-.classpath
-.project
-.settings
 
 # Compiled source #
 ###################
@@ -68,3 +65,10 @@ Thumbs.db
 ###################
 *~
 /target/
+
+# Eclipse #
+###########
+.classpath
+.project
+.settings/
+
