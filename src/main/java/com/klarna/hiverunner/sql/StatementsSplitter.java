@@ -33,13 +33,15 @@ public class StatementsSplitter {
     public static final Pattern LAST_CHAR_NOT_ESCAPED_PATTERN = Pattern.compile(".*[^\\\\].", Pattern.DOTALL);
 
     public static final String SQL_SPECIAL_CHARS = ";\"'-\n";
+    public static final String BEELINE_SPECIAL_CHARS = "!";
 
     /**
      * Splits expression on ';'.
+     * Also, detects Beeline's SQLLine commands (commands start with '!' and do not end with ';').
      * ';' within quotes (" or ') or comments ( -- ) are ignored.
      */
     public static List<String> splitStatements(String expression) {
-        StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS, true);
+        StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS + BEELINE_SPECIAL_CHARS, true);
 
         List<String> statements = new ArrayList<>();
         String statement = "";
@@ -69,6 +71,19 @@ public class StatementsSplitter {
                 case "'":
                     statement += readQuoted(tokenizer, token);
                     break;
+
+                // Beeline's SQLLine commands
+                case "!":
+                    if (statement.trim().isEmpty()) {
+                        statement += token;
+                        statement += readUntilEndOfLine(tokenizer);
+                        // Only add statement that is not empty
+                        if (isValidStatement(statement)) {
+                            statements.add(statement.trim());
+                        }
+                        statement = "";
+                        break;
+                    }
 
                 // Add any other elements to the current statement
                 default:
