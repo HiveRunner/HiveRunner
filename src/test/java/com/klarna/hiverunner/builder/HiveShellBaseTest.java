@@ -1,10 +1,10 @@
 package com.klarna.hiverunner.builder;
 
-import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.io.Files;
+import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
@@ -77,7 +77,7 @@ public class HiveShellBaseTest {
 
     @Test
     public void executeScriptFile() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -86,12 +86,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(file);
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test
     public void executeScriptCharsetFile() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -100,12 +100,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, file);
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
     
     @Test
     public void executeScriptPath() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -114,12 +114,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(Paths.get(file.toURI()));
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test
     public void executeScriptCharsetPath() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -128,7 +128,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, Paths.get(file.toURI()));
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test(expected = IllegalArgumentException.class)

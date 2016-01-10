@@ -22,6 +22,7 @@ import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementsSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -319,7 +320,9 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-          hiveServerContainer.executeScript(commandShellEmulation.transformScript(script));
+        for (String statement : StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script))) {
+            executeStatement(statement);
+        }
     }
     
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
