@@ -69,5 +69,21 @@ public class CommandShellEmulationTest {
     String hql = "-- hello";
     assertThat(CommandShellEmulation.HIVE_CLI.transformScript(hql), is(""));
   }
-  
+
+  @Test
+  public void hiveCliEmulationSupportsImportingScriptFiles() {
+    assertThat(CommandShellEmulation.HIVE_CLI.isImportFileStatement("source script.hql"), is(true));
+
+    assertThat(CommandShellEmulation.HIVE_CLI.isImportFileStatement("!run script.hql"), is(false));
+    assertThat(CommandShellEmulation.HIVE_CLI.isImportFileStatement("select * from table"), is(false));
+  }
+
+  @Test
+  public void beeLineEmulationSupportsImportingScriptFiles() {
+     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("!run script.hql"), is(true));
+
+     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("source script.hql"), is(false));
+     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("select * from table"), is(false));
+  }
+
 }
