@@ -39,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,21 @@ class HiveShellBase implements HiveShell {
     }
     
     private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
-      return hiveServerContainer.executeStatement(commandShellEmulation.transformStatement(hql));
+      String transformedHql = commandShellEmulation.transformStatement(hql);
+      if (commandShellEmulation.isImportFileStatement(transformedHql)) {
+        return importScript(transformedHql);
+      }
+      return hiveServerContainer.executeStatement(transformedHql);
+    }
+
+    private List<Object[]> importScript(String hql) {
+      String[] tokens = hql.trim().split("\\s+");
+      String fileName = null;
+      if (tokens.length == 2) {
+        fileName = tokens[1];
+      }
+      execute(new File(fileName));
+      return Collections.emptyList();
     }
 
     @Override
