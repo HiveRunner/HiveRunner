@@ -16,9 +16,12 @@
 package com.klarna.hiverunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+
+import java.io.File;
 
 public class CommandShellEmulationTest {
 
@@ -81,6 +84,20 @@ public class CommandShellEmulationTest {
   }
 
   @Test
+  public void hiveCliEmulationReturnsScriptFileToImport() {
+    File expected = new File("script.hql");
+
+    assertThat(CommandShellEmulation.HIVE_CLI.getImportFileFromStatement("source script.hql"), is(expected));
+    assertThat(CommandShellEmulation.HIVE_CLI.getImportFileFromStatement("   source   script.hql   "), is(expected));
+  }
+
+  @Test
+  public void hiveCliEmulationReturnsFileWithoutNameWhenImportStatementIsMalformed() {
+    File actual = CommandShellEmulation.HIVE_CLI.getImportFileFromStatement("source");
+    assertThat(actual.getName(), isEmptyString());
+  }
+
+  @Test
   public void beeLineEmulationSupportsImportingScriptFiles() {
     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("!run script.hql"), is(true));
     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("   !run script.hql   "), is(true));
@@ -88,6 +105,19 @@ public class CommandShellEmulationTest {
     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("!RUN script.hql"), is(false));
     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("source script.hql"), is(false));
     assertThat(CommandShellEmulation.BEELINE.isImportFileStatement("select * from table"), is(false));
+  }
+
+  @Test
+  public void beeLineEmulationReturnsScriptFileToImport() {
+    File expected = new File("script.hql");
+
+    assertThat(CommandShellEmulation.BEELINE.getImportFileFromStatement("!run script.hql"), is(expected));
+    assertThat(CommandShellEmulation.BEELINE.getImportFileFromStatement("   !run script.hql   "), is(expected));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void illegalArgumentExceptionIsThrownWhenBeeLineEmulationCannotGetImportFileFromStatement() {
+    CommandShellEmulation.BEELINE.getImportFileFromStatement("!run script.hql another_script.hql");
   }
 
 }

@@ -15,6 +15,8 @@
  */
 package com.klarna.hiverunner;
 
+import java.io.File;
+
 /**
  * Attempt to accurately emulate the behaviours (good and bad) of different Hive shells. Currently the {@code hive}
  * interactive shell (which HiveRunner uses) has an annoying issue where it blows up on some full line comments
@@ -31,6 +33,13 @@ public enum CommandShellEmulation {
     public boolean isImportFileStatement(String statement) {
       // case-insensitive
       return statement.trim().toLowerCase().startsWith(sourceCommand);
+    }
+
+    @Override
+    public File getImportFileFromStatement(String statement) {
+      // everything after 'source' (trimmed) is considered the filename
+      String filename = statement.trim().substring(sourceCommand.length()).trim();
+      return new File(filename);
     }
 
     @Override
@@ -54,6 +63,16 @@ public enum CommandShellEmulation {
     }
 
     @Override
+    public File getImportFileFromStatement(String statement) {
+      // filename cannot contain whitespace
+      String[] tokens = statement.trim().split(" ");
+      if (tokens.length == 2) {
+        return new File(tokens[1]);
+      }
+      throw new IllegalArgumentException("Cannot get file to import from '" + statement + "'");
+    }
+
+    @Override
     public String transformStatement(String statement) {
       return filterFullLineComments(statement);
     }
@@ -65,6 +84,8 @@ public enum CommandShellEmulation {
   };
 
   public abstract boolean isImportFileStatement(String statement);
+
+  public abstract File getImportFileFromStatement(String statement);
 
   public abstract String transformStatement(String statement);
 
