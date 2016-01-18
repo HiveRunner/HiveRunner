@@ -1,10 +1,13 @@
 package com.klarna.hiverunner.builder;
 
-import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.io.Files;
+import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
@@ -77,7 +80,7 @@ public class HiveShellBaseTest {
 
     @Test
     public void executeScriptFile() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -86,12 +89,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(file);
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test
     public void executeScriptCharsetFile() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -100,12 +103,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, file);
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
     
     @Test
     public void executeScriptPath() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -114,12 +117,12 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(Paths.get(file.toURI()));
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test
     public void executeScriptCharsetPath() throws IOException {
-      String hql = "use default;";
+      String hql = "use default";
 
       File file = new File(tempFolder.getRoot(), "script.hql");
       Files.write(hql, file, UTF_8);
@@ -128,7 +131,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, Paths.get(file.toURI()));
 
-      verify(container).executeScript(hql);
+      verify(container).executeStatement(hql);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -146,6 +149,42 @@ public class HiveShellBaseTest {
       
       HiveShell shell = createHiveShell();
       shell.execute(UTF_8, Paths.get(file.toURI()));
+    }
+
+    @Test
+    public void scriptFilesAreImportedInQueries() throws IOException {
+      String hql = "use default";
+
+      File importedFile = new File(tempFolder.getRoot(), "imported_script.hql");
+      Files.write(hql, importedFile, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+
+      String importHql = "source " + importedFile.getAbsolutePath();
+      List<String> results = shell.executeQuery(importHql);
+
+      assertThat(results, is(empty()));
+      verify(container).executeStatement(hql);
+    }
+
+    @Test
+    public void scriptFilesAreImportedInOtherScripts() throws IOException {
+      String hql = "use default";
+
+      File importedFile = new File(tempFolder.getRoot(), "imported_script.hql");
+      Files.write(hql, importedFile, UTF_8);
+
+      HiveShell shell = createHiveShell();
+      shell.start();
+
+      String importHql = "source " + importedFile.getAbsolutePath();
+      File file = new File(tempFolder.getRoot(), "script.hql");
+      Files.write(importHql, file, UTF_8);
+
+      shell.execute(file);
+
+      verify(container).executeStatement(hql);
     }
 
     private HiveShell createHiveShell(String... keyValues) {

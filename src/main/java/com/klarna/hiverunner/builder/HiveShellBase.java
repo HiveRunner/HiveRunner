@@ -22,6 +22,7 @@ import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementsSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +102,16 @@ class HiveShellBase implements HiveShell {
     }
     
     private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
-      return hiveServerContainer.executeStatement(commandShellEmulation.transformStatement(hql));
+      String transformedHql = commandShellEmulation.transformStatement(hql);
+      if (commandShellEmulation.isImportFileStatement(transformedHql)) {
+        return importScript(transformedHql);
+      }
+      return hiveServerContainer.executeStatement(transformedHql);
+    }
+
+    private List<Object[]> importScript(String hql) {
+      execute(commandShellEmulation.getImportFileFromStatement(hql));
+      return Collections.emptyList();
     }
 
     @Override
@@ -319,7 +330,9 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-          hiveServerContainer.executeScript(commandShellEmulation.transformScript(script));
+        for (String statement : StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script))) {
+            executeStatement(statement);
+        }
     }
     
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {

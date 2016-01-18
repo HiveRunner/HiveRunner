@@ -1,6 +1,7 @@
 package com.klarna.hiverunner.sql;
 
 import com.google.common.base.Joiner;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -158,6 +159,18 @@ public class StatementsSplitterTest {
         Assert.assertEquals("\n", StatementsSplitter.readUntilEndOfLine(tokenizer));
         Assert.assertEquals("baz", StatementsSplitter.readUntilEndOfLine(tokenizer));
         Assert.assertEquals("", StatementsSplitter.readUntilEndOfLine(tokenizer));
+    }
+
+    @Test
+    public void beelineSqlLineCommandsAreSupported() {
+        String statementA = "!run script.hql";
+        String statementB = "select * from table where foo != bar";
+        String statementC = "!run another_script.hql";
+
+        List<String> expected = Arrays.asList(statementA, statementB, statementC);
+        String expression = statementA + '\n' + statementB + ";   " + statementC;
+
+        Assert.assertEquals(expected, StatementsSplitter.splitStatements(expression));
     }
 
 }

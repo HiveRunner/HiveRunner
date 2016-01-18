@@ -227,7 +227,11 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __2.6.0-SNAPSHOT__
+### __2.6.1-SNAPSHOT__
+
+Support shell-specific `source` (`hive`) and ``!run`` (`beeline`) commands. (These commands allow to import and execute scripts in statements or scripts.)
+
+### __2.6.0__
 
 * Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells.
 Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
