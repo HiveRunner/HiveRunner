@@ -24,9 +24,13 @@ package com.klarna.hiverunner;
  */
 public enum CommandShellEmulation {
   HIVE_CLI {
+
+    private final String sourceCommand = "source";
+
     @Override
     public boolean isImportFileStatement(String statement) {
-      return statementStartsWithToken(statement, "source");
+      // case-insensitive
+      return statement.trim().toLowerCase().startsWith(sourceCommand);
     }
 
     @Override
@@ -40,9 +44,13 @@ public enum CommandShellEmulation {
     }
   },
   BEELINE {
+
+    private final String runCommand = "!run";
+
     @Override
     public boolean isImportFileStatement(String statement) {
-      return statementStartsWithToken(statement, "!run");
+      // case-sensitive
+      return statement.trim().startsWith(runCommand);
     }
 
     @Override
@@ -61,10 +69,6 @@ public enum CommandShellEmulation {
   public abstract String transformStatement(String statement);
 
   public abstract String transformScript(String script);
-
-  private static boolean statementStartsWithToken(String statement, String token) {
-    return statement.trim().toLowerCase().startsWith(token);
-  }
 
   private static String filterFullLineComments(String statement) {
     StringBuilder newStatement = new StringBuilder(statement.length());
