@@ -14,7 +14,7 @@ install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-s
   settings-4-travis.xml
 script:
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then
-    mvn deploy -B --global-settings settings-4-travis.xml -Prelease
+    mvn deploy -B --global-settings settings-4-travis.xml -Prelease ;
   fi
 notifications:
   email:
