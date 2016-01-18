@@ -110,12 +110,7 @@ class HiveShellBase implements HiveShell {
     }
 
     private List<Object[]> importScript(String hql) {
-      String[] tokens = hql.trim().split("\\s+");
-      String fileName = null;
-      if (tokens.length == 2) {
-        fileName = tokens[1];
-      }
-      execute(new File(fileName));
+      execute(commandShellEmulation.getImportFileFromStatement(hql));
       return Collections.emptyList();
     }
 
