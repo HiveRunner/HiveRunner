@@ -3,7 +3,7 @@
 
     <groupId>com.klarna</groupId>
     <artifactId>hiverunner</artifactId>
-    <version>2.6.1-SNAPSHOT</version>
+    <version>2.7.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>HiveRunner</name>
     <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
@@ -40,7 +40,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tez.version>0.7.0</tez.version>
-        <hive.version>0.14.0</hive.version>
+        <hive.version>1.2.1</hive.version>
     </properties>
 
     <dependencies>
