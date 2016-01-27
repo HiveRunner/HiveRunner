@@ -75,8 +75,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         configureFileSystem(basedir, hiveConf);
 
-        configureCheckForDefaultDb(hiveConf);
-
         configureAssertionStatus(hiveConf);
 
         overrideHiveConf(hiveConf);
@@ -158,10 +156,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
                 false);
     }
 
-    protected void configureCheckForDefaultDb(HiveConf conf) {
-        hiveConf.setBoolean("hive.metastore.checkForDefaultDb", true);
-    }
-
     protected void configureSupportConcurrency(HiveConf conf) {
         hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
     }
@@ -195,7 +189,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
         createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
-        createAndSetFolderProperty("hive.metastore.metadb.dir", "metastore", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 
         conf.setBoolVar(HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, true);
