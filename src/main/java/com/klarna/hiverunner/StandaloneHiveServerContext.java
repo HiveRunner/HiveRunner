@@ -195,7 +195,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
-        createAndSetFolderProperty("hive.vs", "vs", conf, basedir);
 
 
 

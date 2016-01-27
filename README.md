@@ -227,7 +227,12 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __2.6.0-SNAPSHOT__
+### __2.7.0__
+
+* Updated to Hive 1.2.1.                                            
+* Removed the custom HiveConf hive.vs. Use hadoop.tmp.dir instead. 
+
+### __2.6.0__
 
 * Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells.
 Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
