@@ -40,7 +40,7 @@ public class BigResultSetTest {
      */
     @Test
     public void bigResultSetTest() throws IOException {
-        hiveShell.setProperty("location", "${hiveconf:hadoop.tmp.dir}/foo");
+        hiveShell.setHiveConfValue("location", "${hiveconf:hadoop.tmp.dir}/foo");
         hiveShell.addSetupScript("CREATE table FOO (s String) LOCATION '${hiveconf:location}'");
         OutputStream ros = hiveShell.getResourceOutputStream("${hiveconf:location}/foo.data");
 
