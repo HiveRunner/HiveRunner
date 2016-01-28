@@ -227,12 +227,11 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __2.7.0__
+### __3.0.0__
 
-* Updated to Hive 1.2.1.                                            
-* Removed the custom HiveConf hive.vs. Use hadoop.tmp.dir instead. 
-* As of Hive 1.2 there are a number of new reserved keywords, e.g. date, timestamp and update. If you happen to have one of these as an identifier, 
-you could either backtick quote the field name (e.g. \`date\`, \`timestamp\` or \`update\`) or set hive.support.sql11.reserved.keywords=false.  
+* Upgraded to Hive 1.2.1 (Note: new major release with backwards incompatibility issues). As of Hive 1.2 there are a number of new reserved keywords, see [DDL manual](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-Keywords,Non-reservedKeywordsandReservedKeywords) for more information. 
+If you happen to have one of these as an identifier, you could either backtick quote them (e.g. \`date\`, \`timestamp\` or \`update\`) or set hive.support.sql11.reserved.keywords=false.                                            
+* Removed the custom HiveConf hive.vs. Use hadoop.tmp.dir instead.   
 
 ### __2.6.0__
 
