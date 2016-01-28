@@ -43,7 +43,7 @@ public class ReservedKeywordTest {
     public void reservedKeywordsShouldBeAllowedWhenHiveConfIsSet() throws IOException {
 
         hiveShell.setHiveConfValue("hive.support.sql11.reserved.keywords", "false");
-        hiveShell.addSetupScript("CREATE table FOO (date String, `timestamp` string, `update` string)");
+        hiveShell.addSetupScript("CREATE table FOO (date String, timestamp string, update string)");
 
         hiveShell.start();
 
