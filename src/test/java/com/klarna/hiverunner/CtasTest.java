@@ -28,7 +28,7 @@ import java.util.List;
 @RunWith(StandaloneHiveRunner.class)
 public class CtasTest {
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/data.csv")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/data.csv")
     private String data = "A,B\nC,D\nE,F";
 
     @HiveSQL(files = {"ctasTest/ctas.sql"})

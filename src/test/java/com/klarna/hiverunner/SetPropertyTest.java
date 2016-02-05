@@ -30,12 +30,12 @@ public class SetPropertyTest {
     @Test(expected = IllegalStateException.class)
     public void propertyShouldNotBeSetIfShellIsAlreadyStarted() {
         shell.start();
-        shell.setProperty("foo", "bar");
+        shell.setHiveConfValue("foo", "bar");
     }
 
     @Test
     public void propertyShouldBeSetInHiveConfiguration() {
-        shell.setProperty("foo", "bar");
+        shell.setHiveConfValue("foo", "bar");
         shell.start();
         Assert.assertEquals("bar", shell.getHiveConf().get("foo"));
     }

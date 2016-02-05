@@ -3,7 +3,7 @@
 
     <groupId>com.klarna</groupId>
     <artifactId>hiverunner</artifactId>
-    <version>2.6.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>HiveRunner</name>
     <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
@@ -40,7 +40,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tez.version>0.7.0</tez.version>
-        <hive.version>0.14.0</hive.version>
+        <hive.version>1.2.1</hive.version>
+        <hive.execution.engine>mr</hive.execution.engine>
     </properties>
 
     <dependencies>
@@ -195,7 +196,7 @@
                         <!--
                         Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
                         -->
-                        <hiveconf_hive.execution.engine>mr</hiveconf_hive.execution.engine>
+                        <hiveconf_hive.execution.engine>${hive.execution.engine}</hiveconf_hive.execution.engine>
                         <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
                         <enableTimeout>false</enableTimeout>
                         <timeoutSeconds>30</timeoutSeconds>
@@ -288,6 +289,12 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>tez</id>
+            <properties>
+                <hive.execution.engine>tez</hive.execution.engine>
+            </properties>
         </profile>
     </profiles>
 </project>

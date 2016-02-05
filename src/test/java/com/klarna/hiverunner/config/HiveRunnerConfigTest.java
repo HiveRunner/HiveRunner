@@ -37,12 +37,6 @@ public class HiveRunnerConfigTest {
     }
 
     @Test
-    public void testDefaultHiveExecutionEngine() {
-        HiveRunnerConfig config = new HiveRunnerConfig();
-        Assert.assertEquals("mr", config.getHiveExecutionEngine());
-    }
-
-    @Test
     public void testEnableTimeout() {
         Properties sysProps = new Properties();
         sysProps.put(HiveRunnerConfig.ENABLE_TIMEOUT_PROPERTY_NAME,

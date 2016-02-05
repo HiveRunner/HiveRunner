@@ -58,13 +58,13 @@ public class HiveRunnerAnnotationsTest {
     @HiveSQL(files = {"hiveRunnerAnnotationsTest/hql1.sql"}, autoStart = false)
     private HiveShell hiveShell;
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromString.csv")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromString.csv")
     public String dataFromString = "1,B\n2,D\nE,F";
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromFile.csv")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromFile.csv")
     public File dataFromFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData.csv").getPath());
 
-    @HiveResource(targetFile = "${hiveconf:hive.vs}/foo/fromPath.csv")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromPath.csv")
     public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").getPath());
 
     @Before
