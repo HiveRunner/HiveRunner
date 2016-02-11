@@ -62,7 +62,7 @@ public class ToUpperCaseSerDe extends AbstractSerDe {
         // Constructing the row ObjectInspector:
         // The row consists of some string columns, each column will be a java
         // String object.
-        List<ObjectInspector> columnOIs = new ArrayList<ObjectInspector>(columns.size());
+        List<ObjectInspector> columnOIs = new ArrayList<>(columns.size());
 
         for (int i = 0; i < columns.size(); i++) {
             columnOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector);

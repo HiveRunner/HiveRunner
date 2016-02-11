@@ -34,11 +34,11 @@ import java.util.Map;
  * Builds a HiveShell.
  */
 public class HiveShellBuilder {
-    private List<String> scriptsUnderTest = new ArrayList<String>();
-    private Map<String, String> props = new HashMap<String, String>();
+    private List<String> scriptsUnderTest = new ArrayList<>();
+    private Map<String, String> props = new HashMap<>();
     private HiveServerContainer hiveServerContainer;
-    private List<HiveResource> resources = new ArrayList<HiveResource>();
-    private List<String> setupScripts = new ArrayList<String>();
+    private List<HiveResource> resources = new ArrayList<>();
+    private List<String> setupScripts = new ArrayList<>();
     private CommandShellEmulation commandShellEmulation = CommandShellEmulation.HIVE_CLI;
 
     public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
