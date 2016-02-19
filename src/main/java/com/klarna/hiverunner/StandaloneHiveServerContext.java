@@ -50,7 +50,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected HiveConf hiveConf = new HiveConf();
 
-    private TemporaryFolder basedir;
+    private final TemporaryFolder basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
     StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
