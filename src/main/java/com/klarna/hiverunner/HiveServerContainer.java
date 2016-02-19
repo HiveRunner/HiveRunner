@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class HiveServerContainer {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
 
     private CLIService client;
     private final HiveServerContext context;

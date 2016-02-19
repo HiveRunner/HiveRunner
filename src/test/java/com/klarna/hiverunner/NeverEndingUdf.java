@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 
 public class NeverEndingUdf extends UDF {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeverEndingUdf.class);
 
     public Text evaluate(Text value) {
         LOGGER.warn("Entering infinite loop");
