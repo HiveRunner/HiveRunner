@@ -35,7 +35,7 @@ public class TableDataInserterTest {
     dataLocation = hiveShell.getBaseDir().newFolder("target", "hiverunner_data").getAbsolutePath();
     hiveShell.execute("create database testdb");
     hiveShell.execute("create table testdb.test_table (a STRING, b STRING) "
-        + "PARTITIONED BY(local_date STRING) STORED AS ORC LOCATION '" + dataLocation + "'");
+        + "PARTITIONED BY(local_date STRING) STORED AS ORC LOCATION '" + dataLocation + '\'');
   }
 
   @Test

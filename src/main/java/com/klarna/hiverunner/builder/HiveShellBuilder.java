@@ -67,7 +67,7 @@ public class HiveShellBuilder {
             try {
                 scriptsUnderTest.add(new String(Files.readAllBytes(script), charset));
             } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to load script file '" + script + "'");
+                throw new IllegalArgumentException("Failed to load script file '" + script + '\'');
             }
         }
     }
