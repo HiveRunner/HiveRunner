@@ -3,7 +3,7 @@ package com.klarna.hiverunner;
 public class HiveQueryLanguageStatement {
 
     public static HiveQueryLanguageStatement forStatementString(String statementString) {
-        return new HiveQueryLanguageStatement(statementString);
+        return new HiveQueryLanguageStatement(statementString.trim());
     }
 
     private final String statementString;
