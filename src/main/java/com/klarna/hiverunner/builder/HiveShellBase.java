@@ -331,8 +331,8 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-        for (String statement : StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script))) {
-            executeStatement(statement);
+        for (HiveQueryLanguageStatement statement : StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script))) {
+            executeStatement(statement.getStatementString());
         }
     }
     
