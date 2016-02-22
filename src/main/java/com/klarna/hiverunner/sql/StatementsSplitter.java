@@ -1,6 +1,6 @@
 package com.klarna.hiverunner.sql;
 
-import com.klarna.hiverunner.HiveQueryLanguageStatement;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import java.util.ArrayList;
 import java.util.List;

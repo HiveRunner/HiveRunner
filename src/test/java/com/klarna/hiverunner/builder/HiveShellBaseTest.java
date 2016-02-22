@@ -8,10 +8,10 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.io.Files;
 import com.klarna.hiverunner.CommandShellEmulation;
-import com.klarna.hiverunner.HiveQueryLanguageStatement;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;

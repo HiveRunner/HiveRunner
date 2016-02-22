@@ -16,6 +16,7 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import org.apache.hive.service.cli.HiveSQLException;
 import org.junit.After;

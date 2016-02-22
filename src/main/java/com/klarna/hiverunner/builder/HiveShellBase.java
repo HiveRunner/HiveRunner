@@ -19,10 +19,10 @@ package com.klarna.hiverunner.builder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.CommandShellEmulation;
-import com.klarna.hiverunner.HiveQueryLanguageStatement;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 import com.klarna.hiverunner.sql.StatementsSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;

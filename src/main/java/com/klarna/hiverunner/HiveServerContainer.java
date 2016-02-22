@@ -17,6 +17,7 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;

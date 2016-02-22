@@ -1,4 +1,4 @@
-package com.klarna.hiverunner;
+package com.klarna.hiverunner.hql;
 
 public class HiveQueryLanguageStatement {
 
