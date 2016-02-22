@@ -107,9 +107,10 @@ public class HiveServerContainer {
         return context.getBaseDir();
     }
 
-    public List<Object[]> executeStatement(String hiveql) {
+    public List<Object[]> executeStatement(HiveQueryLanguageStatement hiveql) {
         try {
-            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
+            OperationHandle handle = client.executeStatement(sessionHandle, hiveql.getStatementString(),
+                    new HashMap<String, String>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
@@ -148,7 +149,7 @@ public class HiveServerContainer {
 
         try {
             // Reset to default schema
-            executeStatement("USE default");
+            executeStatement(HiveQueryLanguageStatement.forStatementString("USE default"));
         } catch (Throwable e) {
             LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
                     ". Turn on log level debug for stacktrace");
@@ -182,7 +183,7 @@ public class HiveServerContainer {
     }
 
     private void pingHiveServer() {
-        executeStatement("SHOW TABLES");
+        executeStatement(HiveQueryLanguageStatement.forStatementString("SHOW TABLES"));
     }
 
     public HiveConf getHiveConf() {

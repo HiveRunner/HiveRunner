@@ -16,6 +16,7 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+
 import org.apache.hive.service.cli.HiveSQLException;
 import org.junit.After;
 import org.junit.Assert;
@@ -55,14 +56,16 @@ public class HiveServerContainerTest {
 
     @Test
     public void testExecuteStatementMR() {
-        List<Object[]> actual = container.executeStatement("show databases");
+        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("show databases");
+        List<Object[]> actual = container.executeStatement(hqlStatement);
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
-        List<Object[]> actual = container.executeStatement("show databases");
+        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("show databases");
+        List<Object[]> actual = container.executeStatement(hqlStatement);
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
@@ -76,8 +79,9 @@ public class HiveServerContainerTest {
 
     @Test(expected = HiveSQLException.class)
     public void testInvalidQuery() throws Throwable {
+        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("use foo");
         try {
-            container.executeStatement("use foo");
+            container.executeStatement(hqlStatement);
         } catch (IllegalArgumentException e) {
             throw e.getCause();
         }

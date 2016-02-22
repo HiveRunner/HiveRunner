@@ -19,6 +19,7 @@ package com.klarna.hiverunner.builder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.CommandShellEmulation;
+import com.klarna.hiverunner.HiveQueryLanguageStatement;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
@@ -106,7 +107,7 @@ class HiveShellBase implements HiveShell {
       if (commandShellEmulation.isImportFileStatement(transformedHql)) {
         return importScript(transformedHql);
       }
-      return hiveServerContainer.executeStatement(transformedHql);
+      return hiveServerContainer.executeStatement(HiveQueryLanguageStatement.forStatementString(transformedHql));
     }
 
     private List<Object[]> importScript(String hql) {
