@@ -23,7 +23,7 @@ import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
 import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
-import com.klarna.hiverunner.sql.StatementsSplitter;
+import com.klarna.hiverunner.hql.HiveQueryLanguageStatementFactory;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -40,7 +40,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +60,7 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
-    protected final CommandShellEmulation commandShellEmulation;
-
+    protected final HiveQueryLanguageStatementFactory statementFactory;
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
@@ -76,8 +74,7 @@ class HiveShellBase implements HiveShell {
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
-        this.commandShellEmulation = commandShellEmulation;
-
+        this.statementFactory = new HiveQueryLanguageStatementFactory(Charset.defaultCharset(), commandShellEmulation);
     }
 
     @Override
@@ -99,20 +96,16 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<Object[]> executeStatement(String hql) {
-        return executeStatementWithCommandShellEmulation(hql);
+        List<HiveQueryLanguageStatement> hsqlStatements = statementFactory.newInstanceForStatement(hql);
+        return executeStatementsWithCommandShellEmulation(hsqlStatements);
     }
     
-    private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
-      String transformedHql = commandShellEmulation.transformStatement(hql);
-      if (commandShellEmulation.isImportFileStatement(transformedHql)) {
-        return importScript(transformedHql);
+    private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveQueryLanguageStatement> hqlStatements) {
+      List<Object[]> results = new ArrayList<>();
+      for (HiveQueryLanguageStatement hqlStatement : hqlStatements) {
+        results.addAll(hiveServerContainer.executeStatement(hqlStatement.getStatementString()));
       }
-      return hiveServerContainer.executeStatement(HiveQueryLanguageStatement.forStatementString(transformedHql));
-    }
-
-    private List<Object[]> importScript(String hql) {
-      execute(commandShellEmulation.getImportFileFromStatement(hql));
-      return Collections.emptyList();
+      return results;
     }
 
     @Override
@@ -143,11 +136,8 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        try {
-            execute(new String(Files.readAllBytes(path), charset));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to read setup script file '" + path + "': " + e.getMessage(), e);
-        }
+        List<HiveQueryLanguageStatement> hqlStatements = statementFactory.newInstanceForPath(path);
+        executeStatementsWithCommandShellEmulation(hqlStatements);
     }
 
     @Override
@@ -331,9 +321,8 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-        for (HiveQueryLanguageStatement statement : StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script))) {
-            executeStatement(statement.getStatementString());
-        }
+        List<HiveQueryLanguageStatement> hqlStatements = statementFactory.newInstanceForScript(script);
+        executeStatementsWithCommandShellEmulation(hqlStatements);
     }
     
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
