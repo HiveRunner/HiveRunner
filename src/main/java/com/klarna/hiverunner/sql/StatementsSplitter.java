@@ -1,7 +1,5 @@
 package com.klarna.hiverunner.sql;
 
-import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -42,10 +40,10 @@ public class StatementsSplitter {
      * Also, detects Beeline's SQLLine commands (commands start with '!' and do not end with ';').
      * ';' within quotes (" or ') or comments ( -- ) are ignored.
      */
-    public static List<HiveQueryLanguageStatement> splitStatements(String expression) {
+    public static List<String> splitStatements(String expression) {
         StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS + BEELINE_SPECIAL_CHARS, true);
 
-        List<HiveQueryLanguageStatement> statements = new ArrayList<>();
+        List<String> statements = new ArrayList<>();
         String statement = "";
         while (tokenizer.hasMoreElements()) {
             String token = (String) tokenizer.nextElement();
@@ -55,7 +53,7 @@ public class StatementsSplitter {
                 case ";":
                     // Only add statement that is not empty
                     if (isValidStatement(statement)) {
-                        statements.add(HiveQueryLanguageStatement.forStatementString(statement));
+                        statements.add(statement.trim());
                     }
                     statement = "";
                     break;
@@ -81,7 +79,7 @@ public class StatementsSplitter {
                         statement += readUntilEndOfLine(tokenizer);
                         // Only add statement that is not empty
                         if (isValidStatement(statement)) {
-                            statements.add(HiveQueryLanguageStatement.forStatementString(statement));
+                            statements.add(statement.trim());
                         }
                         statement = "";
                         break;
@@ -95,7 +93,7 @@ public class StatementsSplitter {
 
         // Only add statement that is not empty
         if (isValidStatement(statement)) {
-            statements.add(HiveQueryLanguageStatement.forStatementString(statement));
+            statements.add(statement.trim());
         }
         return statements;
     }

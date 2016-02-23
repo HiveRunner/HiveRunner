@@ -17,7 +17,6 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
@@ -108,10 +107,9 @@ public class HiveServerContainer {
         return context.getBaseDir();
     }
 
-    public List<Object[]> executeStatement(HiveQueryLanguageStatement hiveql) {
+    public List<Object[]> executeStatement(String hiveql) {
         try {
-            OperationHandle handle = client.executeStatement(sessionHandle, hiveql.getStatementString(),
-                    new HashMap<String, String>());
+            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
@@ -150,7 +148,7 @@ public class HiveServerContainer {
 
         try {
             // Reset to default schema
-            executeStatement(HiveQueryLanguageStatement.forStatementString("USE default"));
+            executeStatement("USE default");
         } catch (Throwable e) {
             LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
                     ". Turn on log level debug for stacktrace");
@@ -184,7 +182,7 @@ public class HiveServerContainer {
     }
 
     private void pingHiveServer() {
-        executeStatement(HiveQueryLanguageStatement.forStatementString("SHOW TABLES"));
+        executeStatement("SHOW TABLES");
     }
 
     public HiveConf getHiveConf() {

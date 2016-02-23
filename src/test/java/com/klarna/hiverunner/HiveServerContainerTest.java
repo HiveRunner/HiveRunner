@@ -15,8 +15,8 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.config.HiveRunnerConfig;
-import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.hive.service.cli.HiveSQLException;
 import org.junit.After;
@@ -26,11 +26,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.util.HashMap;
-import java.util.List;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 public class HiveServerContainerTest {
-
 
     @Rule
     public TemporaryFolder basedir = new TemporaryFolder();
@@ -57,16 +55,16 @@ public class HiveServerContainerTest {
 
     @Test
     public void testExecuteStatementMR() {
-        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("show databases");
-        List<Object[]> actual = container.executeStatement(hqlStatement);
+        String hql = "show databases";
+        List<Object[]> actual = container.executeStatement(hql);
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
-        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("show databases");
-        List<Object[]> actual = container.executeStatement(hqlStatement);
+        String hql = "show databases";
+        List<Object[]> actual = container.executeStatement(hql);
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
@@ -80,9 +78,8 @@ public class HiveServerContainerTest {
 
     @Test(expected = HiveSQLException.class)
     public void testInvalidQuery() throws Throwable {
-        HiveQueryLanguageStatement hqlStatement = HiveQueryLanguageStatement.forStatementString("use foo");
         try {
-            container.executeStatement(hqlStatement);
+            container.executeStatement("use foo");
         } catch (IllegalArgumentException e) {
             throw e.getCause();
         }

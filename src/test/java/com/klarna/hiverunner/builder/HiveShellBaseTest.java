@@ -11,7 +11,6 @@ import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.hql.HiveQueryLanguageStatement;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -19,11 +18,7 @@ import org.apache.hive.service.cli.CLIService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,15 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(MockitoJUnitRunner.class)
 public class HiveShellBaseTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private HiveServerContainer container;
-    @Captor
-    private ArgumentCaptor<HiveQueryLanguageStatement> hqlStatementCaptor;
 
     @Test(expected = IllegalStateException.class)
     public void variableSubstitutionShouldBlowUpIfShellIsNotStarted() {
@@ -97,8 +89,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(file);
 
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
 
     @Test
@@ -112,8 +103,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, file);
 
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
     
     @Test
@@ -127,8 +117,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(Paths.get(file.toURI()));
 
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
 
     @Test
@@ -142,8 +131,7 @@ public class HiveShellBaseTest {
       shell.start();
       shell.execute(UTF_8, Paths.get(file.toURI()));
 
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -177,8 +165,7 @@ public class HiveShellBaseTest {
       List<String> results = shell.executeQuery(importHql);
 
       assertThat(results, is(empty()));
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
 
     @Test
@@ -197,8 +184,7 @@ public class HiveShellBaseTest {
 
       shell.execute(file);
 
-      verify(container).executeStatement(hqlStatementCaptor.capture());
-      assertThat(hqlStatementCaptor.getValue().getStatementString(), is(hql));
+      verify(container).executeStatement(hql);
     }
 
     private HiveShell createHiveShell(String... keyValues) {
