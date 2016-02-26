@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class SlowlyFailingUdf extends UDF {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SlowlyFailingUdf.class);
 
 
 

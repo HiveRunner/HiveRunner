@@ -223,14 +223,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         }
     }
 
-    private File newFile(TemporaryFolder basedir, String fileName) {
-        try {
-            return basedir.newFile(fileName);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to create tmp file: " + e.getMessage(), e);
-        }
-    }
-
     public HiveConf getHiveConf() {
         return hiveConf;
     }
