@@ -201,7 +201,7 @@ public class HiveRunnerConfig {
         return (String) config.get(key);
     }
 
-    private Map<String, String> loadHiveConfSystemOverrides(Properties systemProperties) {
+    private static Map<String, String> loadHiveConfSystemOverrides(Properties systemProperties) {
         Map<String, String> hiveConfSystemOverride = new HashMap<>();
 
         for (String sysKey : systemProperties.stringPropertyNames()) {

@@ -34,6 +34,9 @@ public class StatementsSplitter {
 
     public static final String SQL_SPECIAL_CHARS = ";\"'-\n";
 
+    private StatementsSplitter(){
+    }
+
     /**
      * Splits expression on ';'.
      * ';' within quotes (" or ') or comments ( -- ) are ignored.

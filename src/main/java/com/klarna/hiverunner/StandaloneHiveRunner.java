@@ -289,7 +289,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private String readAll(Path path) {
+    private static String readAll(Path path) {
         try {
             return new String(Files.readAllBytes(path));
         } catch (IOException e) {
