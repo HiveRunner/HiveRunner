@@ -99,7 +99,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
          *  Note that rules will be executed in reverse order to how they're added.
          */
 
-        List<TestRule> rules = new ArrayList<TestRule>();
+        List<TestRule> rules = new ArrayList<>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
         rules.add(testBaseDir);
@@ -234,7 +234,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
 
             final Field field = fields.iterator().next();
-            List<Path> scripts = new ArrayList<Path>();
+            List<Path> scripts = new ArrayList<>();
             HiveSQL annotation = field.getAnnotation(HiveSQL.class);
             for (String scriptFilePath : annotation.files()) {
                 Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());

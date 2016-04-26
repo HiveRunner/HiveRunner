@@ -46,7 +46,7 @@ public class PartitionSupportTest {
     @HiveProperties
     public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new String[]{
             "table.name", tableName,
-            "HDFS_ROOT_FOO", "${hiveconf:hive.vs}"
+            "HDFS_ROOT_FOO", "${hiveconf:hadoop.tmp.dir}"
     });
 
     @HiveSQL(files = "partitionSupportTest/hql_example.sql")

@@ -172,14 +172,6 @@ public class HiveRunnerConfig {
         this.hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
     }
 
-    private String load(String property, String defaultValue,
-                        List<String> validValues, Properties sysProperties) {
-        String value = load(property, defaultValue, sysProperties);
-        Preconditions.checkArgument(validValues.contains(value),
-                "Invalid value of system property '" + property + "': Only values '" + validValues + "' are allowed");
-        return value;
-    }
-
     private static boolean load(String property, boolean defaultValue, Properties sysProperties) {
         String value = sysProperties.getProperty(property);
         return value == null ? defaultValue : Boolean.parseBoolean(value);

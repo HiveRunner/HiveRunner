@@ -14,7 +14,7 @@ public class ThrowOnTimeout extends Statement {
     private final Statement originalStatement;
 
     private final HiveRunnerConfig config;
-    private Object target;
+    private final Object target;
 
     private Throwable statementException;
     private boolean finished = false;

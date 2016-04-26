@@ -50,7 +50,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected HiveConf hiveConf = new HiveConf();
 
-    private TemporaryFolder basedir;
+    private final TemporaryFolder basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
     StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
@@ -74,8 +74,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         configureSupportConcurrency(hiveConf);
 
         configureFileSystem(basedir, hiveConf);
-
-        configureCheckForDefaultDb(hiveConf);
 
         configureAssertionStatus(hiveConf);
 
@@ -158,10 +156,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
                 false);
     }
 
-    protected void configureCheckForDefaultDb(HiveConf conf) {
-        hiveConf.setBoolean("hive.metastore.checkForDefaultDb", true);
-    }
-
     protected void configureSupportConcurrency(HiveConf conf) {
         hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
     }
@@ -195,14 +189,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
         createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
-        createAndSetFolderProperty("hive.metastore.metadb.dir", "metastore", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 
         conf.setBoolVar(HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, true);
 
         createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
-        createAndSetFolderProperty("hive.vs", "vs", conf, basedir);
 
 
 
@@ -228,14 +220,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
-        }
-    }
-
-    private File newFile(TemporaryFolder basedir, String fileName) {
-        try {
-            return basedir.newFile(fileName);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to create tmp file: " + e.getMessage(), e);
         }
     }
 

@@ -17,7 +17,7 @@
 package com.klarna.hiverunner;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.serde.Constants;
+import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.SerDeStats;
@@ -38,7 +38,7 @@ public class ToUpperCaseSerDe extends AbstractSerDe {
 
     @Override
     public void initialize(Configuration configuration, Properties properties) throws SerDeException {
-        columns = Arrays.asList(((String) properties.get(Constants.LIST_COLUMNS)).split(","));
+        columns = Arrays.asList(((String) properties.get(serdeConstants.LIST_COLUMNS)).split(","));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ToUpperCaseSerDe extends AbstractSerDe {
         // Constructing the row ObjectInspector:
         // The row consists of some string columns, each column will be a java
         // String object.
-        List<ObjectInspector> columnOIs = new ArrayList<ObjectInspector>(columns.size());
+        List<ObjectInspector> columnOIs = new ArrayList<>(columns.size());
 
         for (int i = 0; i < columns.size(); i++) {
             columnOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector);

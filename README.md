@@ -227,7 +227,14 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __2.6.0-SNAPSHOT__
+### __3.0.0__
+
+* Upgraded to Hive 1.2.1 (Note: new major release with backwards incompatibility issues). As of Hive 1.2 there are a number of new reserved keywords, see [DDL manual](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-Keywords,Non-reservedKeywordsandReservedKeywords) for more information. 
+If you happen to have one of these as an identifier, you could either backtick quote them (e.g. \`date\`, \`timestamp\` or \`update\`) or set hive.support.sql11.reserved.keywords=false.                                            
+* Removed the custom HiveConf hive.vs. Use hadoop.tmp.dir instead.
+* Users of Hive version 0.14 or older are recommended to use HiveRunner version 2.6.0.
+
+### __2.6.0__
 
 * Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells.
 Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
@@ -344,12 +351,12 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
 * Commit, tag with release number, push
 
 ```
-      git commit -m "Setting version number before releasing"
+      git commit -a -m "Setting version number before releasing"
       git tag -a v2.5.0 -m "HiveRunner-2.5.0"
       git push origin --tags
 ```
 
-* Travis builds and deploys
+* Travis builds and deploys. Make sure to check the status of the build in Travis (https://travis-ci.org/klarna/HiveRunner).
 * Follow the http://central.sonatype.org/pages/releasing-the-deployment.html guide to promote the staged release to maven central.
 * Change version number to next snapshot version
 * Commit and push
