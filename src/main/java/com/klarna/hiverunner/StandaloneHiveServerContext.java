@@ -53,7 +53,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     private final TemporaryFolder basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
-    StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+    public StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
         this.hiveRunnerConfig = hiveRunnerConfig;
     }
