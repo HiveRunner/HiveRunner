@@ -51,7 +51,7 @@ public class HiveServerContainer {
     private HiveServer2 hiveServer2;
     private SessionState currentSessionState;
 
-    HiveServerContainer(HiveServerContext context) {
+    public HiveServerContainer(HiveServerContext context) {
         this.context = context;
     }
 
