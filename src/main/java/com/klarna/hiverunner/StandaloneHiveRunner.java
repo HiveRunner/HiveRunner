@@ -47,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -291,7 +292,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static String readAll(Path path) {
         try {
-            return new String(Files.readAllBytes(path));
+            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read " + path + ": " + e.getMessage(), e);
         }
