@@ -22,6 +22,7 @@ import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementsSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -47,7 +48,10 @@ import java.util.Map;
  * HiveShell implementation delegating to HiveServerContainer
  */
 class HiveShellBase implements HiveShell {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
+    private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
+    private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
 
     protected boolean started = false;
 
@@ -79,7 +83,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(String hql) {
-        return executeQuery(hql, "\t", "NULL");
+        return executeQuery(hql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
@@ -363,5 +367,59 @@ class HiveShellBase implements HiveShell {
         };
     }
 
+	@Override
+	public List<String> executeQuery(File script) {
+		return executeQuery(Charset.defaultCharset(), script);
+	}
+
+	@Override
+	public List<String> executeQuery(Path script) {
+		return executeQuery(Charset.defaultCharset(), script);
+	}
+
+	@Override
+	public List<String> executeQuery(Charset charset, File script) {
+		return executeQuery(charset, Paths.get(script.toURI()));
+	}
+
+	@Override
+	public List<String> executeQuery(Charset charset, Path script) {
+		return executeQuery(script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+	}
+
+	@Override
+	public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
+		return executeQuery(Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
+	}
+
+	@Override
+	public List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith) {
+		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
+	}
+
+	@Override
+	public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
+			String replaceNullWith) {
+		return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
+	}
+
+	@Override
+	public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
+			String replaceNullWith) {
+		assertStarted();
+		assertFileExists(script);
+		try {
+			String statements = new String(Files.readAllBytes(script), charset);
+			List<String> splitStatements = StatementsSplitter.splitStatements(statements);
+			if (splitStatements.size() != 1) {
+				throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
+			}
+			String statement = splitStatements.get(0);
+			return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
+					e);
+		}
+	}
 
 }
