@@ -379,17 +379,17 @@ class HiveShellBase implements HiveShell {
 
 	@Override
 	public List<String> executeQuery(Charset charset, File script) {
-		return executeQuery(charset, Paths.get(script.toURI()));
+		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
 	}
 
 	@Override
 	public List<String> executeQuery(Charset charset, Path script) {
-		return executeQuery(script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
 	}
 
 	@Override
 	public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
-		return executeQuery(Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
+		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
 	}
 
 	@Override

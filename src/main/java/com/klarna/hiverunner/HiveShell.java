@@ -161,7 +161,7 @@ public interface HiveShell {
      * Set a HiveConf property.
      * <p/>
      * May only be called pre #start()
-     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} intstead
+     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
     void setProperty(String key, String value);
