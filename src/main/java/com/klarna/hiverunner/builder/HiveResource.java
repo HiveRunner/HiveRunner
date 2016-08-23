@@ -20,6 +20,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -39,7 +40,7 @@ class HiveResource {
     }
 
     HiveResource(String targetFile, String data) throws IOException {
-        this(targetFile, createOutputStream(data.getBytes()));
+        this(targetFile, createOutputStream(data.getBytes(StandardCharsets.UTF_8)));
     }
 
     private HiveResource(String targetFile, ByteArrayOutputStream byteArrayOutputStream) {
