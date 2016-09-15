@@ -161,7 +161,7 @@ public class HiveShellBaseTest {
 		when(container.executeStatement(statement)).thenReturn(Arrays.<Object[]> asList( new Object[] {"default", null, 100}));
 		String hql = statement + ";";
 
-		File file = new File(tempFolder.getRoot(), "script.hql");
+		File file = tempFolder.newFile("script.hql");
 		Files.write(hql, file, UTF_8);
 
 		List<String> results = shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
