@@ -193,8 +193,7 @@ public class HiveShellBaseTest {
 		File file = new File(tempFolder.getRoot(), "script.hql");
 		Files.write(hql, file, UTF_8);
 		
-		@SuppressWarnings("unused")
-		List<String> results = shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+		shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
 	}
 
     private HiveShell createHiveShell(String... keyValues) {
