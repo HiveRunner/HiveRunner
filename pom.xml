@@ -39,8 +39,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <tez.version>0.7.0</tez.version>
-        <hive.version>1.2.1</hive.version>
+        <tez.version>0.8.4</tez.version>
+        <hive.version>2.1.0</hive.version>
         <hive.execution.engine>mr</hive.execution.engine>
     </properties>
 
@@ -64,18 +64,20 @@
         </dependency>
 
 
+<!--
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.1</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-service</artifactId>
             <version>${hive.version}</version>
             <exclusions>
-                <exclusion>
+                <!--<exclusion>
                     <artifactId>derby</artifactId>
                     <groupId>org.apache.derby</groupId>
                 </exclusion>
@@ -90,8 +92,8 @@
                 <exclusion>
                     <artifactId>datanucleus-rdbms</artifactId>
                     <groupId>org.datanucleus</groupId>
-                </exclusion>
-                <exclusion>
+                </exclusion>-->
+                <!--<exclusion>
                     <artifactId>bonecp</artifactId>
                     <groupId>com.jolbox</groupId>
                 </exclusion>
@@ -102,19 +104,18 @@
                 <exclusion>
                     <artifactId>calcite-avatica</artifactId>
                     <groupId>org.apache.calcite</groupId>
-                </exclusion>
+                </exclusion>-->
             </exclusions>
         </dependency>
 
 
         <!-- The latest versions of datanucleus seems to be faster than the one included in hive -->
-        <dependency>
+        <!--<dependency>
             <artifactId>datanucleus-api-jdo</artifactId>
             <groupId>org.datanucleus</groupId>
             <version>3.2.8</version>
         </dependency>
-
-
+-->
         <dependency>
             <artifactId>tez-dag</artifactId>
             <groupId>org.apache.tez</groupId>
@@ -133,19 +134,17 @@
             <version>${tez.version}</version>
         </dependency>
 
-        <dependency>
+   <!--     <dependency>
             <artifactId>datanucleus-core</artifactId>
             <groupId>org.datanucleus</groupId>
             <version>3.2.12</version>
         </dependency>
-
-        <dependency>
+-->        <!--<dependency>
             <artifactId>datanucleus-rdbms</artifactId>
             <groupId>org.datanucleus</groupId>
             <version>3.2.11</version>
         </dependency>
-
-        <dependency>
+-->        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-contrib</artifactId>
             <version>${hive.version}</version>

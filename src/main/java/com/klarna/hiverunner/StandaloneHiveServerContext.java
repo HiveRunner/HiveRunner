@@ -20,7 +20,7 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.hsqldb.jdbc.JDBCDriver;
+//import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -162,7 +162,8 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-        String jdbcDriver = JDBCDriver.class.getName();
+//        String jdbcDriver = JDBCDriver.class.getName();
+        String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
 
         try {
             Class.forName(jdbcDriver);
@@ -171,7 +172,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         }
 
         // Set the hsqldb driver
-        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+//        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+        metaStorageUrl = "jdbc:derby:;databaseName=" + basedir.getRoot().getAbsolutePath() + "/metastore_db";
+        hiveConf.set("datanucleus.schema.autoCreateAll", "true");
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 

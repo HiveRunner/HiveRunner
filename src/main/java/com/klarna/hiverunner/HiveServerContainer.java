@@ -19,8 +19,9 @@ package com.klarna.hiverunner;
 import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.conf.HiveVariableSource;
+import org.apache.hadoop.hive.conf.VariableSubstitution;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIService;
@@ -61,8 +62,9 @@ public class HiveServerContainer {
 
     /**
      * Will start the HiveServer.
+     *
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
-     * @param hiveVars       HiveVars to pass on to the HiveServer for this session
+     * @param hiveVars   HiveVars to pass on to the HiveServer for this session
      */
     public void init(Map<String, String> testConfig, Map<String, String> hiveVars) {
 
@@ -133,6 +135,7 @@ public class HiveServerContainer {
 
     /**
      * Executes a hive script.
+     *
      * @param hiveql hive script statements.
      */
     public void executeScript(String hiveql) {
@@ -143,7 +146,7 @@ public class HiveServerContainer {
 
     /**
      * Release all resources.
-     *
+     * <p/>
      * This call will never throw an exception as it makes no sense doing that in the tear down phase.
      */
     public void tearDown() {
@@ -203,7 +206,16 @@ public class HiveServerContainer {
         // Make sure to set the session state for this thread before returning the VariableSubstitution. If not set,
         // hivevar:s will not be evaluated.
         SessionState.setCurrentSessionState(currentSessionState);
-        return new VariableSubstitution();
+//        return new VariableSubstitution();
+
+        final SessionState ss = currentSessionState;
+        return new VariableSubstitution(new HiveVariableSource() {
+            @Override
+            public Map<String, String> getHiveVariable() {
+                return ss.getHiveVariables();
+            }
+        });
+
     }
 }
 

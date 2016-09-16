@@ -33,8 +33,8 @@ public class IntegerPartitionFormatTest {
     @HiveSQL(files = {})
     public HiveShell hiveShell;
 
-    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/month=07/foo.data")
-    public String data = "06\n6";
+//    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/month=07/foo.data")
+//    public String data = "06\n6";
 
     @HiveSetupScript
     public String setup =
@@ -48,6 +48,7 @@ public class IntegerPartitionFormatTest {
     public void repair() {
         // MSCK REPAIR TABLE adds metadata about partitions to the Hive metastore for
         // partitions for which such metadata doesn't already exist
+        hiveShell.execute("set hive.mv.files.thread=0");
         hiveShell.execute("MSCK REPAIR TABLE foo");
     }
 
