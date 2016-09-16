@@ -2,7 +2,11 @@ package com.klarna.hiverunner.builder;
 
 import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.io.Files;
 import com.klarna.hiverunner.HiveServerContainer;
@@ -147,6 +151,49 @@ public class HiveShellBaseTest {
       HiveShell shell = createHiveShell();
       shell.execute(UTF_8, Paths.get(file.toURI()));
     }
+    
+	@Test
+	public void executeQueryFromFile() throws IOException {
+		HiveShell shell = createHiveShell();
+		shell.start();
+
+		String statement = "select current_database(), NULL, 100";
+		when(container.executeStatement(statement)).thenReturn(Arrays.<Object[]> asList( new Object[] {"default", null, 100}));
+		String hql = statement + ";";
+
+		File file = tempFolder.newFile("script.hql");
+		Files.write(hql, file, UTF_8);
+
+		List<String> results = shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+		assertThat(results.size(), is(1));
+		assertThat(results.get(0), is("defaultxxxyyyxxx100"));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void executeQueryFromFileMoreThanOneStatement() throws IOException {
+		HiveShell shell = createHiveShell();
+		shell.start();
+		
+		String hql = "use default;\nselect current_database(), NULL, 100;";
+		
+		File file = new File(tempFolder.getRoot(), "script.hql");
+		Files.write(hql, file, UTF_8);
+		
+		shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void executeQueryFromFileZeroStatements() throws IOException {
+		HiveShell shell = createHiveShell();
+		shell.start();
+		
+		String hql = "";
+		
+		File file = new File(tempFolder.getRoot(), "script.hql");
+		Files.write(hql, file, UTF_8);
+		
+		shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+	}
 
     private HiveShell createHiveShell(String... keyValues) {
         Map<String, String> hiveConf = MapUtils.putAll(new HashMap(), keyValues);

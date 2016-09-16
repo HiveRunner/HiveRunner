@@ -49,6 +49,62 @@ public interface HiveShell {
     List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith);
 
     /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(File script);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Path script);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Charset charset, File script);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Charset charset, Path script);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy, String replaceNullWith);
+    
+    /**
+     * Executes a single query from a script file, returning any results.
+     * <p/>
+     * May only be called post #start()
+     */
+    List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy, String replaceNullWith);
+    
+    /**
      * Execute a single hive query
      * <p/>
      * May only be called post #start()
@@ -105,7 +161,7 @@ public interface HiveShell {
      * Set a HiveConf property.
      * <p/>
      * May only be called pre #start()
-     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} intstead
+     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
     void setProperty(String key, String value);
