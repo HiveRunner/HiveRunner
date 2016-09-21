@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
-public abstract class AbstractAnnotatedFieldsInSuperClassTest {
+public abstract class AnnotatedBaseTestClass {
     @HiveSQL(files = {})
     protected HiveShell shell;
 
