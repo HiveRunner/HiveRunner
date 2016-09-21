@@ -28,6 +28,11 @@
             <organization>Klarna</organization>
             <organizationUrl>http://www.klarna.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Jörgen Falk</name>
+            <organization>Klarna</organization>
+            <organizationUrl>http://www.klarna.com</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
