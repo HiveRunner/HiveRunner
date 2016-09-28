@@ -1,4 +1,4 @@
-package com.klarna.hiverunner;
+package com.klarna.hiverunner.examples;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.StandaloneHiveRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
