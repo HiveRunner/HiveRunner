@@ -2,9 +2,9 @@ sudo: false
 language: java
 env:
   global:
-  - secure: TQMg46hnAtFPWr2tcr5PNoVMlvwdAFn6kT6KeeBme8RvdNjo+pYFCnmwI4t3jQ5JCt6ZlGhAcahcneD9fjhyPjIMCmXh6KQgZszzYO6wLVrwTxrkVkuXxo42mO5lwpZaVOLXxeXPSx3Bu5JMxUB+uR9CQey9NgcGKS5xZ6cWyjs=
-  - secure: JDwUN8BRgku4XLPho+4f6Wt3fkK4OeilPlL9V+HPLGRM2C0kOqVlyJLPQ/sLoASdugzM9eEVT5pQLoPEmbSg7yIH9KgXKVr3ubnaZOBUVUu4rG2rYnCLlIcCQH9GhxNtwbiFxR5uFzL49d7lULFIvA18G47YYGCp3Tp62OW9LTk=
-  - secure: hJAdSghL7u8JslD1e5C/P7c+kb6bDEjxqmYxKUjCXnpTw1VAnGOtpdTcCSCGCvGZ751J2aaquN8Y3cmmbfdRlCHReP0KQoORAXhE0FlkuNjWFQ0GBaO9v4qstd7uL6sLu78R8oVeoOWxuZvVSIPWH++MYoOt7OF7uqFrGZ4WkvA=
+  - secure: hQylAl3pcOG5Qp/kIANDqciYBsxyn2lVotEu7nQlZmRLWBoc7QH9RZuTD4H7oIiHx7z55Fh9nuos83u3v7+OvmjHKGCSyNlv93nuoEOPjCnpyPAUyddkpRVvrXVNxHzeuZ1OY/c6NiNsBzXxD/t2PTnjK4rZG6r/LbOSHHsXhuE=
+  - secure: er6AcccLBHyJyGphwJIpZdR4egGeaHWdgZKsWo/ZCF/iaMOSmFU0+Tsro10UgF08YPknXpQ8CKxLra9NfvM4sxS7WGEbfFUXdvHb8rHSjszPe3/29SMsScDADNO5xQ4eVNxEkjZ2djt42SJAh2BDVcv+n2GUDedVpY5rFRIA8zk=
+  - secure: blVht/8iA8oeKXsJSfXqDatqGi2nQuzQAf1n5I+75V0v0MKGTafsMx1WT07HKRCGME+wDH9ITQoov7TQYBJir2WbF93a6zT1P5ViURzuBSNDhGOl20alEdhE46O/GPcDvf44yAoYEZRqgdyqEewyAuArGJEqZDpoMCNFAeYH5hg=
 before_install:
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then
     openssl aes-256-cbc -K $encrypted_71165e3d1d0f_key -iv $encrypted_71165e3d1d0f_iv -in secrets.tar.enc -out secrets.tar -d
