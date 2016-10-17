@@ -345,6 +345,11 @@ The following steps were involved.
 The above steps are enough for deploying to sonatype/maven central.
 Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
 
+Note
+----
+The gpg key used for signing expires 2017-10-17, after which a new one needs to be created and added as described above.
+Don't forget that the GPG_PASSPHRASE also needs to be updated if another passphrase is used when creating the gpg keypair.
+
 
 Playbook for making a release
 -----------------------------
@@ -368,3 +373,4 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
      git commit -m "Setting version to next development version"
      git push origin
 ```
+ 
