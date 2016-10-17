@@ -368,3 +368,4 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
      git commit -m "Setting version to next development version"
      git push origin
 ```
+ 
