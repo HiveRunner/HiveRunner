@@ -227,8 +227,9 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __TBD__
-* Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.    
+### __3.1.0__
+* Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.
+* Support abstract base class (Issue #48).
 
 ### __3.0.0__
 
@@ -345,6 +346,11 @@ The following steps were involved.
 The above steps are enough for deploying to sonatype/maven central.
 Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
 
+Note
+----
+The gpg key used for signing expires 2017-10-17, after which a new one needs to be created and added as described above.
+Don't forget that the GPG_PASSPHRASE also needs to be updated if another passphrase is used when creating the gpg keypair.
+
 
 Playbook for making a release
 -----------------------------
@@ -368,3 +374,4 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
      git commit -m "Setting version to next development version"
      git push origin
 ```
+ 
