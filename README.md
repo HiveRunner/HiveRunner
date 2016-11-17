@@ -127,7 +127,7 @@ src/main/resources/log4j.properties confogures the log levels. Log level is defa
 
 2. Look at the examples
 ----------
-Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
+Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
 
 Annotations and interactive mode can be mixed and matched, however you'll always need to include the [com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
 
@@ -161,7 +161,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
         .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
         .commit();
 
-See [com.klarna.hiverunner.InsertIntoTableIntegrationTest](/src/test/java/com/klarna/hiverunner/examples/InsertIntoTableIntegrationTest.java) for working examples.
+See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hiverunner/examples/InsertTestData.java) for working examples.
 
 3. Understand a little bit of the order of execution
 ----------
