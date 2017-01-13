@@ -16,9 +16,11 @@
 
 package com.klarna.hiverunner;
 
+import com.google.common.base.Joiner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,32 +28,46 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(StandaloneHiveRunner.class)
-public class CtasTest {
+public class OrcSnappyTest {
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/data.csv")
     private String data = "A,B\nC,D\nE,F";
 
-    @HiveSQL(files = {"ctasTest/ctas.sql"})
+    @HiveSQL(files = {"OrcSnappyTest/ctas.sql"})
     private HiveShell hiveShell;
 
     @Test
     public void tablesShouldBeCreated() {
-        List<String> expected = Arrays.asList("foo", "foo_prim");
+        List<String> expected = Arrays.asList("foo", "foo_orc_nocomp", "foo_orc_snappy");
         List<String> actual = hiveShell.executeQuery("show tables");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void verifyThatDataIsAvailableInCtas() {
+    public void verifyThatDataIsAvailableInOrcNocomp() {
         List<String> expected = Arrays.asList("A\tB", "C\tD", "E\tF");
-        List<String> actual = hiveShell.executeQuery("select * from foo_prim");
+        List<String> actual = hiveShell.executeQuery("select * from foo_orc_nocomp");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void testCountCtas() {
+    public void verifyThatDataIsAvailableInOrcSnappy() {
+        List<String> expected = Arrays.asList("A\tB", "C\tD", "E\tF");
+        List<String> actual = hiveShell.executeQuery("select * from foo_orc_snappy");
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCountOrcNocomp() {
         List<String> expected = Arrays.asList("3");
-        List<String> actual = hiveShell.executeQuery("select count(*) from foo_prim");
+        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_nocomp");
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCountOrcSnappy() {
+        List<String> expected = Arrays.asList("3");
+        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_snappy");
         Assert.assertEquals(expected, actual);
     }
 
