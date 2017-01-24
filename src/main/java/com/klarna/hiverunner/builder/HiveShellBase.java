@@ -337,8 +337,8 @@ class HiveShellBase implements HiveShell {
                 hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
-                "All resource target files should be created in a subdirectory to the test case basedir : %s",
-                resource);
+                "All resource target files should be created in a subdirectory to the test case basedir %s : %s",
+                hiveServerContainer.getBaseDir().getRoot().getAbsolutePath(), resource.getTargetFile());
     }
 
     protected final void assertFileExists(Path file) {
