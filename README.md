@@ -122,7 +122,8 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
 
 
 ### Logging
-src/main/resources/log4j.properties confogures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.   
+src/main/resources/log4j.properties configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
+All result sets are logged. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
 
 2. Look at the examples
@@ -226,6 +227,9 @@ Future work and Limitations
 
 Change Log (From version 2.2.0 and onwards)
 ==============
+
+### __3.1.1-SNAPSHOT__
+* Added debug logging of result set. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
 ### __3.1.0__
 * Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.
