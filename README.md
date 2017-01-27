@@ -228,7 +228,7 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __3.1.1-SNAPSHOT__
+### __3.1.1__
 * Added debug logging of result set. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
 ### __3.1.0__
