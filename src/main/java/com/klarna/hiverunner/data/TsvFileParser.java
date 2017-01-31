@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,15 +22,18 @@ public class TsvFileParser implements FileParser {
 
   private static final String DEFAULT_DELIMITER = "\t";
   private static final String DEFAULT_NULL_VALUE = "";
+  private static final boolean DEFAULT_HEADER = false;
 
   private Splitter splitter;
   private Object nullValue;
   private Charset charset;
+  private boolean header;
 
   public TsvFileParser() {
     withDelimiter(DEFAULT_DELIMITER);
     withNullValue(DEFAULT_NULL_VALUE);
     withCharset(StandardCharsets.UTF_8);
+    withHeader(DEFAULT_HEADER);
   }
 
   /**
@@ -57,15 +61,52 @@ public class TsvFileParser implements FileParser {
     return this;
   }
 
+  /**
+   * Enable if TSV file has header row. Default is false.
+   */
+  public TsvFileParser withHeader(boolean header) {
+    this.header = header;
+    return this;
+  }
+
   @Override
   public List<Object[]> parse(File file, HCatSchema schema, List<String> names) {
     try {
       List<String> lines = Files.readAllLines(file.toPath(), charset);
+
+      if (this.header) {
+        lines.remove(0);
+      }
+
       List<Object[]> records = new ArrayList<>(lines.size());
       for (String line : lines) {
         records.add(parseRow(line, names.size()));
       }
       return records;
+    } catch (IOException e) {
+      throw new RuntimeException("Error while reading file", e);
+    }
+  }
+
+  /**
+   * Parse out the header of a TSV file.
+   * @param file the file containing a header
+   * @param schema HCatSchema of target table
+   * @return String[] of the columns names in header
+   */
+  public String[] parseHeader(File file) {
+    if (!this.header) {
+      throw new IllegalStateException("Cannot parse header from file without one");
+    }
+    try {
+      String first_line = Files.newBufferedReader(file.toPath(), charset).readLine();
+      List<String> columns = new ArrayList<>();
+      Iterator<String> iterator = splitter.split(first_line).iterator();
+
+      while (iterator.hasNext()) {
+        columns.add(iterator.next());
+      }
+      return columns.toArray(new String[columns.size()]);
     } catch (IOException e) {
       throw new RuntimeException("Error while reading file", e);
     }
