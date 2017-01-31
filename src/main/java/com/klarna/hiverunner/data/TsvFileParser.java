@@ -1,19 +1,17 @@
 package com.klarna.hiverunner.data;
 
+import com.google.common.base.Splitter;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.hive.hcatalog.data.schema.HCatSchema;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.hive.hcatalog.data.schema.HCatSchema;
-
-import com.google.common.base.Splitter;
 
 /**
  * A {@link FileParser} for parsing data out of a TSV file.
