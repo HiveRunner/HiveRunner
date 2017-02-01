@@ -89,6 +89,17 @@ public class InsertTestData {
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
 
+    @Test
+    public void insertRowsFromTsvFileWithSubsetHeader() {
+        File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
+        TsvFileParser parser = new TsvFileParser().withHeader(true);
+        shell.insertInto("source_db", "test_table")
+                .addRowsFrom(dataFile, parser)
+                .commit();
+
+        printResult(shell.executeStatement("select * from source_db.test_table"));
+    }
+
 
     @Test
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {

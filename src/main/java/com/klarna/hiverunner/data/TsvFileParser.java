@@ -74,7 +74,6 @@ public class TsvFileParser implements FileParser {
       List<String> lines = Files.readAllLines(file.toPath(), charset);
 
       if (this.header) {
-        names = parseHeader(lines.get(0), schema);
         lines = lines.subList(1, lines.size());
       }
 
@@ -88,21 +87,31 @@ public class TsvFileParser implements FileParser {
     }
   }
 
-  /**
-   * Parse out the header of a TSV file.
-   */
-  private List<String> parseHeader(String line, HCatSchema schema) {
-    List<String> columns = new ArrayList<>();
-    Iterator<String> iterator = splitter.split(line).iterator();
+  @Override
+  public boolean hasColumnNames() {
+    return this.header;
+  }
 
-    while (iterator.hasNext()) {
-      String column = iterator.next();
-      if (schema!=null && !schema.getFieldNames().contains(column)) {
-        throw new IllegalStateException("Invalid column in header: " + column);
+  @Override
+  public List<String> getColumnNames(File file) {
+    try {
+      String firstLine = Files.newBufferedReader(file.toPath(), charset).readLine();
+      List<String> columns = new ArrayList<>();
+      Iterator<String> iterator = splitter.split(firstLine).iterator();
+
+      while (iterator.hasNext()) {
+        String column = iterator.next();
+        /*
+        if (schema != null && !schema.getFieldNames().contains(column)) {
+          throw new IllegalStateException("Invalid column in header: " + column);
+        }
+        */
+        columns.add(column);
       }
-      columns.add(column);
+      return columns;
+    } catch(IOException e) {
+      throw new RuntimeException("Error while reading file", e);
     }
-    return columns;
   }
 
   private Object[] parseRow(String line, int size) {

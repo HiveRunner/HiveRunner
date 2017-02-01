@@ -85,6 +85,13 @@ class TableDataBuilder {
   }
 
   TableDataBuilder addRowsFrom(File file, FileParser fileParser) {
+    if (fileParser.hasColumnNames()) {
+      if (names != schema.getFieldNames()) {
+        throw new IllegalArgumentException("Mixing manual column selection and header column names is not supported.");
+      }
+      List<String> columns = fileParser.getColumnNames(file);
+      withColumns(columns.toArray(new String[columns.size()]));
+    }
     return addRows(fileParser.parse(file, schema, names));
   }
 
