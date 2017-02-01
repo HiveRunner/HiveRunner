@@ -82,9 +82,7 @@ public class InsertTestData {
     public void insertRowsFromTsvFileWithHeader() {
         File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader(true);
-        String[] header = parser.parseHeader(dataFile);
         shell.insertInto("source_db", "test_table")
-                .withColumns(header)
                 .addRowsFrom(dataFile, parser)
                 .commit();
 
