@@ -101,11 +101,6 @@ public class TsvFileParser implements FileParser {
 
       while (iterator.hasNext()) {
         String column = iterator.next();
-        /*
-        if (schema != null && !schema.getFieldNames().contains(column)) {
-          throw new IllegalStateException("Invalid column in header: " + column);
-        }
-        */
         columns.add(column);
       }
       return columns;
