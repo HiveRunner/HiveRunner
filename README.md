@@ -284,6 +284,14 @@ E.g:
 Known Issues
 =====================
 
+### UnknownHostException
+I've had issues with UnknownHostException on OS X after upgrading my system or running docker. 
+Usually a restart of my machine solved it, but last time I got some corporate 
+stuff installed the restarts stopped working and I kept getting UnknownHostExceptions. 
+Following this simple guide solved my problem:
+http://crunchify.com/getting-java-net-unknownhostexception-nodename-nor-servname-provided-or-not-known-error-on-mac-os-x-update-your-privateetchosts-file/
+
+
 ### IOException in Hive 0.14.0
 Described in this issue: https://github.com/klarna/HiveRunner/issues/3
 
