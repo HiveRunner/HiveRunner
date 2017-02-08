@@ -85,6 +85,11 @@ class TableDataBuilder {
   }
 
   TableDataBuilder addRowsFrom(File file, FileParser fileParser) {
+    if (fileParser.hasColumnNames()) {
+      checkArgument(names.equals(schema.getFieldNames()), "Manual column spec and header column spec are mutually exclusive");
+      List<String> columns = fileParser.getColumnNames(file);
+      withColumns(columns.toArray(new String[columns.size()]));
+    }
     return addRows(fileParser.parse(file, schema, names));
   }
 
