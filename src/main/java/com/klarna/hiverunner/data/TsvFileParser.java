@@ -73,7 +73,7 @@ public class TsvFileParser implements FileParser {
     try {
       List<String> lines = Files.readAllLines(file.toPath(), charset);
 
-      if (this.header) {
+      if (this.hasHeader) {
         lines = lines.subList(1, lines.size());
       }
 
@@ -89,7 +89,7 @@ public class TsvFileParser implements FileParser {
 
   @Override
   public boolean hasColumnNames() {
-    return this.header;
+    return this.hasHeader;
   }
 
   @Override
