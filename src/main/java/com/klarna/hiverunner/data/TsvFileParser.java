@@ -26,7 +26,7 @@ public class TsvFileParser implements FileParser {
   private Splitter splitter;
   private Object nullValue;
   private Charset charset;
-  private boolean header;
+  private boolean hasHeader;
 
   public TsvFileParser() {
     withDelimiter(DEFAULT_DELIMITER);
@@ -63,8 +63,8 @@ public class TsvFileParser implements FileParser {
   /**
    * Enable if TSV file has header row. Default is false.
    */
-  public TsvFileParser withHeader(boolean header) {
-    this.header = header;
+  public TsvFileParser withHeader(boolean hasHeader) {
+    this.hasHeader = hasHeader;
     return this;
   }
 
