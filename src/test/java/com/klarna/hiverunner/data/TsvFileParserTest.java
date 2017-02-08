@@ -62,7 +62,7 @@ public class TsvFileParserTest {
   @Test
   public void tsvWithHeader() {
     File dataFile = new File("src/test/resources/data/dataWithHeader.tsv");
-    TsvFileParser tsvFileParser = new TsvFileParser().withHeader(true);
+    TsvFileParser tsvFileParser = new TsvFileParser().withHeader();
 
     assertTrue(tsvFileParser.hasColumnNames());
     assertEquals(tsvFileParser.getColumnNames(dataFile), Arrays.asList("a", "b", "c", "d", "e"));
@@ -76,7 +76,7 @@ public class TsvFileParserTest {
   @Test
   public void csvWithHeader() {
     File dataFile = new File("src/test/resources/data/dataWithHeader.csv");
-    TsvFileParser tsvFileParser = new TsvFileParser().withDelimiter(",").withHeader(true);
+    TsvFileParser tsvFileParser = new TsvFileParser().withDelimiter(",").withHeader();
 
     assertTrue(tsvFileParser.hasColumnNames());
     assertEquals(tsvFileParser.getColumnNames(dataFile), Arrays.asList("a", "b", "c", "d", "e"));

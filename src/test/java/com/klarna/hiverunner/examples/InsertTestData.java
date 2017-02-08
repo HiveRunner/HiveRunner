@@ -81,7 +81,7 @@ public class InsertTestData {
     @Test
     public void insertRowsFromTsvFileWithHeader() {
         File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
-        TsvFileParser parser = new TsvFileParser().withHeader(true);
+        TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
                 .addRowsFrom(dataFile, parser)
                 .commit();
@@ -92,7 +92,7 @@ public class InsertTestData {
     @Test
     public void insertRowsFromTsvFileWithSubsetHeader() {
         File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
-        TsvFileParser parser = new TsvFileParser().withHeader(true);
+        TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
                 .addRowsFrom(dataFile, parser)
                 .commit();

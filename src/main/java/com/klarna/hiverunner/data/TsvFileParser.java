@@ -21,7 +21,6 @@ public class TsvFileParser implements FileParser {
 
   private static final String DEFAULT_DELIMITER = "\t";
   private static final String DEFAULT_NULL_VALUE = "";
-  private static final boolean DEFAULT_HEADER = false;
 
   private Splitter splitter;
   private Object nullValue;
@@ -32,7 +31,7 @@ public class TsvFileParser implements FileParser {
     withDelimiter(DEFAULT_DELIMITER);
     withNullValue(DEFAULT_NULL_VALUE);
     withCharset(StandardCharsets.UTF_8);
-    withHeader(DEFAULT_HEADER);
+    withoutHeader();
   }
 
   /**
@@ -63,10 +62,19 @@ public class TsvFileParser implements FileParser {
   /**
    * Enable if TSV file has header row. Default is false.
    */
-  public TsvFileParser withHeader(boolean hasHeader) {
-    this.hasHeader = hasHeader;
+  public TsvFileParser withHeader() {
+    this.hasHeader = true;
     return this;
   }
+
+  /**
+   * Enable if TSV file has header row. Default is false.
+   */
+  public TsvFileParser withoutHeader() {
+    this.hasHeader = false;
+    return this;
+  }
+
 
   @Override
   public List<Object[]> parse(File file, HCatSchema schema, List<String> names) {
