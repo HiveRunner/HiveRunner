@@ -228,6 +228,9 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
+### __3.2.0__
+* Added functionality for headers in TSV parser. This way you can dynamically add TSV files declaring a subset of columns using insertInto.
+
 ### __3.1.1__
 * Added debug logging of result set. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
@@ -369,6 +372,7 @@ Playbook for making a release
 Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment
 
 * Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
+* Update change log for new version.
 * Commit, tag with release number, push
 
 ```
