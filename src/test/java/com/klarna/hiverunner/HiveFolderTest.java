@@ -36,9 +36,6 @@ public class HiveFolderTest {
     private TemporaryFolder temporaryFolder;
     private HiveFolder hiveFolder;
 
-    public HiveFolderTest() {
-    }
-
     @Before
     public void setup() throws IOException {
         temporaryFolder = createTemporaryFolder();
