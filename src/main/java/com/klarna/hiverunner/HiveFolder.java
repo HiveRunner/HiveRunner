@@ -12,12 +12,11 @@ public class HiveFolder {
     public HiveFolder(File folder){
         if(folder == null)
             throw new IllegalArgumentException("Folder must be non null");
-
         this.folder = folder;
     }
 
     public boolean markAsWritable() throws IOException {
         FileUtil.setPermission(folder, FsPermission.getDirDefault());
-        return true;
+        return folder.canWrite();
     }
 }
