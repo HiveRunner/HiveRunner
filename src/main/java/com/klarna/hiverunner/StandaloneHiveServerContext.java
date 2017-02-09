@@ -216,7 +216,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(newFolder.setWritable(true, false));
+            Assert.assertTrue(new HiveFolder(newFolder).markAsWritable());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);

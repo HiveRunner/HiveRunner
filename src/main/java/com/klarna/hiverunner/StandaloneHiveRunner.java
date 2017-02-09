@@ -19,11 +19,7 @@ package com.klarna.hiverunner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.io.Resources;
-import com.klarna.hiverunner.annotations.HiveProperties;
-import com.klarna.hiverunner.annotations.HiveResource;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
-import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.annotations.HiveSetupScript;
+import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
@@ -170,7 +166,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
         container = null;
-        Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
+        setAndCheckIfWritable(temporaryFolder);
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
@@ -382,6 +378,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         MDC.put("testMethod", method.getName());
     }
 
+    private void setAndCheckIfWritable(TemporaryFolder temporaryFolder) throws IOException {
+        HiveFolder folder = new HiveFolder(temporaryFolder.getRoot());
+
+        Assert.assertTrue(folder.markAsWritable());
+    }
+
     /**
      * Used as a handle for the HiveShell field in the test case so that we may set it once the
      * HiveShell has been instantiated.
@@ -392,7 +394,3 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         boolean isAutoStart();
     }
 }
-
-
-
-
