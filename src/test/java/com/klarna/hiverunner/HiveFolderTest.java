@@ -89,7 +89,7 @@ public class HiveFolderTest {
     }
 
     private static TemporaryFolder createTemporaryFolder() throws IOException {
-        TemporaryFolder folder = new TemporaryFolder(new File("C:\\hive-test"));
+        TemporaryFolder folder = new TemporaryFolder();
         folder.create();
 
         FileUtil.setPermission(folder.getRoot(), new FsPermission((short)000));
