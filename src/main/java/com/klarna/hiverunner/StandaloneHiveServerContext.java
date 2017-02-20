@@ -17,11 +17,12 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.hsqldb.jdbc.JDBCDriver;
-import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,7 +217,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(newFolder.setWritable(true, false));
+            FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
