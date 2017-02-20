@@ -26,7 +26,6 @@ import com.klarna.reflection.ReflectionUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.log4j.MDC;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
