@@ -228,6 +228,9 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
+### __3.2.1__
+* The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows.
+
 ### __3.2.0__
 * Added functionality for headers in TSV parser. This way you can dynamically add TSV files declaring a subset of columns using insertInto.
 
