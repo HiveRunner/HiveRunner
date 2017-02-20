@@ -6,6 +6,7 @@ env:
   - secure: er6AcccLBHyJyGphwJIpZdR4egGeaHWdgZKsWo/ZCF/iaMOSmFU0+Tsro10UgF08YPknXpQ8CKxLra9NfvM4sxS7WGEbfFUXdvHb8rHSjszPe3/29SMsScDADNO5xQ4eVNxEkjZ2djt42SJAh2BDVcv+n2GUDedVpY5rFRIA8zk=
   - secure: blVht/8iA8oeKXsJSfXqDatqGi2nQuzQAf1n5I+75V0v0MKGTafsMx1WT07HKRCGME+wDH9ITQoov7TQYBJir2WbF93a6zT1P5ViURzuBSNDhGOl20alEdhE46O/GPcDvf44yAoYEZRqgdyqEewyAuArGJEqZDpoMCNFAeYH5hg=
 before_install:
+- echo "TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}"
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then
     openssl aes-256-cbc -K $encrypted_71165e3d1d0f_key -iv $encrypted_71165e3d1d0f_iv -in secrets.tar.enc -out secrets.tar -d
     && tar xvf secrets.tar ;
