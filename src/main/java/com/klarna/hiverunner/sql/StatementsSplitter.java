@@ -45,7 +45,7 @@ public class StatementsSplitter {
         StringTokenizer tokenizer = new StringTokenizer(expression, SQL_SPECIAL_CHARS, true);
 
         List<String> statements = new ArrayList<>();
-        String statement = "";
+        StringBuilder statement = new StringBuilder();
         while (tokenizer.hasMoreElements()) {
             String token = (String) tokenizer.nextElement();
             switch (token) {
@@ -53,35 +53,35 @@ public class StatementsSplitter {
                 // Close statement and start a new one
                 case ";":
                     // Only add statement that is not empty
-                    if (isValidStatement(statement)) {
-                        statements.add(statement.trim());
+                    if (isValidStatement(statement.toString())) {
+                        statements.add(statement.toString().trim());
                     }
-                    statement = "";
+                    statement.delete(0,statement.length());
                     break;
 
                 // Preserve comments (--)
                 case "-":
-                    statement += token;
+                    statement.append(token);
                     if (START_OF_COMMENT_PATTERN.matcher(statement).matches()) {
-                        statement += readUntilEndOfLine(tokenizer);
+                        statement.append(readUntilEndOfLine(tokenizer));
                     }
                     break;
 
                 // Preserve quotes
                 case "\"":
                 case "'":
-                    statement += readQuoted(tokenizer, token);
+                    statement.append(readQuoted(tokenizer, token));
                     break;
 
                 // Add any other elements to the current statement
                 default:
-                    statement += token;
+                    statement.append(token);
             }
         }
 
         // Only add statement that is not empty
-        if (isValidStatement(statement)) {
-            statements.add(statement);
+        if (isValidStatement(statement.toString())) {
+            statements.add(statement.toString());
         }
         return statements;
     }
