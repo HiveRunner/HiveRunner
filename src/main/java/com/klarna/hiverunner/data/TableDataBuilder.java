@@ -121,7 +121,7 @@ class TableDataBuilder {
       converted = Converters.convert(value, typeInfo);
     } catch (ConversionException e) {
       throw new IllegalArgumentException("Invalid value for " + name + ". Got '" + value + "' ("
-          + value.getClass().getSimpleName() + "). Expected " + typeInfo.getTypeName() + ".", e);
+          + value.getClass().getSimpleName() + "). Expected " + typeInfo.getTypeName() + '.', e);
     }
     try {
       row.set(name, schema, converted);

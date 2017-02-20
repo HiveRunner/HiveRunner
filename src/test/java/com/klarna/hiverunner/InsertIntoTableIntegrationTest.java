@@ -46,7 +46,7 @@ public class InsertIntoTableIntegrationTest {
     hiveShell.execute(new StringBuilder()
         .append("create table test_db.test_table (")
         .append("c0 string")
-        .append(")")
+        .append(')')
         .append("partitioned by (c1 string)")
         .append("stored as " + storedAs)
         .toString());
@@ -87,7 +87,7 @@ public class InsertIntoTableIntegrationTest {
         .append("c11 decimal(3,2),")
         .append("c12 varchar(1),")
         .append("c13 char(1)")
-        .append(")")
+        .append(')')
         .append("stored as orc")
         .toString());
 
@@ -141,7 +141,7 @@ public class InsertIntoTableIntegrationTest {
         .append("c string,")
         .append("d string,")
         .append("e string")
-        .append(")")
+        .append(')')
         .append("stored as orc")
         .toString());
     hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromTsv(dataFile).commit();
@@ -162,7 +162,7 @@ public class InsertIntoTableIntegrationTest {
         .append("c string,")
         .append("d string,")
         .append("e string")
-        .append(")")
+        .append(')')
         .append("stored as orc")
         .toString());
     hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromDelimited(dataFile, ",", "NULL").commit();
@@ -182,7 +182,7 @@ public class InsertIntoTableIntegrationTest {
         .append("c string,")
         .append("d string,")
         .append("e string")
-        .append(")")
+        .append(')')
         .append("stored as orc")
         .toString());
     hiveShell

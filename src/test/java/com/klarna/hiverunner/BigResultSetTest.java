@@ -49,7 +49,7 @@ public class BigResultSetTest {
         for (int i = 0; i < 1099; i++) {
             String row = UUID.randomUUID().toString();
             rows.add(row);
-            ros.write((row + "\n").getBytes());
+            ros.write((row + '\n').getBytes());
         }
 
         hiveShell.start();
