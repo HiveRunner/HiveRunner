@@ -14,15 +14,15 @@ public class HiveFolder {
     private final File folder;
     private final HiveConf conf;
 
-    public HiveFolder(File folder, HiveConf config){
+    public HiveFolder(File folder, HiveConf conf){
         if(folder == null)
             throw new IllegalArgumentException("Folder must be not null");
 
-        if(config == null)
+        if(conf == null)
             throw new IllegalArgumentException("Hive configuration must be not null");
 
         this.folder = folder;
-        this.conf = config;
+        this.conf = conf;
     }
 
     public boolean markAsWritable() throws IOException {
