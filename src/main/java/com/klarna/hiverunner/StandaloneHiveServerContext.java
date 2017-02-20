@@ -17,11 +17,12 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.hsqldb.jdbc.JDBCDriver;
-import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,17 +207,17 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             It looks like it will do this only once per test suite so it makes sense to keep this in a central location
             rather than in the tmp dir of each test.
          */
-        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir", hiveConf);
+        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir");
 
         conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
 
     }
 
-    File newFolder(TemporaryFolder basedir, String folder, HiveConf hiveConf) {
+    File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(new HiveFolder(newFolder, hiveConf).markAsWritable());
+            FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
@@ -234,11 +235,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf,
                                                     TemporaryFolder basedir) {
-        conf.setVar(var, newFolder(basedir, folder, conf).getAbsolutePath());
+        conf.setVar(var, newFolder(basedir, folder).getAbsolutePath());
     }
 
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-        conf.set(key, newFolder(basedir, folder, conf).getAbsolutePath());
+        conf.set(key, newFolder(basedir, folder).getAbsolutePath());
     }
 
 }

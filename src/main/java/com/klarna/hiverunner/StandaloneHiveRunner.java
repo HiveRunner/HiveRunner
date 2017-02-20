@@ -23,6 +23,8 @@ import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.log4j.MDC;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -166,7 +168,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
         container = null;
-        setAndCheckIfWritable(temporaryFolder);
+        FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
@@ -376,11 +378,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
         MDC.put("testClass", getTestClass().getJavaClass().getName());
         MDC.put("testMethod", method.getName());
-    }
-
-    private void setAndCheckIfWritable(TemporaryFolder temporaryFolder) throws IOException {
-        HiveFolder folder = new HiveFolder(temporaryFolder.getRoot(), container.getHiveConf());
-        Assert.assertTrue(folder.markAsWritable());
     }
 
     /**
