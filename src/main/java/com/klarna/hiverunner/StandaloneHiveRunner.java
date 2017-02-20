@@ -379,7 +379,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
     private void setAndCheckIfWritable(TemporaryFolder temporaryFolder) throws IOException {
-        HiveFolder folder = new HiveFolder(temporaryFolder.getRoot());
+        HiveFolder folder = new HiveFolder(temporaryFolder.getRoot(), container.getHiveConf());
         Assert.assertTrue(folder.markAsWritable());
     }
 

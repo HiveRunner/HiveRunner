@@ -27,12 +27,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
 import java.io.IOException;
 
 public class HiveFolderTest {
 
     private final FsPermission writablePermission = FsPermission.getDirDefault();
+    private final HiveConf hiveConf = new HiveConf();
     private TemporaryFolder temporaryFolder;
     private HiveFolder hiveFolder;
 
@@ -40,34 +40,36 @@ public class HiveFolderTest {
     public void setup() throws IOException {
         temporaryFolder = createTemporaryFolder();
 
-        hiveFolder = new HiveFolder(temporaryFolder.getRoot());
+        hiveFolder = new HiveFolder(temporaryFolder.getRoot(), new HiveConf());
     }
 
     @After
     public void tearDown() { temporaryFolder.delete(); }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorShouldThrowException() {
-        new HiveFolder(null);
+    public void testConstructorShouldFailIfFolderIsNull() {
+        new HiveFolder(null, hiveConf);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorShouldFailIfHiveConfIsNull() { new HiveFolder(temporaryFolder.getRoot(), null); }
 
     @Test
     public void testFolderPermissoinHasChanged () throws IOException {
-        FsPermission previousPermission = getPermission(temporaryFolder);
+        FsPermission previousPermission = getPermission(temporaryFolder, hiveConf);
 
         hiveFolder.markAsWritable();
-        FsPermission actualPermission = getPermission(temporaryFolder);
+        FsPermission actualPermission = getPermission(temporaryFolder, hiveConf);
 
         Assert.assertNotEquals(previousPermission, actualPermission);
     }
 
     @Test
     public void testMakeFolderWritable () throws IOException {
-        hiveFolder.markAsWritable();
+        boolean isWritable = hiveFolder.markAsWritable();
 
-        FsPermission actualPermission = getPermission(temporaryFolder);
-
-        Assert.assertEquals(writablePermission, actualPermission);
+        Assert.assertTrue(isWritable);
+        Assert.assertEquals(writablePermission, getPermission(temporaryFolder, hiveConf));
     }
 
     @Test
@@ -75,14 +77,14 @@ public class HiveFolderTest {
         FsPermission writableHDFSDirPermission = new FsPermission((short)00733);
 
         hiveFolder.markAsWritable();
-        FsPermission actualPermission = getPermission(temporaryFolder);
+        FsPermission actualPermission = getPermission(temporaryFolder, hiveConf);
 
         Assert.assertEquals(writableHDFSDirPermission.toShort(), writableHDFSDirPermission.toShort() & actualPermission.toShort());
     }
 
-    private static FsPermission getPermission(TemporaryFolder folder) throws IOException {
+    private static FsPermission getPermission(TemporaryFolder folder, HiveConf conf) throws IOException {
         Path path = new Path(folder.getRoot().getPath());
-        FileSystem fileSystem = path.getFileSystem(new HiveConf());
+        FileSystem fileSystem = path.getFileSystem(conf);
         FileStatus fileStatus = fileSystem.getFileStatus(path);
 
         return fileStatus.getPermission();

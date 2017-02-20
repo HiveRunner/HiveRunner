@@ -206,17 +206,17 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             It looks like it will do this only once per test suite so it makes sense to keep this in a central location
             rather than in the tmp dir of each test.
          */
-        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir");
+        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir", hiveConf);
 
         conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
 
     }
 
-    File newFolder(TemporaryFolder basedir, String folder) {
+    File newFolder(TemporaryFolder basedir, String folder, HiveConf hiveConf) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(new HiveFolder(newFolder).markAsWritable());
+            Assert.assertTrue(new HiveFolder(newFolder, hiveConf).markAsWritable());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
@@ -234,11 +234,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf,
                                                     TemporaryFolder basedir) {
-        conf.setVar(var, newFolder(basedir, folder).getAbsolutePath());
+        conf.setVar(var, newFolder(basedir, folder, conf).getAbsolutePath());
     }
 
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-        conf.set(key, newFolder(basedir, folder).getAbsolutePath());
+        conf.set(key, newFolder(basedir, folder, conf).getAbsolutePath());
     }
 
 }
