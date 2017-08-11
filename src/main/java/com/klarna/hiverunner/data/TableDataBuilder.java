@@ -18,6 +18,8 @@ import org.apache.hive.hcatalog.data.HCatRecord;
 import org.apache.hive.hcatalog.data.schema.HCatFieldSchema;
 import org.apache.hive.hcatalog.data.schema.HCatSchema;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -34,11 +36,8 @@ class TableDataBuilder {
   private List<String> names;
 
   TableDataBuilder(HCatTable table) {
-    schema = new HCatSchema(ImmutableList
-        .<HCatFieldSchema> builder()
-        .addAll(table.getCols())
-        .addAll(table.getPartCols())
-        .build());
+    schema = new HCatSchema(
+        ImmutableList.<HCatFieldSchema> builder().addAll(table.getCols()).addAll(table.getPartCols()).build());
     partitionColumns = table.getPartCols();
     withAllColumns();
   }
@@ -86,11 +85,24 @@ class TableDataBuilder {
 
   TableDataBuilder addRowsFrom(File file, FileParser fileParser) {
     if (fileParser.hasColumnNames()) {
-      checkArgument(names.equals(schema.getFieldNames()), "Manual column spec and header column spec are mutually exclusive");
-      List<String> columns = fileParser.getColumnNames(file);
-      withColumns(columns.toArray(new String[columns.size()]));
+      checkArgument(names.equals(schema.getFieldNames()),
+          "Manual column spec and header column spec are mutually exclusive");
+      String[] columns = FluentIterable
+          .from(fileParser.getColumnNames(file))
+          .transform(toLowerCase())
+          .toArray(String.class);
+      withColumns(columns);
     }
     return addRows(fileParser.parse(file, schema, names));
+  }
+
+  private Function<String, String> toLowerCase() {
+    return new Function<String, String>() {
+      @Override
+      public String apply(String t) {
+        return t.toLowerCase();
+      }
+    };
   }
 
   private TableDataBuilder addRows(List<Object[]> rows) {
@@ -120,8 +132,15 @@ class TableDataBuilder {
     try {
       converted = Converters.convert(value, typeInfo);
     } catch (ConversionException e) {
-      throw new IllegalArgumentException("Invalid value for " + name + ". Got '" + value + "' ("
-          + value.getClass().getSimpleName() + "). Expected " + typeInfo.getTypeName() + ".", e);
+      throw new IllegalArgumentException("Invalid value for "
+          + name
+          + ". Got '"
+          + value
+          + "' ("
+          + value.getClass().getSimpleName()
+          + "). Expected "
+          + typeInfo.getTypeName()
+          + ".", e);
     }
     try {
       row.set(name, schema, converted);
@@ -163,7 +182,7 @@ class TableDataBuilder {
   }
 
   private void checkColumn(String name) {
-    checkArgument(schema.getFieldNames().contains(name), "Column %s does not exist", name);
+    checkArgument(schema.getFieldNames().contains(name.toLowerCase()), "Column %s does not exist", name);
   }
 
 }
