@@ -63,7 +63,7 @@ public class TsvFileParser implements FileParser {
    * Enable if TSV file has header row. Default is false.
    */
   public TsvFileParser withHeader() {
-    hasHeader = true;
+    this.hasHeader = true;
     return this;
   }
 
@@ -71,16 +71,17 @@ public class TsvFileParser implements FileParser {
    * Enable if TSV file has header row. Default is false.
    */
   public TsvFileParser withoutHeader() {
-    hasHeader = false;
+    this.hasHeader = false;
     return this;
   }
+
 
   @Override
   public List<Object[]> parse(File file, HCatSchema schema, List<String> names) {
     try {
       List<String> lines = Files.readAllLines(file.toPath(), charset);
 
-      if (hasHeader) {
+      if (this.hasHeader) {
         lines = lines.subList(1, lines.size());
       }
 
@@ -96,7 +97,7 @@ public class TsvFileParser implements FileParser {
 
   @Override
   public boolean hasColumnNames() {
-    return hasHeader;
+    return this.hasHeader;
   }
 
   @Override
@@ -111,7 +112,7 @@ public class TsvFileParser implements FileParser {
         columns.add(column);
       }
       return columns;
-    } catch (IOException e) {
+    } catch(IOException e) {
       throw new RuntimeException("Error while reading file", e);
     }
   }
