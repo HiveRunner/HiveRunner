@@ -228,6 +228,9 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
+### __TBA__
+* Support shell-specific `source` (`hive`) and ``!run`` (`beeline`) commands. (These commands allow to import and execute scripts in statements or scripts.)
+
 ### __3.2.1__
 * The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows.
 

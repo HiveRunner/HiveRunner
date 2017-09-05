@@ -1,6 +1,7 @@
 package com.klarna.hiverunner.sql;
 
 import com.google.common.base.Joiner;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,70 +14,70 @@ public class StatementsSplitterTest {
     @Test
     public void testSplitBasic() {
         String str = "foo;bar;baz";
-        List expected = Arrays.asList("foo", "bar", "baz");
+        List<String> expected = Arrays.asList("foo", "bar", "baz");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testRemoveTrailingSemiColon() {
         String str = ";foo;bar;baz;";
-        List expected = Arrays.asList("foo", "bar", "baz");
+        List<String> expected = Arrays.asList("foo", "bar", "baz");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testDiscardRedundantSemiColons() {
         String str = "a;b;;;c";
-        List expected = Arrays.asList("a", "b", "c");
+        List<String> expected = Arrays.asList("a", "b", "c");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testDiscardTrailingSpace() {
         String str = "a;   b\t\n   ;  \n\tc   c;";
-        List expected = Arrays.asList("a", "b", "c   c");
+        List<String> expected = Arrays.asList("a", "b", "c   c");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testDiscardEmptyStatements() {
         String str = "a;b;     \t\n   ;c;";
-        List expected = Arrays.asList("a", "b", "c");
+        List<String> expected = Arrays.asList("a", "b", "c");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testCommentPreserved() {
         String str = "foo -- bar";
-        List expected = Arrays.asList("foo -- bar");
+        List<String> expected = Arrays.asList("foo -- bar");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testCommentWithSingleQuote() {
         String str = "foo -- b'ar";
-        List expected = Arrays.asList("foo -- b'ar");
+        List<String> expected = Arrays.asList("foo -- b'ar");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testCommentWithDoubleQuote() {
         String str = "foo -- b\"ar";
-        List expected = Arrays.asList("foo -- b\"ar");
+        List<String> expected = Arrays.asList("foo -- b\"ar");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testCommentWithSemiColon() {
         String str = "foo -- b;ar";
-        List expected = Arrays.asList("foo -- b;ar");
+        List<String> expected = Arrays.asList("foo -- b;ar");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
     @Test
     public void testMultilineStatementWithComment() {
         String str = "foo -- b;ar\nbaz";
-        List expected = Arrays.asList("foo -- b;ar\nbaz");
+        List<String> expected = Arrays.asList("foo -- b;ar\nbaz");
         Assert.assertEquals(expected, StatementsSplitter.splitStatements(str));
     }
 
@@ -158,6 +159,18 @@ public class StatementsSplitterTest {
         Assert.assertEquals("\n", StatementsSplitter.readUntilEndOfLine(tokenizer));
         Assert.assertEquals("baz", StatementsSplitter.readUntilEndOfLine(tokenizer));
         Assert.assertEquals("", StatementsSplitter.readUntilEndOfLine(tokenizer));
+    }
+
+    @Test
+    public void beelineSqlLineCommandsAreSupported() {
+        String statementA = "!run script.hql";
+        String statementB = "select * from table where foo != bar";
+        String statementC = "!run another_script.hql";
+
+        List<String> expected = Arrays.asList(statementA, statementB, statementC);
+        String expression = statementA + '\n' + statementB + ";   " + statementC;
+
+        Assert.assertEquals(expected, StatementsSplitter.splitStatements(expression));
     }
 
 }

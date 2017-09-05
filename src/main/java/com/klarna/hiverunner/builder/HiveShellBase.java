@@ -22,6 +22,8 @@ import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.HiveSqlStatement;
+import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.StatementsSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -62,8 +64,8 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
+    protected final HiveSqlStatementFactory statementFactory;
     protected final CommandShellEmulation commandShellEmulation;
-
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
@@ -73,12 +75,12 @@ class HiveShellBase implements HiveShell {
                   CommandShellEmulation commandShellEmulation) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
+		this.commandShellEmulation = commandShellEmulation;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
-        this.commandShellEmulation = commandShellEmulation;
-
+        this.statementFactory = new HiveSqlStatementFactory(Charset.defaultCharset(), commandShellEmulation);
     }
 
     @Override
@@ -102,11 +104,25 @@ class HiveShellBase implements HiveShell {
     public List<Object[]> executeStatement(String hql) {
         return executeStatementWithCommandShellEmulation(hql);
     }
+
+    private void executeScriptWithCommandShellEmulation(String script) {
+    	List<HiveSqlStatement> statements = statementFactory.newInstanceForScript(script);
+        executeStatementsWithCommandShellEmulation(statements);
+    }
     
-    private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
-      return hiveServerContainer.executeStatement(commandShellEmulation.transformStatement(hql));
+    private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
+    	List<HiveSqlStatement> statements = statementFactory.newInstanceForStatement(statement);
+        return executeStatementsWithCommandShellEmulation(statements);
     }
 
+    private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveSqlStatement> hqlStatements) {
+        List<Object[]> results = new ArrayList<>();
+        for (HiveSqlStatement hqlStatement : hqlStatements) {
+          results.addAll(hiveServerContainer.executeStatement(hqlStatement.getStatementString()));
+        }
+        return results;
+      }
+    
     @Override
     public void execute(String hql) {
         assertStarted();
@@ -135,11 +151,8 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        try {
-            execute(new String(Files.readAllBytes(path), charset));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to read setup script file '" + path + "': " + e.getMessage(), e);
-        }
+        List<HiveSqlStatement> hqlStatements = statementFactory.newInstanceForPath(path);
+        executeStatementsWithCommandShellEmulation(hqlStatements);
     }
 
     @Override
@@ -322,10 +335,6 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    private void executeScriptWithCommandShellEmulation(String script) {
-          hiveServerContainer.executeScript(commandShellEmulation.transformScript(script));
-    }
-    
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
