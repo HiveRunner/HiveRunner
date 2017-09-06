@@ -16,7 +16,6 @@
 
 package com.klarna.hiverunner;
 
-import com.google.common.base.Joiner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
