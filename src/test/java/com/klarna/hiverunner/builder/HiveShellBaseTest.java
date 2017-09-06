@@ -1,6 +1,5 @@
 package com.klarna.hiverunner.builder;
 
-import com.klarna.hiverunner.CommandShellEmulation;
 import static com.google.common.base.Charsets.UTF_8;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -13,6 +12,9 @@ import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.sql.HiveSqlStatement;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
+import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -259,13 +261,13 @@ public class HiveShellBaseTest {
     }
 
     private HiveShell createHiveCliShell(String... keyValues) {
-    	return createHiveShell(CommandShellEmulation.HIVE_CLI, keyValues);
+    	return createHiveShell(HiveCliEmulator.INSTANCE, keyValues);
     }
     private HiveShell createBeelineShell(String... keyValues) {
-        return createHiveShell(CommandShellEmulation.BEELINE, keyValues);
+        return createHiveShell(BeelineEmulator.INSTANCE, keyValues);
     }
     
-    private HiveShell createHiveShell(CommandShellEmulation emulation, String... keyValues) {
+    private HiveShell createHiveShell(CommandShellEmulator emulation, String... keyValues) {
         Map<String, String> hiveConf = MapUtils.putAll(new HashMap(), keyValues);
         HiveConf conf = createHiveconf(hiveConf);
 

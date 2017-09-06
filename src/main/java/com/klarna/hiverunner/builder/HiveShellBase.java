@@ -18,13 +18,13 @@ package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
 import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
-import com.klarna.hiverunner.sql.StatementsSplitter;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -65,14 +65,14 @@ class HiveShellBase implements HiveShell {
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
     protected final HiveSqlStatementFactory statementFactory;
-    protected final CommandShellEmulation commandShellEmulation;
+    protected final CommandShellEmulator commandShellEmulation;
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
                   List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest,
-                  CommandShellEmulation commandShellEmulation) {
+                  CommandShellEmulator commandShellEmulation) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
 		this.commandShellEmulation = commandShellEmulation;
@@ -118,7 +118,7 @@ class HiveShellBase implements HiveShell {
     private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveSqlStatement> hqlStatements) {
         List<Object[]> results = new ArrayList<>();
         for (HiveSqlStatement hqlStatement : hqlStatements) {
-          results.addAll(hiveServerContainer.executeStatement(hqlStatement.getStatementString()));
+          results.addAll(hiveServerContainer.executeStatement(hqlStatement.getRawStatement()));
         }
         return results;
       }
@@ -419,7 +419,7 @@ class HiveShellBase implements HiveShell {
 		assertFileExists(script);
 		try {
 			String statements = new String(Files.readAllBytes(script), charset);
-			List<String> splitStatements = StatementsSplitter.splitStatements(statements);
+			List<String> splitStatements = new StatementSplitter(commandShellEmulation).split(statements);
 			if (splitStatements.size() != 1) {
 				throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
 			}

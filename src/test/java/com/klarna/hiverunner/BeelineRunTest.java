@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 
 @RunWith(StandaloneHiveRunner.class)
 public class BeelineRunTest {
@@ -39,7 +40,7 @@ public class BeelineRunTest {
 	@HiveRunnerSetup
 	public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {
 		{
-			setCommandShellEmulation(CommandShellEmulation.BEELINE);
+			setCommandShellEmulation(BeelineEmulator.INSTANCE);
 		}
 	};
 

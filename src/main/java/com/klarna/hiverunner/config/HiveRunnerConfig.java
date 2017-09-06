@@ -1,15 +1,14 @@
 package com.klarna.hiverunner.config;
 
 
-import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CommandShellEmulation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory;
 
 
 /**
@@ -79,12 +78,12 @@ public class HiveRunnerConfig {
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
     /**
-     * The shell's {@link CommandShellEmulation}.
+     * The shell's {@link CommandShellEmulator}.
      * 
      * Defaults to {@code HIVE_CLI}
      */
     public static final String COMMAND_SHELL_EMULATION_PROPERTY_NAME = "commandShellEmulation";
-    public static final String COMMAND_SHELL_EMULATION_DEFAULT = CommandShellEmulation.HIVE_CLI.name();
+    public static final String COMMAND_SHELL_EMULATION_DEFAULT = "HIVE_CLI";
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -139,8 +138,8 @@ public class HiveRunnerConfig {
      * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
      * between different clients.
      */
-    public CommandShellEmulation getCommandShellEmulation() {
-        return CommandShellEmulation.valueOf(getString(COMMAND_SHELL_EMULATION_PROPERTY_NAME).toUpperCase());
+    public CommandShellEmulator getCommandShellEmulation() {
+        return CommandShellEmulatorFactory.valueOf(getString(COMMAND_SHELL_EMULATION_PROPERTY_NAME).toUpperCase());
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
@@ -159,8 +158,8 @@ public class HiveRunnerConfig {
         hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
-    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
-        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, commandShellEmulation.name());
+    public void setCommandShellEmulation(CommandShellEmulator commandShellEmulation) {
+        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, commandShellEmulation.getName());
     }
     
     /**

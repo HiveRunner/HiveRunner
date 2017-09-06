@@ -1,47 +1,42 @@
 package com.klarna.hiverunner.sql;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.klarna.hiverunner.CommandShellEmulation;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 public class HiveSqlStatementFactory {
 
 	private final Charset charset;
-	private final CommandShellEmulation commandShellEmulation;
+	private final CommandShellEmulator commandShellEmulation;
 
-	public HiveSqlStatementFactory(Charset charset, CommandShellEmulation commandShellEmulation) {
+	public HiveSqlStatementFactory(Charset charset, CommandShellEmulator commandShellEmulation) {
 		this.charset = charset;
 		this.commandShellEmulation = commandShellEmulation;
 	}
 
+	private List<HiveSqlStatement> internalNewInstanceForStatement(String statement) {
+		String transformedHql = commandShellEmulation.preProcessor().statement(statement.trim());
+		return commandShellEmulation.postProcessor(this).statement(new HiveSqlStatement(transformedHql));
+	}
+
 	public List<HiveSqlStatement> newInstanceForScript(String script) {
 		List<HiveSqlStatement> hqlStatements = new ArrayList<>();
-		List<String> statements = StatementsSplitter.splitStatements(commandShellEmulation.transformScript(script));
+		List<String> statements = new StatementSplitter(commandShellEmulation)
+				.split(commandShellEmulation.preProcessor().script(script));
 		for (String statement : statements) {
-			hqlStatements.addAll(newInstanceForStatement(statement));
+			hqlStatements.addAll(internalNewInstanceForStatement(statement));
 		}
 		return hqlStatements;
 	}
 
 	public List<HiveSqlStatement> newInstanceForStatement(String statement) {
-		List<HiveSqlStatement> hqlStatements = new ArrayList<>();
-		String trimmedStatement = statement.trim();
-		if (commandShellEmulation.isImportFileStatement(trimmedStatement)) {
-			File importFile = commandShellEmulation.getImportFileFromStatement(trimmedStatement);
-			Path path = Paths.get(importFile.toURI());
-			hqlStatements.addAll(newInstanceForPath(path));
-		} else {
-			String transformedHql = commandShellEmulation.transformStatement(trimmedStatement);
-			hqlStatements.add(HiveSqlStatement.forStatementString(transformedHql));
-		}
-		return hqlStatements;
+		return internalNewInstanceForStatement(statement);
 	}
 
 	public List<HiveSqlStatement> newInstanceForPath(Path path) {
