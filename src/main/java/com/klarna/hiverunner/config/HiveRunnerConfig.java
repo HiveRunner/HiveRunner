@@ -9,6 +9,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory;
+import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 
 /**
@@ -83,7 +84,7 @@ public class HiveRunnerConfig {
      * Defaults to {@code HIVE_CLI}
      */
     public static final String COMMAND_SHELL_EMULATION_PROPERTY_NAME = "commandShellEmulation";
-    public static final String COMMAND_SHELL_EMULATION_DEFAULT = "HIVE_CLI";
+    public static final String COMMAND_SHELL_EMULATION_DEFAULT = HiveCliEmulator.INSTANCE.getName();
 
     private Map<String, Object> config = new HashMap<>();
 
