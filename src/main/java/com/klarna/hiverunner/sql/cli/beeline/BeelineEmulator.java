@@ -14,6 +14,10 @@ import com.klarna.hiverunner.sql.split.PreserveQuotesRule;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 import com.klarna.hiverunner.sql.split.TokenRule;
 
+/**
+ * Emulates CLI behaviours specific to beeline. This includes interpretation of {@code !run} commands, and full line
+ * comment handling.
+ */
 public enum BeelineEmulator implements CommandShellEmulator {
 	INSTANCE;
 

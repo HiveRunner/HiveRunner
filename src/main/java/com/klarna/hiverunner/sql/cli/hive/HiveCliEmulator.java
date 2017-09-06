@@ -14,6 +14,10 @@ import com.klarna.hiverunner.sql.split.PreserveQuotesRule;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 import com.klarna.hiverunner.sql.split.TokenRule;
 
+/**
+ * Emulates CLI behaviours specific to the Hive CLI. This includes interpretation of {@code source} commands, and
+ * the broken full line comment handling.
+ */
 public enum HiveCliEmulator implements CommandShellEmulator {
 	INSTANCE;
 	

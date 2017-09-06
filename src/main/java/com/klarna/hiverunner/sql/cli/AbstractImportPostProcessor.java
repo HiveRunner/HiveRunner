@@ -9,6 +9,11 @@ import java.util.List;
 import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 
+/**
+ * An abstract {@link PostProcessor} implementation that recursively expands
+ * import type commands such as Hive CLI's {@code SOURCE}, and Beeline's
+ * {@code !run} commands.
+ */
 public abstract class AbstractImportPostProcessor implements PostProcessor {
 
 	private final HiveSqlStatementFactory factory;

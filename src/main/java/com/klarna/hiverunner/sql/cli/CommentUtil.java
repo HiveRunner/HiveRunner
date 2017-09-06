@@ -1,5 +1,6 @@
 package com.klarna.hiverunner.sql.cli;
 
+/** Utility methods for handling SQL comments. */
 public final class CommentUtil {
 
 	private CommentUtil() {

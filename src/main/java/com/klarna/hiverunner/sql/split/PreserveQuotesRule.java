@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/** A {@link TokenRule} for handling quoted character sequences. */
 public enum PreserveQuotesRule implements TokenRule {
 	INSTANCE;
 	
@@ -24,8 +25,7 @@ public enum PreserveQuotesRule implements TokenRule {
 				while (context.tokenizer().hasMoreElements()) {
 					quotedString += (String) context.tokenizer().nextElement();
 					// If the last char is an end of quote token and it was not
-					// escaped
-					// by the previous token, we break.
+					// escaped by the previous token, we break.
 					if (quotedString.endsWith(token) && LAST_CHAR_NOT_ESCAPED_PATTERN.matcher(quotedString).matches()) {
 						break;
 					}

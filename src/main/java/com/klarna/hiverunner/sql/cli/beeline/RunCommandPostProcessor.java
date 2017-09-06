@@ -5,7 +5,12 @@ import java.io.File;
 import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
+import com.klarna.hiverunner.sql.cli.PostProcessor;
 
+/**
+ * A {@link PostProcessor} that inlines external HQL files referenced in
+ * {@code !run} directives.
+ */
 class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
 	private static final String TOKEN = "!run";

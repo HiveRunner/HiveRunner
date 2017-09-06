@@ -2,10 +2,15 @@ package com.klarna.hiverunner.sql.split;
 
 import java.util.StringTokenizer;
 
+/**
+ * Provide a means to direct the {@link StatementSplitter} in how it should
+ * consume tokens.
+ */
 public interface Consumer {
 
 	String consume(Context context);
-	
+
+	/** A {@link Consumer} that consumes tokens until the end of the line. */
 	public static Consumer UNTIL_EOL = new Consumer() {
 
 		@Override
@@ -20,7 +25,7 @@ public interface Consumer {
 			}
 			return buffer;
 		}
-		
+
 	};
 
 }

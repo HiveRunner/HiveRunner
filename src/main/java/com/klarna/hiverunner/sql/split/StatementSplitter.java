@@ -5,6 +5,10 @@ import java.util.StringTokenizer;
 
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
+/**
+ * Splits script text into statements according to a
+ * {@link CommandShellEmulator}.
+ */
 public class StatementSplitter {
 
 	public static final String SQL_SPECIAL_CHARS = ";\"'-\n";
@@ -21,10 +25,6 @@ public class StatementSplitter {
 		this.specialChars = specialChars;
 	}
 
-	/**
-	 * Splits expression on ';'. ';' within quotes (" or ') or comments ( -- )
-	 * are ignored.
-	 */
 	public List<String> split(String expression) {
 		StringTokenizer tokenizer = new StringTokenizer(expression, specialChars, true);
 		BaseContext context = new BaseContext(tokenizer);

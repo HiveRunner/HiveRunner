@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/** A {@link TokenRule} for handling comments. */
 public enum PreserveCommentsRule implements TokenRule {
 	INSTANCE;
 	
