@@ -49,7 +49,7 @@ public class HiveCliSourceTest {
 
 	@HiveSQL(files = {}, encoding = "UTF-8", autoStart = false)
 	private HiveShell hiveCliShell;
-
+	
 	@Test
 	public void testNestedImport() throws Exception {
 		File a = new File(temp.getRoot(), "a.hql");
@@ -81,7 +81,7 @@ public class HiveCliSourceTest {
 		}
 
 		hiveCliShell.setHiveVarValue("db", TEST_DB);
-		System.setProperty("user.dir", temp.getRoot().getAbsolutePath());;
+		hiveCliShell.setCwd(temp.getRoot().toPath());
 		hiveCliShell.start();
 		hiveCliShell.execute(new StringBuilder()
 			.append("create database ${db};")

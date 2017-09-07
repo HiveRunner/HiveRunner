@@ -14,8 +14,10 @@ public class HiveSqlStatementFactory {
 
 	private final Charset charset;
 	private final CommandShellEmulator commandShellEmulation;
+	private final Path cwd;
 
-	public HiveSqlStatementFactory(Charset charset, CommandShellEmulator commandShellEmulation) {
+	public HiveSqlStatementFactory(Path cwd, Charset charset, CommandShellEmulator commandShellEmulation) {
+		this.cwd = cwd;
 		this.charset = charset;
 		this.commandShellEmulation = commandShellEmulation;
 	}
@@ -40,6 +42,9 @@ public class HiveSqlStatementFactory {
 	}
 
 	public List<HiveSqlStatement> newInstanceForPath(Path path) {
+		if (!path.isAbsolute()) {
+			path = cwd.resolve(path);
+		}
 		try {
 			String script = new String(Files.readAllBytes(path), charset);
 			return newInstanceForScript(script);

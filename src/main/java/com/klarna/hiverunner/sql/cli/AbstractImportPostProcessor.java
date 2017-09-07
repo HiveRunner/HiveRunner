@@ -1,6 +1,5 @@
 package com.klarna.hiverunner.sql.cli;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -24,16 +23,16 @@ public abstract class AbstractImportPostProcessor implements PostProcessor {
 
 	@Override
 	public List<HiveSqlStatement> statement(HiveSqlStatement statement) {
-		if (isImportFileStatement(statement)) {
-			File importFile = getImportFileFromStatement(statement);
-			Path path = Paths.get(importFile.toURI());
+		if (isImport(statement)) {
+			String importPath = getImportPath(statement);
+			Path path = Paths.get(importPath);
 			return factory.newInstanceForPath(path);
 		}
 		return Collections.singletonList(statement);
 	}
 
-	public abstract File getImportFileFromStatement(HiveSqlStatement statement);
+	public abstract String getImportPath(HiveSqlStatement statement);
 
-	public abstract boolean isImportFileStatement(HiveSqlStatement statement);
+	public abstract boolean isImport(HiveSqlStatement statement);
 
 }

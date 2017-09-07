@@ -64,8 +64,9 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
-    protected final HiveSqlStatementFactory statementFactory;
     protected final CommandShellEmulator commandShellEmulation;
+    protected HiveSqlStatementFactory statementFactory;
+    protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
@@ -80,7 +81,7 @@ class HiveShellBase implements HiveShell {
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
-        this.statementFactory = new HiveSqlStatementFactory(Charset.defaultCharset(), commandShellEmulation);
+        cwd = Paths.get(System.getProperty("user.dir"));
     }
 
     @Override
@@ -102,6 +103,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<Object[]> executeStatement(String hql) {
+    	assertStarted();
         return executeStatementWithCommandShellEmulation(hql);
     }
 
@@ -160,6 +162,8 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
+        statementFactory = new HiveSqlStatementFactory(cwd, Charset.defaultCharset(), commandShellEmulation);
+        
         hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
@@ -429,6 +433,17 @@ class HiveShellBase implements HiveShell {
 			throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
 					e);
 		}
+	}
+
+	@Override
+	public void setCwd(Path cwd) {
+		assertNotStarted();
+		this.cwd = cwd;
+	}
+
+	@Override
+	public Path getCwd() {
+		return cwd;
 	}
 
 }

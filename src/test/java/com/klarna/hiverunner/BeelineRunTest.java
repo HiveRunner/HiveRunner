@@ -81,7 +81,7 @@ public class BeelineRunTest {
 		}
 
 		hiveCliShell.setHiveVarValue("db", TEST_DB);
-		System.setProperty("user.dir", temp.getRoot().getAbsolutePath());;
+		hiveCliShell.setCwd(temp.getRoot().toPath());
 		hiveCliShell.start();
 		hiveCliShell.execute(new StringBuilder()
 			.append("create database ${db};")

@@ -185,6 +185,10 @@ public interface HiveShell {
      */
     HiveConf getHiveConf();
 
+    void setCwd(Path cwd);
+    
+    Path getCwd();
+    
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
