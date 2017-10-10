@@ -163,7 +163,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-//        String jdbcDriver = JDBCDriver.class.getName();
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
 
         try {
@@ -173,9 +172,10 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         }
 
         // Set the hsqldb driver
-//        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
-        metaStorageUrl = "jdbc:derby:;databaseName=" + basedir.getRoot().getAbsolutePath() + "/metastore_db";
+        metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
         hiveConf.set("datanucleus.schema.autoCreateAll", "true");
+        hiveConf.set("hive.metastore.schema.verification", "false");
+
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
