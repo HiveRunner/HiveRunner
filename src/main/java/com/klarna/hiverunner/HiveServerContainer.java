@@ -16,12 +16,15 @@
 
 package com.klarna.hiverunner;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
-import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
+import org.apache.hadoop.hive.ql.exec.tez.TezJobExecHelper;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIService;
@@ -34,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,6 +130,16 @@ public class HiveServerContainer {
                     }
                 }
             }
+
+            LOGGER.debug("ResultSet:\n" + Joiner.on("\n").join(Iterables.transform(resultSet,
+                    new Function<Object[], String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable Object[] objects) {
+                            return Joiner.on(", ").useForNull("null").join(objects);
+                        }
+                    })));
+
             return resultSet;
         } catch (HiveSQLException e) {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
@@ -153,7 +167,7 @@ public class HiveServerContainer {
 
 
         try {
-            TezJobMonitor.killRunningJobs();
+          TezJobExecHelper.killRunningJobs();
         } catch (Throwable e) {
             LOGGER.warn("Failed to kill tez session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);

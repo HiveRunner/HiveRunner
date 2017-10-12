@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.klarna.hiverunner;
+package com.klarna.hiverunner.examples;
 
 import com.google.common.collect.Sets;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveProperties;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
@@ -40,7 +42,7 @@ import java.util.Map;
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloHiveRunner {
+public class HelloAnnotatedHiveRunner {
 
 
     /**

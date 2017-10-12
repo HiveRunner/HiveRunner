@@ -19,16 +19,13 @@ package com.klarna.hiverunner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.io.Resources;
-import com.klarna.hiverunner.annotations.HiveProperties;
-import com.klarna.hiverunner.annotations.HiveResource;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
-import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.annotations.HiveSetupScript;
+import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.log4j.MDC;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -170,7 +167,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      */
     private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
         container = null;
-        Assert.assertTrue(temporaryFolder.getRoot().setWritable(true, false));
+        FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
             container = createHiveServerContainer(target, temporaryFolder);
@@ -392,7 +389,3 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         boolean isAutoStart();
     }
 }
-
-
-
-

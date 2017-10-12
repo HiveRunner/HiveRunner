@@ -17,10 +17,11 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-//import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -161,8 +162,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureMetaStore(HiveConf conf) {
-
-//        String jdbcDriver = JDBCDriver.class.getName();
+      
+        // overriding default derby log path to go to target folder
+        System.setProperty("derby.stream.error.file", "target/derby.log");
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
 
         try {
@@ -171,10 +173,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             throw new RuntimeException(e);
         }
 
-        // Set the hsqldb driver
-//        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
-        metaStorageUrl = "jdbc:derby:;databaseName=" + basedir.getRoot().getAbsolutePath() + "/metastore_db";
+        // Set the Hive Metastore DB driver
+        metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
         hiveConf.set("datanucleus.schema.autoCreateAll", "true");
+        hiveConf.set("hive.metastore.schema.verification", "false");
+
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
@@ -219,7 +222,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(newFolder.setWritable(true, false));
+            FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
