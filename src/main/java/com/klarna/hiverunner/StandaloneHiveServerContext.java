@@ -162,7 +162,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureMetaStore(HiveConf conf) {
-
+      
+        // overriding default derby log path to go to target folder
+        System.setProperty("derby.stream.error.file", "target/derby.log");
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
 
         try {
@@ -171,7 +173,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             throw new RuntimeException(e);
         }
 
-        // Set the hsqldb driver
+        // Set the Hive Metastore DB driver
         metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
         hiveConf.set("datanucleus.schema.autoCreateAll", "true");
         hiveConf.set("hive.metastore.schema.verification", "false");
