@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.klarna</groupId>
@@ -6,7 +7,9 @@
     <version>3.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>HiveRunner</name>
-    <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
+    <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the
+        need of any installed dependencies.
+    </description>
     <url>https://github.com/klarna/HiveRunner</url>
 
     <licenses>
@@ -56,8 +59,8 @@
             <artifactId>hive-jdbc</artifactId>
             <version>${hive.version}</version>
         </dependency>
-        
-      
+
+
         <dependency>
             <groupId>org.apache.hive.hcatalog</groupId>
             <artifactId>hive-webhcat-java-client</artifactId>
@@ -65,58 +68,12 @@
         </dependency>
 
 
-<!--
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.3.1</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-service</artifactId>
             <version>${hive.version}</version>
-            <exclusions>
-                <!--<exclusion>
-                    <artifactId>derby</artifactId>
-                    <groupId>org.apache.derby</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>datanucleus-api-jdo</artifactId>
-                    <groupId>org.datanucleus</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>datanucleus-core</artifactId>
-                    <groupId>org.datanucleus</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>datanucleus-rdbms</artifactId>
-                    <groupId>org.datanucleus</groupId>
-                </exclusion>-->
-                <!--<exclusion>
-                    <artifactId>bonecp</artifactId>
-                    <groupId>com.jolbox</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>calcite-core</artifactId>
-                    <groupId>org.apache.calcite</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>calcite-avatica</artifactId>
-                    <groupId>org.apache.calcite</groupId>
-                </exclusion>-->
-            </exclusions>
         </dependency>
 
-
-        <!-- The latest versions of datanucleus seems to be faster than the one included in hive -->
-        <!--<dependency>
-            <artifactId>datanucleus-api-jdo</artifactId>
-            <groupId>org.datanucleus</groupId>
-            <version>3.2.8</version>
-        </dependency>
--->
         <dependency>
             <artifactId>tez-dag</artifactId>
             <groupId>org.apache.tez</groupId>
@@ -135,17 +92,7 @@
             <version>${tez.version}</version>
         </dependency>
 
-   <!--     <dependency>
-            <artifactId>datanucleus-core</artifactId>
-            <groupId>org.datanucleus</groupId>
-            <version>3.2.12</version>
-        </dependency>
--->        <!--<dependency>
-            <artifactId>datanucleus-rdbms</artifactId>
-            <groupId>org.datanucleus</groupId>
-            <version>3.2.11</version>
-        </dependency>
--->        <dependency>
+        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-contrib</artifactId>
             <version>${hive.version}</version>
@@ -190,8 +137,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
-                    <!-- Hiverunner need this for some queries-->
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+                    <!-- Hiverunner need this for some queries (property -XX:MaxPermSize was removed in java 8) -->
+                    <argLine>-Xmx2024m</argLine>
                     <systemProperties>
                         <!--
                         Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
@@ -209,8 +156,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
