@@ -37,7 +37,7 @@ public class MSCKRepairNPE {
                 "  LOCATION '${hiveconf:hadoop.tmp.dir}/foo';");
 
 
-        // This will throw a NPE
+        // This will throw a NPE in Hive 2.1.0/2.2.0 (See https://issues.apache.org/jira/browse/HIVE-14798 and https://issues.apache.org/jira/browse/HIVE-14924) 
         hiveShell.execute("MSCK REPAIR TABLE foo");
     }
 }

@@ -22,8 +22,8 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.rules.TemporaryFolder;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +163,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-        String jdbcDriver = JDBCDriver.class.getName();
+        // overriding default derby log path to go to target folder
+        System.setProperty("derby.stream.error.file", "target/derby.log");
+        String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
 
         try {
             Class.forName(jdbcDriver);
@@ -171,8 +173,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             throw new RuntimeException(e);
         }
 
-        // Set the hsqldb driver
-        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+        // Set the Hive Metastore DB driver
+        metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
+        hiveConf.set("datanucleus.schema.autoCreateAll", "true");
+        hiveConf.set("hive.metastore.schema.verification", "false");
+
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
