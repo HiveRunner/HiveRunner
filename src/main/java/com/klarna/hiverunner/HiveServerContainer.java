@@ -16,7 +16,10 @@
 
 package com.klarna.hiverunner;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
@@ -34,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,6 +130,16 @@ public class HiveServerContainer {
                     }
                 }
             }
+
+            LOGGER.debug("ResultSet:\n" + Joiner.on("\n").join(Iterables.transform(resultSet,
+                    new Function<Object[], String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable Object[] objects) {
+                            return Joiner.on(", ").useForNull("null").join(objects);
+                        }
+                    })));
+
             return resultSet;
         } catch (HiveSQLException e) {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),

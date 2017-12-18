@@ -16,12 +16,17 @@
 
 package com.klarna.reflection;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Collection of Reflection related helper functions.
@@ -44,18 +49,35 @@ public final class ReflectionUtils {
 
     private static void setField(Class clazz, Object instance, String fieldName, Object value) {
         try {
-            Field field = clazz.getDeclaredField(fieldName);
+            final Optional<Field> optional = getField(clazz, fieldName);
+            Preconditions.checkArgument(optional.isPresent(), "Failed to set field '" + fieldName + "' on '" + instance);
+            final Field field = optional.get();
+
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             field.set(instance, value);
             field.setAccessible(accessible);
-        } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException(
-                    "Failed to set field '" + fieldName + "' on '" + instance + "': " + e.getMessage(), e);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(
                     "Failed to set field '" + fieldName + "' on '" + instance + "': " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Finds the first Field with given field name in the Class and in its super classes.
+     *
+     * @param type      The Class type
+     * @param fieldName The field name to get
+     * @return an Optional<Field>. Use isPresent() to find out if the field name was found.
+     */
+    public static Optional<Field> getField(Class<?> type, final String fieldName) {
+        Optional<Field> field = Iterables.tryFind(newArrayList(type.getDeclaredFields()), havingFieldName(fieldName));
+
+        if (!field.isPresent() && type.getSuperclass() != null){
+            field = getField(type.getSuperclass(), fieldName);
+        }
+
+        return field;
     }
 
     public static Set<Field> getAllFields(Class aClass, Predicate<? super Field> predicate) {
@@ -93,6 +115,16 @@ public final class ReflectionUtils {
 
     public static boolean isOfType(Field setupScriptField, Class type) {
         return setupScriptField.getType().isAssignableFrom(type);
+    }
+
+
+    private static Predicate<Field> havingFieldName(final String fieldName) {
+        return new Predicate<Field>() {
+            @Override
+            public boolean apply(@Nullable Field field) {
+                return fieldName.equals(field.getName());
+            }
+        };
     }
 
 }

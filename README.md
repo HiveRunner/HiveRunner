@@ -122,12 +122,13 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
 
 
 ### Logging
-src/main/resources/log4j.properties confogures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.   
+src/main/resources/log4j.properties configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
+All result sets are logged. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
 
 2. Look at the examples
 ----------
-Look at the [com.klarna.hiverunner.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
+Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
 
 Annotations and interactive mode can be mixed and matched, however you'll always need to include the [com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
 
@@ -161,7 +162,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
         .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
         .commit();
 
-See [com.klarna.hiverunner.InsertIntoTableIntegrationTest](/src/test/java/com/klarna/hiverunner/InsertIntoTableIntegrationTest.java) for working examples.
+See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hiverunner/examples/InsertTestData.java) for working examples.
 
 3. Understand a little bit of the order of execution
 ----------
@@ -227,8 +228,18 @@ Future work and Limitations
 Change Log (From version 2.2.0 and onwards)
 ==============
 
-### __TBD__
-* Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.    
+### __3.2.1__
+* The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows.
+
+### __3.2.0__
+* Added functionality for headers in TSV parser. This way you can dynamically add TSV files declaring a subset of columns using insertInto.
+
+### __3.1.1__
+* Added debug logging of result set. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
+
+### __3.1.0__
+* Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.
+* Support abstract base class (Issue #48).
 
 ### __3.0.0__
 
@@ -278,6 +289,14 @@ E.g:
 
 Known Issues
 =====================
+
+### UnknownHostException
+I've had issues with UnknownHostException on OS X after upgrading my system or running docker. 
+Usually a restart of my machine solved it, but last time I got some corporate 
+stuff installed the restarts stopped working and I kept getting UnknownHostExceptions. 
+Following this simple guide solved my problem:
+http://crunchify.com/getting-java-net-unknownhostexception-nodename-nor-servname-provided-or-not-known-error-on-mac-os-x-update-your-privateetchosts-file/
+
 
 ### IOException in Hive 0.14.0
 Described in this issue: https://github.com/klarna/HiveRunner/issues/3
@@ -345,12 +364,18 @@ The following steps were involved.
 The above steps are enough for deploying to sonatype/maven central.
 Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
 
+Note
+----
+The gpg key used for signing expires 2017-10-17, after which a new one needs to be created and added as described above.
+Don't forget that the GPG_PASSPHRASE also needs to be updated if another passphrase is used when creating the gpg keypair.
+
 
 Playbook for making a release
 -----------------------------
 Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment
 
 * Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
+* Update change log for new version.
 * Commit, tag with release number, push
 
 ```
@@ -368,3 +393,4 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
      git commit -m "Setting version to next development version"
      git push origin
 ```
+ 

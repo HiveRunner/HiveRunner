@@ -25,11 +25,13 @@ public class TsvFileParser implements FileParser {
   private Splitter splitter;
   private Object nullValue;
   private Charset charset;
+  private boolean hasHeader;
 
   public TsvFileParser() {
     withDelimiter(DEFAULT_DELIMITER);
     withNullValue(DEFAULT_NULL_VALUE);
     withCharset(StandardCharsets.UTF_8);
+    withoutHeader();
   }
 
   /**
@@ -57,16 +59,60 @@ public class TsvFileParser implements FileParser {
     return this;
   }
 
+  /**
+   * Enable if TSV file has header row. Default is false.
+   */
+  public TsvFileParser withHeader() {
+    this.hasHeader = true;
+    return this;
+  }
+
+  /**
+   * Enable if TSV file has header row. Default is false.
+   */
+  public TsvFileParser withoutHeader() {
+    this.hasHeader = false;
+    return this;
+  }
+
+
   @Override
   public List<Object[]> parse(File file, HCatSchema schema, List<String> names) {
     try {
       List<String> lines = Files.readAllLines(file.toPath(), charset);
+
+      if (this.hasHeader) {
+        lines = lines.subList(1, lines.size());
+      }
+
       List<Object[]> records = new ArrayList<>(lines.size());
       for (String line : lines) {
         records.add(parseRow(line, names.size()));
       }
       return records;
     } catch (IOException e) {
+      throw new RuntimeException("Error while reading file", e);
+    }
+  }
+
+  @Override
+  public boolean hasColumnNames() {
+    return this.hasHeader;
+  }
+
+  @Override
+  public List<String> getColumnNames(File file) {
+    try {
+      String firstLine = Files.newBufferedReader(file.toPath(), charset).readLine();
+      List<String> columns = new ArrayList<>();
+      Iterator<String> iterator = splitter.split(firstLine).iterator();
+
+      while (iterator.hasNext()) {
+        String column = iterator.next();
+        columns.add(column);
+      }
+      return columns;
+    } catch(IOException e) {
       throw new RuntimeException("Error while reading file", e);
     }
   }

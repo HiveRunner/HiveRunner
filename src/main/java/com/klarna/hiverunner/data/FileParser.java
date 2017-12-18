@@ -21,4 +21,17 @@ public interface FileParser {
    */
   List<Object[]> parse(File file, HCatSchema schema, List<String> names);
 
+  /**
+   * Parses the given file and returns the column names that are available in the file.
+   *
+   * @param file The file to be parsed
+   * @return A {@link List} of column names as Strings
+   */
+  List<String> getColumnNames(File file);
+
+  /**
+   * Method that checks if the parser has access to column names.
+   * @return
+   */
+  boolean hasColumnNames();
 }

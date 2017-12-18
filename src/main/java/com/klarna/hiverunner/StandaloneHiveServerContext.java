@@ -17,11 +17,12 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-//import org.hsqldb.jdbc.JDBCDriver;
-import org.junit.Assert;
+import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,8 +163,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-//        String jdbcDriver = JDBCDriver.class.getName();
-        String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
+        String jdbcDriver = JDBCDriver.class.getName();
 
         try {
             Class.forName(jdbcDriver);
@@ -172,9 +172,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         }
 
         // Set the hsqldb driver
-//        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
-        metaStorageUrl = "jdbc:derby:;databaseName=" + basedir.getRoot().getAbsolutePath() + "/metastore_db";
-        hiveConf.set("datanucleus.schema.autoCreateAll", "true");
+        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
@@ -219,7 +217,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     File newFolder(TemporaryFolder basedir, String folder) {
         try {
             File newFolder = basedir.newFolder(folder);
-            Assert.assertTrue(newFolder.setWritable(true, false));
+            FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
             return newFolder;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
