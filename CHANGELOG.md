@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased] - TBD
 ### Changed
-- Fixed issue where if case of column name in a file was different to case in table definition they would be treated as different [#73](https://github.com/klarna/HiveRunner/issues/73)
+- Fixed issue where if case of column name in a file was different to case in table definition they would be treated as different [#73](https://github.com/klarna/HiveRunner/issues/73).
 - The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows [#63](https://github.com/klarna/HiveRunner/issues/63).
 
 ## [3.2.0] - 2017-02-09
@@ -30,7 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [2.6.0] - 2015-12-01
 ### Added
 - Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells. Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
-- Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...)
+- Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...).
 
 ## [2.5.1] - 2015-11-12
 ### Changed
@@ -42,13 +42,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [2.4.0]
 ### Changed
-- Enabled any hiveconf variables to be set as System properties by using the naming convention hiveconf_[HiveConf property name]. E.g: hiveconf_hive.execution.engine
+- Enabled any hiveconf variables to be set as System properties by using the naming convention hiveconf_[HiveConf property name]. e.g: hiveconf_hive.execution.engine.
 - Fixed bug: Results sets bigger than 100 rows only returned the first 100 rows. 
 
 ## [2.3.0]
 ### Changed
-- Merged Tez and MR context into the same context again. Now, the same test suite may alter between execution engines by doing 
-e.g.: 
+- Merged Tez and MR context into the same context again. Now, the same test suite may alter between execution engines by doing e.g.: 
 
      hive> set hive.execution.engine=tez;
      hive> [some query]
@@ -57,4 +56,4 @@ e.g.:
 
 ## [2.2.0]
 ### Added
-- Added support for setting hivevars via HiveShell
+- Added support for setting hivevars via HiveShell.
