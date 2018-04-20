@@ -22,8 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Marks a field to refer to a setup script. The field should be of type String, File or Path.
  * If it's a String the value of the field should be the actual script, not a path.
- * <p/>
- * Please refer to {@link com.klarna.hiverunner.HelloHiveRunner} for further details.
+ * <p>
+ * Please refer to {@link com.klarna.hiverunner.examples.HelloHiveRunner} for further details.
+ * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HiveSetupScript {

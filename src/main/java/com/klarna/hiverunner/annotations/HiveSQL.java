@@ -22,8 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Marks a field (of type HiveShell) in a unit test. This field with its annotation is mandatory.
  * The HiveRunner will set the HiveShell instance before each test method is called.
- * <p/>
- * Please refer to {@link com.klarna.hiverunner.HelloHiveRunner} for further details.
+ * 
+ * Please refer to {@link com.klarna.hiverunner.examples.HelloHiveRunner} for further details.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HiveSQL {
@@ -35,9 +35,10 @@ public @interface HiveSQL {
 
     /**
      * If the shell should be started automatically before the JUnit test method is called.
-     * <p/>
+     * <p>
      * If set to false this leaves the tester to do additional setup in @Before or within actual test method. However,
      * HiveShell.start() has to be called explicit when setup is done.
+     * </p>
      */
     boolean autoStart() default true;
 

@@ -36,114 +36,128 @@ public interface HiveShell {
 
     /**
      * Executes a single query.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(String hql);
 
     /**
      * Executes a single query.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith);
 
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(File script);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
      */
     List<String> executeQuery(Path script);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Charset charset, File script);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Charset charset, Path script);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy, String replaceNullWith);
     
     /**
      * Executes a single query from a script file, returning any results.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy, String replaceNullWith);
     
     /**
      * Execute a single hive query
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     List<Object[]> executeStatement(String hql);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     void execute(String script);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'.
      * Default charset will be used to read the given files.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     void execute(File file);
     
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'.
      * Default charset will be used to read the given files.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     void execute(Path path);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      */
     void execute(Charset charset, File file);
     
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
-     * <p/>
+     * <p>
      * May only be called post #start()
      */
     void execute(Charset charset, Path path);
@@ -152,15 +166,17 @@ public interface HiveShell {
      * Start the shell. May only be called once. The test engine will by default call this method,
      * Set {@link com.klarna.hiverunner.annotations.HiveSQL#autoStart()} to false to explicitly control
      * when to start from the test case.
-     * <p/>
+     * <p>
      * This might be useful for test methods that needs additional setup not catered for with the provided annotations.
+     * </p>
      */
     void start();
 
     /**
      * Set a HiveConf property.
-     * <p/>
+     * <p>
      * May only be called pre #start()
+     * </p>
      * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
@@ -168,15 +184,17 @@ public interface HiveShell {
 
     /**
      * Set HiveConf property.
-     * <p/>
+     * <p>
      * May only be called pre #start()
+     * </p>
      */
     void setHiveConfValue(String key, String value);
 
     /**
      * Set Hive variable.
-     * <p/>
+     * <p>
      * May only be called pre #start()
+     * </p>
      */
     void setHiveVarValue(String var, String value);
 
@@ -188,18 +206,20 @@ public interface HiveShell {
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
-     * <p/>
+     * <p>
      * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
      * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * </p>
      */
     void addResource(String targetFile, File sourceFile);
 
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
-     * <p/>
+     * <p>
      * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
      * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * </p>
      */
     void addResource(String targetFile, Path sourceFile);
 
@@ -207,9 +227,10 @@ public interface HiveShell {
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
-     * <p/>
+     * <p>
      * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
      * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * </p>
      */
     void addResource(String targetFile, String data);
 
@@ -285,8 +306,9 @@ public interface HiveShell {
 
     /**
      * Returns an {@link InsertIntoTable} that allows programmatically inserting data into a table in a fluent manner.
-     * <p/>
+     * <p>
      * May only be called post #start()
+     * </p>
      * @param databaseName The database name
      * @param tableName The table name
      */

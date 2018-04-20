@@ -36,12 +36,13 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 
 /**
  * Responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
- * <p/>
+ * <p>
  * This class contains a bunch of methods meant to be overridden in order to create slightly different contexts.
- *
+ * </p><p>
  * This context configures HiveServer for both mr and tez. There's nothing contradicting with those configurations so
  * they may coexist in order to allow test cases to alter execution engines within the same test by
- * E.g: 'set hive.execution.engine=tez;'.
+ * e.g: 'set hive.execution.engine=tez;'.
+ * </p>
  */
 public class StandaloneHiveServerContext implements HiveServerContext {
 

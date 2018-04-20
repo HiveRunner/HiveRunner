@@ -1,15 +1,13 @@
 package com.klarna.hiverunner.config;
 
 
-import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CommandShellEmulation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.klarna.hiverunner.CommandShellEmulation;
 
 
 /**
@@ -17,21 +15,21 @@ import java.util.Properties;
  *
  * Configure with System properties via mvn like
  * <pre>
- * {@literal <}plugin>
- *      &lt;groupId>org.apache.maven.plugins&lt;/groupId>
- *      &lt;artifactId>maven-surefire-plugin&lt;/artifactId>
- *      &lt;version>2.17&lt;/version>
+ * &lt;plugin&gt;
+ *      &lt;groupId>org.apache.maven.plugins&lt;/groupId&gt;
+ *      &lt;artifactId>maven-surefire-plugin&lt;/artifactId&gt;
+ *      &lt;version>2.17&lt;/version&gt;
  *      &lt;configuration>
  *          ...
  *          &lt;systemProperties>
- *              &lt;hiveconf_any.hive.conf>1000&lt;/hiveconf_any.hive.conf>
- *              &lt;enableTimeout>false&lt;/enableTimeout>
- *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
- *              &lt;timeoutRetries>2&lt;/timeoutRetries>
- *              &lt;commandShellEmulation>BEELINE&lt;/commandShellEmulation>
- *          &lt;/systemProperties>
- *      &lt;/configuration>
- * &lt;/plugin>
+ *              &lt;hiveconf_any.hive.conf&gt;1000&lt;/hiveconf_any.hive.conf&gt;
+ *              &lt;enableTimeout&gt;false&lt;/enableTimeout&gt;
+ *              &lt;timeoutSeconds&gt;30&lt;/timeoutSeconds&gt;
+ *              &lt;timeoutRetries&gt;2&lt;/timeoutRetries&gt;
+ *              &lt;commandShellEmulation&gt;BEELINE&lt;/commandShellEmulation&gt;
+ *          &lt;/systemProperties&gt;
+ *      &lt;/configuration&gt;
+ * &lt;/plugin&gt;
  * </pre>
  *
  * Properties may be overridden per test class by annotating a <b>static</b> HiveRunnerConfig field like:
@@ -168,8 +166,8 @@ public class HiveRunnerConfig {
      * the defaults will apply.
      */
     public void override(HiveRunnerConfig hiveRunnerConfig) {
-        this.config.putAll(hiveRunnerConfig.config);
-        this.hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
+        config.putAll(hiveRunnerConfig.config);
+        hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
     }
 
     private static boolean load(String property, boolean defaultValue, Properties sysProperties) {

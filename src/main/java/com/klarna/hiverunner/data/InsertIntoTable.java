@@ -19,8 +19,9 @@ public final class InsertIntoTable {
 
   /**
    * Factory method for creating an {@link InsertIntoTable}.
-   * <p/>
+   * <p>
    * This method is intended to be called via {@link HiveShell#insertInto(String, String)}.
+   * </p>
    *
    * @param databaseName The database name.
    * @param tableName The table name.
