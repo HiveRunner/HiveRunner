@@ -59,7 +59,7 @@ public final class InsertIntoTable {
 
   /**
    * Defines a subset of columns (a column name mask) so that only pertinent columns can be set.
-   * <p/>
+   * <p>
    * e.g.
    *
    * <pre>
@@ -69,6 +69,7 @@ public final class InsertIntoTable {
    *     .addRow("value1", "value3")
    * }
    * </pre>
+   *</p>
    *
    * @param names The column names.
    * @return {@code this}

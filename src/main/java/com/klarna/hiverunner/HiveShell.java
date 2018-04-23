@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Test handle to the hive server.
  *
- * Please refer to test class {@link com.klarna.hiverunner.HelloHiveRunner} for usage examples.
+ * Please refer to test class <code>com.klarna.hiverunner.examples.HelloHiveRunner</code> for usage examples.
  */
 public interface HiveShell {
 
@@ -177,7 +177,7 @@ public interface HiveShell {
      * <p>
      * May only be called pre #start()
      * </p>
-     * @Deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
+     * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
     void setProperty(String key, String value);
@@ -207,8 +207,8 @@ public interface HiveShell {
      * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
-     * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
-     * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
+     * and {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
      * </p>
      */
     void addResource(String targetFile, File sourceFile);
@@ -217,8 +217,8 @@ public interface HiveShell {
      * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
-     * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
-     * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
+     * and {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
      * </p>
      */
     void addResource(String targetFile, Path sourceFile);
@@ -228,8 +228,8 @@ public interface HiveShell {
      * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
-     * {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
-     * and {@see com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
+     * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
+     * and {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsStringTest()}
      * </p>
      */
     void addResource(String targetFile, String data);
@@ -294,12 +294,13 @@ public interface HiveShell {
     String expandVariableSubstitutes(String expression);
 
     /**
-     * Open up a stream to write test data into hdfs.
+     * Open up a stream to write test data into HDFS.
      *
-     * May only be called pre #start()
-     * No writes to the stream will be allowed post #start()
-     * @param targetFile The path to the target file relative to the hive work space
-     * See {@link com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for example of how to work
+     * May only be called pre #start().
+     * No writes to the stream will be allowed post #start().
+     * @param targetFile The path to the target file relative to the hive work space.
+     * 
+     * See test class <code>com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()<code> for an example of how this works.
      * with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);

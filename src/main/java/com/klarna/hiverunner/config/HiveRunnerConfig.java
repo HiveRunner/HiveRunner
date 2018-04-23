@@ -16,12 +16,12 @@ import com.klarna.hiverunner.CommandShellEmulation;
  * Configure with System properties via mvn like
  * <pre>
  * &lt;plugin&gt;
- *      &lt;groupId>org.apache.maven.plugins&lt;/groupId&gt;
- *      &lt;artifactId>maven-surefire-plugin&lt;/artifactId&gt;
- *      &lt;version>2.17&lt;/version&gt;
+ *      &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+ *      &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+ *      &lt;version&gt;2.17&lt;/version&gt;
  *      &lt;configuration>
  *          ...
- *          &lt;systemProperties>
+ *          &lt;systemProperties&gt;
  *              &lt;hiveconf_any.hive.conf&gt;1000&lt;/hiveconf_any.hive.conf&gt;
  *              &lt;enableTimeout&gt;false&lt;/enableTimeout&gt;
  *              &lt;timeoutSeconds&gt;30&lt;/timeoutSeconds&gt;
@@ -42,7 +42,8 @@ import com.klarna.hiverunner.CommandShellEmulation;
  *          setCommandShellEmulation(CommandShellEmulation.BEELINE);
  *      }};
  * </pre>
- * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
+ * 
+ * See the test class <code>com.klarna.hiverunner.DisabledTimeoutTest</code> for more information.
  */
 public class HiveRunnerConfig {
 

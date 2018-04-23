@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
  * baz -- comment with ;
  * 'fox;';
  * love
- * <p/>
+ * </p>
  * will be split into
- * <p/>
+ * <p>
  * [foo,
  * bar
  * baz -- comment with ;
