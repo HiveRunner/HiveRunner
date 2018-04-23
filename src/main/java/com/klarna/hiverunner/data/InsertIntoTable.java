@@ -69,7 +69,7 @@ public final class InsertIntoTable {
    *     .addRow("value1", "value3")
    * }
    * </pre>
-   *</p>
+   * </p>
    *
    * @param names The column names.
    * @return {@code this}
