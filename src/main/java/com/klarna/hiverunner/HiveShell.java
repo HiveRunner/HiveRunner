@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Test handle to the hive server.
  *
- * Please refer to test class <code>com.klarna.hiverunner.examples.HelloHiveRunner</code> for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
  */
 public interface HiveShell {
 
@@ -300,7 +300,7 @@ public interface HiveShell {
      * No writes to the stream will be allowed post #start().
      * @param targetFile The path to the target file relative to the hive work space.
      * 
-     * See test class <code>com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()<code> for an example of how this works.
+     * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
      * with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);

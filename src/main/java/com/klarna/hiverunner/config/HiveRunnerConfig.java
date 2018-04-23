@@ -43,7 +43,7 @@ import com.klarna.hiverunner.CommandShellEmulation;
  *      }};
  * </pre>
  * 
- * See the test class <code>com.klarna.hiverunner.DisabledTimeoutTest</code> for more information.
+ * See the test class<{@code com.klarna.hiverunner.DisabledTimeoutTest} for more information.
  */
 public class HiveRunnerConfig {
 

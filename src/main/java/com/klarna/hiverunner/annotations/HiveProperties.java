@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
  * <p>
  * The field should be of type <pre>Map&lt;String, String&gt;</pre>.
  * <p>
- * Please refer to test class <code>com.klarna.hiverunner.examples.HelloHiveRunner</code> for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HiveProperties {
