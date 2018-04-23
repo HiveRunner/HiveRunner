@@ -1,5 +1,7 @@
 sudo: false
 language: java
+jdk:
+  - openjdk7
 env:
   global:
   - secure: hQylAl3pcOG5Qp/kIANDqciYBsxyn2lVotEu7nQlZmRLWBoc7QH9RZuTD4H7oIiHx7z55Fh9nuos83u3v7+OvmjHKGCSyNlv93nuoEOPjCnpyPAUyddkpRVvrXVNxHzeuZ1OY/c6NiNsBzXxD/t2PTnjK4rZG6r/LbOSHHsXhuE=
