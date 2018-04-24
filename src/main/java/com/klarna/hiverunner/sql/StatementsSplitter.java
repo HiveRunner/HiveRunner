@@ -12,20 +12,21 @@ import java.util.regex.Pattern;
  * ';' in comments (--) or quotes (' or ") will be ignored.
  *
  * Trailing whitespaces and empty elements caused by multiple ';' will be removed.
- * <p/>
- * E.g:
+ * <p>
+ * e.g:
  * foo;bar
  * baz -- comment with ;
  * 'fox;';
  * love
- * <p/>
+ * </p>
  * will be split into
- * <p/>
+ * <p>
  * [foo,
  * bar
  * baz -- comment with ;
  * 'fox;',
  * love]
+ * </p>
  */
 public class StatementsSplitter {
 

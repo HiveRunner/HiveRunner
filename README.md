@@ -179,7 +179,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 Hive version compatibility
 ============
-- This version of HiveRunner is built for hive 14.
+- This version of HiveRunner is built for Hive 1.2.1.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
@@ -206,85 +206,7 @@ Future work and Limitations
 
 * Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead as for a whole test case. Feedback is always welcome!
 
-* The interactive API of HiveShell should support as much as the annotated DSL. Currently some features are not implemented in the HiveShell but only available via annotations.
-
-    __DONE:__ _HiveShell now includes all the features of the annotations and then some!_
- 
-* Clean up the logs
-     
-    __DONE:__ _There's now a working log4j.properties here: src/main/resources/log4j.properties_
-
-* HiveRunner currently uses in-memory Derby as metastore. It seems to be a real performance bottleneck. We are looking to replace it with hsqldb in the near future.
-   
-    __DONE:__ _This version of HiveRunner uses an in-memory hsqldb instead of derby. It's faster and more reliant!_  
-
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
-
-* Redirect derby.log. It currently ends up in the build root dir.
-
-    __DONE:__ _Derby is gone -> derby.log is gone!_ 
-
-
-Change Log (From version 2.2.0 and onwards)
-==============
-
-### __3.2.1__
-* The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows.
-
-### __3.2.0__
-* Added functionality for headers in TSV parser. This way you can dynamically add TSV files declaring a subset of columns using insertInto.
-
-### __3.1.1__
-* Added debug logging of result set. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
-
-### __3.1.0__
-* Added methods to the shell that allow statements contained in files to be executed and their results gathered. These are particularly useful for HQL scripts that generate no table based data and instead write results to STDOUT. In practice we've seen these scripts used in data processing job orchestration scripts (e.g `bash`) to check for new data, calculate processing boundaries, etc. These values are then used to appropriately configure and launch some downstream job.
-* Support abstract base class (Issue #48).
-
-### __3.0.0__
-
-* Upgraded to Hive 1.2.1 (Note: new major release with backwards incompatibility issues). As of Hive 1.2 there are a number of new reserved keywords, see [DDL manual](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-Keywords,Non-reservedKeywordsandReservedKeywords) for more information. 
-If you happen to have one of these as an identifier, you could either backtick quote them (e.g. \`date\`, \`timestamp\` or \`update\`) or set hive.support.sql11.reserved.keywords=false.                                            
-* Removed the custom HiveConf hive.vs. Use hadoop.tmp.dir instead.
-* Users of Hive version 0.14 or older are recommended to use HiveRunner version 2.6.0.
-
-### __2.6.0__
-
-* Introduced command shell emulations to replicate different handling of full line comments in `hive` and `beeline` shells.
-Now strips full line comments for executed scripts to match the behaviour of the `hive -f` file option. 
-
-* Option to use files as input for com.klarna.hiverunner.HiveShell.execute(...)
-
-### __2.5.1__
-
-Fixed  deadlock in ThrowOnTimeout.java that occured when running with long running test case and disabled timeout.
-
-### __2.5.0__
-
-Added support with `HiveShell.insertInto` for fluently generating test data in a table storage format agnostic manner.
-
-### __2.4.0__
-
-Enabled any hiveconf variables to be set as System properties by using the naming convention
-hiveconf_[HiveConf property name]. E.g: hiveconf_hive.execution.engine
-
-Fixed bug: Results sets bigger than 100 rows only returned the first 100 rows. 
-
-### __2.3.0__
-
-Merged tez and mr context into the same context again. Now, the same test suite may alter between execution engines by doing 
-E.g: 
-
-     hive> set hive.execution.engine=tez;
-     hive> [some query]
-     hive> set hive.execution.engine=mr;
-     hive> [some query]
-
-
-### __2.2.0__
-* Added support for setting hivevar:s via HiveShell 
-
-
 
 
 Known Issues

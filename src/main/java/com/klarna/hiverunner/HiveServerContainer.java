@@ -159,8 +159,9 @@ public class HiveServerContainer {
 
     /**
      * Release all resources.
-     * <p/>
+     * <p>
      * This call will never throw an exception as it makes no sense doing that in the tear down phase.
+     * </p>
      */
     public void tearDown() {
 

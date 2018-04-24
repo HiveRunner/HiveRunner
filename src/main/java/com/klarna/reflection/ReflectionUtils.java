@@ -68,7 +68,7 @@ public final class ReflectionUtils {
      *
      * @param type      The Class type
      * @param fieldName The field name to get
-     * @return an Optional<Field>. Use isPresent() to find out if the field name was found.
+     * @return an {@code Optional}. Use isPresent() to find out if the field name was found.
      */
     public static Optional<Field> getField(Class<?> type, final String fieldName) {
         Optional<Field> field = Iterables.tryFind(newArrayList(type.getDeclaredFields()), havingFieldName(fieldName));
