@@ -62,6 +62,7 @@ public interface HiveShell {
      * Executes a single query from a script file, returning any results.
      * <p>
      * May only be called post #start()
+     * </p>
      */
     List<String> executeQuery(Path script);
     
@@ -159,6 +160,7 @@ public interface HiveShell {
      * Executes a hive script. The script may contain multiple statements delimited by ';'
      * <p>
      * May only be called post #start()
+     * </p>
      */
     void execute(Charset charset, Path path);
 
