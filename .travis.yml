@@ -9,7 +9,7 @@ env:
   - secure: blVht/8iA8oeKXsJSfXqDatqGi2nQuzQAf1n5I+75V0v0MKGTafsMx1WT07HKRCGME+wDH9ITQoov7TQYBJir2WbF93a6zT1P5ViURzuBSNDhGOl20alEdhE46O/GPcDvf44yAoYEZRqgdyqEewyAuArGJEqZDpoMCNFAeYH5hg=
 before_install:
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then
-    openssl aes-256-cbc -K $encrypted_71165e3d1d0f_key -iv $encrypted_71165e3d1d0f_iv -in secrets.tar.enc -out secrets.tar -d
+    openssl aes-256-cbc -K $encrypted_bcba852d4ff2_key -iv $encrypted_bcba852d4ff2_iv -in secrets.tar.enc -out secrets.tar -d
     && tar xvf secrets.tar ;
   fi
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --global-settings
