@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - TBD
+## [3.2.1] - 2018-05-31
 ### Changed
 - Fixed issue where if case of column name in a file was different to case in table definition they would be treated as different [#73](https://github.com/klarna/HiveRunner/issues/73).
 - The way of setting writable permissions on JUnit temporary folder changed to make it compatible with Windows [#63](https://github.com/klarna/HiveRunner/issues/63).
