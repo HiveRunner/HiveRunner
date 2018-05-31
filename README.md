@@ -1,5 +1,5 @@
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/HotelsDotCom/hiverunner.svg?branch=master)](https://travis-ci.org/HotelsDotCom/hiverunner) ![GitHub license](https://img.shields.io/github/license/HotelsDotCom/hiverunner.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/hiverunner.svg?branch=master)](https://travis-ci.org/klarna/hiverunner) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
