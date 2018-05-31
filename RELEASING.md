@@ -1,7 +1,6 @@
 # Releasing HiveRunner to Maven Central
 
 ## Deployment to Sonatype OSSRH using Maven and Travis CI
-------------------------------------------------------
 
 HiveRunner has been setup to build continuously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to Maven central.
 The following steps were involved.
@@ -41,4 +40,3 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
      git commit -a -m "Setting version to next development version"
      git push origin
 ```
- 
