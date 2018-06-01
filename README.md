@@ -1,12 +1,11 @@
-[![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=release_to_maven_central)](https://travis-ci.org/klarna/HiveRunner)
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
+# HiveRunner
 
-HiveRunner
-==========
-
-Welcome to HiveRunner - Zero installation open source unit testing of Hive applications
+Welcome to HiveRunner - Zero installation open source unit testing of Hive applications.
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
@@ -15,19 +14,15 @@ Welcome to the open source project HiveRunner. HiveRunner is a unit test framewo
 HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
 
 
-A word from the inventors
----------
+## A word from the inventors
+
 HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
 
 So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java community.
 
+# Cook Book
 
-
-Cook Book
-==========
-
-1. Include HiveRunner
-----------
+## 1. Include HiveRunner
 
 HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file.
 
@@ -70,8 +65,7 @@ as an alternative if this does not solve the OOM issues, try increase the -Xmx a
 
 (please note that the forkMode option is deprecated and you should use forkCount and reuseForks instead)
 
-With forkCount and reuseForks there is a possibility to reduce the test execution time drastically, depending on your hardware. A plugin configuration which are using one
-fork per CPU core and reuse threads would look like:
+With forkCount and reuseForks there is a possibility to reduce the test execution time drastically, depending on your hardware. A plugin configuration which are using one fork per CPU core and reuse threads would look like:
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -102,7 +96,8 @@ System property hiveconf_hive.execution.engine to 'tez'.
             </configuration>
         </plugin>
 
-Timeout - It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times.. This is to cover for the bug
+### Timeout
+It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times. This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
 The timeout feature can be configured via the 'enableTimeout', 'timeoutSeconds' and 'timeoutRetries' properties.
 A configuration which enables timeouts after 30 seconds and allows 2 retries would look like
@@ -122,12 +117,12 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
 
 
 ### Logging
-src/main/resources/log4j.properties configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
+`src/main/resources/log4j.properties` configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
 All result sets are logged. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
 
-2. Look at the examples
-----------
+## 2. Look at the examples
+
 Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
 
 Annotations and interactive mode can be mixed and matched, however you'll always need to include the [com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
@@ -164,9 +159,9 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
 
 See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hiverunner/examples/InsertTestData.java) for working examples.
 
-3. Understand a little bit of the order of execution
-----------
-HiveRunner will in default mode setup and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked.
+## 3. Understand a little bit of the order of execution
+
+HiveRunner will in default mode set up and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked.
 
 1. Merge any [@HiveProperties](/src/main/java/com/klarna/hiverunner/annotations/HiveProperties.java) from the test case with the hive conf
 2. Start the HiveServer with the merged conf
@@ -177,8 +172,8 @@ HiveRunner will in default mode setup and start the HiveShell before the test me
 The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annotated with [@HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) will always be injected before the test method is invoked.
 
 
-Hive version compatibility
-============
+# Hive version compatibility
+
 - This version of HiveRunner is built for Hive 1.2.1.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
@@ -198,9 +193,9 @@ Hive version compatibility
 
       mvn -DcommandShellEmulation=BEELINE test
 
-Future work and Limitations
-============
-* HiveRunner does not allow the add jar statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
+# Future work and Limitations
+
+* HiveRunner does not allow the `add jar` statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
 
 * HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
@@ -209,8 +204,7 @@ Future work and Limitations
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
 
 
-Known Issues
-=====================
+# Known Issues
 
 ### UnknownHostException
 I've had issues with UnknownHostException on OS X after upgrading my system or running docker. 
@@ -259,60 +253,10 @@ a timeout and retry functionality implemented in HiveRunner:
          
 Make sure to set the timeoutSeconds to that of your slowest test in the test suite and then add some padding.
 
-TAGS
-=========
+# Tags
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 
+# Legal
+This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Releasing hiverunner to maven central
-=====================================
-
-Deployment to Sonatype OSSRH using maven and travis-ci
-------------------------------------------------------
-
-HiveRunner has been setup to build continuously on a travis-ci.org build server as well as prepared to be manually released from a travis-ci.org buildserver to maven central.
-The following steps were involved.
-
-* A Sonatype OSSRH (Open Source Software Repository Hosting) account has been created for user "klarna.odin".
-* The OSSRH username and password were encrypted according to http://docs.travis-ci.com/user/encryption-keys/
-* A special maven settings.xml file was created that uses the encrypted environment variables in the ossrh server definition.
-* A Gnu PGP keypair was created locally according to http://central.sonatype.org/pages/working-with-pgp-signatures.html
-* The pubring.gpg and secring.gpg were tar'ed into secrets.tar
-* The secrets.tar was encrypted according to http://docs.travis-ci.com/user/encrypting-files/
-* The GPG_PASSPHRASE variable was encrypted for travis usage.
-* The pom has had sections added to it according to instructions from http://central.sonatype.org/pages/apache-maven.html
-* A .travis.yml build file has been added
-
-The above steps are enough for deploying to sonatype/maven central.
-Depending on the version number in the pom, the build artifact will be deployed to either the snapshots repository or the staging-repository.
-
-Note
-----
-The gpg key used for signing expires 2017-10-17, after which a new one needs to be created and added as described above.
-Don't forget that the GPG_PASSPHRASE also needs to be updated if another passphrase is used when creating the gpg keypair.
-
-
-Playbook for making a release
------------------------------
-Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment
-
-* Change the version number to the release version you want. Should not include -SNAPSHOT in the name.
-* Update change log for new version.
-* Commit, tag with release number, push
-
-```
-      git commit -a -m "Setting version number before releasing"
-      git tag -a v2.5.0 -m "HiveRunner-2.5.0"
-      git push origin --tags
-```
-
-* Travis builds and deploys. Make sure to check the status of the build in Travis (https://travis-ci.org/klarna/HiveRunner).
-* Follow the http://central.sonatype.org/pages/releasing-the-deployment.html guide to promote the staged release to maven central.
-* Change version number to next snapshot version
-* Commit and push
-
-```
-     git commit -m "Setting version to next development version"
-     git push origin
-```
- 
+Copyright 2013-2018 Klarna AB.
