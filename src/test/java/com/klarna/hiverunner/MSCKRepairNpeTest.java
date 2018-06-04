@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
-public class MSCKRepairNPE {
+public class MSCKRepairNpeTest {
 
     @HiveSQL(files = {})
     public HiveShell hiveShell;
