@@ -5,13 +5,11 @@
 
   <groupId>com.klarna</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>3.2.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <version>3.2.2-SNAPSHOT</version>
   <name>HiveRunner</name>
-  <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the
-        need of any installed dependencies.
-    </description>
+  <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
   <url>https://github.com/klarna/HiveRunner</url>
+  <inceptionYear>2013</inceptionYear>
 
   <licenses>
     <license>
@@ -45,6 +43,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tez.version>0.8.4</tez.version>
     <hive.version>2.3.0</hive.version>
+    <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
   </properties>
 
@@ -106,7 +105,7 @@
       <version>0.9.8</version>
     </dependency>
 
-    <!-- Always put this before JUnit or the class loader might load the 
+    <!-- Always put this before JUnit or the class loader might load the
       wrong Matcher -->
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -137,14 +136,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.21.0</version>
         <configuration>
-          <!-- Hiverunner need this for some queries (property -XX:MaxPermSize 
+          <!-- Hiverunner need this for some queries (property -XX:MaxPermSize
             was removed in java 8) -->
           <argLine>-Xmx2024m</argLine>
           <systemProperties>
             <!--
-              Any hive conf property may be overridden here by suffixing 
+              Any hive conf property may be overridden here by suffixing
               it with 'hiveconf_'
             -->
             <hiveconf_hive.execution.engine>${hive.execution.engine}</hiveconf_hive.execution.engine>
@@ -158,23 +157,69 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.7.0</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Build-Version>${project.version}</Build-Version>
+              <Build-DateTime>${maven.build.timestamp}</Build-DateTime>
+              <Maven-GroupId>${project.groupId}</Maven-GroupId>
+              <Maven-ArtifactId>${project.artifactId}</Maven-ArtifactId>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>${license.maven.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin-git</artifactId>
+            <version>${license.maven.plugin.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <header>src/main/license/APACHE-2.txt</header>
+          <properties>
+            <owner>Klarna AB</owner>
+          </properties>
+          <includes>
+            <include>src/main/java/**</include>
+            <include>src/test/java/**</include>
+          </includes>
+        </configuration>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>validate</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>format</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -197,7 +242,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.4</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -210,7 +255,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.3</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
