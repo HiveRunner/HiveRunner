@@ -1,5 +1,5 @@
-/*
- * Copyright 2013 Klarna AB
+/**
+ * Copyright (C) 2013-2018 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.klarna.hiverunner;
 
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -39,7 +38,7 @@ public interface HiveServerContext {
      * Note that before this method is called, not all injected dependencies might have been initialized.
      * After this method is called, all configurations and resources should have been set.
      *
-     * Called by {@link HiveServerContainer#init(Map)}
+     * Called by {@link HiveServerContainer#init(Map, Map)}
      */
     void init();
 
@@ -51,8 +50,9 @@ public interface HiveServerContext {
     /**
      * Get file folder that acts as the base dir for the test data. This is the sand box for the
      * file system that the HiveRunner uses as replacement for HDFS.
-     * <p/>
+     * <p>
      * Each test method will have a new base dir spawned by the HiveRunner engine.
+     * </p>
      */
     TemporaryFolder getBaseDir();
 }

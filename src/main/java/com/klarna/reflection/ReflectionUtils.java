@@ -1,5 +1,5 @@
-/*
- * Copyright 2013 Klarna AB
+/**
+ * Copyright (C) 2013-2018 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.klarna.reflection;
 
 import com.google.common.base.Optional;
@@ -68,7 +67,7 @@ public final class ReflectionUtils {
      *
      * @param type      The Class type
      * @param fieldName The field name to get
-     * @return an Optional<Field>. Use isPresent() to find out if the field name was found.
+     * @return an {@code Optional}. Use isPresent() to find out if the field name was found.
      */
     public static Optional<Field> getField(Class<?> type, final String fieldName) {
         Optional<Field> field = Iterables.tryFind(newArrayList(type.getDeclaredFields()), havingFieldName(fieldName));

@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2013-2018 Klarna AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.klarna.hiverunner.config;
 
 
@@ -17,21 +32,21 @@ import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
  *
  * Configure with System properties via mvn like
  * <pre>
- * {@literal <}plugin>
- *      &lt;groupId>org.apache.maven.plugins&lt;/groupId>
- *      &lt;artifactId>maven-surefire-plugin&lt;/artifactId>
- *      &lt;version>2.17&lt;/version>
+ * &lt;plugin&gt;
+ *      &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+ *      &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+ *      &lt;version&gt;2.17&lt;/version&gt;
  *      &lt;configuration>
  *          ...
- *          &lt;systemProperties>
- *              &lt;hiveconf_any.hive.conf>1000&lt;/hiveconf_any.hive.conf>
- *              &lt;enableTimeout>false&lt;/enableTimeout>
- *              &lt;timeoutSeconds>30&lt;/timeoutSeconds>
- *              &lt;timeoutRetries>2&lt;/timeoutRetries>
- *              &lt;commandShellEmulation>BEELINE&lt;/commandShellEmulation>
- *          &lt;/systemProperties>
- *      &lt;/configuration>
- * &lt;/plugin>
+ *          &lt;systemProperties&gt;
+ *              &lt;hiveconf_any.hive.conf&gt;1000&lt;/hiveconf_any.hive.conf&gt;
+ *              &lt;enableTimeout&gt;false&lt;/enableTimeout&gt;
+ *              &lt;timeoutSeconds&gt;30&lt;/timeoutSeconds&gt;
+ *              &lt;timeoutRetries&gt;2&lt;/timeoutRetries&gt;
+ *              &lt;commandShellEmulation&gt;BEELINE&lt;/commandShellEmulation&gt;
+ *          &lt;/systemProperties&gt;
+ *      &lt;/configuration&gt;
+ * &lt;/plugin&gt;
  * </pre>
  *
  * Properties may be overridden per test class by annotating a <b>static</b> HiveRunnerConfig field like:
@@ -44,7 +59,8 @@ import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
  *          setCommandShellEmulation(CommandShellEmulation.BEELINE);
  *      }};
  * </pre>
- * See {@link com.klarna.hiverunner.DisabledTimeoutTest}
+ * 
+ * See the test class<{@code com.klarna.hiverunner.DisabledTimeoutTest} for more information.
  */
 public class HiveRunnerConfig {
 
@@ -168,8 +184,8 @@ public class HiveRunnerConfig {
      * the defaults will apply.
      */
     public void override(HiveRunnerConfig hiveRunnerConfig) {
-        this.config.putAll(hiveRunnerConfig.config);
-        this.hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
+        config.putAll(hiveRunnerConfig.config);
+        hiveConfSystemOverride.putAll(hiveRunnerConfig.hiveConfSystemOverride);
     }
 
     private static boolean load(String property, boolean defaultValue, Properties sysProperties) {

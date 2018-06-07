@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2013-2018 Klarna AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.klarna.hiverunner.data;
 
 import java.io.File;
@@ -19,8 +34,9 @@ public final class InsertIntoTable {
 
   /**
    * Factory method for creating an {@link InsertIntoTable}.
-   * <p/>
+   * <p>
    * This method is intended to be called via {@link HiveShell#insertInto(String, String)}.
+   * </p>
    *
    * @param databaseName The database name.
    * @param tableName The table name.
@@ -58,7 +74,7 @@ public final class InsertIntoTable {
 
   /**
    * Defines a subset of columns (a column name mask) so that only pertinent columns can be set.
-   * <p/>
+   * <p>
    * e.g.
    *
    * <pre>
@@ -68,6 +84,7 @@ public final class InsertIntoTable {
    *     .addRow("value1", "value3")
    * }
    * </pre>
+   * </p>
    *
    * @param names The column names.
    * @return {@code this}

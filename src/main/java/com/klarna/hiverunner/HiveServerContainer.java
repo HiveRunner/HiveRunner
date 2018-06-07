@@ -1,5 +1,5 @@
-/*
- * Copyright 2013 Klarna AB
+/**
+ * Copyright (C) 2013-2018 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.klarna.hiverunner;
 
 import com.google.common.base.Function;
@@ -147,8 +146,9 @@ public class HiveServerContainer {
 
     /**
      * Release all resources.
-     * <p/>
+     * <p>
      * This call will never throw an exception as it makes no sense doing that in the tear down phase.
+     * </p>
      */
     public void tearDown() {
 
