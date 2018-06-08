@@ -10,12 +10,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultTokenRuleTest {
 
+	private static TokenRule rule = DefaultTokenRule.INSTANCE;
+	
 	@Mock
 	private Context context;
 
 	@Test
 	public void handle() {
-		DefaultTokenRule.INSTANCE.handle("x", context);
+		rule.handle("x", context);
 		verify(context).append("x");
 	}
 	

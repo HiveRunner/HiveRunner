@@ -10,12 +10,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CloseStatementRuleTest {
 
+	private static TokenRule rule = CloseStatementRule.INSTANCE;
+
 	@Mock
 	private Context context;
 
 	@Test
 	public void handle() {
-		CloseStatementRule.INSTANCE.handle(null, context);
+		rule.handle(null, context);
 		verify(context).flush();
 	}
 }
