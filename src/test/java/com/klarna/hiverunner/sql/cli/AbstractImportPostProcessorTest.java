@@ -54,14 +54,14 @@ public class AbstractImportPostProcessorTest {
 	
 	@Test
 	public void scriptImport() {
-		AbstractImportPostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, factory);
+		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, factory);
 		List<HiveSqlStatement> actual = processor.statement(importStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	
 	@Test
 	public void nonScriptImport() {
-		AbstractImportPostProcessor processor = new TestAbstractImportPostProcessor(false, null, factory);
+		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, factory);
 		List<HiveSqlStatement> actual = processor.statement(nonImportStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
