@@ -23,7 +23,7 @@ public enum SqlLineCommandRule implements TokenRule {
 	public void handle(String token, Context context) {
 		if (context.statement().trim().isEmpty()) {
 			context.append(token);
-			context.append(Consumer.UNTIL_EOL);
+			context.appendWith(Consumer.UNTIL_EOL);
 			context.flush();
 		} else {
 			context.append(token);

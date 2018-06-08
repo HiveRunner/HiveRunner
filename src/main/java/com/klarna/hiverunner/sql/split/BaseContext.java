@@ -39,7 +39,7 @@ class BaseContext implements Context {
 	}
 
 	@Override
-	public void append(Consumer consumer) {
+	public void appendWith(Consumer consumer) {
 		append(consumer.consume(this));
 	}
 

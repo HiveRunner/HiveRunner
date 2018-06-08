@@ -19,7 +19,7 @@ public enum PreserveCommentsRule implements TokenRule {
 	public void handle(String token, Context context) {
 		context.append(token);
 		if (START_OF_COMMENT_PATTERN.matcher(context.statement()).matches()) {
-			context.append(Consumer.UNTIL_EOL);
+			context.appendWith(Consumer.UNTIL_EOL);
 		}
 	}
 

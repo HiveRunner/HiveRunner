@@ -10,6 +10,6 @@ public interface Context {
 	StringTokenizer tokenizer();
 	String statement();
 	void append(String chars);
-	void append(Consumer consumer);
+	void appendWith(Consumer consumer);
 	void flush();
 }

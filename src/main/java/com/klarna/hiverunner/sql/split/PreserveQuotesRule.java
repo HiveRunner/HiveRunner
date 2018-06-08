@@ -18,7 +18,7 @@ public enum PreserveQuotesRule implements TokenRule {
 
 	@Override
 	public void handle(final String token, Context context) {
-		context.append(new QuotedStringConsumer(token));
+		context.appendWith(new QuotedStringConsumer(token));
 	}
 
 	static class QuotedStringConsumer implements Consumer {
