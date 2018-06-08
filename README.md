@@ -253,6 +253,13 @@ a timeout and retry functionality implemented in HiveRunner:
          
 Make sure to set the timeoutSeconds to that of your slowest test in the test suite and then add some padding.
 
+# Contact
+
+# Mailing List
+If you would like to ask any questions about or discuss HiveRunner please join our mailing list at
+
+  [https://groups.google.com/forum/#!forum/hive-runner-user](https://groups.google.com/forum/#!forum/hive-runner-user)
+
 # Tags
 Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 
