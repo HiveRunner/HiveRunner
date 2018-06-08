@@ -163,10 +163,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-        // overriding default derby log path to go to target folder
-        System.setProperty("derby.stream.error.file", "target/derby.log");
+        configureDerbyLog();
+        
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
-
         try {
             Class.forName(jdbcDriver);
         } catch (ClassNotFoundException e) {
@@ -187,6 +186,18 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         conf.setBoolVar(METASTORE_VALIDATE_CONSTRAINTS, true);
         conf.setBoolVar(METASTORE_VALIDATE_COLUMNS, true);
         conf.setBoolVar(METASTORE_VALIDATE_TABLES, true);
+    }
+
+    private void configureDerbyLog() {
+      // overriding default derby log path to not go to root of project
+      File derbyLogFile;
+      try {
+        derbyLogFile = File.createTempFile("derby", ".log");
+        LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+      } catch (IOException e) {
+        throw new RuntimeException("Error creating temporary derby log file", e);
+      }
+      System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
     protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
