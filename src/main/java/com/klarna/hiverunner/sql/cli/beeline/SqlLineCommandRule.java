@@ -23,7 +23,7 @@ import com.klarna.hiverunner.sql.split.Context;
 import com.klarna.hiverunner.sql.split.TokenRule;
 
 /**
- * A {@link TokenRule} that cases the splitter to capture beeline commands.
+ * A {@link TokenRule} that causes the splitter to capture beeline commands.
  * Effectively to differentiate between SQL's {@code NOT} operator and Beeline's command prefix.
  */
 public enum SqlLineCommandRule implements TokenRule {
