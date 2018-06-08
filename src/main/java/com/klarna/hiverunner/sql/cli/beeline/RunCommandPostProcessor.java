@@ -21,7 +21,7 @@ import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
 
 /**
- * A {@link PostProcessor} that inlines external HQL files referenced in
+ * A {@link PostProcessor} that inlines external Hive SQL files referenced in
  * {@code !run} directives.
  */
 class RunCommandPostProcessor extends AbstractImportPostProcessor {
@@ -35,17 +35,17 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 	@Override
 	public String getImportPath(HiveSqlStatement statement) {
 		// filename cannot contain whitespace
-	      String[] tokens = statement.getRawStatement().split(" ");
-	      if (tokens.length == 2) {
-	        return tokens[1];
-	      }
-	      throw new IllegalArgumentException("Cannot get file to import from '" + statement + "'");
+		String[] tokens = statement.getRawStatement().split(" ");
+		if (tokens.length == 2) {
+			return tokens[1];
+		}
+		throw new IllegalArgumentException("Cannot get file to import from '" + statement + "'");
 	}
 
 	@Override
 	public boolean isImport(HiveSqlStatement statement) {
 		// case-sensitive
-	    return statement.getRawStatement().startsWith(TOKEN);
+		return statement.getRawStatement().startsWith(TOKEN);
 	}
 
 }

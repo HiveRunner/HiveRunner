@@ -139,9 +139,9 @@ public class BeelineStatementSplitterTest {
 
 	@Test
 	public void beelineSqlLineCommandsAreSupported() {
-		String statementA = "!run script.hql";
+		String statementA = "!run script.sql";
 		String statementB = "select * from table where foo != bar";
-		String statementC = "!run another_script.hql";
+		String statementC = "!run another_script.sql";
 
 		List<String> expected = asList(statementA, statementB, statementC);
 		String expression = statementA + '\n' + statementB + ";   " + statementC;

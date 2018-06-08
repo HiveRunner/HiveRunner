@@ -39,7 +39,7 @@ public interface HiveShell {
      * May only be called post #start()
      * </p>
      */
-    List<String> executeQuery(String hql);
+    List<String> executeQuery(String hiveSql);
 
     /**
      * Executes a single query.
@@ -47,7 +47,7 @@ public interface HiveShell {
      * May only be called post #start()
      * </p>
      */
-    List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith);
+    List<String> executeQuery(String hiveSql, String rowValuesDelimitedBy, String replaceNullWith);
 
     /**
      * Executes a single query from a script file, returning any results.
@@ -119,7 +119,7 @@ public interface HiveShell {
      * May only be called post #start()
      * </p>
      */
-    List<Object[]> executeStatement(String hql);
+    List<Object[]> executeStatement(String hiveSql);
 
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'

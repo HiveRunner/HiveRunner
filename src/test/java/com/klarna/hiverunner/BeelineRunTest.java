@@ -52,32 +52,32 @@ public class BeelineRunTest {
 
 	@Test
 	public void testNestedImport() throws Exception {
-		File a = new File(temp.getRoot(), "a.hql");
+		File a = new File(temp.getRoot(), "a.sql");
 		try (PrintStream out = new PrintStream(a)) {
 			// single statement case
 			out.println("create view ${db}.a as select * from ${db}.src where c1 <> 'z'");
 		}
 
-		File b = new File(temp.getRoot(), "b.hql");
+		File b = new File(temp.getRoot(), "b.sql");
 		try (PrintStream out = new PrintStream(b)) {
 			// multi statement case with script import
-			out.println("!run a.hql");
+			out.println("!run a.sql");
 			out.println("create database db_b;");
 			out.println("create view db_b.b as select c0, count(*) as c1_cnt from ${db}.a group by c0;");
 		}
 
-		File c = new File(temp.getRoot(), "c.hql");
+		File c = new File(temp.getRoot(), "c.sql");
 		try (PrintStream out = new PrintStream(c)) {
 			// multi statement case
 			out.println("create database db_c;");
 			out.println("create view db_c.c as select * from db_b.b where c1_cnt > 1;");
 		}
 
-		File main = new File(temp.getRoot(), "main.hql");
+		File main = new File(temp.getRoot(), "main.sql");
 		try (PrintStream out = new PrintStream(main)) {
 			// multi import case
-			out.println("!run b.hql");
-			out.println("!run c.hql");
+			out.println("!run b.sql");
+			out.println("!run c.sql");
 		}
 
 		hiveCliShell.setHiveVarValue("db", TEST_DB);

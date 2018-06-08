@@ -38,18 +38,18 @@ public class HiveSqlStatementFactory {
 	}
 
 	private List<HiveSqlStatement> internalNewInstanceForStatement(String statement) {
-		String transformedHql = commandShellEmulation.preProcessor().statement(statement.trim());
-		return commandShellEmulation.postProcessor(this).statement(new HiveSqlStatement(transformedHql));
+		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement.trim());
+		return commandShellEmulation.postProcessor(this).statement(new HiveSqlStatement(transformedHiveSql));
 	}
 
 	public List<HiveSqlStatement> newInstanceForScript(String script) {
-		List<HiveSqlStatement> hqlStatements = new ArrayList<>();
+		List<HiveSqlStatement> hiveSqlStatements = new ArrayList<>();
 		List<String> statements = new StatementSplitter(commandShellEmulation)
 				.split(commandShellEmulation.preProcessor().script(script));
 		for (String statement : statements) {
-			hqlStatements.addAll(internalNewInstanceForStatement(statement));
+			hiveSqlStatements.addAll(internalNewInstanceForStatement(statement));
 		}
-		return hqlStatements;
+		return hiveSqlStatements;
 	}
 
 	public List<HiveSqlStatement> newInstanceForStatement(String statement) {

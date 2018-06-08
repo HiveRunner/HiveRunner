@@ -139,9 +139,9 @@ public class HiveCliStatementSplitterTest {
 
 	@Test
 	public void hiveCliSourceCommandsAreSupported() {
-		String statementA = "source script.hql";
+		String statementA = "source script.sql";
 		String statementB = "select * from table where foo != bar";
-		String statementC = "source another_script.hql";
+		String statementC = "source another_script.sql";
 
 		List<String> expected = asList(statementA, statementB, statementC);
 		String expression = statementA + ";\n" + statementB + ";   " + statementC;

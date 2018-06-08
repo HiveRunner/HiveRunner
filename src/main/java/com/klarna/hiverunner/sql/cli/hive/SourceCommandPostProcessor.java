@@ -21,7 +21,7 @@ import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
 
 /**
- * A {@link PostProcessor} that inlines external HQL files referenced in
+ * A {@link PostProcessor} that inlines external Hive SQL files referenced in
  * {@code SOURCE} directives.
  */
 class SourceCommandPostProcessor extends AbstractImportPostProcessor {

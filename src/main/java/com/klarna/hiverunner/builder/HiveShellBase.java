@@ -84,15 +84,15 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public List<String> executeQuery(String hql) {
-        return executeQuery(hql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    public List<String> executeQuery(String hiveSql) {
+        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
-    public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
+    public List<String> executeQuery(String hiveSql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
 
-        List<Object[]> resultSet = executeStatement(hql);
+        List<Object[]> resultSet = executeStatement(hiveSql);
         List<String> result = new ArrayList<>();
         for (Object[] objects : resultSet) {
             result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));
@@ -101,9 +101,9 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public List<Object[]> executeStatement(String hql) {
+    public List<Object[]> executeStatement(String hiveSql) {
     	assertStarted();
-        return executeStatementWithCommandShellEmulation(hql);
+        return executeStatementWithCommandShellEmulation(hiveSql);
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
@@ -116,18 +116,18 @@ class HiveShellBase implements HiveShell {
         return executeStatementsWithCommandShellEmulation(statements);
     }
 
-    private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveSqlStatement> hqlStatements) {
+    private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveSqlStatement> hiveSqlStatements) {
         List<Object[]> results = new ArrayList<>();
-        for (HiveSqlStatement hqlStatement : hqlStatements) {
-          results.addAll(hiveServerContainer.executeStatement(hqlStatement.getRawStatement()));
+        for (HiveSqlStatement hiveSqlStatement : hiveSqlStatements) {
+          results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement.getRawStatement()));
         }
         return results;
       }
     
     @Override
-    public void execute(String hql) {
+    public void execute(String hiveSql) {
         assertStarted();
-        executeScriptWithCommandShellEmulation(hql);
+        executeScriptWithCommandShellEmulation(hiveSql);
     }
 
     @Override
@@ -152,8 +152,8 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        List<HiveSqlStatement> hqlStatements = statementFactory.newInstanceForPath(path);
-        executeStatementsWithCommandShellEmulation(hqlStatements);
+        List<HiveSqlStatement> hiveSqlStatements = statementFactory.newInstanceForPath(path);
+        executeStatementsWithCommandShellEmulation(hiveSqlStatements);
     }
 
     @Override
