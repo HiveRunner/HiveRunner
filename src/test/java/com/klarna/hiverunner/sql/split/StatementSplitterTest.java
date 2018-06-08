@@ -18,6 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
+// Checks the application of rules, not specific emulator implementations. See other tests for that.
 @RunWith(MockitoJUnitRunner.class)
 public class StatementSplitterTest {
 
