@@ -20,6 +20,9 @@ public class StatementSplitter {
 		this(emulator.splitterRules(), emulator.specialCharacters());
 	}
 
+	/**
+	 * @param rules Order of rules defines processing precedence. 
+	 */
 	public StatementSplitter(List<TokenRule> rules, String specialChars) {
 		this.rules = rules;
 		this.specialChars = specialChars;
