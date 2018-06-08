@@ -20,8 +20,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor;
-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+import org.apache.hadoop.hive.conf.HiveVariableSource;
+import org.apache.hadoop.hive.conf.VariableSubstitution;
+import org.apache.hadoop.hive.ql.exec.tez.TezJobExecHelper;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.cli.CLIService;
@@ -154,7 +155,7 @@ public class HiveServerContainer {
 
 
         try {
-            TezJobMonitor.killRunningJobs();
+          TezJobExecHelper.killRunningJobs();
         } catch (Throwable e) {
             LOGGER.warn("Failed to kill tez session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
@@ -207,7 +208,16 @@ public class HiveServerContainer {
         // Make sure to set the session state for this thread before returning the VariableSubstitution. If not set,
         // hivevar:s will not be evaluated.
         SessionState.setCurrentSessionState(currentSessionState);
-        return new VariableSubstitution();
+//        return new VariableSubstitution();
+
+        final SessionState ss = currentSessionState;
+        return new VariableSubstitution(new HiveVariableSource() {
+            @Override
+            public Map<String, String> getHiveVariable() {
+                return ss.getHiveVariables();
+            }
+        });
+
     }
 }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%d{ISO8601} %-5p %c:%L - %m%n" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="DataNucleus.Persistence" level="warn" />
+    <Logger name="org.apache.hadoop.hive" level="warn" />
+    <Logger name="org.apache.hive" level="warn" />
+    <Root level="info">
+      <AppenderRef ref="Console" />
+    </Root>
+  </Loggers>
+</Configuration>

@@ -17,6 +17,7 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +40,7 @@ public class ReservedKeywordTest {
      * 'hive.support.sql11.reserved.keywords' to false.
      */
     @Test
+    @Ignore("Since Hive 2.3.0 this property is no longer available in hive see https://issues.apache.org/jira/browse/HIVE-14872, use backticks")
     public void reservedKeywordsShouldBeAllowedWhenHiveConfIsSet() throws IOException {
 
         hiveShell.setHiveConfValue("hive.support.sql11.reserved.keywords", "false");
