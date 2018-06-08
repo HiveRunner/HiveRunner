@@ -27,31 +27,31 @@ import org.junit.runner.RunWith;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
+import com.klarna.hiverunner.sql.cli.hive.PreV130HiveCliEmulator;
 
 @RunWith(StandaloneHiveRunner.class)
-public class HiveShellHiveCliEmulationTest {
+public class PreV130HiveShellHiveCliEmulationTest {
 
   @HiveRunnerSetup
   public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-      setCommandShellEmulation(HiveCliEmulator.INSTANCE);
+      setCommandShellEmulation(PreV130HiveCliEmulator.INSTANCE);
   }};
   
   @HiveSQL(files = {}, encoding = "UTF-8")
   private HiveShell hiveCliShell;
 
-  /** Does not exhibit the behaviour described in HIVE-8396. */
-  @Test
+  /** Retains the behaviour described in HIVE-8396. */
+  @Test(expected = IllegalArgumentException.class)
   public void testQueryStripFullLineCommentFirstLine() {
     hiveCliShell.executeQuery("-- a\nset x=1");
   }
 
-  /** Does not exhibit the behaviour described in HIVE-8396. */
+  /** Hive CLI captures comment as value. */
   @Test
   public void testQueryStripFullLineCommentNested() {
     hiveCliShell.executeQuery("set x=\n-- a\n1");
     List<String> results = hiveCliShell.executeQuery("set x");
-    assertThat(results, is(Arrays.asList("x=1")));
+    assertThat(results, is(Arrays.asList("x=-- a", "1")));
   }
 
   @Test(expected = IllegalArgumentException.class)
