@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.cli.DefaultPreProcessor;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
 import com.klarna.hiverunner.sql.cli.PreProcessor;
@@ -40,7 +41,7 @@ public enum BeelineEmulator implements CommandShellEmulator {
 
 	@Override
 	public PreProcessor preProcessor() {
-		return BeelinePreProcessor.INSTANCE;
+		return DefaultPreProcessor.INSTANCE;
 	}
 
 	@Override

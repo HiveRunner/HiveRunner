@@ -174,7 +174,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 # Hive version compatibility
 
-- This version of HiveRunner is built for Hive 1.2.1.
+- This version of HiveRunner is built for Hive 2.3.0.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
@@ -183,7 +183,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
             <version>2.17</version>
             <configuration>
                 <systemProperties>
-                    <!-- Defaults to HIVE_CLI -->
+                    <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V130 -->
                     <commandShellEmulation>BEELINE</commandShellEmulation>
                 </systemProperties>
             </configuration>

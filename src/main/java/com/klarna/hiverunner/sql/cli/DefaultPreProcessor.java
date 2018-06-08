@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.cli.beeline;
-
-import com.klarna.hiverunner.sql.cli.CommentUtil;
-import com.klarna.hiverunner.sql.cli.PreProcessor;
+package com.klarna.hiverunner.sql.cli;
 
 /**
  * A {@link PreProcessor} that strips comments from statements and scripts.
  */
-enum BeelinePreProcessor implements PreProcessor {
+public enum DefaultPreProcessor implements PreProcessor {
 	INSTANCE;
 
 	@Override
