@@ -43,6 +43,7 @@ public enum HiveCliEmulator implements CommandShellEmulator {
 
 	@Override
 	public List<TokenRule> splitterRules() {
+		// This order is important
 		return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE,
 				PreserveCommentsRule.INSTANCE, PreserveQuotesRule.INSTANCE, DefaultTokenRule.INSTANCE);
 
