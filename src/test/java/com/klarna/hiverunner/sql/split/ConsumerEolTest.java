@@ -47,4 +47,5 @@ public class ConsumerEolTest {
 		when(tokenizer.hasMoreElements()).thenReturn(true, true, true, true, true, false);
 		assertThat(UNTIL_EOL.consume(context), is("a b\n"));
 	}
+	
 }

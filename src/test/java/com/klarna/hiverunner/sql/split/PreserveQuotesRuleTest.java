@@ -74,4 +74,5 @@ public class PreserveQuotesRuleTest {
 		rule.handle(tokenizer.nextToken(), context); // "'"
 		assertThat(context.statement(), is("'b \" c'"));
 	}
+
 }
