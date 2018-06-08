@@ -21,6 +21,7 @@ public class PreserveCommentsRuleTest {
 		rule.handle(tokenizer.nextToken(), context); // "x"
 		rule.handle(tokenizer.nextToken(), context); // " "
 		rule.handle(tokenizer.nextToken(), context); // "--"
+		// Should find comment and read until EOL
 		assertThat(context.statement(), is("x -- a b\n"));
 	}
 	
