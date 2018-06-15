@@ -33,7 +33,7 @@ class BaseContext implements Context {
 	@Override
 	public void flush() {
 		if (!statement.trim().isEmpty()) {
-			statements.add(statement.trim());
+			statements.add(statement);
 		}
 		statement = "";
 	}
