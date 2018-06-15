@@ -16,7 +16,7 @@
 package com.klarna.hiverunner.sql.cli;
 
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
-import com.klarna.hiverunner.sql.cli.hive.PreV130HiveCliEmulator;
+import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 public class CommandShellEmulatorFactory {
@@ -29,8 +29,8 @@ public class CommandShellEmulatorFactory {
 			return BeelineEmulator.INSTANCE;
 		} else if ("hive_cli".equalsIgnoreCase(name.trim())) {
 			return HiveCliEmulator.INSTANCE;
-		} else if ("hive_cli_pre_v130".equalsIgnoreCase(name.trim())) {
-			return PreV130HiveCliEmulator.INSTANCE;
+		} else if ("hive_cli_pre_v200".equalsIgnoreCase(name.trim())) {
+			return PreV200HiveCliEmulator.INSTANCE;
 		}
 		throw new IllegalArgumentException("Unsupported CLI: " + name);
 	}

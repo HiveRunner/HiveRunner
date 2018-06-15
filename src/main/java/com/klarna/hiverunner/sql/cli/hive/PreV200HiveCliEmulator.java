@@ -28,12 +28,12 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  * interpretation of {@code source} commands, and the broken full line comment
  * handling.
  */
-public enum PreV130HiveCliEmulator implements CommandShellEmulator {
+public enum PreV200HiveCliEmulator implements CommandShellEmulator {
 	INSTANCE;
 
 	@Override
 	public PreProcessor preProcessor() {
-		return PreV130HiveCliPreProcessor.INSTANCE;
+		return PreV200HiveCliPreProcessor.INSTANCE;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public enum PreV130HiveCliEmulator implements CommandShellEmulator {
 
 	@Override
 	public String getName() {
-		return "HIVE_CLI_PRE_V130";
+		return "HIVE_CLI_PRE_V200";
 	}
 
 	@Override

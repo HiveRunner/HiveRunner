@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
-import com.klarna.hiverunner.sql.cli.hive.PreV130HiveCliEmulator;
+import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
 public class CommandShellEmulatorFactoryTest {
 
@@ -45,9 +45,9 @@ public class CommandShellEmulatorFactoryTest {
 	
 	@Test
 	public void hiveCliPreV130() {
-	  assertThat(valueOf("hive_cli_pre_v130"), is(equalTo((CommandShellEmulator) PreV130HiveCliEmulator.INSTANCE)));
-	  assertThat(valueOf("HIVE_CLI_PRE_V130"), is(equalTo((CommandShellEmulator) PreV130HiveCliEmulator.INSTANCE)));
-	  assertThat(valueOf(" hIvE_cLi_PrE_v130  "), is(equalTo((CommandShellEmulator) PreV130HiveCliEmulator.INSTANCE)));
+	  assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+	  assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+	  assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

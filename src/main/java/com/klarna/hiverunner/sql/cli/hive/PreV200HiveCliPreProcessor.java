@@ -28,7 +28,7 @@ import com.klarna.hiverunner.sql.cli.PreProcessor;
  * replicate these modes of operation.
  * </p>
  */
-enum PreV130HiveCliPreProcessor implements PreProcessor {
+enum PreV200HiveCliPreProcessor implements PreProcessor {
 	INSTANCE;
 
 	@Override

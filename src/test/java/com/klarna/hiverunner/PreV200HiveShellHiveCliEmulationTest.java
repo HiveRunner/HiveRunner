@@ -27,14 +27,14 @@ import org.junit.runner.RunWith;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-import com.klarna.hiverunner.sql.cli.hive.PreV130HiveCliEmulator;
+import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
 @RunWith(StandaloneHiveRunner.class)
-public class PreV130HiveShellHiveCliEmulationTest {
+public class PreV200HiveShellHiveCliEmulationTest {
 
   @HiveRunnerSetup
   public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-      setCommandShellEmulation(PreV130HiveCliEmulator.INSTANCE);
+      setCommandShellEmulation(PreV200HiveCliEmulator.INSTANCE);
   }};
   
   @HiveSQL(files = {}, encoding = "UTF-8")
