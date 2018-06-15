@@ -15,9 +15,7 @@
  */
 package com.klarna.hiverunner;
 
-import java.util.HashMap;
-import java.util.List;
-
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,9 +24,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.klarna.hiverunner.config.HiveRunnerConfig;
+import java.util.HashMap;
+import java.util.List;
 
 public class HiveServerContainerTest {
+
 
     @Rule
     public TemporaryFolder basedir = new TemporaryFolder();
@@ -55,16 +55,14 @@ public class HiveServerContainerTest {
 
     @Test
     public void testExecuteStatementMR() {
-        String hql = "show databases";
-        List<Object[]> actual = container.executeStatement(hql);
+        List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
-        String hql = "show databases";
-        List<Object[]> actual = container.executeStatement(hql);
+        List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
