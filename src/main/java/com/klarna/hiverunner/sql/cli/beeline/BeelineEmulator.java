@@ -61,7 +61,8 @@ public enum BeelineEmulator implements CommandShellEmulator {
 
 	@Override
 	public List<TokenRule> splitterRules() {
-		// This order is important
+		// This order is important as rules may be progressively greedy. DefaultTokenRule will consume
+	  // all tokens for example.
 		return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
 				PreserveQuotesRule.INSTANCE, SqlLineCommandRule.INSTANCE, DefaultTokenRule.INSTANCE);
 
