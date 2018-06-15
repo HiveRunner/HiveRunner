@@ -30,15 +30,15 @@ public interface Consumer {
 
 		@Override
 		public String consume(Context context) {
-			String buffer = "";
+			StringBuilder builder = new StringBuilder();
 			StringTokenizer tokenizer = context.tokenizer();
 			while (tokenizer.hasMoreElements()) {
-				buffer += tokenizer.nextElement();
-				if (buffer.endsWith("\n")) {
+			  builder.append(tokenizer.nextElement());
+				if (builder.charAt(builder.length() - 1) == '\n') {
 					break;
 				}
 			}
-			return buffer;
+			return builder.toString();
 		}
 
 	};
