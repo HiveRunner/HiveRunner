@@ -183,7 +183,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
             <version>2.17</version>
             <configuration>
                 <systemProperties>
-                    <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V130 -->
+                    <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
                     <commandShellEmulation>BEELINE</commandShellEmulation>
                 </systemProperties>
             </configuration>
