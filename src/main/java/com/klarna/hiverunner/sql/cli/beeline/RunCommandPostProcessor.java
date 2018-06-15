@@ -34,7 +34,7 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
 	@Override
 	public String getImportPath(HiveSqlStatement statement) {
-		// filename cannot contain whitespace
+		// Belline does not allow the filename cannot contain whitespace
 		String[] tokens = statement.getRawStatement().split(" ");
 		if (tokens.length == 2) {
 			return tokens[1];
@@ -44,7 +44,7 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
 	@Override
 	public boolean isImport(HiveSqlStatement statement) {
-		// case-sensitive
+		// Beeline is case-sensitive; only accept lower case '!run'
 		return statement.getRawStatement().startsWith(TOKEN);
 	}
 
