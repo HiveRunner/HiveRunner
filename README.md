@@ -44,7 +44,7 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.21.0</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
@@ -55,7 +55,7 @@ as an alternative if this does not solve the OOM issues, try increase the -Xmx a
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.21.0</version>
         <configuration>
             <forkCount>1</forkCount>
             <reuseForks>false</reuseForks>
@@ -70,7 +70,7 @@ With forkCount and reuseForks there is a possibility to reduce the test executio
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.21.0</version>
         <configuration>
             <forkCount>1C</forkCount>
             <reuseForks>true</reuseForks>
@@ -78,16 +78,15 @@ With forkCount and reuseForks there is a possibility to reduce the test executio
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using tez, set the 
+By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using Tez, set the 
 System property hiveconf_hive.execution.engine to 'tez'.
 
-
-(Any hive conf property may be overridden by prefixing it with 'hiveconf_')
+(Any Hive conf property may be overridden by prefixing it with 'hiveconf_')
         
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.17</version>
+            <version>2.21.0</version>
             <configuration>
                 <systemProperties>
                     <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
@@ -105,7 +104,7 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.21.0</version>
         <configuration>
             <systemProperties>
                 <enableTimeout>true</enableTimeout>
@@ -117,9 +116,8 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
 
 
 ### Logging
-`src/main/resources/log4j.properties` configures the log levels. Log level is default set to WARN. Some traces remain due to the fact that Hive logs to stdout.
-All result sets are logged. Enable by setting ```log4j.logger.com.klarna.hiverunner.HiveServerContainer=DEBUG``` in log4j.properties.
 
+HiveRunner uses [SLF4J](https://www.slf4j.org/) so you should configure logging in your tests using any compatible logging framework.
 
 ## 2. Look at the examples
 
@@ -180,7 +178,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.17</version>
+            <version>2.21.0</version>
             <configuration>
                 <systemProperties>
                     <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
@@ -240,7 +238,7 @@ a timeout and retry functionality implemented in HiveRunner:
          <plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.17</version>
+             <version>2.21.0</version>
              <configuration>
                  <systemProperties>
                      <enableTimeout>true</enableTimeout>
