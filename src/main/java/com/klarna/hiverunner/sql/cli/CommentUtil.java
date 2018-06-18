@@ -23,11 +23,11 @@ public final class CommentUtil {
   public static String stripFullLineComments(String statement) {
     StringBuilder newStatement = new StringBuilder(statement.length());
     String[] lines = statement.split("\n");
-    for (int l = 0; l < lines.length; l++) {
-      String line = lines[l];
+    for (int i = 0; i < lines.length; i++) {
+      String line = lines[i];
       if (!line.trim().startsWith("--")) {
         newStatement.append(line);
-        if (l < lines.length - 2) {
+        if (i < lines.length - 2) {
           newStatement.append('\n');
         }
       }

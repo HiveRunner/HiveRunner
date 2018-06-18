@@ -37,13 +37,13 @@ public class HiveSqlStatementFactory {
 		this.commandShellEmulation = commandShellEmulation;
 	}
 
-	private List<HiveSqlStatement> internalNewInstanceForStatement(String statement) {
+	private List<String> internalNewInstanceForStatement(String statement) {
 		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement.trim());
-		return commandShellEmulation.postProcessor(this).statement(new HiveSqlStatement(transformedHiveSql));
+		return commandShellEmulation.postProcessor(this).statement(transformedHiveSql);
 	}
 
-	public List<HiveSqlStatement> newInstanceForScript(String script) {
-		List<HiveSqlStatement> hiveSqlStatements = new ArrayList<>();
+	public List<String> newInstanceForScript(String script) {
+		List<String> hiveSqlStatements = new ArrayList<>();
 		List<String> statements = new StatementSplitter(commandShellEmulation)
 				.split(commandShellEmulation.preProcessor().script(script));
 		for (String statement : statements) {
@@ -52,11 +52,11 @@ public class HiveSqlStatementFactory {
 		return hiveSqlStatements;
 	}
 
-	public List<HiveSqlStatement> newInstanceForStatement(String statement) {
+	public List<String> newInstanceForStatement(String statement) {
 		return internalNewInstanceForStatement(statement);
 	}
 
-	public List<HiveSqlStatement> newInstanceForPath(Path path) {
+	public List<String> newInstanceForPath(Path path) {
 		if (!path.isAbsolute()) {
 			path = cwd.resolve(path);
 		}

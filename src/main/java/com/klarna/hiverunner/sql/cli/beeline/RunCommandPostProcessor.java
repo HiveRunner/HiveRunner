@@ -15,7 +15,6 @@
  */
 package com.klarna.hiverunner.sql.cli.beeline;
 
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
@@ -33,9 +32,9 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 	}
 
 	@Override
-	public String getImportPath(HiveSqlStatement statement) {
+	public String getImportPath(String statement) {
 		// Belline does not allow the filename cannot contain whitespace
-		String[] tokens = statement.getRawStatement().split(" ");
+		String[] tokens = statement.split(" ");
 		if (tokens.length == 2) {
 			return tokens[1];
 		}
@@ -43,9 +42,9 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 	}
 
 	@Override
-	public boolean isImport(HiveSqlStatement statement) {
+	public boolean isImport(String statement) {
 		// Beeline is case-sensitive; only accept lower case '!run'
-		return statement.getRawStatement().startsWith(TOKEN);
+		return statement.startsWith(TOKEN);
 	}
 
 }

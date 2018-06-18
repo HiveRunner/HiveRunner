@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
@@ -107,19 +106,19 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-    	List<HiveSqlStatement> statements = statementFactory.newInstanceForScript(script);
+    	List<String> statements = statementFactory.newInstanceForScript(script);
         executeStatementsWithCommandShellEmulation(statements);
     }
     
     private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
-    	List<HiveSqlStatement> statements = statementFactory.newInstanceForStatement(statement);
+    	List<String> statements = statementFactory.newInstanceForStatement(statement);
         return executeStatementsWithCommandShellEmulation(statements);
     }
 
-    private List<Object[]> executeStatementsWithCommandShellEmulation(List<HiveSqlStatement> hiveSqlStatements) {
+    private List<Object[]> executeStatementsWithCommandShellEmulation(List<String> hiveSqlStatements) {
         List<Object[]> results = new ArrayList<>();
-        for (HiveSqlStatement hiveSqlStatement : hiveSqlStatements) {
-          results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement.getRawStatement()));
+        for (String hiveSqlStatement : hiveSqlStatements) {
+          results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement));
         }
         return results;
       }
@@ -152,7 +151,7 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        List<HiveSqlStatement> hiveSqlStatements = statementFactory.newInstanceForPath(path);
+        List<String> hiveSqlStatements = statementFactory.newInstanceForPath(path);
         executeStatementsWithCommandShellEmulation(hiveSqlStatements);
     }
 

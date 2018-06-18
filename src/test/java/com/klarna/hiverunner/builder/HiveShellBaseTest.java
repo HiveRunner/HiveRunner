@@ -26,7 +26,6 @@ import com.google.common.io.Files;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveServerContext;
 import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
@@ -59,7 +58,7 @@ public class HiveShellBaseTest {
 
     private HiveServerContainer container;
     @Captor
-    private ArgumentCaptor<HiveSqlStatement> hiveSqlStatementCaptor;
+    private ArgumentCaptor<String> hiveSqlStatementCaptor;
 
     @Test(expected = IllegalStateException.class)
     public void variableSubstitutionShouldBlowUpIfShellIsNotStarted() {

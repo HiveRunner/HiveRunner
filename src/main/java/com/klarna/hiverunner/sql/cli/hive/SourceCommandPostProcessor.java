@@ -15,7 +15,6 @@
  */
 package com.klarna.hiverunner.sql.cli.hive;
 
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
@@ -33,15 +32,15 @@ class SourceCommandPostProcessor extends AbstractImportPostProcessor {
 	}
 
 	@Override
-	public String getImportPath(HiveSqlStatement statement) {
+	public String getImportPath(String statement) {
 		// everything after 'source' (trimmed) is considered the filename
-		return statement.getRawStatement().substring(TOKEN.length()).trim();
+		return statement.substring(TOKEN.length()).trim();
 	}
 
 	@Override
-	public boolean isImport(HiveSqlStatement statement) {
+	public boolean isImport(String statement) {
 		// case-insensitive
-		return statement.getRawStatement().toLowerCase().startsWith(TOKEN);
+		return statement.toLowerCase().startsWith(TOKEN);
 	}
 
 }

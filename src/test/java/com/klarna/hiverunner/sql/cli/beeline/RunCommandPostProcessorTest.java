@@ -28,17 +28,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunCommandPostProcessorTest {
 
-	@Mock
-	private HiveSqlStatement statement, importedStatement;
 	@Mock
 	private HiveSqlStatementFactory factory;
 
@@ -51,42 +48,36 @@ public class RunCommandPostProcessorTest {
 
 	@Test
 	public void isImport() {
-		when(statement.getRawStatement()).thenReturn("!run x;");
-		assertThat(processor.isImport(statement), is(true));
+		assertThat(processor.isImport("!run x;"), is(true));
 	}
 
 	@Test
 	public void isNotImport() {
-		when(statement.getRawStatement()).thenReturn("SELECT * FROM x;");
-		assertThat(processor.isImport(statement), is(false));
+		assertThat(processor.isImport("SELECT * FROM x;"), is(false));
 	}
 
 	@Test
 	public void importPathValid() {
-		when(statement.getRawStatement()).thenReturn("!run x");
-		assertThat(processor.getImportPath(statement), is("x"));
+		assertThat(processor.getImportPath("!run x"), is("x"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void importPathInvalid() {
-		when(statement.getRawStatement()).thenReturn("!run;");
-		processor.getImportPath(statement);
+		processor.getImportPath("!run;");
 	}
 
 	@Test
 	public void importStatement() {
-		when(statement.getRawStatement()).thenReturn("!run x");
-		List<HiveSqlStatement> expected = asList(importedStatement);
+		List<String> expected = asList("!run x");
 		when(factory.newInstanceForPath(Paths.get("x"))).thenReturn(expected);
 
-		assertThat(processor.statement(statement), is(expected));
+		assertThat(processor.statement("!run x"), is(expected));
 	}
 
 	@Test
 	public void generalStatement() {
-		when(statement.getRawStatement()).thenReturn("SELECT * FROM x");
-		List<HiveSqlStatement> expected = asList(statement);
-		assertThat(processor.statement(statement), is(expected));
+		List<String> expected = asList("SELECT * FROM x");
+		assertThat(processor.statement("SELECT * FROM x"), is(expected));
 	}
 
 }
