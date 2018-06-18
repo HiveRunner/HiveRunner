@@ -29,9 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,11 +39,11 @@ public class AbstractImportPostProcessorTest {
 	private static final String PATH = "path";
 	
 	@Mock
-	private HiveSqlStatement importStatement, nonImportStatement;
+	private String importStatement, nonImportStatement;
 	@Mock
 	private HiveSqlStatementFactory factory;
 	
-	private List<HiveSqlStatement> expected;
+	private List<String> expected;
 
 	@Before
 	public void setup() {
@@ -55,14 +54,14 @@ public class AbstractImportPostProcessorTest {
 	@Test
 	public void scriptImport() {
 		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, factory);
-		List<HiveSqlStatement> actual = processor.statement(importStatement);
+		List<String> actual = processor.statement(importStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	
 	@Test
 	public void nonScriptImport() {
 		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, factory);
-		List<HiveSqlStatement> actual = processor.statement(nonImportStatement);
+		List<String> actual = processor.statement(nonImportStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	
@@ -78,12 +77,12 @@ public class AbstractImportPostProcessorTest {
 		}
 
 		@Override
-		public String getImportPath(HiveSqlStatement statement) {
+		public String getImportPath(String statement) {
 			return path;
 		}
 
 		@Override
-		public boolean isImport(HiveSqlStatement statement) {
+		public boolean isImport(String statement) {
 			return isImport;
 		}
 		

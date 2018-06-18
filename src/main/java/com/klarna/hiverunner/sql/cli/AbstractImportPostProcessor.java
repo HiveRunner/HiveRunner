@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import com.klarna.hiverunner.sql.HiveSqlStatement;
 import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
 
 /**
@@ -37,7 +36,7 @@ public abstract class AbstractImportPostProcessor implements PostProcessor {
 	}
 
 	@Override
-	public List<HiveSqlStatement> statement(HiveSqlStatement statement) {
+	public List<String> statement(String statement) {
 		if (isImport(statement)) {
 			String importPath = getImportPath(statement);
 			Path path = Paths.get(importPath);
@@ -46,8 +45,8 @@ public abstract class AbstractImportPostProcessor implements PostProcessor {
 		return Collections.singletonList(statement);
 	}
 
-	public abstract String getImportPath(HiveSqlStatement statement);
+	public abstract String getImportPath(String statement);
 
-	public abstract boolean isImport(HiveSqlStatement statement);
+	public abstract boolean isImport(String statement);
 
 }
