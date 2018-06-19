@@ -9,7 +9,7 @@ enum NewLineUtil {
   INSTANCE;
 
   static String removeLeadingTrailingNewLines(String in) {
-    String[] split = in.split("\n");
+    String[] split = in.split("[\n|\r]");
     if (split.length == 1) {
       return split[0];
     }
