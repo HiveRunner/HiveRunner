@@ -40,7 +40,7 @@ public class BeelineRunTest {
 	@HiveRunnerSetup
 	public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {
 		{
-			setCommandShellEmulation(BeelineEmulator.INSTANCE);
+			setCommandShellEmulator(BeelineEmulator.INSTANCE);
 		}
 	};
 

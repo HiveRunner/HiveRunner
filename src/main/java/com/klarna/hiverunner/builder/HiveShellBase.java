@@ -62,7 +62,7 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
-    protected final CommandShellEmulator commandShellEmulation;
+    protected final CommandShellEmulator commandShellEmulator;
     protected StatementLexer lexer;
     protected Path cwd;
 
@@ -71,10 +71,10 @@ class HiveShellBase implements HiveShell {
                   List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest,
-                  CommandShellEmulator commandShellEmulation) {
+                  CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
-		this.commandShellEmulation = commandShellEmulation;
+		this.commandShellEmulator = commandShellEmulator;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
@@ -160,7 +160,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        lexer = new StatementLexer(cwd, Charset.defaultCharset(), commandShellEmulation);
+        lexer = new StatementLexer(cwd, Charset.defaultCharset(), commandShellEmulator);
         
         hiveServerContainer.init(hiveConf, hiveVars);
 
@@ -421,7 +421,7 @@ class HiveShellBase implements HiveShell {
 		assertFileExists(script);
 		try {
 			String statements = new String(Files.readAllBytes(script), charset);
-			List<String> splitStatements = new StatementSplitter(commandShellEmulation).split(statements);
+			List<String> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
 			if (splitStatements.size() != 1) {
 				throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
 			}

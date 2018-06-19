@@ -34,7 +34,7 @@ public class HiveShellBeeLineEmulationTest {
 
   @HiveRunnerSetup
   public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-      setCommandShellEmulation(BeelineEmulator.INSTANCE);
+      setCommandShellEmulator(BeelineEmulator.INSTANCE);
   }};
   
   @HiveSQL(files = {}, encoding = "UTF-8")

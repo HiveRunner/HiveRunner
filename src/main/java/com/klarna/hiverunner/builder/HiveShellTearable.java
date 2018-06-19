@@ -29,8 +29,8 @@ class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
     HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
                       List<String> setupScripts, List<HiveResource> resources,
-                      List<String> scriptsUnderTest, CommandShellEmulator commandShellEmulation) {
-        super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest, commandShellEmulation);
+                      List<String> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+        super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
 
     @Override

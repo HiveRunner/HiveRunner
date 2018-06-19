@@ -39,7 +39,7 @@ public class HiveShellBuilder {
     private HiveServerContainer hiveServerContainer;
     private final List<HiveResource> resources = new ArrayList<>();
     private final List<String> setupScripts = new ArrayList<>();
-    private CommandShellEmulator commandShellEmulation = HiveCliEmulator.INSTANCE;
+    private CommandShellEmulator commandShellEmulator = HiveCliEmulator.INSTANCE;
 
     public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
         this.hiveServerContainer = hiveServerContainer;
@@ -72,12 +72,12 @@ public class HiveShellBuilder {
         }
     }
     
-    public void setCommandShellEmulation(CommandShellEmulator commandShellEmulation) {
-      this.commandShellEmulation = commandShellEmulation;
+    public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
+      this.commandShellEmulator = commandShellEmulator;
     }
 
     public HiveShellContainer buildShell() {
-        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulation);
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
 }
 

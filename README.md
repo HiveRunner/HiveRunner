@@ -182,14 +182,14 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
             <configuration>
                 <systemProperties>
                     <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
-                    <commandShellEmulation>BEELINE</commandShellEmulation>
+                    <commandShellEmulator>BEELINE</commandShellEmulator>
                 </systemProperties>
             </configuration>
         </plugin>
 
   Or provided on the command line using a system property:
 
-      mvn -DcommandShellEmulation=BEELINE test
+      mvn -DcommandShellEmulator=BEELINE test
 
 # Future work and Limitations
 
