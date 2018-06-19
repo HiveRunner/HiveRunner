@@ -2,13 +2,17 @@ package com.klarna.hiverunner.sql.split;
 
 import static java.lang.Character.isWhitespace;
 
+/**
+ * Removes all white space up to and including the newlines closest to the a sequence of non whitespace characters. The
+ * aim here is to preserve the indentation of statements within scripts.
+ */
 enum NewLineUtil {
 
   INSTANCE;
-  
+
   static String removeLeadingTrailingNewLines(String in) {
     int lastLeadingNLCR = -1;
-    for (int i = 0 ; i < in.length() ; i++) {
+    for (int i = 0; i < in.length(); i++) {
       char c = in.charAt(i);
       if (!isWhitespace(c)) {
         break;
@@ -17,9 +21,9 @@ enum NewLineUtil {
         lastLeadingNLCR = i;
       }
     }
-    
+
     int lastTrailingNLCR = -1;
-    for (int i = in.length() - 1 ; i >= 0  ; i--) {
+    for (int i = in.length() - 1; i >= 0; i--) {
       char c = in.charAt(i);
       if (!isWhitespace(c)) {
         break;
