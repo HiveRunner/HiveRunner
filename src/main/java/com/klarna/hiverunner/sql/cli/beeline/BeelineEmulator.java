@@ -35,37 +35,37 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  * comment handling.
  */
 public enum BeelineEmulator implements CommandShellEmulator {
-	INSTANCE;
+  INSTANCE;
 
-	public static final String BEELINE_SPECIAL_CHARS = "!";
+  public static final String BEELINE_SPECIAL_CHARS = "!";
 
-	@Override
-	public PreProcessor preProcessor() {
-		return DefaultPreProcessor.INSTANCE;
-	}
+  @Override
+  public PreProcessor preProcessor() {
+    return DefaultPreProcessor.INSTANCE;
+  }
 
-	@Override
-	public PostProcessor postProcessor(StatementLexer lexer) {
-		return new RunCommandPostProcessor(lexer);
-	}
+  @Override
+  public PostProcessor postProcessor(StatementLexer lexer) {
+    return new RunCommandPostProcessor(lexer);
+  }
 
-	@Override
-	public String getName() {
-		return "BEELINE";
-	}
+  @Override
+  public String getName() {
+    return "BEELINE";
+  }
 
-	@Override
-	public String specialCharacters() {
-		return StatementSplitter.SQL_SPECIAL_CHARS + BEELINE_SPECIAL_CHARS;
-	}
+  @Override
+  public String specialCharacters() {
+    return StatementSplitter.SQL_SPECIAL_CHARS + BEELINE_SPECIAL_CHARS;
+  }
 
-	@Override
-	public List<TokenRule> splitterRules() {
-		// This order is important as rules may be progressively greedy. DefaultTokenRule will consume
-	  // all tokens for example.
-		return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
-				PreserveQuotesRule.INSTANCE, SqlLineCommandRule.INSTANCE, DefaultTokenRule.INSTANCE);
+  @Override
+  public List<TokenRule> splitterRules() {
+    // This order is important as rules may be progressively greedy. DefaultTokenRule will consume
+    // all tokens for example.
+    return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
+        PreserveQuotesRule.INSTANCE, SqlLineCommandRule.INSTANCE, DefaultTokenRule.INSTANCE);
 
-	}
+  }
 
 }

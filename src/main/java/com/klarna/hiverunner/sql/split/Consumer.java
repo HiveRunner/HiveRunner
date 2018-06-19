@@ -18,29 +18,28 @@ package com.klarna.hiverunner.sql.split;
 import java.util.StringTokenizer;
 
 /**
- * Provide a means to direct the {@link StatementSplitter} in how it should
- * consume tokens.
+ * Provide a means to direct the {@link StatementSplitter} in how it should consume tokens.
  */
 public interface Consumer {
 
-	String consume(Context context);
+  String consume(Context context);
 
-	/** A {@link Consumer} that consumes tokens until the end of the line. */
-	public static Consumer UNTIL_EOL = new Consumer() {
+  /** A {@link Consumer} that consumes tokens until the end of the line. */
+  public static Consumer UNTIL_EOL = new Consumer() {
 
-		@Override
-		public String consume(Context context) {
-			StringBuilder builder = new StringBuilder();
-			StringTokenizer tokenizer = context.tokenizer();
-			while (tokenizer.hasMoreElements()) {
-			  builder.append(tokenizer.nextElement());
-				if (builder.charAt(builder.length() - 1) == '\n') {
-					break;
-				}
-			}
-			return builder.toString();
-		}
+    @Override
+    public String consume(Context context) {
+      StringBuilder builder = new StringBuilder();
+      StringTokenizer tokenizer = context.tokenizer();
+      while (tokenizer.hasMoreElements()) {
+        builder.append(tokenizer.nextElement());
+        if (builder.charAt(builder.length() - 1) == '\n') {
+          break;
+        }
+      }
+      return builder.toString();
+    }
 
-	};
+  };
 
 }

@@ -31,38 +31,38 @@ import com.klarna.hiverunner.sql.split.StatementSplitter;
 import com.klarna.hiverunner.sql.split.TokenRule;
 
 /**
- * Emulates CLI behaviours specific to the Hive CLI. This includes interpretation of {@code source} commands, and
- * the broken full line comment handling.
+ * Emulates CLI behaviours specific to the Hive CLI. This includes interpretation of {@code source} commands, and the
+ * broken full line comment handling.
  */
 public enum HiveCliEmulator implements CommandShellEmulator {
-	INSTANCE;
-	
-	@Override
-	public PreProcessor preProcessor() {
-		return DefaultPreProcessor.INSTANCE;
-	}
+  INSTANCE;
 
-	@Override
-	public PostProcessor postProcessor(StatementLexer lexer) {
-		return new SourceCommandPostProcessor(lexer);
-	}
+  @Override
+  public PreProcessor preProcessor() {
+    return DefaultPreProcessor.INSTANCE;
+  }
 
-	@Override
-	public String getName() {
-		return "HIVE_CLI";
-	}
+  @Override
+  public PostProcessor postProcessor(StatementLexer lexer) {
+    return new SourceCommandPostProcessor(lexer);
+  }
 
-	@Override
-	public String specialCharacters() {
-		return StatementSplitter.SQL_SPECIAL_CHARS;
-	}
+  @Override
+  public String getName() {
+    return "HIVE_CLI";
+  }
 
-	@Override
-	public List<TokenRule> splitterRules() {
-	  // This order is important as rules may be progressively greedy. DefaultTokenRule will consume
+  @Override
+  public String specialCharacters() {
+    return StatementSplitter.SQL_SPECIAL_CHARS;
+  }
+
+  @Override
+  public List<TokenRule> splitterRules() {
+    // This order is important as rules may be progressively greedy. DefaultTokenRule will consume
     // all tokens for example.
-		return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE,
-				PreserveCommentsRule.INSTANCE, PreserveQuotesRule.INSTANCE, DefaultTokenRule.INSTANCE);
+    return Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
+        PreserveQuotesRule.INSTANCE, DefaultTokenRule.INSTANCE);
 
-	}
+  }
 }

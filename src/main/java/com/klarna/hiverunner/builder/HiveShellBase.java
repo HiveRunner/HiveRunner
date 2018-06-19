@@ -74,7 +74,7 @@ class HiveShellBase implements HiveShell {
                   CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
-		this.commandShellEmulator = commandShellEmulator;
+        this.commandShellEmulator = commandShellEmulator;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
@@ -101,17 +101,17 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<Object[]> executeStatement(String hiveSql) {
-    	assertStarted();
+        assertStarted();
         return executeStatementWithCommandShellEmulation(hiveSql);
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-    	List<String> statements = lexer.applyToScript(script);
+        List<String> statements = lexer.applyToScript(script);
         executeStatementsWithCommandShellEmulation(statements);
     }
     
     private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
-    	List<String> statements = lexer.applyToStatement(statement);
+        List<String> statements = lexer.applyToStatement(statement);
         return executeStatementsWithCommandShellEmulation(statements);
     }
 
