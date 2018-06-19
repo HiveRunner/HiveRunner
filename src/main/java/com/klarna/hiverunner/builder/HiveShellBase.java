@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 
@@ -63,7 +63,7 @@ class HiveShellBase implements HiveShell {
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
     protected final CommandShellEmulator commandShellEmulation;
-    protected HiveSqlStatementFactory statementFactory;
+    protected StatementLexer lexer;
     protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
@@ -106,12 +106,12 @@ class HiveShellBase implements HiveShell {
     }
 
     private void executeScriptWithCommandShellEmulation(String script) {
-    	List<String> statements = statementFactory.newInstanceForScript(script);
+    	List<String> statements = lexer.applyToScript(script);
         executeStatementsWithCommandShellEmulation(statements);
     }
     
     private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
-    	List<String> statements = statementFactory.newInstanceForStatement(statement);
+    	List<String> statements = lexer.applyToStatement(statement);
         return executeStatementsWithCommandShellEmulation(statements);
     }
 
@@ -151,7 +151,7 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        List<String> hiveSqlStatements = statementFactory.newInstanceForPath(path);
+        List<String> hiveSqlStatements = lexer.applyToPath(path);
         executeStatementsWithCommandShellEmulation(hiveSqlStatements);
     }
 
@@ -160,7 +160,7 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
-        statementFactory = new HiveSqlStatementFactory(cwd, Charset.defaultCharset(), commandShellEmulation);
+        lexer = new StatementLexer(cwd, Charset.defaultCharset(), commandShellEmulation);
         
         hiveServerContainer.init(hiveConf, hiveVars);
 

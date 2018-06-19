@@ -30,20 +30,20 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SourceCommandPostProcessorTest {
 
 	@Mock
-	private HiveSqlStatementFactory factory;
+	private StatementLexer lexer;
 
 	private AbstractImportPostProcessor processor;
 
 	@Before
 	public void setup() {
-		processor = new SourceCommandPostProcessor(factory);
+		processor = new SourceCommandPostProcessor(lexer);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class SourceCommandPostProcessorTest {
 	@Test
 	public void importStatement() {
 		List<String> expected = asList("source x");
-		when(factory.newInstanceForPath(Paths.get("x"))).thenReturn(expected);
+		when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
 
 		assertThat(processor.statement("source x"), is(expected));
 	}

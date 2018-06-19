@@ -18,7 +18,7 @@ package com.klarna.hiverunner.sql.cli.beeline;
 import java.util.Arrays;
 import java.util.List;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.DefaultPreProcessor;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
@@ -45,8 +45,8 @@ public enum BeelineEmulator implements CommandShellEmulator {
 	}
 
 	@Override
-	public PostProcessor postProcessor(HiveSqlStatementFactory factory) {
-		return new RunCommandPostProcessor(factory);
+	public PostProcessor postProcessor(StatementLexer lexer) {
+		return new RunCommandPostProcessor(lexer);
 	}
 
 	@Override

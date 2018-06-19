@@ -25,44 +25,44 @@ import java.util.List;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 
-public class HiveSqlStatementFactory {
+public class StatementLexer {
 
 	private final Charset charset;
 	private final CommandShellEmulator commandShellEmulation;
 	private final Path cwd;
 
-	public HiveSqlStatementFactory(Path cwd, Charset charset, CommandShellEmulator commandShellEmulation) {
+	public StatementLexer(Path cwd, Charset charset, CommandShellEmulator commandShellEmulation) {
 		this.cwd = cwd;
 		this.charset = charset;
 		this.commandShellEmulation = commandShellEmulation;
 	}
 
-	private List<String> internalNewInstanceForStatement(String statement) {
+	private List<String> internalApplyToStatement(String statement) {
 		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement.trim());
 		return commandShellEmulation.postProcessor(this).statement(transformedHiveSql);
 	}
 
-	public List<String> newInstanceForScript(String script) {
+	public List<String> applyToScript(String script) {
 		List<String> hiveSqlStatements = new ArrayList<>();
 		List<String> statements = new StatementSplitter(commandShellEmulation)
 				.split(commandShellEmulation.preProcessor().script(script));
 		for (String statement : statements) {
-			hiveSqlStatements.addAll(internalNewInstanceForStatement(statement));
+			hiveSqlStatements.addAll(internalApplyToStatement(statement));
 		}
 		return hiveSqlStatements;
 	}
 
-	public List<String> newInstanceForStatement(String statement) {
-		return internalNewInstanceForStatement(statement);
+	public List<String> applyToStatement(String statement) {
+		return internalApplyToStatement(statement);
 	}
 
-	public List<String> newInstanceForPath(Path path) {
+	public List<String> applyToPath(Path path) {
 		if (!path.isAbsolute()) {
 			path = cwd.resolve(path);
 		}
 		try {
 			String script = new String(Files.readAllBytes(path), charset);
-			return newInstanceForScript(script);
+			return applyToScript(script);
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Unable to read script file '" + path + "': " + e.getMessage(), e);
 		}

@@ -17,7 +17,7 @@ package com.klarna.hiverunner.sql.cli;
 
 import java.util.List;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.split.TokenRule;
 
 /**
@@ -26,7 +26,7 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  */
 public interface CommandShellEmulator {
 	PreProcessor preProcessor();
-	PostProcessor postProcessor(HiveSqlStatementFactory factory);
+	PostProcessor postProcessor(StatementLexer lexer);
 	String specialCharacters();
 	List<TokenRule> splitterRules();
 	String getName();

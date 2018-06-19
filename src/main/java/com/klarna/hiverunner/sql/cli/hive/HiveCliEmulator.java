@@ -18,7 +18,7 @@ package com.klarna.hiverunner.sql.cli.hive;
 import java.util.Arrays;
 import java.util.List;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.cli.DefaultPreProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
@@ -43,8 +43,8 @@ public enum HiveCliEmulator implements CommandShellEmulator {
 	}
 
 	@Override
-	public PostProcessor postProcessor(HiveSqlStatementFactory factory) {
-		return new SourceCommandPostProcessor(factory);
+	public PostProcessor postProcessor(StatementLexer lexer) {
+		return new SourceCommandPostProcessor(lexer);
 	}
 
 	@Override

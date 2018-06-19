@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 
 /**
  * An abstract {@link PostProcessor} implementation that recursively expands
@@ -29,10 +29,10 @@ import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
  */
 public abstract class AbstractImportPostProcessor implements PostProcessor {
 
-	private final HiveSqlStatementFactory factory;
+	private final StatementLexer lexer;
 
-	public AbstractImportPostProcessor(HiveSqlStatementFactory factory) {
-		this.factory = factory;
+	public AbstractImportPostProcessor(StatementLexer lexer) {
+		this.lexer = lexer;
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public abstract class AbstractImportPostProcessor implements PostProcessor {
 		if (isImport(statement)) {
 			String importPath = getImportPath(statement);
 			Path path = Paths.get(importPath);
-			return factory.newInstanceForPath(path);
+			return lexer.applyToPath(path);
 		}
 		return Collections.singletonList(statement);
 	}

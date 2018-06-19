@@ -15,7 +15,7 @@
  */
 package com.klarna.hiverunner.sql.cli.beeline;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 import com.klarna.hiverunner.sql.cli.PostProcessor;
 
@@ -27,8 +27,8 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
 	private static final String TOKEN = "!run";
 
-	RunCommandPostProcessor(HiveSqlStatementFactory factory) {
-		super(factory);
+	RunCommandPostProcessor(StatementLexer lexer) {
+		super(lexer);
 	}
 
 	@Override

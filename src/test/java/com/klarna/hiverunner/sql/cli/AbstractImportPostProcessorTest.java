@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.klarna.hiverunner.sql.HiveSqlStatementFactory;
+import com.klarna.hiverunner.sql.StatementLexer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractImportPostProcessorTest {
@@ -41,26 +41,26 @@ public class AbstractImportPostProcessorTest {
 	@Mock
 	private String importStatement, nonImportStatement;
 	@Mock
-	private HiveSqlStatementFactory factory;
+	private StatementLexer lexer;
 	
 	private List<String> expected;
 
 	@Before
 	public void setup() {
 		expected = singletonList(nonImportStatement);
-		when(factory.newInstanceForPath(Paths.get(PATH))).thenReturn(expected);
+		when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
 	}
 	
 	@Test
 	public void scriptImport() {
-		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, factory);
+		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
 		List<String> actual = processor.statement(importStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	
 	@Test
 	public void nonScriptImport() {
-		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, factory);
+		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, lexer);
 		List<String> actual = processor.statement(nonImportStatement);
 		assertThat(actual, is(equalTo(expected)));
 	}
@@ -70,8 +70,8 @@ public class AbstractImportPostProcessorTest {
 		private final String path;
 		private final boolean isImport;
 
-		public TestAbstractImportPostProcessor(boolean isImport, String path, HiveSqlStatementFactory factory) {
-			super(factory);
+		public TestAbstractImportPostProcessor(boolean isImport, String path, StatementLexer lexer) {
+			super(lexer);
 			this.isImport = isImport;
 			this.path = path;
 		}
