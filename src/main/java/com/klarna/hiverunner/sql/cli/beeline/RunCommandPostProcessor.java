@@ -33,7 +33,7 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
 	@Override
 	public String getImportPath(String statement) {
-		// Belline does not allow the filename cannot contain whitespace
+		// Beeline does not allow the filename to contain whitespace
 		String[] tokens = statement.trim().split(" ");
 		if (tokens.length == 2) {
 			return tokens[1];
