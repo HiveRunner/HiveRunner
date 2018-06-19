@@ -22,6 +22,8 @@ public class NewLineUtilTest {
     assertThat(removeLeadingTrailingNewLines(" \n \n "), is(""));
     assertThat(removeLeadingTrailingNewLines("\n a \n"), is(" a "));
     assertThat(removeLeadingTrailingNewLines(" \n a b \n "), is(" a b "));
+    assertThat(removeLeadingTrailingNewLines(" \n \n a b \n \n "), is(" a b "));
+    assertThat(removeLeadingTrailingNewLines(" \n a b \n "), is(" a b "));
     assertThat(removeLeadingTrailingNewLines(""), is(""));
     assertThat(removeLeadingTrailingNewLines("\t"), is("\t"));
     assertThat(removeLeadingTrailingNewLines("\ta\t"), is("\ta\t"));
@@ -33,5 +35,6 @@ public class NewLineUtilTest {
     assertThat(removeLeadingTrailingNewLines("\t\n\t\n\t"), is(""));
     assertThat(removeLeadingTrailingNewLines("\n\ta\t\n"), is("\ta\t"));
     assertThat(removeLeadingTrailingNewLines("\t\n\ta\tb\t\n\t"), is("\ta\tb\t"));
+    assertThat(removeLeadingTrailingNewLines("\t\n\t\n\ta\tb\t\n\t\n\t"), is("\ta\tb\t"));
   }
 }
