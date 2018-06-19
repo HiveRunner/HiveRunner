@@ -34,7 +34,7 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 	@Override
 	public String getImportPath(String statement) {
 		// Belline does not allow the filename cannot contain whitespace
-		String[] tokens = statement.split(" ");
+		String[] tokens = statement.trim().split(" ");
 		if (tokens.length == 2) {
 			return tokens[1];
 		}
@@ -44,7 +44,7 @@ class RunCommandPostProcessor extends AbstractImportPostProcessor {
 	@Override
 	public boolean isImport(String statement) {
 		// Beeline is case-sensitive; only accept lower case '!run'
-		return statement.startsWith(TOKEN);
+		return statement.trim().startsWith(TOKEN);
 	}
 
 }

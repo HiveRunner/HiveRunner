@@ -18,8 +18,7 @@ package com.klarna.hiverunner.sql.cli;
 import java.util.List;
 
 /**
- * Allows the further processing of {@link HiveSqlStatement HiveSqlStatements}
- * that have been extracted from a script.
+ * Allows the further processing of statements that have been extracted from a script.
  */
 public interface PostProcessor {
 	public List<String> statement(String statement);

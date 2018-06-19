@@ -38,7 +38,7 @@ public class StatementLexer {
 	}
 
 	private List<String> internalApplyToStatement(String statement) {
-		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement.trim());
+		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement);
 		return commandShellEmulation.postProcessor(this).statement(transformedHiveSql);
 	}
 

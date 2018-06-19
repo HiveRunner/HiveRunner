@@ -50,6 +50,11 @@ public class RunCommandPostProcessorTest {
 	public void isImport() {
 		assertThat(processor.isImport("!run x;"), is(true));
 	}
+	
+	@Test
+	public void isImportSpaces() {
+	  assertThat(processor.isImport("   !run x   ;   "), is(true));
+	}
 
 	@Test
 	public void isNotImport() {
@@ -68,10 +73,18 @@ public class RunCommandPostProcessorTest {
 
 	@Test
 	public void importStatement() {
-		List<String> expected = asList("!run x");
+		List<String> expected = asList("statement x");
 		when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
 
 		assertThat(processor.statement("!run x"), is(expected));
+	}
+	
+	@Test
+	public void importStatementSpaces() {
+	  List<String> expected = asList("statement x");
+	  when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
+	  
+	  assertThat(processor.statement("   !run x   "), is(expected));
 	}
 
 	@Test

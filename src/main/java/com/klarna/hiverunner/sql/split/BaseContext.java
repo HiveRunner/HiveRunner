@@ -15,6 +15,8 @@
  */
 package com.klarna.hiverunner.sql.split;
 
+import static com.klarna.hiverunner.sql.split.NewLineUtil.removeLeadingTrailingNewLines;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -33,7 +35,7 @@ class BaseContext implements Context {
 	@Override
 	public void flush() {
 		if (!statement.trim().isEmpty()) {
-			statements.add(statement);
+			statements.add(removeLeadingTrailingNewLines(statement));
 		}
 		statement = "";
 	}

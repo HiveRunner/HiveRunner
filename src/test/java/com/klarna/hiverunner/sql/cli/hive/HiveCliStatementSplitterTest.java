@@ -56,7 +56,7 @@ public class HiveCliStatementSplitterTest {
 	@Test
 	public void testDiscardTrailingSpace() {
 		String str = "a;   b\t\n   ;  \n\tc   c;";
-		List<String> expected = asList("a", "b", "c   c");
+		List<String> expected = asList("a", "   b\t", "\tc   c");
 		assertEquals(expected, splitter.split(str));
 	}
 
@@ -104,15 +104,15 @@ public class HiveCliStatementSplitterTest {
 
 	@Test
 	public void testRealLifeExample() {
-		String firstStatamenet = "CREATE TABLE serde_test (\n" + "  key STRING,\n" + "  value STRING\n" + ")\n"
+		String firstStatement = "CREATE TABLE serde_test (\n" + "  key STRING,\n" + "  value STRING\n" + ")\n"
 				+ "ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'\n" + "WITH SERDEPROPERTIES  (\n"
 				+ "\"input.regex\" = \"(.*);\"                                       \n" + ")\n"
 				+ "STORED AS TEXTFILE\n" + "LOCATION '${hiveconf:hadoop.tmp.dir}/serde'";
 
-		String secondStatamenet = "select * from foobar";
+		String secondStatement = "select * from foobar";
 
-		assertEquals(Arrays.asList(firstStatamenet, secondStatamenet),
-				splitter.split(firstStatamenet + ";\n" + secondStatamenet + ";\n"));
+		assertEquals(Arrays.asList(firstStatement, secondStatement),
+				splitter.split(firstStatement + ";\n" + secondStatement + ";\n"));
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class HiveCliStatementSplitterTest {
 		String statementB = "select * from table where foo != bar";
 		String statementC = "source another_script.sql";
 
-		List<String> expected = asList(statementA, statementB, statementC);
+		List<String> expected = asList(statementA, statementB, "   " + statementC);
 		String expression = statementA + ";\n" + statementB + ";   " + statementC;
 
 		assertEquals(expected, splitter.split(expression));

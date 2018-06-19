@@ -37,9 +37,9 @@ import com.klarna.hiverunner.sql.StatementLexer;
 public class AbstractImportPostProcessorTest {
 
 	private static final String PATH = "path";
+	private static final String IMPORT_STATEMENT = "importStatement";
+	private static final String NON_IMPORT_STATEMENT ="nonImportStatement";
 	
-	@Mock
-	private String importStatement, nonImportStatement;
 	@Mock
 	private StatementLexer lexer;
 	
@@ -47,21 +47,21 @@ public class AbstractImportPostProcessorTest {
 
 	@Before
 	public void setup() {
-		expected = singletonList(nonImportStatement);
+		expected = singletonList(NON_IMPORT_STATEMENT);
 		when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
 	}
 	
 	@Test
 	public void scriptImport() {
 		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
-		List<String> actual = processor.statement(importStatement);
+		List<String> actual = processor.statement(IMPORT_STATEMENT);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	
 	@Test
 	public void nonScriptImport() {
 		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, lexer);
-		List<String> actual = processor.statement(nonImportStatement);
+		List<String> actual = processor.statement(NON_IMPORT_STATEMENT);
 		assertThat(actual, is(equalTo(expected)));
 	}
 	

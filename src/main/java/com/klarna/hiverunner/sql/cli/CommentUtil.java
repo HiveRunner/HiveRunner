@@ -27,7 +27,7 @@ public final class CommentUtil {
       String line = lines[i];
       if (!line.trim().startsWith("--")) {
         newStatement.append(line);
-        if (i < lines.length - 2) {
+        if (i < lines.length - 1) {
           newStatement.append('\n');
         }
       }

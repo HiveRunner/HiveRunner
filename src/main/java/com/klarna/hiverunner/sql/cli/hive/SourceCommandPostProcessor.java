@@ -34,13 +34,13 @@ class SourceCommandPostProcessor extends AbstractImportPostProcessor {
 	@Override
 	public String getImportPath(String statement) {
 		// everything after 'source' (trimmed) is considered the filename
-		return statement.substring(TOKEN.length()).trim();
+		return statement.trim().substring(TOKEN.length()).trim();
 	}
 
 	@Override
 	public boolean isImport(String statement) {
 		// case-insensitive
-		return statement.toLowerCase().startsWith(TOKEN);
+		return statement.trim().toLowerCase().startsWith(TOKEN);
 	}
 
 }

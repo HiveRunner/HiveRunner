@@ -56,7 +56,7 @@ public class BeelineStatementSplitterTest {
 	@Test
 	public void testDiscardTrailingSpace() {
 		String str = "a;   b\t\n   ;  \n\tc   c;";
-		List<String> expected = asList("a", "b", "c   c");
+		List<String> expected = asList("a", "   b\t", "\tc   c");
 		assertEquals(expected, splitter.split(str));
 	}
 
@@ -143,7 +143,7 @@ public class BeelineStatementSplitterTest {
 		String statementB = "select * from table where foo != bar";
 		String statementC = "!run another_script.sql";
 
-		List<String> expected = asList(statementA, statementB, statementC);
+		List<String> expected = asList(statementA, statementB, "   " + statementC);
 		String expression = statementA + '\n' + statementB + ";   " + statementC;
 
 		assertEquals(expected, splitter.split(expression));
