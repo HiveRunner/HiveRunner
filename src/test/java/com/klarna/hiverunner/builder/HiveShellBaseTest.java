@@ -288,11 +288,6 @@ public class HiveShellBaseTest {
         CLIService client = Mockito.mock(CLIService.class);
 
         container = Mockito.mock(HiveServerContainer.class);
-        Mockito.when(container.getHiveConf()).thenReturn(conf);
-        Mockito.when(container.getClient()).thenReturn(client);
-
-        HiveServerContext context = Mockito.mock(HiveServerContext.class);
-        Mockito.when(context.getHiveConf()).thenReturn(conf);
 
         List<String> setupScripts = Arrays.asList();
         List<HiveResource> hiveResources = Arrays.asList();
