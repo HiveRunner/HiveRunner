@@ -26,7 +26,7 @@ import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
  */
 public class StatementSplitter {
 
-    public static final String SQL_SPECIAL_CHARS = ";\"'-\n";
+    public static final String SQL_SPECIAL_CHARS = ";\"'-\n\r\f";
 
     private final List<TokenRule> rules;
     private final String specialChars;
