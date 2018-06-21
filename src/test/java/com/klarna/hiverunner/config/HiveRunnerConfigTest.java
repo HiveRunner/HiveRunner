@@ -124,7 +124,7 @@ public class HiveRunnerConfigTest {
     @Test
     public void testCommandShellEmulatorDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-        Assert.assertEquals(HiveCliEmulator.INSTANCE, CommandShellEmulatorFactory.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATION_DEFAULT));
+        Assert.assertEquals(HiveCliEmulator.INSTANCE, CommandShellEmulatorFactory.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_DEFAULT));
         Assert.assertEquals(HiveCliEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 

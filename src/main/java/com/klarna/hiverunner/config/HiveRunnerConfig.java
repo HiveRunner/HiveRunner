@@ -100,7 +100,7 @@ public class HiveRunnerConfig {
      * Defaults to {@code HIVE_CLI}
      */
     public static final String COMMAND_SHELL_EMULATOR_PROPERTY_NAME = "commandShellEmulator";
-    public static final String COMMAND_SHELL_EMULATION_DEFAULT = HiveCliEmulator.INSTANCE.getName();
+    public static final String COMMAND_SHELL_EMULATOR_DEFAULT = HiveCliEmulator.INSTANCE.getName();
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -122,7 +122,7 @@ public class HiveRunnerConfig {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
-        config.put(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, load(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, COMMAND_SHELL_EMULATION_DEFAULT, systemProperties));
+        config.put(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, load(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, COMMAND_SHELL_EMULATOR_DEFAULT, systemProperties));
 
         hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
