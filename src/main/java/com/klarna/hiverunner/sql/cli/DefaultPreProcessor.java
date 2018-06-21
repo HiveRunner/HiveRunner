@@ -19,15 +19,15 @@ package com.klarna.hiverunner.sql.cli;
  * A {@link PreProcessor} that strips comments from statements and scripts.
  */
 public enum DefaultPreProcessor implements PreProcessor {
-	INSTANCE;
+    INSTANCE;
 
-	@Override
-	public String script(String script) {
-		return CommentUtil.stripFullLineComments(script);
-	}
+    @Override
+    public String script(String script) {
+        return CommentUtil.stripFullLineComments(script);
+    }
 
-	@Override
-	public String statement(String statement) {
-		return CommentUtil.stripFullLineComments(statement);
-	};
+    @Override
+    public String statement(String statement) {
+        return CommentUtil.stripFullLineComments(statement);
+    };
 }

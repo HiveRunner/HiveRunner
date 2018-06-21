@@ -27,24 +27,24 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  * Effectively to differentiate between SQL's {@code NOT} operator and Beeline's command prefix.
  */
 public enum SqlLineCommandRule implements TokenRule {
-	INSTANCE;
+    INSTANCE;
 
-	@Override
-	public Set<String> triggers() {
-		return Collections.singleton("!");
-	}
+    @Override
+    public Set<String> triggers() {
+        return Collections.singleton("!");
+    }
 
-	@Override
-	public void handle(String token, Context context) {
-		if (context.statement().trim().isEmpty()) {
-		  // This is a SqlLine command
-			context.append(token);
-			context.appendWith(Consumer.UNTIL_EOL);
-			context.flush();
-		} else {
-		  // This is a '!' somewhere in the current statement
-			context.append(token);
-		}
-	}
+    @Override
+    public void handle(String token, Context context) {
+        if (context.statement().trim().isEmpty()) {
+          // This is a SqlLine command
+            context.append(token);
+            context.appendWith(Consumer.UNTIL_EOL);
+            context.flush();
+        } else {
+          // This is a '!' somewhere in the current statement
+            context.append(token);
+        }
+    }
 
 }

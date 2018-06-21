@@ -29,30 +29,30 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  * handling.
  */
 public enum PreV200HiveCliEmulator implements CommandShellEmulator {
-	INSTANCE;
+    INSTANCE;
 
-	@Override
-	public PreProcessor preProcessor() {
-		return PreV200HiveCliPreProcessor.INSTANCE;
-	}
+    @Override
+    public PreProcessor preProcessor() {
+        return PreV200HiveCliPreProcessor.INSTANCE;
+    }
 
-	@Override
-	public PostProcessor postProcessor(StatementLexer lexer) {
-		return HiveCliEmulator.INSTANCE.postProcessor(lexer);
-	}
+    @Override
+    public PostProcessor postProcessor(StatementLexer lexer) {
+        return HiveCliEmulator.INSTANCE.postProcessor(lexer);
+    }
 
-	@Override
-	public String getName() {
-		return "HIVE_CLI_PRE_V200";
-	}
+    @Override
+    public String getName() {
+        return "HIVE_CLI_PRE_V200";
+    }
 
-	@Override
-	public String specialCharacters() {
-		return HiveCliEmulator.INSTANCE.specialCharacters();
-	}
+    @Override
+    public String specialCharacters() {
+        return HiveCliEmulator.INSTANCE.specialCharacters();
+    }
 
-	@Override
-	public List<TokenRule> splitterRules() {
-		return HiveCliEmulator.INSTANCE.splitterRules();
-	}
+    @Override
+    public List<TokenRule> splitterRules() {
+        return HiveCliEmulator.INSTANCE.splitterRules();
+    }
 }

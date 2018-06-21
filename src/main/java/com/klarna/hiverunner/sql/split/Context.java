@@ -22,9 +22,9 @@ import java.util.StringTokenizer;
  * of a script.
  */
 public interface Context {
-	StringTokenizer tokenizer();
-	String statement();
-	void append(String chars);
-	void appendWith(Consumer consumer);
-	void flush();
+    StringTokenizer tokenizer();
+    String statement();
+    void append(String chars);
+    void appendWith(Consumer consumer);
+    void flush();
 }

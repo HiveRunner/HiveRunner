@@ -378,70 +378,70 @@ class HiveShellBase implements HiveShell {
         };
     }
 
-	@Override
-	public List<String> executeQuery(File script) {
-		return executeQuery(Charset.defaultCharset(), script);
-	}
+    @Override
+    public List<String> executeQuery(File script) {
+        return executeQuery(Charset.defaultCharset(), script);
+    }
 
-	@Override
-	public List<String> executeQuery(Path script) {
-		return executeQuery(Charset.defaultCharset(), script);
-	}
+    @Override
+    public List<String> executeQuery(Path script) {
+        return executeQuery(Charset.defaultCharset(), script);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, File script) {
-		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, File script) {
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, Path script) {
-		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, Path script) {
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    }
 
-	@Override
-	public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
-		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
+        return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith) {
-		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith) {
+        return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-			String replaceNullWith) {
-		return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
+            String replaceNullWith) {
+        return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-			String replaceNullWith) {
-		assertStarted();
-		assertFileExists(script);
-		try {
-			String statements = new String(Files.readAllBytes(script), charset);
-			List<String> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
-			if (splitStatements.size() != 1) {
-				throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
-			}
-			String statement = splitStatements.get(0);
-			return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
-					e);
-		}
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
+            String replaceNullWith) {
+        assertStarted();
+        assertFileExists(script);
+        try {
+            String statements = new String(Files.readAllBytes(script), charset);
+            List<String> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
+            if (splitStatements.size() != 1) {
+                throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
+            }
+            String statement = splitStatements.get(0);
+            return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
+                    e);
+        }
+    }
 
-	@Override
-	public void setCwd(Path cwd) {
-		assertNotStarted();
-		this.cwd = cwd;
-	}
+    @Override
+    public void setCwd(Path cwd) {
+        assertNotStarted();
+        this.cwd = cwd;
+    }
 
-	@Override
-	public Path getCwd() {
-		return cwd;
-	}
+    @Override
+    public Path getCwd() {
+        return cwd;
+    }
 
 }

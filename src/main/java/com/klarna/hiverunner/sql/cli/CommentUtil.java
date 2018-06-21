@@ -18,21 +18,21 @@ package com.klarna.hiverunner.sql.cli;
 /** Utility methods for handling SQL comments. */
 public final class CommentUtil {
 
-  private CommentUtil() {}
+    private CommentUtil() {}
 
-  public static String stripFullLineComments(String statement) {
-    StringBuilder newStatement = new StringBuilder(statement.length());
-    String[] lines = statement.split("\n");
-    for (int i = 0; i < lines.length; i++) {
-      String line = lines[i];
-      if (!line.trim().startsWith("--")) {
-        newStatement.append(line);
-        if (i < lines.length - 1) {
-          newStatement.append('\n');
+    public static String stripFullLineComments(String statement) {
+        StringBuilder newStatement = new StringBuilder(statement.length());
+        String[] lines = statement.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (!line.trim().startsWith("--")) {
+                newStatement.append(line);
+                if (i < lines.length - 1) {
+                    newStatement.append('\n');
+                }
+            }
         }
-      }
+        return newStatement.toString();
     }
-    return newStatement.toString();
-  }
 
 }

@@ -36,55 +36,55 @@ import com.klarna.hiverunner.sql.StatementLexer;
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractImportPostProcessorTest {
 
-	private static final String PATH = "path";
-	private static final String IMPORT_STATEMENT = "importStatement";
-	private static final String NON_IMPORT_STATEMENT ="nonImportStatement";
-	
-	@Mock
-	private StatementLexer lexer;
-	
-	private List<String> expected;
+    private static final String PATH = "path";
+    private static final String IMPORT_STATEMENT = "importStatement";
+    private static final String NON_IMPORT_STATEMENT ="nonImportStatement";
+    
+    @Mock
+    private StatementLexer lexer;
+    
+    private List<String> expected;
 
-	@Before
-	public void setup() {
-		expected = singletonList(NON_IMPORT_STATEMENT);
-		when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
-	}
-	
-	@Test
-	public void scriptImport() {
-		PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
-		List<String> actual = processor.statement(IMPORT_STATEMENT);
-		assertThat(actual, is(equalTo(expected)));
-	}
-	
-	@Test
-	public void nonScriptImport() {
-		PostProcessor processor = new TestAbstractImportPostProcessor(false, null, lexer);
-		List<String> actual = processor.statement(NON_IMPORT_STATEMENT);
-		assertThat(actual, is(equalTo(expected)));
-	}
-	
-	private static class TestAbstractImportPostProcessor extends AbstractImportPostProcessor {
+    @Before
+    public void setup() {
+        expected = singletonList(NON_IMPORT_STATEMENT);
+        when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
+    }
+    
+    @Test
+    public void scriptImport() {
+        PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
+        List<String> actual = processor.statement(IMPORT_STATEMENT);
+        assertThat(actual, is(equalTo(expected)));
+    }
+    
+    @Test
+    public void nonScriptImport() {
+        PostProcessor processor = new TestAbstractImportPostProcessor(false, null, lexer);
+        List<String> actual = processor.statement(NON_IMPORT_STATEMENT);
+        assertThat(actual, is(equalTo(expected)));
+    }
+    
+    private static class TestAbstractImportPostProcessor extends AbstractImportPostProcessor {
 
-		private final String path;
-		private final boolean isImport;
+        private final String path;
+        private final boolean isImport;
 
-		public TestAbstractImportPostProcessor(boolean isImport, String path, StatementLexer lexer) {
-			super(lexer);
-			this.isImport = isImport;
-			this.path = path;
-		}
+        public TestAbstractImportPostProcessor(boolean isImport, String path, StatementLexer lexer) {
+            super(lexer);
+            this.isImport = isImport;
+            this.path = path;
+        }
 
-		@Override
-		public String getImportPath(String statement) {
-			return path;
-		}
+        @Override
+        public String getImportPath(String statement) {
+            return path;
+        }
 
-		@Override
-		public boolean isImport(String statement) {
-			return isImport;
-		}
-		
-	}
+        @Override
+        public boolean isImport(String statement) {
+            return isImport;
+        }
+        
+    }
 }

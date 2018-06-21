@@ -29,24 +29,24 @@ import com.klarna.hiverunner.sql.StatementLexer;
  */
 public abstract class AbstractImportPostProcessor implements PostProcessor {
 
-	private final StatementLexer lexer;
+    private final StatementLexer lexer;
 
-	public AbstractImportPostProcessor(StatementLexer lexer) {
-		this.lexer = lexer;
-	}
+    public AbstractImportPostProcessor(StatementLexer lexer) {
+        this.lexer = lexer;
+    }
 
-	@Override
-	public List<String> statement(String statement) {
-		if (isImport(statement)) {
-			String importPath = getImportPath(statement);
-			Path path = Paths.get(importPath);
-			return lexer.applyToPath(path);
-		}
-		return Collections.singletonList(statement);
-	}
+    @Override
+    public List<String> statement(String statement) {
+        if (isImport(statement)) {
+            String importPath = getImportPath(statement);
+            Path path = Paths.get(importPath);
+            return lexer.applyToPath(path);
+        }
+        return Collections.singletonList(statement);
+    }
 
-	public abstract String getImportPath(String statement);
+    public abstract String getImportPath(String statement);
 
-	public abstract boolean isImport(String statement);
+    public abstract boolean isImport(String statement);
 
 }

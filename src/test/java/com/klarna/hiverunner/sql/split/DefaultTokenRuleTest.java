@@ -25,15 +25,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultTokenRuleTest {
 
-	private static TokenRule rule = DefaultTokenRule.INSTANCE;
-	
-	@Mock
-	private Context context;
+    private static TokenRule rule = DefaultTokenRule.INSTANCE;
+    
+    @Mock
+    private Context context;
 
-	@Test
-	public void handle() {
-		rule.handle("x", context);
-		verify(context).append("x");
-	}
-	
+    @Test
+    public void handle() {
+        rule.handle("x", context);
+        verify(context).append("x");
+    }
+    
 }

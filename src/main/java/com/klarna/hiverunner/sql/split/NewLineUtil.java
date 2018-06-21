@@ -6,19 +6,19 @@ package com.klarna.hiverunner.sql.split;
  */
 enum NewLineUtil {
 
-  INSTANCE;
+    INSTANCE;
 
-  static String removeLeadingTrailingNewLines(String in) {
-    String[] split = in.split("[\n|\r]");
-    if (split.length == 1) {
-      return split[0];
+    static String removeLeadingTrailingNewLines(String in) {
+        String[] split = in.split("[\n|\r]");
+        if (split.length == 1) {
+            return split[0];
+        }
+        for (int i = 0; i < split.length; i++) {
+            if (!split[i].trim().isEmpty()) {
+                return split[i];
+            }
+        }
+        return "";
     }
-    for (int i = 0; i < split.length; i++) {
-      if (!split[i].trim().isEmpty()) {
-        return split[i];
-      }
-    }
-    return "";
-  }
 
 }

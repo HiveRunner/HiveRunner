@@ -25,9 +25,9 @@ import com.klarna.hiverunner.sql.split.TokenRule;
  * shells.
  */
 public interface CommandShellEmulator {
-	PreProcessor preProcessor();
-	PostProcessor postProcessor(StatementLexer lexer);
-	String specialCharacters();
-	List<TokenRule> splitterRules();
-	String getName();
+    PreProcessor preProcessor();
+    PostProcessor postProcessor(StatementLexer lexer);
+    String specialCharacters();
+    List<TokenRule> splitterRules();
+    String getName();
 }

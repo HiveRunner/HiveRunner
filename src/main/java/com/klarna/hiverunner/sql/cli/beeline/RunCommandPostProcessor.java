@@ -25,26 +25,26 @@ import com.klarna.hiverunner.sql.cli.PostProcessor;
  */
 class RunCommandPostProcessor extends AbstractImportPostProcessor {
 
-	private static final String TOKEN = "!run";
+    private static final String TOKEN = "!run";
 
-	RunCommandPostProcessor(StatementLexer lexer) {
-		super(lexer);
-	}
+    RunCommandPostProcessor(StatementLexer lexer) {
+        super(lexer);
+    }
 
-	@Override
-	public String getImportPath(String statement) {
-		// Beeline does not allow the filename to contain whitespace
-		String[] tokens = statement.trim().split(" ");
-		if (tokens.length == 2) {
-			return tokens[1];
-		}
-		throw new IllegalArgumentException("Cannot get file to import from '" + statement + "'");
-	}
+    @Override
+    public String getImportPath(String statement) {
+        // Beeline does not allow the filename to contain whitespace
+        String[] tokens = statement.trim().split(" ");
+        if (tokens.length == 2) {
+            return tokens[1];
+        }
+        throw new IllegalArgumentException("Cannot get file to import from '" + statement + "'");
+    }
 
-	@Override
-	public boolean isImport(String statement) {
-		// Beeline is case-sensitive; only accept lower case '!run'
-		return statement.trim().startsWith(TOKEN);
-	}
+    @Override
+    public boolean isImport(String statement) {
+        // Beeline is case-sensitive; only accept lower case '!run'
+        return statement.trim().startsWith(TOKEN);
+    }
 
 }

@@ -27,45 +27,45 @@ import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 public class StatementLexer {
 
-	private final Charset charset;
-	private final CommandShellEmulator commandShellEmulation;
-	private final Path cwd;
+    private final Charset charset;
+    private final CommandShellEmulator commandShellEmulation;
+    private final Path cwd;
 
-	public StatementLexer(Path cwd, Charset charset, CommandShellEmulator commandShellEmulation) {
-		this.cwd = cwd;
-		this.charset = charset;
-		this.commandShellEmulation = commandShellEmulation;
-	}
+    public StatementLexer(Path cwd, Charset charset, CommandShellEmulator commandShellEmulation) {
+        this.cwd = cwd;
+        this.charset = charset;
+        this.commandShellEmulation = commandShellEmulation;
+    }
 
-	private List<String> internalApplyToStatement(String statement) {
-		String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement);
-		return commandShellEmulation.postProcessor(this).statement(transformedHiveSql);
-	}
+    private List<String> internalApplyToStatement(String statement) {
+        String transformedHiveSql = commandShellEmulation.preProcessor().statement(statement);
+        return commandShellEmulation.postProcessor(this).statement(transformedHiveSql);
+    }
 
-	public List<String> applyToScript(String script) {
-		List<String> hiveSqlStatements = new ArrayList<>();
-		List<String> statements = new StatementSplitter(commandShellEmulation)
-				.split(commandShellEmulation.preProcessor().script(script));
-		for (String statement : statements) {
-			hiveSqlStatements.addAll(internalApplyToStatement(statement));
-		}
-		return hiveSqlStatements;
-	}
+    public List<String> applyToScript(String script) {
+        List<String> hiveSqlStatements = new ArrayList<>();
+        List<String> statements = new StatementSplitter(commandShellEmulation)
+                .split(commandShellEmulation.preProcessor().script(script));
+        for (String statement : statements) {
+            hiveSqlStatements.addAll(internalApplyToStatement(statement));
+        }
+        return hiveSqlStatements;
+    }
 
-	public List<String> applyToStatement(String statement) {
-		return internalApplyToStatement(statement);
-	}
+    public List<String> applyToStatement(String statement) {
+        return internalApplyToStatement(statement);
+    }
 
-	public List<String> applyToPath(Path path) {
-		if (!path.isAbsolute()) {
-			path = cwd.resolve(path);
-		}
-		try {
-			String script = new String(Files.readAllBytes(path), charset);
-			return applyToScript(script);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Unable to read script file '" + path + "': " + e.getMessage(), e);
-		}
-	}
+    public List<String> applyToPath(Path path) {
+        if (!path.isAbsolute()) {
+            path = cwd.resolve(path);
+        }
+        try {
+            String script = new String(Files.readAllBytes(path), charset);
+            return applyToScript(script);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to read script file '" + path + "': " + e.getMessage(), e);
+        }
+    }
 
 }

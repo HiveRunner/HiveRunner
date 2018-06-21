@@ -24,43 +24,43 @@ import java.util.StringTokenizer;
 /** Base {@link Context} implementation. */
 class BaseContext implements Context {
 
-	private final StringTokenizer tokenizer;
-	private final List<String> statements = new ArrayList<>();
-	private String statement = "";
+    private final StringTokenizer tokenizer;
+    private final List<String> statements = new ArrayList<>();
+    private String statement = "";
 
-	BaseContext(StringTokenizer tokenizer) {
-		this.tokenizer = tokenizer;
-	}
+    BaseContext(StringTokenizer tokenizer) {
+        this.tokenizer = tokenizer;
+    }
 
-	@Override
-	public void flush() {
-		if (!statement.trim().isEmpty()) {
-			statements.add(removeLeadingTrailingNewLines(statement));
-		}
-		statement = "";
-	}
+    @Override
+    public void flush() {
+        if (!statement.trim().isEmpty()) {
+            statements.add(removeLeadingTrailingNewLines(statement));
+        }
+        statement = "";
+    }
 
-	@Override
-	public String statement() {
-		return statement;
-	}
+    @Override
+    public String statement() {
+        return statement;
+    }
 
-	@Override
-	public StringTokenizer tokenizer() {
-		return tokenizer;
-	}
+    @Override
+    public StringTokenizer tokenizer() {
+        return tokenizer;
+    }
 
-	@Override
-	public void append(String chars) {
-		statement += chars;
-	}
+    @Override
+    public void append(String chars) {
+        statement += chars;
+    }
 
-	@Override
-	public void appendWith(Consumer consumer) {
-		append(consumer.consume(this));
-	}
+    @Override
+    public void appendWith(Consumer consumer) {
+        append(consumer.consume(this));
+    }
 
-	public List<String> getStatements() {
-		return statements;
-	}
+    public List<String> getStatements() {
+        return statements;
+    }
 }

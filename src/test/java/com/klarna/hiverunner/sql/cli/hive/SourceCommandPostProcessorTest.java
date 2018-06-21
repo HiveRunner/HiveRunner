@@ -36,61 +36,61 @@ import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 @RunWith(MockitoJUnitRunner.class)
 public class SourceCommandPostProcessorTest {
 
-	@Mock
-	private StatementLexer lexer;
+    @Mock
+    private StatementLexer lexer;
 
-	private AbstractImportPostProcessor processor;
+    private AbstractImportPostProcessor processor;
 
-	@Before
-	public void setup() {
-		processor = new SourceCommandPostProcessor(lexer);
-	}
+    @Before
+    public void setup() {
+        processor = new SourceCommandPostProcessor(lexer);
+    }
 
-	@Test
-	public void isImport() {
-		assertThat(processor.isImport("source x"), is(true));
-	}
-	
-	@Test
-	public void isImportSpaces() {
-	  assertThat(processor.isImport("    source x    "), is(true));
-	}
+    @Test
+    public void isImport() {
+        assertThat(processor.isImport("source x"), is(true));
+    }
+    
+    @Test
+    public void isImportSpaces() {
+      assertThat(processor.isImport("    source x    "), is(true));
+    }
 
-	@Test
-	public void isImportCaseInsensitive() {
-		assertThat(processor.isImport("SoUrCe x"), is(true));
-	}
+    @Test
+    public void isImportCaseInsensitive() {
+        assertThat(processor.isImport("SoUrCe x"), is(true));
+    }
 
-	@Test
-	public void isNotImport() {
-		assertThat(processor.isImport("SELECT * FROM x;"), is(false));
-	}
+    @Test
+    public void isNotImport() {
+        assertThat(processor.isImport("SELECT * FROM x;"), is(false));
+    }
 
-	@Test
-	public void importPathValid() {
-		assertThat(processor.getImportPath("source x y z"), is("x y z"));
-	}
+    @Test
+    public void importPathValid() {
+        assertThat(processor.getImportPath("source x y z"), is("x y z"));
+    }
 
-	@Test
-	public void importStatement() {
-		List<String> expected = asList("statement x");
-		when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
+    @Test
+    public void importStatement() {
+        List<String> expected = asList("statement x");
+        when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
 
-		assertThat(processor.statement("source x"), is(expected));
-	}
-	
-	@Test
-	public void importStatementSpaces() {
-	  List<String> expected = asList("statement x");
-	  when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
-	  
-	  assertThat(processor.statement("    source x   "), is(expected));
-	}
+        assertThat(processor.statement("source x"), is(expected));
+    }
+    
+    @Test
+    public void importStatementSpaces() {
+      List<String> expected = asList("statement x");
+      when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
+      
+      assertThat(processor.statement("    source x   "), is(expected));
+    }
 
-	@Test
-	public void generalStatement() {
-		List<String> expected = asList("SELECT * FROM x");
-		assertThat(processor.statement("SELECT * FROM x"), is(expected));
-	}
+    @Test
+    public void generalStatement() {
+        List<String> expected = asList("SELECT * FROM x");
+        assertThat(processor.statement("SELECT * FROM x"), is(expected));
+    }
 
 }

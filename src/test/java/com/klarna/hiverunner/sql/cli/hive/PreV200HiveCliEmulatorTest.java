@@ -21,28 +21,28 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 public class PreV200HiveCliEmulatorTest {
-	@Test
-	public void testFullLineCommentAndSetStatementHiveCli() {
-		String hiveSql = "-- hello\nset x=1;";
-		assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().statement(hiveSql), is(hiveSql));
-	}
+    @Test
+    public void testFullLineCommentAndSetStatementHiveCli() {
+        String hiveSql = "-- hello\nset x=1;";
+        assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().statement(hiveSql), is(hiveSql));
+    }
 
-	@Test
-	public void testFullLineCommentStatementHiveCli() {
-		String hiveSql = "-- hello";
-		assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().statement(hiveSql), is(hiveSql));
-	}
+    @Test
+    public void testFullLineCommentStatementHiveCli() {
+        String hiveSql = "-- hello";
+        assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().statement(hiveSql), is(hiveSql));
+    }
 
-	@Test
-	public void testFullLineCommentAndSetScriptHiveCli() {
-		String hiveSql = "-- hello\nset x=1;";
-		assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().script(hiveSql), is("set x=1;"));
-	}
+    @Test
+    public void testFullLineCommentAndSetScriptHiveCli() {
+        String hiveSql = "-- hello\nset x=1;";
+        assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().script(hiveSql), is("set x=1;"));
+    }
 
-	@Test
-	public void testFullLineCommentScriptHiveCli() {
-		String hiveSql = "-- hello";
-		assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().script(hiveSql), is(""));
-	}
+    @Test
+    public void testFullLineCommentScriptHiveCli() {
+        String hiveSql = "-- hello";
+        assertThat(PreV200HiveCliEmulator.INSTANCE.preProcessor().script(hiveSql), is(""));
+    }
 
 }

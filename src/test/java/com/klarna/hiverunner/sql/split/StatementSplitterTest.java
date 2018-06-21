@@ -37,28 +37,28 @@ import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 @RunWith(MockitoJUnitRunner.class)
 public class StatementSplitterTest {
 
-	@Mock
-	private CommandShellEmulator emulator;
+    @Mock
+    private CommandShellEmulator emulator;
 
-	private StatementSplitter splitter;
+    private StatementSplitter splitter;
 
-	@Before
-	public void setupEmulator() {
-		// Creates a simple emulator that understands ';' only
-		when(emulator.specialCharacters()).thenReturn(SQL_SPECIAL_CHARS);
-		when(emulator.splitterRules())
-				.thenReturn(Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, DefaultTokenRule.INSTANCE));
-		splitter = new StatementSplitter(emulator);
-	}
+    @Before
+    public void setupEmulator() {
+        // Creates a simple emulator that understands ';' only
+        when(emulator.specialCharacters()).thenReturn(SQL_SPECIAL_CHARS);
+        when(emulator.splitterRules())
+                .thenReturn(Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, DefaultTokenRule.INSTANCE));
+        splitter = new StatementSplitter(emulator);
+    }
 
-	@Test
-	public void defaultRule() {
-		assertThat(splitter.split("foo"), is(asList("foo")));
-	}
+    @Test
+    public void defaultRule() {
+        assertThat(splitter.split("foo"), is(asList("foo")));
+    }
 
-	@Test
-	public void multipleRules() {
-		assertThat(splitter.split("foo;bar;baz"), is(asList("foo", "bar", "baz")));
-	}
+    @Test
+    public void multipleRules() {
+        assertThat(splitter.split("foo;bar;baz"), is(asList("foo", "bar", "baz")));
+    }
 
 }

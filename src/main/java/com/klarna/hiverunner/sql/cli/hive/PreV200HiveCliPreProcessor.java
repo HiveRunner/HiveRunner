@@ -29,15 +29,15 @@ import com.klarna.hiverunner.sql.cli.PreProcessor;
  * </p>
  */
 enum PreV200HiveCliPreProcessor implements PreProcessor {
-	INSTANCE;
+    INSTANCE;
 
-	@Override
-	public String script(String script) {
-		return CommentUtil.stripFullLineComments(script);
-	}
+    @Override
+    public String script(String script) {
+        return CommentUtil.stripFullLineComments(script);
+    }
 
-	@Override
-	public String statement(String statement) {
-		return statement;
-	};
+    @Override
+    public String statement(String statement) {
+        return statement;
+    };
 }

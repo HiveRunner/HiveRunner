@@ -32,34 +32,34 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class BaseContextTest {
 
-	@Mock
-	private Consumer consumer;
-	
-	private BaseContext context = new BaseContext(new StringTokenizer(""));
+    @Mock
+    private Consumer consumer;
+    
+    private BaseContext context = new BaseContext(new StringTokenizer(""));
 
-	@Test
-	public void appendAndFlush() {
-		context.append("abc");
-		assertThat(context.getStatements(), is(Collections.<String> emptyList()));
-		context.append("def");
-		context.flush();
-		assertThat(context.getStatements(), is(singletonList("abcdef")));
-	}
+    @Test
+    public void appendAndFlush() {
+        context.append("abc");
+        assertThat(context.getStatements(), is(Collections.<String> emptyList()));
+        context.append("def");
+        context.flush();
+        assertThat(context.getStatements(), is(singletonList("abcdef")));
+    }
 
-	@Test
-	public void statementAndFlush() {
-		context.append("abc");
-		assertThat(context.statement(), is("abc"));
-		context.flush();
-		assertThat(context.statement(), is(""));
-	}
-	
-	@Test
-	public void appendWith() {
-		when(consumer.consume(context)).thenReturn("statement");
-		context.appendWith(consumer);
-		assertThat(context.statement(), is("statement"));
-		context.flush();
-		assertThat(context.getStatements(), is(singletonList("statement")));
-	}
+    @Test
+    public void statementAndFlush() {
+        context.append("abc");
+        assertThat(context.statement(), is("abc"));
+        context.flush();
+        assertThat(context.statement(), is(""));
+    }
+    
+    @Test
+    public void appendWith() {
+        when(consumer.consume(context)).thenReturn("statement");
+        context.appendWith(consumer);
+        assertThat(context.statement(), is("statement"));
+        context.flush();
+        assertThat(context.getStatements(), is(singletonList("statement")));
+    }
 }

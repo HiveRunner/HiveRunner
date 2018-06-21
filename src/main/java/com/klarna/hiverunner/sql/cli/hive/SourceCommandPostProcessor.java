@@ -25,22 +25,22 @@ import com.klarna.hiverunner.sql.cli.PostProcessor;
  */
 class SourceCommandPostProcessor extends AbstractImportPostProcessor {
 
-	private static final String TOKEN = "source";
+    private static final String TOKEN = "source";
 
-	SourceCommandPostProcessor(StatementLexer lexer) {
-		super(lexer);
-	}
+    SourceCommandPostProcessor(StatementLexer lexer) {
+        super(lexer);
+    }
 
-	@Override
-	public String getImportPath(String statement) {
-		// everything after 'source' (trimmed) is considered the filename
-		return statement.trim().substring(TOKEN.length()).trim();
-	}
+    @Override
+    public String getImportPath(String statement) {
+        // everything after 'source' (trimmed) is considered the filename
+        return statement.trim().substring(TOKEN.length()).trim();
+    }
 
-	@Override
-	public boolean isImport(String statement) {
-		// case-insensitive
-		return statement.trim().toLowerCase().startsWith(TOKEN);
-	}
+    @Override
+    public boolean isImport(String statement) {
+        // case-insensitive
+        return statement.trim().toLowerCase().startsWith(TOKEN);
+    }
 
 }

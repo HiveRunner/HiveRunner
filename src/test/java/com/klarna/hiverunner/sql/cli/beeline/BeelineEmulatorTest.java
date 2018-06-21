@@ -22,28 +22,28 @@ import org.junit.Test;
 
 public class BeelineEmulatorTest {
 
-	  @Test
-	  public void testFullLineCommentAndSetStatementBeeLine() {
-	    String hiveSql = "-- hello\nset x=1;";
-	    assertThat(BeelineEmulator.INSTANCE.preProcessor().statement(hiveSql), is("set x=1;"));
-	  }
-	  
-	  @Test
-	  public void testFullLineCommentStatementBeeLine() {
-	    String hiveSql = "-- hello";
-	    assertThat(BeelineEmulator.INSTANCE.preProcessor().statement(hiveSql), is(""));
-	  }
-	  
-	  @Test
-	  public void testFullLineCommentAndSetScriptBeeLine() {
-	    String hiveSql = "-- hello\nset x=1;";
-	    assertThat(BeelineEmulator.INSTANCE.preProcessor().script(hiveSql), is("set x=1;"));
-	  }
+    @Test
+    public void testFullLineCommentAndSetStatementBeeLine() {
+        String hiveSql = "-- hello\nset x=1;";
+        assertThat(BeelineEmulator.INSTANCE.preProcessor().statement(hiveSql), is("set x=1;"));
+    }
 
-	  @Test
-	  public void testFullLineCommentScriptBeeLine() {
-	    String hiveSql = "-- hello";
-	    assertThat(BeelineEmulator.INSTANCE.preProcessor().script(hiveSql), is(""));
-	  }
-	  
+    @Test
+    public void testFullLineCommentStatementBeeLine() {
+        String hiveSql = "-- hello";
+        assertThat(BeelineEmulator.INSTANCE.preProcessor().statement(hiveSql), is(""));
+    }
+
+    @Test
+    public void testFullLineCommentAndSetScriptBeeLine() {
+        String hiveSql = "-- hello\nset x=1;";
+        assertThat(BeelineEmulator.INSTANCE.preProcessor().script(hiveSql), is("set x=1;"));
+    }
+
+    @Test
+    public void testFullLineCommentScriptBeeLine() {
+        String hiveSql = "-- hello";
+        assertThat(BeelineEmulator.INSTANCE.preProcessor().script(hiveSql), is(""));
+    }
+
 }

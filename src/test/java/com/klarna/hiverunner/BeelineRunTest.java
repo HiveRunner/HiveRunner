@@ -35,75 +35,75 @@ import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 @RunWith(StandaloneHiveRunner.class)
 public class BeelineRunTest {
 
-	private static final String TEST_DB = "test_db";
+    private static final String TEST_DB = "test_db";
 
-	@HiveRunnerSetup
-	public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {
-		{
-			setCommandShellEmulator(BeelineEmulator.INSTANCE);
-		}
-	};
+    @HiveRunnerSetup
+    public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {
+        {
+            setCommandShellEmulator(BeelineEmulator.INSTANCE);
+        }
+    };
 
-	@Rule
-	public TemporaryFolder temp = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder temp = new TemporaryFolder();
 
-	@HiveSQL(files = {}, encoding = "UTF-8", autoStart = false)
-	private HiveShell hiveCliShell;
+    @HiveSQL(files = {}, encoding = "UTF-8", autoStart = false)
+    private HiveShell hiveCliShell;
 
-	@Test
-	public void testNestedImport() throws Exception {
-		File a = new File(temp.getRoot(), "a.sql");
-		try (PrintStream out = new PrintStream(a)) {
-			// single statement case
-			out.println("create view ${db}.a as select * from ${db}.src where c1 <> 'z'");
-		}
+    @Test
+    public void testNestedImport() throws Exception {
+        File a = new File(temp.getRoot(), "a.sql");
+        try (PrintStream out = new PrintStream(a)) {
+            // single statement case
+            out.println("create view ${db}.a as select * from ${db}.src where c1 <> 'z'");
+        }
 
-		File b = new File(temp.getRoot(), "b.sql");
-		try (PrintStream out = new PrintStream(b)) {
-			// multi statement case with script import
-			out.println("!run a.sql");
-			out.println("create database db_b;");
-			out.println("create view db_b.b as select c0, count(*) as c1_cnt from ${db}.a group by c0;");
-		}
+        File b = new File(temp.getRoot(), "b.sql");
+        try (PrintStream out = new PrintStream(b)) {
+            // multi statement case with script import
+            out.println("!run a.sql");
+            out.println("create database db_b;");
+            out.println("create view db_b.b as select c0, count(*) as c1_cnt from ${db}.a group by c0;");
+        }
 
-		File c = new File(temp.getRoot(), "c.sql");
-		try (PrintStream out = new PrintStream(c)) {
-			// multi statement case
-			out.println("create database db_c;");
-			out.println("create view db_c.c as select * from db_b.b where c1_cnt > 1;");
-		}
+        File c = new File(temp.getRoot(), "c.sql");
+        try (PrintStream out = new PrintStream(c)) {
+            // multi statement case
+            out.println("create database db_c;");
+            out.println("create view db_c.c as select * from db_b.b where c1_cnt > 1;");
+        }
 
-		File main = new File(temp.getRoot(), "main.sql");
-		try (PrintStream out = new PrintStream(main)) {
-			// multi import case
-			out.println("!run b.sql");
-			out.println("!run c.sql");
-		}
+        File main = new File(temp.getRoot(), "main.sql");
+        try (PrintStream out = new PrintStream(main)) {
+            // multi import case
+            out.println("!run b.sql");
+            out.println("!run c.sql");
+        }
 
-		hiveCliShell.setHiveVarValue("db", TEST_DB);
-		hiveCliShell.setCwd(temp.getRoot().toPath());
-		hiveCliShell.start();
-		hiveCliShell.execute(new StringBuilder()
-			.append("create database ${db};")
-			.append("create table ${db}.src (")
-			.append("c0 string, ")
-			.append("c1 string")
-			.append(");")
-			.toString());
-		hiveCliShell.insertInto(TEST_DB, "src")
-			.addRow("A", "x")
-			.addRow("A", "y")
-			.addRow("B", "z")
-			.addRow("B", "y")
-			.addRow("C", "z")
-			.commit();
-		
-		
-		hiveCliShell.execute(main);
+        hiveCliShell.setHiveVarValue("db", TEST_DB);
+        hiveCliShell.setCwd(temp.getRoot().toPath());
+        hiveCliShell.start();
+        hiveCliShell.execute(new StringBuilder()
+            .append("create database ${db};")
+            .append("create table ${db}.src (")
+            .append("c0 string, ")
+            .append("c1 string")
+            .append(");")
+            .toString());
+        hiveCliShell.insertInto(TEST_DB, "src")
+            .addRow("A", "x")
+            .addRow("A", "y")
+            .addRow("B", "z")
+            .addRow("B", "y")
+            .addRow("C", "z")
+            .commit();
+        
+        
+        hiveCliShell.execute(main);
 
-		List<String> results = hiveCliShell.executeQuery("select * from db_c.c");
-		assertThat(results.size(), is(1));
-		assertThat(results.get(0), is("A\t2"));
-	}
+        List<String> results = hiveCliShell.executeQuery("select * from db_c.c");
+        assertThat(results.size(), is(1));
+        assertThat(results.get(0), is("A\t2"));
+    }
 
 }

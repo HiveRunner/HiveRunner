@@ -29,29 +29,29 @@ import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
 public class CommandShellEmulatorFactoryTest {
 
-	@Test
-	public void beeline() {
-		assertThat(valueOf("beeline"), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
-		assertThat(valueOf("BEELINE"), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
-		assertThat(valueOf(" bEeLiNe  "), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
-	}
+    @Test
+    public void beeline() {
+        assertThat(valueOf("beeline"), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
+        assertThat(valueOf("BEELINE"), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
+        assertThat(valueOf(" bEeLiNe  "), is(equalTo((CommandShellEmulator) BeelineEmulator.INSTANCE)));
+    }
 
-	@Test
-	public void hiveCli() {
-		assertThat(valueOf("hive_cli"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
-		assertThat(valueOf("HIVE_CLI"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
-		assertThat(valueOf(" hIvE_cLi  "), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
-	}
-	
-	@Test
-	public void hiveCliPreV130() {
-	  assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-	  assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-	  assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-	}
+    @Test
+    public void hiveCli() {
+        assertThat(valueOf("hive_cli"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf("HIVE_CLI"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf(" hIvE_cLi  "), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
+    }
+    
+    @Test
+    public void hiveCliPreV130() {
+      assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+      assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+      assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void unknown() {
-		valueOf("unknown");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void unknown() {
+        valueOf("unknown");
+    }
 }
