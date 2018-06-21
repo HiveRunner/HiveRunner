@@ -141,6 +141,8 @@
           <!-- Hiverunner need this for some queries (property -XX:MaxPermSize
             was removed in java 8) -->
           <argLine>-Xmx2024m</argLine>
+          <!-- below needed due to https://github.com/klarna/HiveRunner/commit/1f9a9b353c3b072f7898a6b4fa277474674d4b54 -->
+          <reuseForks>false</reuseForks>
           <systemProperties>
             <!--
               Any hive conf property may be overridden here by suffixing
