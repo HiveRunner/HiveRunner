@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2013-2018 Klarna AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +39,7 @@ public class NewLineUtilTest {
         assertThat(removeLeadingTrailingNewLines(" \n a b \n "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \n \n a b \n \n "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \n a b \n "), is(" a b "));
+        assertThat(removeLeadingTrailingNewLines(" \n a \n b \n "), is(" a \n b "));
         assertThat(removeLeadingTrailingNewLines("\r"), is(""));
         assertThat(removeLeadingTrailingNewLines(" \r "), is(""));
         assertThat(removeLeadingTrailingNewLines(" \r \r "), is(""));
@@ -31,6 +47,7 @@ public class NewLineUtilTest {
         assertThat(removeLeadingTrailingNewLines(" \r a b \r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \r \r a b \r \r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \r a b \r "), is(" a b "));
+        assertThat(removeLeadingTrailingNewLines(" \r a \r b \r "), is(" a \r b "));
         assertThat(removeLeadingTrailingNewLines("\f"), is(""));
         assertThat(removeLeadingTrailingNewLines(" \f "), is(""));
         assertThat(removeLeadingTrailingNewLines(" \f \f "), is(""));
@@ -45,6 +62,7 @@ public class NewLineUtilTest {
         assertThat(removeLeadingTrailingNewLines(" \f\r a b \f\r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \f\r \f\r a b \f\r \f\r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \f\r a b \f\r "), is(" a b "));
+        assertThat(removeLeadingTrailingNewLines(" \f\r a \f\r b \f\r "), is(" a \f\r b "));
         assertThat(removeLeadingTrailingNewLines("\n\r"), is(""));
         assertThat(removeLeadingTrailingNewLines(" \n\r "), is(""));
         assertThat(removeLeadingTrailingNewLines(" \n\r \n\r "), is(""));
@@ -52,6 +70,7 @@ public class NewLineUtilTest {
         assertThat(removeLeadingTrailingNewLines(" \n\r a b \n\r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \n\r \n\r a b \n\r \n\r "), is(" a b "));
         assertThat(removeLeadingTrailingNewLines(" \n\r a b \n\r "), is(" a b "));
+        assertThat(removeLeadingTrailingNewLines(" \n\r a \n\r b \n\r "), is(" a \n\r b "));
         assertThat(removeLeadingTrailingNewLines("\t"), is("\t"));
         assertThat(removeLeadingTrailingNewLines("\ta\t"), is("\ta\t"));
         assertThat(removeLeadingTrailingNewLines("a"), is("a"));
