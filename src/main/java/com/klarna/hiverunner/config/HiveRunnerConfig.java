@@ -22,7 +22,9 @@ import java.util.Properties;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 
-import com.klarna.hiverunner.CommandShellEmulation;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory;
+import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 
 /**
@@ -93,12 +95,12 @@ public class HiveRunnerConfig {
     public static final String HIVECONF_SYSTEM_OVERRIDE_PREFIX = "hiveconf_";
 
     /**
-     * The shell's {@link CommandShellEmulation}.
+     * The shell's {@link CommandShellEmulator}.
      * 
      * Defaults to {@code HIVE_CLI}
      */
-    public static final String COMMAND_SHELL_EMULATION_PROPERTY_NAME = "commandShellEmulation";
-    public static final String COMMAND_SHELL_EMULATION_DEFAULT = CommandShellEmulation.HIVE_CLI.name();
+    public static final String COMMAND_SHELL_EMULATOR_PROPERTY_NAME = "commandShellEmulator";
+    public static final String COMMAND_SHELL_EMULATOR_DEFAULT = HiveCliEmulator.INSTANCE.getName();
 
     private Map<String, Object> config = new HashMap<>();
 
@@ -120,7 +122,7 @@ public class HiveRunnerConfig {
         config.put(ENABLE_TIMEOUT_PROPERTY_NAME, load(ENABLE_TIMEOUT_PROPERTY_NAME, ENABLE_TIMEOUT_DEFAULT, systemProperties));
         config.put(TIMEOUT_RETRIES_PROPERTY_NAME, load(TIMEOUT_RETRIES_PROPERTY_NAME, TIMEOUT_RETRIES_DEFAULT, systemProperties));
         config.put(TIMEOUT_SECONDS_PROPERTY_NAME, load(TIMEOUT_SECONDS_PROPERTY_NAME, TIMEOUT_SECONDS_DEFAULT, systemProperties));
-        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, load(COMMAND_SHELL_EMULATION_PROPERTY_NAME, COMMAND_SHELL_EMULATION_DEFAULT, systemProperties));
+        config.put(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, load(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, COMMAND_SHELL_EMULATOR_DEFAULT, systemProperties));
 
         hiveConfSystemOverride = loadHiveConfSystemOverrides(systemProperties);
     }
@@ -153,8 +155,8 @@ public class HiveRunnerConfig {
      * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
      * between different clients.
      */
-    public CommandShellEmulation getCommandShellEmulation() {
-        return CommandShellEmulation.valueOf(getString(COMMAND_SHELL_EMULATION_PROPERTY_NAME).toUpperCase());
+    public CommandShellEmulator getCommandShellEmulator() {
+        return CommandShellEmulatorFactory.valueOf(getString(COMMAND_SHELL_EMULATOR_PROPERTY_NAME).toUpperCase());
     }
 
     public void setTimeoutEnabled(boolean isEnabled) {
@@ -173,8 +175,8 @@ public class HiveRunnerConfig {
         hiveConfSystemOverride.put(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname, executionEngine);
     }
 
-    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
-        config.put(COMMAND_SHELL_EMULATION_PROPERTY_NAME, commandShellEmulation.name());
+    public void setCommandShellEmulator(CommandShellEmulator commandShellEmulator) {
+        config.put(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, commandShellEmulator.getName());
     }
     
     /**

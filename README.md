@@ -181,15 +181,15 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
             <version>2.21.0</version>
             <configuration>
                 <systemProperties>
-                    <!-- Defaults to HIVE_CLI -->
-                    <commandShellEmulation>BEELINE</commandShellEmulation>
+                    <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
+                    <commandShellEmulator>BEELINE</commandShellEmulator>
                 </systemProperties>
             </configuration>
         </plugin>
 
   Or provided on the command line using a system property:
 
-      mvn -DcommandShellEmulation=BEELINE test
+      mvn -DcommandShellEmulator=BEELINE test
 
 # Future work and Limitations
 
@@ -200,7 +200,6 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 * Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead as for a whole test case. Feedback is always welcome!
 
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
-
 
 # Known Issues
 

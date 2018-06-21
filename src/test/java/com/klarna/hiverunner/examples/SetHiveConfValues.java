@@ -18,15 +18,10 @@ package com.klarna.hiverunner.examples;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.data.TsvFileParser;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 /*

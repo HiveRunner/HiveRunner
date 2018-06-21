@@ -17,11 +17,12 @@ package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.StatementsSplitter;
+import com.klarna.hiverunner.sql.StatementLexer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
@@ -61,35 +62,36 @@ class HiveShellBase implements HiveShell {
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
     protected final List<String> scriptsUnderTest;
-    protected final CommandShellEmulation commandShellEmulation;
-
+    protected final CommandShellEmulator commandShellEmulator;
+    protected StatementLexer lexer;
+    protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer,
                   Map<String, String> hiveConf,
                   List<String> setupScripts,
                   List<HiveResource> resources,
                   List<String> scriptsUnderTest,
-                  CommandShellEmulation commandShellEmulation) {
+                  CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
+        this.commandShellEmulator = commandShellEmulator;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
         this.hiveVars = new HashMap<>();
-        this.commandShellEmulation = commandShellEmulation;
-
+        cwd = Paths.get(System.getProperty("user.dir"));
     }
 
     @Override
-    public List<String> executeQuery(String hql) {
-        return executeQuery(hql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    public List<String> executeQuery(String hiveSql) {
+        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
-    public List<String> executeQuery(String hql, String rowValuesDelimitedBy, String replaceNullWith) {
+    public List<String> executeQuery(String hiveSql, String rowValuesDelimitedBy, String replaceNullWith) {
         assertStarted();
 
-        List<Object[]> resultSet = executeStatement(hql);
+        List<Object[]> resultSet = executeStatement(hiveSql);
         List<String> result = new ArrayList<>();
         for (Object[] objects : resultSet) {
             result.add(Joiner.on(rowValuesDelimitedBy).useForNull(replaceNullWith).join(objects));
@@ -98,18 +100,33 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public List<Object[]> executeStatement(String hql) {
-        return executeStatementWithCommandShellEmulation(hql);
-    }
-    
-    private List<Object[]> executeStatementWithCommandShellEmulation(String hql) {
-      return hiveServerContainer.executeStatement(commandShellEmulation.transformStatement(hql));
+    public List<Object[]> executeStatement(String hiveSql) {
+        assertStarted();
+        return executeStatementWithCommandShellEmulation(hiveSql);
     }
 
+    private void executeScriptWithCommandShellEmulation(String script) {
+        List<String> statements = lexer.applyToScript(script);
+        executeStatementsWithCommandShellEmulation(statements);
+    }
+    
+    private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
+        List<String> statements = lexer.applyToStatement(statement);
+        return executeStatementsWithCommandShellEmulation(statements);
+    }
+
+    private List<Object[]> executeStatementsWithCommandShellEmulation(List<String> hiveSqlStatements) {
+        List<Object[]> results = new ArrayList<>();
+        for (String hiveSqlStatement : hiveSqlStatements) {
+          results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement));
+        }
+        return results;
+      }
+    
     @Override
-    public void execute(String hql) {
+    public void execute(String hiveSql) {
         assertStarted();
-        executeScriptWithCommandShellEmulation(hql);
+        executeScriptWithCommandShellEmulation(hiveSql);
     }
 
     @Override
@@ -134,11 +151,8 @@ class HiveShellBase implements HiveShell {
     public void execute(Charset charset, Path path) {
         assertStarted();
         assertFileExists(path);
-        try {
-            execute(new String(Files.readAllBytes(path), charset));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to read setup script file '" + path + "': " + e.getMessage(), e);
-        }
+        List<String> hiveSqlStatements = lexer.applyToPath(path);
+        executeStatementsWithCommandShellEmulation(hiveSqlStatements);
     }
 
     @Override
@@ -146,6 +160,8 @@ class HiveShellBase implements HiveShell {
         assertNotStarted();
         started = true;
 
+        lexer = new StatementLexer(cwd, Charset.defaultCharset(), commandShellEmulator);
+        
         hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
@@ -321,10 +337,6 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    private void executeScriptWithCommandShellEmulation(String script) {
-          hiveServerContainer.executeScript(commandShellEmulation.transformScript(script));
-    }
-    
     protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
@@ -366,59 +378,70 @@ class HiveShellBase implements HiveShell {
         };
     }
 
-	@Override
-	public List<String> executeQuery(File script) {
-		return executeQuery(Charset.defaultCharset(), script);
-	}
+    @Override
+    public List<String> executeQuery(File script) {
+        return executeQuery(Charset.defaultCharset(), script);
+    }
 
-	@Override
-	public List<String> executeQuery(Path script) {
-		return executeQuery(Charset.defaultCharset(), script);
-	}
+    @Override
+    public List<String> executeQuery(Path script) {
+        return executeQuery(Charset.defaultCharset(), script);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, File script) {
-		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, File script) {
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, Path script) {
-		return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, Path script) {
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+    }
 
-	@Override
-	public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
-		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith) {
+        return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith) {
-		return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith) {
+        return executeQuery(Charset.defaultCharset(), script, rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-			String replaceNullWith) {
-		return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
+            String replaceNullWith) {
+        return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
+    }
 
-	@Override
-	public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-			String replaceNullWith) {
-		assertStarted();
-		assertFileExists(script);
-		try {
-			String statements = new String(Files.readAllBytes(script), charset);
-			List<String> splitStatements = StatementsSplitter.splitStatements(statements);
-			if (splitStatements.size() != 1) {
-				throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
-			}
-			String statement = splitStatements.get(0);
-			return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
-					e);
-		}
-	}
+    @Override
+    public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
+            String replaceNullWith) {
+        assertStarted();
+        assertFileExists(script);
+        try {
+            String statements = new String(Files.readAllBytes(script), charset);
+            List<String> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
+            if (splitStatements.size() != 1) {
+                throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
+            }
+            String statement = splitStatements.get(0);
+            return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
+                    e);
+        }
+    }
+
+    @Override
+    public void setCwd(Path cwd) {
+        assertNotStarted();
+        this.cwd = cwd;
+    }
+
+    @Override
+    public Path getCwd() {
+        return cwd;
+    }
 
 }

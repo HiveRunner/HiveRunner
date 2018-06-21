@@ -19,7 +19,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.klarna.hiverunner.sql.StatementsSplitter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -147,17 +146,6 @@ public class HiveServerContainer {
     }
 
     /**
-     * Executes a hive script.
-     *
-     * @param hiveql hive script statements.
-     */
-    public void executeScript(String hiveql) {
-        for (String statement : StatementsSplitter.splitStatements(hiveql)) {
-            executeStatement(statement);
-        }
-    }
-
-    /**
      * Release all resources.
      * <p>
      * This call will never throw an exception as it makes no sense doing that in the tear down phase.
@@ -175,7 +163,7 @@ public class HiveServerContainer {
 
         try {
             // Reset to default schema
-            executeScript("USE default;");
+            executeStatement("USE default");
         } catch (Throwable e) {
             LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
                     ". Turn on log level debug for stacktrace");

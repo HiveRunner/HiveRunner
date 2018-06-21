@@ -4,12 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0] - TBD
+### Added
+- Support shell-specific `source` (`hive`) and ``!run`` (`beeline`) commands. These commands allow one to import and execute the contents of external files in statements or scripts.
+
 ### Changed
 - Default supported Hive version is now 2.3.3 (was 1.2.1).
 - Default supported Tez version is no 0.9.1 (was 0.7.0).
 - Supported Java version is 8 (was 7).
 - In-memory DB used by HiveRunner is now Derby (was HSQLDB).
 - Log4J configuration file removed from jar artifact.
+- System property to configure command shell emulation mode renamed to `commandShellEmulator` (was `commandShellEmulation`).
 
 ## [3.2.1] - 2018-05-31
 ### Changed
