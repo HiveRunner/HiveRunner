@@ -37,12 +37,12 @@ public enum SqlLineCommandRule implements TokenRule {
     @Override
     public void handle(String token, Context context) {
         if (context.statement().trim().isEmpty()) {
-          // This is a SqlLine command
+            // This is a SqlLine command
             context.append(token);
             context.appendWith(Consumer.UNTIL_EOL);
             context.flush();
         } else {
-          // This is a '!' somewhere in the current statement
+            // This is a '!' somewhere in the current statement
             context.append(token);
         }
     }
