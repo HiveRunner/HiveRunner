@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 - Default supported Hive version is now 2.3.3 (was 1.2.1).
-- Default supported Tez version is no 0.9.1 (was 0.7.0).
+- Default supported Tez version is now 0.9.1 (was 0.7.0).
 - Supported Java version is 8 (was 7).
 - In-memory DB used by HiveRunner is now Derby (was HSQLDB).
 - Log4J configuration file removed from jar artifact.
