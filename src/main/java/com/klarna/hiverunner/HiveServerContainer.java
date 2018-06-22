@@ -208,7 +208,6 @@ public class HiveServerContainer {
         // Make sure to set the session state for this thread before returning the VariableSubstitution. If not set,
         // hivevar:s will not be evaluated.
         SessionState.setCurrentSessionState(currentSessionState);
-//        return new VariableSubstitution();
 
         final SessionState ss = currentSessionState;
         return new VariableSubstitution(new HiveVariableSource() {
