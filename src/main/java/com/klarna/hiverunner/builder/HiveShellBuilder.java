@@ -16,9 +16,10 @@
 package com.klarna.hiverunner.builder;
 
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShellContainer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -38,7 +39,7 @@ public class HiveShellBuilder {
     private HiveServerContainer hiveServerContainer;
     private final List<HiveResource> resources = new ArrayList<>();
     private final List<String> setupScripts = new ArrayList<>();
-    private CommandShellEmulation commandShellEmulation = CommandShellEmulation.HIVE_CLI;
+    private CommandShellEmulator commandShellEmulator = HiveCliEmulator.INSTANCE;
 
     public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
         this.hiveServerContainer = hiveServerContainer;
@@ -71,12 +72,12 @@ public class HiveShellBuilder {
         }
     }
     
-    public void setCommandShellEmulation(CommandShellEmulation commandShellEmulation) {
-      this.commandShellEmulation = commandShellEmulation;
+    public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
+      this.commandShellEmulator = commandShellEmulator;
     }
 
     public HiveShellContainer buildShell() {
-        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulation);
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
 }
 

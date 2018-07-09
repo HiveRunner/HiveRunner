@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.klarna</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>3.2.2-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies.</description>
   <url>https://github.com/klarna/HiveRunner</url>
@@ -40,9 +41,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <tez.version>0.9.1</tez.version>
+    <hive.version>2.3.3</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
-    <tez.version>0.7.0</tez.version>
-    <hive.version>1.2.1</hive.version>
     <hive.execution.engine>mr</hive.execution.engine>
   </properties>
 
@@ -59,59 +60,18 @@
       <version>${hive.version}</version>
     </dependency>
 
+
     <dependency>
       <groupId>org.apache.hive.hcatalog</groupId>
       <artifactId>hive-webhcat-java-client</artifactId>
       <version>${hive.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.3.1</version>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-service</artifactId>
       <version>${hive.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>derby</artifactId>
-          <groupId>org.apache.derby</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>datanucleus-api-jdo</artifactId>
-          <groupId>org.datanucleus</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>datanucleus-core</artifactId>
-          <groupId>org.datanucleus</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>datanucleus-rdbms</artifactId>
-          <groupId>org.datanucleus</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bonecp</artifactId>
-          <groupId>com.jolbox</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>calcite-core</artifactId>
-          <groupId>org.apache.calcite</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>calcite-avatica</artifactId>
-          <groupId>org.apache.calcite</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!-- The latest versions of datanucleus seems to be faster than the one included in hive -->
-    <dependency>
-      <artifactId>datanucleus-api-jdo</artifactId>
-      <groupId>org.datanucleus</groupId>
-      <version>3.2.8</version>
     </dependency>
 
     <dependency>
@@ -133,15 +93,10 @@
     </dependency>
 
     <dependency>
-      <artifactId>datanucleus-core</artifactId>
-      <groupId>org.datanucleus</groupId>
-      <version>3.2.12</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>datanucleus-rdbms</artifactId>
-      <groupId>org.datanucleus</groupId>
-      <version>3.2.11</version>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-contrib</artifactId>
+      <version>${hive.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -150,14 +105,8 @@
       <version>0.9.8</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-contrib</artifactId>
-      <version>${hive.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Always put this before JUnit or the class loader might load the wrong Matcher -->
+    <!-- Always put this before JUnit or the class loader might load the
+      wrong Matcher -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
@@ -167,8 +116,8 @@
 
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>2.18.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -189,11 +138,15 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.21.0</version>
         <configuration>
-          <!-- Hiverunner need this for some queries -->
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <!-- Hiverunner need this for some queries (property -XX:MaxPermSize
+            was removed in java 8) -->
+          <argLine>-Xmx2024m</argLine>
+          <!-- below needed due to https://github.com/klarna/HiveRunner/commit/1f9a9b353c3b072f7898a6b4fa277474674d4b54 -->
+          <reuseForks>false</reuseForks>
           <systemProperties>
             <!--
-              Any hive conf property may be overridden here by suffixing it with 'hiveconf_'
+              Any hive conf property may be overridden here by suffixing
+              it with 'hiveconf_'
             -->
             <hiveconf_hive.execution.engine>${hive.execution.engine}</hiveconf_hive.execution.engine>
             <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
@@ -208,8 +161,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>

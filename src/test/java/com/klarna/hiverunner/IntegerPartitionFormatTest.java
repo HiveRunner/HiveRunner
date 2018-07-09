@@ -47,6 +47,7 @@ public class IntegerPartitionFormatTest {
     public void repair() {
         // MSCK REPAIR TABLE adds metadata about partitions to the Hive metastore for
         // partitions for which such metadata doesn't already exist
+        hiveShell.execute("set hive.mv.files.thread=0");
         hiveShell.execute("MSCK REPAIR TABLE foo");
     }
 

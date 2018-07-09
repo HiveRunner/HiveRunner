@@ -21,7 +21,6 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.hsqldb.jdbc.JDBCDriver;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,16 +162,20 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
 
-        String jdbcDriver = JDBCDriver.class.getName();
-
+        configureDerbyLog();
+        
+        String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
         try {
             Class.forName(jdbcDriver);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        // Set the hsqldb driver
-        metaStorageUrl = "jdbc:hsqldb:mem:" + UUID.randomUUID().toString();
+        // Set the Hive Metastore DB driver
+        metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
+        hiveConf.set("datanucleus.schema.autoCreateAll", "true");
+        hiveConf.set("hive.metastore.schema.verification", "false");
+
         hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
         hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
@@ -182,6 +185,18 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         conf.setBoolVar(METASTORE_VALIDATE_CONSTRAINTS, true);
         conf.setBoolVar(METASTORE_VALIDATE_COLUMNS, true);
         conf.setBoolVar(METASTORE_VALIDATE_TABLES, true);
+    }
+
+    private void configureDerbyLog() {
+      // overriding default derby log path to not go to root of project
+      File derbyLogFile;
+      try {
+        derbyLogFile = File.createTempFile("derby", ".log");
+        LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+      } catch (IOException e) {
+        throw new RuntimeException("Error creating temporary derby log file", e);
+      }
+      System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
     protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {

@@ -15,16 +15,19 @@
  */
 package com.klarna.hiverunner.data;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.util.Map;
 
+import org.apache.hive.hcatalog.data.HCatRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.common.collect.Multimap;
 
@@ -45,9 +48,10 @@ public class InsertIntoTableTest {
 
   @Test
   public void withColumns() {
-    insert.withColumns(any(String[].class));
+    String[] columns = new String[] { "columnA", "columnB" };
+    insert.withColumns(columns);
 
-    verify(builder).withColumns(any(String[].class));
+    verify(builder).withColumns(columns);
   }
 
   @Test
@@ -66,30 +70,35 @@ public class InsertIntoTableTest {
 
   @Test
   public void addRow() {
-    insert.addRow(any(Object[].class));
+    Object[] row = new Object[] { "columnA" };
+    insert.addRow(row);
 
-    verify(builder).addRow(any(Object[].class));
+    verify(builder).addRow(row);
   }
 
   @Test
   public void setRow() {
-    insert.setRow(any(Object[].class));
+    Object[] row = new Object[] { "columnA" };
+    insert.setRow(row);
 
-    verify(builder).setRow(any(Object[].class));
+    verify(builder).setRow(row);
   }
 
   @Test
   public void addRows() {
-    insert.addRowsFromTsv(any(File.class));
+    File file = new File("foo");
+    insert.addRowsFromTsv(file);
 
-    verify(builder).addRowsFromTsv(any(File.class));
+    verify(builder).addRowsFromTsv(file);
   }
 
   @Test
   public void addRowsWithFileParser() {
-    insert.addRowsFrom(any(File.class), any(FileParser.class));
+    File file = new File("foo");
+    FileParser parser = new TsvFileParser();
+    insert.addRowsFrom(file, parser);
 
-    verify(builder).addRowsFrom(any(File.class), any(FileParser.class));
+    verify(builder).addRowsFrom(file, parser);
   }
 
   @Test
@@ -108,10 +117,11 @@ public class InsertIntoTableTest {
 
   @Test
   public void commit() {
+    Multimap<Map<String, String>, HCatRecord> map = mock(Multimap.class);
+    when(builder.build()).thenReturn(map);
     insert.commit();
 
-    verify(builder).build();
-    verify(inserter).insert(any(Multimap.class));
+    verify(inserter).insert(map);
 
   }
 }

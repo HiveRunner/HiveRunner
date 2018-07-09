@@ -15,9 +15,9 @@
  */
 package com.klarna.hiverunner.builder;
 
-import com.klarna.hiverunner.CommandShellEmulation;
 import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShellContainer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
 import java.util.List;
 import java.util.Map;
@@ -29,8 +29,8 @@ class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
     HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
                       List<String> setupScripts, List<HiveResource> resources,
-                      List<String> scriptsUnderTest, CommandShellEmulation commandShellEmulation) {
-        super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest, commandShellEmulation);
+                      List<String> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+        super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
 
     @Override

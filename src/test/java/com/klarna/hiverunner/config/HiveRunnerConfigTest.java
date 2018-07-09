@@ -15,15 +15,17 @@
  */
 package com.klarna.hiverunner.config;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.klarna.hiverunner.CommandShellEmulation;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory;
+import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
+import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 public class HiveRunnerConfigTest {
 
@@ -77,28 +79,28 @@ public class HiveRunnerConfigTest {
     }
 
     @Test
-    public void testCommandShellEmulation() {
+    public void testCommandShellEmulator() {
       Properties sysProps = new Properties();
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BEELINE");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BEELINE");
       HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+      Assert.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
 
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "beeline");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "beeline");
       config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+      Assert.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
 
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATION_PROPERTY_NAME, "BeElInE");
+      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BeElInE");
       config = new HiveRunnerConfig(new Properties(sysProps));
-      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+      Assert.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 
     @Test
-    public void testSetCommandShellEmulation() {
+    public void testSetCommandShellEmulator() {
       HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-      config.setCommandShellEmulation(CommandShellEmulation.HIVE_CLI);
-      Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
-      config.setCommandShellEmulation(CommandShellEmulation.BEELINE);
-      Assert.assertEquals(CommandShellEmulation.BEELINE, config.getCommandShellEmulation());
+      config.setCommandShellEmulator(HiveCliEmulator.INSTANCE);
+      Assert.assertEquals(HiveCliEmulator.INSTANCE, config.getCommandShellEmulator());
+      config.setCommandShellEmulator(BeelineEmulator.INSTANCE);
+      Assert.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 
     @Test
@@ -120,10 +122,10 @@ public class HiveRunnerConfigTest {
     }
     
     @Test
-    public void testCommandShellEmulationDefault() {
+    public void testCommandShellEmulatorDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, CommandShellEmulation.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATION_DEFAULT));
-        Assert.assertEquals(CommandShellEmulation.HIVE_CLI, config.getCommandShellEmulation());
+        Assert.assertEquals(HiveCliEmulator.INSTANCE, CommandShellEmulatorFactory.valueOf(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_DEFAULT));
+        Assert.assertEquals(HiveCliEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 
 }

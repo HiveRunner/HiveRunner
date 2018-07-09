@@ -24,7 +24,6 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.log4j.MDC;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -38,6 +37,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.File;
 import java.io.IOException;
@@ -198,7 +198,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         final HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
 
         HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
-        hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulation());
+        hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
 

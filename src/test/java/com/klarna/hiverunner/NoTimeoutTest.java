@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
-public class NoTimoutTest {
+public class NoTimeoutTest {
 
     @HiveRunnerSetup
     public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
