@@ -19,6 +19,7 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.junit.rules.TemporaryFolder;
@@ -161,7 +162,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureMetaStore(HiveConf conf) {
-
         configureDerbyLog();
         
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
@@ -173,18 +173,20 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         // Set the Hive Metastore DB driver
         metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
-        hiveConf.set("datanucleus.schema.autoCreateAll", "true");
-        hiveConf.set("hive.metastore.schema.verification", "false");
+        setMetastoreProperty("datanucleus.schema.autoCreateAll", "true");
+        setMetastoreProperty("datanucleus.schema.autoCreateTables", "true");
+        setMetastoreProperty("hive.metastore.schema.verification", "false");
+        setMetastoreProperty("metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl");
 
-        hiveConf.set("datanucleus.connectiondrivername", jdbcDriver);
-        hiveConf.set("javax.jdo.option.ConnectionDriverName", jdbcDriver);
+        setMetastoreProperty("datanucleus.connectiondrivername", jdbcDriver);
+        setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
         // No pooling needed. This will save us a lot of threads
-        hiveConf.set("datanucleus.connectionPoolingType", "None");
+        setMetastoreProperty("datanucleus.connectionPoolingType", "None");
 
-        conf.setBoolVar(METASTORE_VALIDATE_CONSTRAINTS, true);
-        conf.setBoolVar(METASTORE_VALIDATE_COLUMNS, true);
-        conf.setBoolVar(METASTORE_VALIDATE_TABLES, true);
+        setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "true");
+        setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "true");
+        setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "true");
     }
 
     private void configureDerbyLog() {
@@ -200,14 +202,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
-        conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
+        setMetastoreProperty(METASTORECONNECTURLKEY.varname, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
         createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
-
-        conf.setBoolVar(HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS, true);
 
         createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
@@ -250,11 +250,16 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf,
                                                     TemporaryFolder basedir) {
-        conf.setVar(var, newFolder(basedir, folder).getAbsolutePath());
+        setMetastoreProperty(var.varname, newFolder(basedir, folder).getAbsolutePath());
     }
 
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-        conf.set(key, newFolder(basedir, folder).getAbsolutePath());
+        setMetastoreProperty(key, newFolder(basedir, folder).getAbsolutePath());
+    }
+
+    protected final void setMetastoreProperty(String key, String value) {
+        hiveConf.set(key, value);
+        System.setProperty(key, value);
     }
 
 }

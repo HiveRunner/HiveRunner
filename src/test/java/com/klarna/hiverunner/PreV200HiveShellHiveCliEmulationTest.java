@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +30,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
+@Ignore
 @RunWith(StandaloneHiveRunner.class)
 public class PreV200HiveShellHiveCliEmulationTest {
 

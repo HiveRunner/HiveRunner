@@ -42,7 +42,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tez.version>0.9.1</tez.version>
-    <hive.version>2.3.3</hive.version>
+    <hive.version>3.0.0</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
   </properties>
@@ -52,6 +52,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-serde</artifactId>
       <version>${hive.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.4</version>
     </dependency>
 
     <dependency>
@@ -104,6 +110,19 @@
       <artifactId>reflections</artifactId>
       <version>0.9.8</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-common</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-core</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
 
     <!-- Always put this before JUnit or the class loader might load the
       wrong Matcher -->
@@ -222,6 +241,28 @@
           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
           <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.zookeeper.server</pattern>
+                  <shadedPattern>shaded.org.apache.zookeeper.server</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
