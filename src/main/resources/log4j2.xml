@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5level %logger{36} - %msg%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.hadoop" level="warn">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hive.service" level="warn">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="DataNucleus" level="warn">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="hive.ql.metadata" level="warn">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="ExecReducer" level="warn">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.hive.conf.HiveConf" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.hive.ql.session.SessionState" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.hive.ql.Driver" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.mapreduce.JobResourceUploader" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.mapreduce.JobSubmitter" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.hive.metastore.ObjectStore" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.hadoop.util.NativeCodeLoader" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="mapreduce.Counters" level="error">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,7 +161,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureMetaStore(HiveConf conf) {
-
         configureDerbyLog();
         
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package com.klarna.hiverunner;
 
+import java.util.List;
+
+import com.klarna.hiverunner.builder.Script;
+
 /**
  * Wrapper for the HiveShell that allows the fwk to sugar the HiveShell with functionality that will not be exposed to
  * the test case creator.
@@ -26,4 +30,9 @@ public interface HiveShellContainer extends HiveShell {
      * no residue for coming test cases.
      */
     void tearDown();
+    
+    /**
+     * Returns the string contents of the list of scripts being tested 
+     */
+    List<Script> getScriptsUnderTest();
 }

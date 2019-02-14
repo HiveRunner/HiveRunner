@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.io.Resources;
 import com.klarna.hiverunner.annotations.*;
+import com.klarna.hiverunner.builder.HiveRunnerScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
+import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 import org.apache.hadoop.fs.FileUtil;
@@ -74,26 +76,18 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         super(clazz);
     }
 
+    protected HiveRunnerConfig getHiveRunnerConfig() {
+      return config;
+    }
 
     @Override
     protected List<TestRule> getTestRules(final Object target) {
         final TemporaryFolder testBaseDir = new TemporaryFolder();
 
-        TestRule hiveRunnerRule = new TestRule() {
-            @Override
-            public Statement apply(final Statement base, Description description) {
-                Statement statement = new Statement() {
-                    @Override
-                    public void evaluate() throws Throwable {
-                        evaluateStatement(target, testBaseDir, base);
-                    }
-                };
-                return statement;
-            }
-        };
+        HiveRunnerRule hiveRunnerRule = new HiveRunnerRule(this, target, testBaseDir);
 
         /*
-         *  Note that rules will be executed in reverse order to how they're added.
+         * Note that rules will be executed in reverse order to how they're added.
          */
 
         List<TestRule> rules = new ArrayList<>();
@@ -164,13 +158,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Drives the unit test.
      */
-    private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
+    public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
         container = null;
         FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
-            container = createHiveServerContainer(target, temporaryFolder);
+            container = createHiveServerContainer(scripts, target, temporaryFolder);
             base.evaluate();
+            return container;
         } finally {
             tearDown();
         }
@@ -190,8 +185,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
-    private HiveShellContainer createHiveServerContainer(final Object testCase, TemporaryFolder baseDir)
-            throws IOException {
+    private HiveShellContainer createHiveServerContainer(final List<? extends Script> scripts, final Object testCase, TemporaryFolder baseDir) 
+        throws IOException {
 
         HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
 
@@ -201,6 +196,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
         HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
+        if (scripts != null) {
+            hiveShellBuilder.overrideScriptsUnderTest(scripts);
+        }
 
         hiveShellBuilder.setHiveServerContainer(hiveTestHarness);
 
@@ -231,12 +229,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
 
             final Field field = fields.iterator().next();
-            List<Path> scripts = new ArrayList<>();
+            List<Path> scriptPaths = new ArrayList<>();
             HiveSQL annotation = field.getAnnotation(HiveSQL.class);
             for (String scriptFilePath : annotation.files()) {
                 Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
                 assertFileExists(file);
-                scripts.add(file);
+                scriptPaths.add(file);
             }
 
             Charset charset = annotation.encoding().equals("") ?
@@ -244,7 +242,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
             final boolean isAutoStart = annotation.autoStart();
 
-            hiveShellBuilder.setScriptsUnderTest(scripts, charset);
+            hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
             return new HiveShellField() {
                 @Override

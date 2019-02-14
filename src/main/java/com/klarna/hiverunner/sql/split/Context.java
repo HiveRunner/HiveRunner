@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package com.klarna.hiverunner.sql.split;
 
 import java.util.StringTokenizer;
+
+import com.klarna.hiverunner.builder.Statement;
 
 /**
  * Provides a means to modify and inspect the state of the parsing and splitting

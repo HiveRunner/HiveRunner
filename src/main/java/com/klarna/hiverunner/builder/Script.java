@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
+package com.klarna.hiverunner.builder;
 
-import java.util.Set;
+import java.nio.file.Path;
 
-/** Allows the implementation of splitting rules based on specific tokens. */
-public interface TokenRule {
-    Set<String> triggers();
-    void handle(String token, Context context);
+public interface Script {
+
+  /**
+   * index of script within all scripts in source
+   */
+  int getIndex();
+  
+  Path getPath();
+
+  String getSql();
+
 }

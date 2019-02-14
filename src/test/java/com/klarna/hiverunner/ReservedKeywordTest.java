@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.annotations.HiveSQL;
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
+import com.klarna.hiverunner.annotations.HiveSQL;
 
 @RunWith(StandaloneHiveRunner.class)
 public class ReservedKeywordTest {

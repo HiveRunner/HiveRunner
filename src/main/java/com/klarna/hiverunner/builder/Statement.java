@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
+package com.klarna.hiverunner.builder;
 
-import java.util.Set;
+public interface Statement {
 
-/** Allows the implementation of splitting rules based on specific tokens. */
-public interface TokenRule {
-    Set<String> triggers();
-    void handle(String token, Context context);
+  /**
+   * Index of statement within all statements of script
+   */
+  int getIndex();
+
+  /**
+   * Original sql of the statement
+   */
+  String getSql();
+  
 }
