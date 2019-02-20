@@ -19,7 +19,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.io.Resources;
 import com.klarna.hiverunner.annotations.*;
-import com.klarna.hiverunner.builder.HiveRunnerScript;
 import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;

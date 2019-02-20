@@ -29,156 +29,150 @@ import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 public class BeelineStatementSplitterTest {
 
-  private StatementSplitter splitter = new StatementSplitter(BeelineEmulator.INSTANCE);
-  
-  private List<Statement> asStatementList(String... strings) {
-    List<Statement> statements = new ArrayList<>();
-    int index = 0;
-    for (String string : strings) {
-      statements.add(new HiveRunnerStatement(index++, string));
+    private StatementSplitter splitter = new StatementSplitter(BeelineEmulator.INSTANCE);
+
+    private List<Statement> asStatementList(String... strings) {
+        List<Statement> statements = new ArrayList<>();
+        int index = 0;
+        for (String string : strings) {
+            statements.add(new HiveRunnerStatement(index++, string));
+        }
+        return statements;
     }
-    return statements;
-  }
 
-  @Test
-  public void testSplitBasic() {
-    String str = "foo;bar;baz";
-    List<Statement> expected = asStatementList("foo", "bar", "baz");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testSplitBasic() {
+        String str = "foo;bar;baz";
+        List<Statement> expected = asStatementList("foo", "bar", "baz");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testRemoveTrailingSemiColon() {
-    String str = ";foo;bar;baz;";
-    List<Statement> expected = asStatementList("foo", "bar", "baz");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testRemoveTrailingSemiColon() {
+        String str = ";foo;bar;baz;";
+        List<Statement> expected = asStatementList("foo", "bar", "baz");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testDiscardRedundantSemiColons() {
-    String str = "a;b;;;c";
-    List<Statement> expected = asStatementList("a", "b", "c");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testDiscardRedundantSemiColons() {
+        String str = "a;b;;;c";
+        List<Statement> expected = asStatementList("a", "b", "c");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testDiscardTrailingSpace() {
-    String str = "a;   b\t\n   ;  \n\tc   c;";
-    List<Statement> expected = asStatementList("a", "   b\t", "\tc   c");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testDiscardTrailingSpace() {
+        String str = "a;   b\t\n   ;  \n\tc   c;";
+        List<Statement> expected = asStatementList("a", "   b\t", "\tc   c");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testDiscardEmptyStatements() {
-    String str = "a;b;     \t\n   ;c;";
-    List<Statement> expected = asStatementList("a", "b", "c");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testDiscardEmptyStatements() {
+        String str = "a;b;     \t\n   ;c;";
+        List<Statement> expected = asStatementList("a", "b", "c");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testCommentPreserved() {
-    String str = "foo -- bar";
-    List<Statement> expected = asStatementList("foo -- bar");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testCommentPreserved() {
+        String str = "foo -- bar";
+        List<Statement> expected = asStatementList("foo -- bar");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testCommentWithSingleQuote() {
-    String str = "foo -- b'ar";
-    List<Statement> expected = asStatementList("foo -- b'ar");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testCommentWithSingleQuote() {
+        String str = "foo -- b'ar";
+        List<Statement> expected = asStatementList("foo -- b'ar");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testCommentWithDoubleQuote() {
-    String str = "foo -- b\"ar";
-    List<Statement> expected = asStatementList("foo -- b\"ar");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testCommentWithDoubleQuote() {
+        String str = "foo -- b\"ar";
+        List<Statement> expected = asStatementList("foo -- b\"ar");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testCommentWithSemiColon() {
-    String str = "foo -- b;ar";
-    List<Statement> expected = asStatementList("foo -- b;ar");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testCommentWithSemiColon() {
+        String str = "foo -- b;ar";
+        List<Statement> expected = asStatementList("foo -- b;ar");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testMultilineStatementWithComment() {
-    String str = "foo -- b;ar\nbaz";
-    List<Statement> expected = asStatementList("foo -- b;ar\nbaz");
-    assertEquals(expected, splitter.split(str));
-  }
+    @Test
+    public void testMultilineStatementWithComment() {
+        String str = "foo -- b;ar\nbaz";
+        List<Statement> expected = asStatementList("foo -- b;ar\nbaz");
+        assertEquals(expected, splitter.split(str));
+    }
 
-  @Test
-  public void testRealLifeExample() {
-    String firstStatement = "CREATE TABLE serde_test (\n"
-        + "  key STRING,\n"
-        + "  value STRING\n"
-        + ")\n"
-        + "ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'\n"
-        + "WITH SERDEPROPERTIES  (\n"
-        + "\"input.regex\" = \"(.*);\"                                       \n"
-        + ")\n"
-        + "STORED AS TEXTFILE\n"
-        + "LOCATION '${hiveconf:hadoop.tmp.dir}/serde'";
+    @Test
+    public void testRealLifeExample() {
+        String firstStatement = "CREATE TABLE serde_test (\n" + "  key STRING,\n" + "  value STRING\n" + ")\n"
+                + "ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'\n" + "WITH SERDEPROPERTIES  (\n"
+                + "\"input.regex\" = \"(.*);\"                                       \n" + ")\n"
+                + "STORED AS TEXTFILE\n" + "LOCATION '${hiveconf:hadoop.tmp.dir}/serde'";
 
-    String secondStatamenet = "select * from foobar";
+        String secondStatamenet = "select * from foobar";
 
-    assertEquals(asStatementList(firstStatement, secondStatamenet),
-        splitter.split(firstStatement + ";\n" + secondStatamenet + ";\n"));
-  }
+        assertEquals(asStatementList(firstStatement, secondStatamenet),
+                splitter.split(firstStatement + ";\n" + secondStatamenet + ";\n"));
+    }
 
-  @Test
-  public void realLifeWithComments() {
-    String firstStatement = "CREATE TABLE ${hiveconf:TARGET_SCHEMA_NAME}.pacc_pstatus (\n"
-        + "  cid\tstring, -- The cid of the transaction the balance change is connected to\n"
-        + "  create_date string , -- the date of the pstatus change\n"
-        + "  old_pstatus string, -- The pstatus before the change\n"
-        + "  new_pstatus string, -- The pstatus after the change\n"
-        + "  manual boolean -- true of the pstatus change is manual, currently false for all changes "
-        + "since we can't know about manual pstatus changes\n"
-        + "  -- PRIMARY KEY() -- there no natural primary key for this table, should we add one, e.g. "
-        + "rowno?\n"
-        + "  )";
+    @Test
+    public void realLifeWithComments() {
+        String firstStatement = "CREATE TABLE ${hiveconf:TARGET_SCHEMA_NAME}.pacc_pstatus (\n"
+                + "  cid\tstring, -- The cid of the transaction the balance change is connected to\n"
+                + "  create_date string , -- the date of the pstatus change\n"
+                + "  old_pstatus string, -- The pstatus before the change\n"
+                + "  new_pstatus string, -- The pstatus after the change\n"
+                + "  manual boolean -- true of the pstatus change is manual, currently false for all changes "
+                + "since we can't know about manual pstatus changes\n"
+                + "  -- PRIMARY KEY() -- there no natural primary key for this table, should we add one, e.g. "
+                + "rowno?\n" + "  )";
 
-    assertEquals(asStatementList(firstStatement), splitter.split(firstStatement + ";\n"));
-  }
+        assertEquals(asStatementList(firstStatement), splitter.split(firstStatement + ";\n"));
+    }
 
-  @Test
-  public void testPreserveQuoted() {
-    String[] source = new String[] { "\"foo\"", "'bar'", "\"\''\"", "'\"\\\"'", "';'", "\";\"" };
-    List<Statement> expected = asStatementList(source);
-    String input = Joiner.on(";").join(source);
-    assertEquals(expected, splitter.split(input));
-  }
+    @Test
+    public void testPreserveQuoted() {
+        String[] source = new String[]{"\"foo\"", "'bar'", "\"\''\"", "'\"\\\"'", "';'", "\";\""};
+        List<Statement> expected = asStatementList(source);
+        String input = Joiner.on(";").join(source);
+        assertEquals(expected, splitter.split(input));
+    }
 
-  @Test
-  public void beelineSqlLineCommandsAreSupported() {
-    String statementA = "!run script.sql";
-    String statementB = "select * from table where foo != bar";
-    String statementC = "!run another_script.sql";
+    @Test
+    public void beelineSqlLineCommandsAreSupported() {
+        String statementA = "!run script.sql";
+        String statementB = "select * from table where foo != bar";
+        String statementC = "!run another_script.sql";
 
-    List<Statement> expected = asStatementList(statementA, statementB, "   " + statementC);
-    String expression = statementA + '\n' + statementB + ";   " + statementC;
+        List<Statement> expected = asStatementList(statementA, statementB, "   " + statementC);
+        String expression = statementA + '\n' + statementB + ";   " + statementC;
 
-    assertEquals(expected, splitter.split(expression));
-  }
+        assertEquals(expected, splitter.split(expression));
+    }
 
-  @Test
-  public void testReadUntilEndOfLine() {
-    assertEquals(asStatementList("foo\nbar\n\n\nbaz"), splitter.split("foo\nbar\n\n\nbaz"));
-  }
+    @Test
+    public void testReadUntilEndOfLine() {
+        assertEquals(asStatementList("foo\nbar\n\n\nbaz"), splitter.split("foo\nbar\n\n\nbaz"));
+    }
 
-  @Test
-  public void testReadQuoted() {
-    String firstQuote = "\"foo;\\; b  a r\\\"\"";
-    String secondQuote = "'foo;\\; \\'b  a r\\\"'";
-    String expectedTail = "'\'\"foxlov  e \"";
+    @Test
+    public void testReadQuoted() {
+        String firstQuote = "\"foo;\\; b  a r\\\"\"";
+        String secondQuote = "'foo;\\; \\'b  a r\\\"'";
+        String expectedTail = "'\'\"foxlov  e \"";
 
-    String expression = firstQuote + secondQuote + expectedTail;
+        String expression = firstQuote + secondQuote + expectedTail;
 
-    assertEquals(asStatementList("\"foo;\\; b  a r\\\"\"'foo;\\; \\'b  a r\\\"'''\"foxlov  e \""), splitter.split(expression));
-  }
-  
+        assertEquals(asStatementList("\"foo;\\; b  a r\\\"\"'foo;\\; \\'b  a r\\\"'''\"foxlov  e \""),
+                splitter.split(expression));
+    }
+
 }

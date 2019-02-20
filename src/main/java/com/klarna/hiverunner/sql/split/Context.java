@@ -17,8 +17,6 @@ package com.klarna.hiverunner.sql.split;
 
 import java.util.StringTokenizer;
 
-import com.klarna.hiverunner.builder.Statement;
-
 /**
  * Provides a means to modify and inspect the state of the parsing and splitting
  * of a script.
