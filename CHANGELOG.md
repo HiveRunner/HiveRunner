@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [TBD] - TBD
+
+### Changed
+- Internal refactoring to support upcoming "Mutant Swarm" project which provides unit test coverage for Hive SQL scripts. See [#65](https://github.com/klarna/HiveRunner/issues/65).
+
 ## [4.0.0] - 2018-07-17
 ### Added
 - Support shell-specific `source` (`hive`) and ``!run`` (`beeline`) commands. These commands allow one to import and execute the contents of external files in statements or scripts.

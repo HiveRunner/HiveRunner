@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,10 @@ public class ThrowOnTimeout extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-
+        /*
+         * Reset the statementException before the test is run to prevent false errors during repeated execution. 
+         */
+        statementException = null;
         final StopWatch stopWatch = new StopWatch();
 
         if (config.isTimeoutEnabled()) {

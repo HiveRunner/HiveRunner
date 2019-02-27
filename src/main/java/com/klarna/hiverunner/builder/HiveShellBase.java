@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,6 @@
  */
 package com.klarna.hiverunner.builder;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.StatementLexer;
-import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
-import com.klarna.hiverunner.sql.split.StatementSplitter;
-
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.HiveServerContainer;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementLexer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 /**
  * HiveShell implementation delegating to HiveServerContainer
@@ -61,24 +60,20 @@ class HiveShellBase implements HiveShell {
     protected final Map<String, String> hiveVars;
     protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
-    protected final List<String> scriptsUnderTest;
+    protected final List<Script> scriptsUnderTest;
     protected final CommandShellEmulator commandShellEmulator;
     protected StatementLexer lexer;
     protected Path cwd;
 
-    HiveShellBase(HiveServerContainer hiveServerContainer,
-                  Map<String, String> hiveConf,
-                  List<String> setupScripts,
-                  List<HiveResource> resources,
-                  List<String> scriptsUnderTest,
-                  CommandShellEmulator commandShellEmulator) {
+    HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
+            List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.commandShellEmulator = commandShellEmulator;
         this.setupScripts = new ArrayList<>(setupScripts);
         this.resources = new ArrayList<>(resources);
         this.scriptsUnderTest = new ArrayList<>(scriptsUnderTest);
-        this.hiveVars = new HashMap<>();
+        hiveVars = new HashMap<>();
         cwd = Paths.get(System.getProperty("user.dir"));
     }
 
@@ -109,7 +104,7 @@ class HiveShellBase implements HiveShell {
         List<String> statements = lexer.applyToScript(script);
         executeStatementsWithCommandShellEmulation(statements);
     }
-    
+
     private List<Object[]> executeStatementWithCommandShellEmulation(String statement) {
         List<String> statements = lexer.applyToStatement(statement);
         return executeStatementsWithCommandShellEmulation(statements);
@@ -118,11 +113,11 @@ class HiveShellBase implements HiveShell {
     private List<Object[]> executeStatementsWithCommandShellEmulation(List<String> hiveSqlStatements) {
         List<Object[]> results = new ArrayList<>();
         for (String hiveSqlStatement : hiveSqlStatements) {
-          results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement));
+            results.addAll(hiveServerContainer.executeStatement(hiveSqlStatement));
         }
         return results;
-      }
-    
+    }
+
     @Override
     public void execute(String hiveSql) {
         assertStarted();
@@ -161,7 +156,7 @@ class HiveShellBase implements HiveShell {
         started = true;
 
         lexer = new StatementLexer(cwd, Charset.defaultCharset(), commandShellEmulator);
-        
+
         hiveServerContainer.init(hiveConf, hiveVars);
 
         executeSetupScripts();
@@ -183,8 +178,8 @@ class HiveShellBase implements HiveShell {
         for (Path script : scripts) {
             assertFileExists(script);
             try {
-                String join = new String(Files.readAllBytes(script), charset);
-                setupScripts.add(join);
+                String setupScript = new String(Files.readAllBytes(script), charset);
+                setupScripts.add(setupScript);
             } catch (IOException e) {
                 throw new IllegalArgumentException(
                         "Unable to read setup script file '" + script + "': " + e.getMessage(), e);
@@ -315,9 +310,8 @@ class HiveShellBase implements HiveShell {
                 resource.getOutputStream().close();
                 targetFileOutputStream.close();
             } catch (IOException e) {
-                throw new IllegalStateException(
-                        "Failed to create resource target file: " + targetFile + " (" + resource.getTargetFile() + "): "
-                                + e.getMessage(), e);
+                throw new IllegalStateException("Failed to create resource target file: " + targetFile + " ("
+                        + resource.getTargetFile() + "): " + e.getMessage(), e);
             }
 
             LOGGER.debug("Created hive resource " + targetFile);
@@ -325,14 +319,12 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-
     private void executeScriptsUnderTest() {
-        for (String script : scriptsUnderTest) {
+        for (Script script : scriptsUnderTest) {
             try {
-              executeScriptWithCommandShellEmulation(script);
+                executeScriptWithCommandShellEmulation(script.getSql());
             } catch (Exception e) {
-                throw new IllegalStateException(
-                        "Failed to executeScript '" + script + "': " + e.getMessage(), e);
+                throw new IllegalStateException("Failed to executeScript '" + script + "': " + e.getMessage(), e);
             }
         }
     }
@@ -341,11 +333,12 @@ class HiveShellBase implements HiveShell {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
 
-        Preconditions.checkArgument(isUnexpanded, "File path %s contains "
-                + "unresolved references. Original arg was: %s", expandedPath, resource.getTargetFile());
+        Preconditions.checkArgument(isUnexpanded,
+                "File path %s contains " + "unresolved references. Original arg was: %s", expandedPath,
+                resource.getTargetFile());
 
-        boolean isTargetFileWithinTestDir = expandedPath.startsWith(
-                hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
+        boolean isTargetFileWithinTestDir = expandedPath
+                .startsWith(hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
                 "All resource target files should be created in a subdirectory to the test case basedir %s : %s",
@@ -362,7 +355,6 @@ class HiveShellBase implements HiveShell {
         Preconditions.checkState(!started, "HiveShell was already started");
     }
 
-
     protected final void assertStarted() {
         Preconditions.checkState(started, "HiveShell was not started");
     }
@@ -371,7 +363,8 @@ class HiveShellBase implements HiveShell {
         return new OutputStream() {
             @Override
             public void write(int b) throws IOException {
-                // It should not be possible to write to the stream after the shell has been started.
+                // It should not be possible to write to the stream after the
+                // shell has been started.
                 assertNotStarted();
                 resourceOutputStream.write(b);
             }
@@ -414,6 +407,10 @@ class HiveShellBase implements HiveShell {
         return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
     }
 
+    public List<Script> getScriptsUnderTest() {
+        return scriptsUnderTest;
+    }
+
     @Override
     public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
             String replaceNullWith) {
@@ -421,12 +418,12 @@ class HiveShellBase implements HiveShell {
         assertFileExists(script);
         try {
             String statements = new String(Files.readAllBytes(script), charset);
-            List<String> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
+            List<Statement> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
             if (splitStatements.size() != 1) {
                 throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
             }
-            String statement = splitStatements.get(0);
-            return executeQuery(statement, rowValuesDelimitedBy, replaceNullWith);
+            Statement statement = splitStatements.get(0);
+            return executeQuery(statement.getSql(), rowValuesDelimitedBy, replaceNullWith);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
                     e);

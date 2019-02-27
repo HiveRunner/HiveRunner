@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -290,7 +290,7 @@ public class HiveShellBaseTest {
 
         List<String> setupScripts = Arrays.asList();
         List<HiveResource> hiveResources = Arrays.asList();
-        List<String> scriptsUnderTest = Arrays.asList();
+        List<Script> scriptsUnderTest = Arrays.asList();
 
         return new HiveShellBase(container, hiveConf, setupScripts, hiveResources, scriptsUnderTest, emulation);
     }

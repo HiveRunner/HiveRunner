@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,90 +15,98 @@
  */
 package com.klarna.hiverunner.sql.cli.hive;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
+import com.klarna.hiverunner.builder.Statement;
+import com.klarna.hiverunner.sql.HiveRunnerStatement;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 
 public class HiveCliStatementSplitterTest {
 
     private StatementSplitter splitter = new StatementSplitter(HiveCliEmulator.INSTANCE);
 
+    private List<Statement> asStatementList(String... strings) {
+        List<Statement> statements = new ArrayList<>();
+        int index = 0;
+        for (String string : strings) {
+            statements.add(new HiveRunnerStatement(index++, string));
+        }
+        return statements;
+    }
+
     @Test
     public void testSplitBasic() {
         String str = "foo;bar;baz";
-        List<String> expected = asList("foo", "bar", "baz");
+        List<Statement> expected = asStatementList("foo", "bar", "baz");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testRemoveTrailingSemiColon() {
         String str = ";foo;bar;baz;";
-        List<String> expected = asList("foo", "bar", "baz");
+        List<Statement> expected = asStatementList("foo", "bar", "baz");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testDiscardRedundantSemiColons() {
         String str = "a;b;;;c";
-        List<String> expected = asList("a", "b", "c");
+        List<Statement> expected = asStatementList("a", "b", "c");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testDiscardTrailingSpace() {
         String str = "a;   b\t\n   ;  \n\tc   c;";
-        List<String> expected = asList("a", "   b\t", "\tc   c");
+        List<Statement> expected = asStatementList("a", "   b\t", "\tc   c");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testDiscardEmptyStatements() {
         String str = "a;b;     \t\n   ;c;";
-        List<String> expected = asList("a", "b", "c");
+        List<Statement> expected = asStatementList("a", "b", "c");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testCommentPreserved() {
         String str = "foo -- bar";
-        List<String> expected = asList("foo -- bar");
+        List<Statement> expected = asStatementList("foo -- bar");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testCommentWithSingleQuote() {
         String str = "foo -- b'ar";
-        List<String> expected = asList("foo -- b'ar");
+        List<Statement> expected = asStatementList("foo -- b'ar");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testCommentWithDoubleQuote() {
         String str = "foo -- b\"ar";
-        List<String> expected = asList("foo -- b\"ar");
+        List<Statement> expected = asStatementList("foo -- b\"ar");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testCommentWithSemiColon() {
         String str = "foo -- b;ar";
-        List<String> expected = asList("foo -- b;ar");
+        List<Statement> expected = asStatementList("foo -- b;ar");
         assertEquals(expected, splitter.split(str));
     }
 
     @Test
     public void testMultilineStatementWithComment() {
         String str = "foo -- b;ar\nbaz";
-        List<String> expected = asList("foo -- b;ar\nbaz");
+        List<Statement> expected = asStatementList("foo -- b;ar\nbaz");
         assertEquals(expected, splitter.split(str));
     }
 
@@ -111,7 +119,7 @@ public class HiveCliStatementSplitterTest {
 
         String secondStatement = "select * from foobar";
 
-        assertEquals(Arrays.asList(firstStatement, secondStatement),
+        assertEquals(asStatementList(firstStatement, secondStatement),
                 splitter.split(firstStatement + ";\n" + secondStatement + ";\n"));
     }
 
@@ -127,13 +135,14 @@ public class HiveCliStatementSplitterTest {
                 + "  -- PRIMARY KEY() -- there no natural primary key for this table, should we add one, e.g. "
                 + "rowno?\n" + "  )";
 
-        assertEquals(Arrays.asList(firstStatement), splitter.split(firstStatement + ";\n"));
+        assertEquals(asStatementList(firstStatement), splitter.split(firstStatement + ";\n"));
     }
 
     @Test
     public void testPreserveQuoted() {
-        List<String> expected = asList("\"foo\"", "'bar'", "\"\''\"", "'\"\\\"'", "';'", "\";\"");
-        String input = Joiner.on(";").join(expected);
+        String[] source = new String[]{"\"foo\"", "'bar'", "\"\''\"", "'\"\\\"'", "';'", "\";\""};
+        List<Statement> expected = asStatementList(source);
+        String input = Joiner.on(";").join(source);
         assertEquals(expected, splitter.split(input));
     }
 
@@ -143,7 +152,7 @@ public class HiveCliStatementSplitterTest {
         String statementB = "select * from table where foo != bar";
         String statementC = "source another_script.sql";
 
-        List<String> expected = asList(statementA, statementB, "   " + statementC);
+        List<Statement> expected = asStatementList(statementA, statementB, "   " + statementC);
         String expression = statementA + ";\n" + statementB + ";   " + statementC;
 
         assertEquals(expected, splitter.split(expression));
@@ -157,9 +166,8 @@ public class HiveCliStatementSplitterTest {
 
         String expression = firstQuote + secondQuote + expectedTail;
 
-        assertEquals(singletonList("\"foo;\\; b  a r\\\"\"'foo;\\; \\'b  a r\\\"'''\"foxlov  e \""),
+        assertEquals(asStatementList("\"foo;\\; b  a r\\\"\"'foo;\\; \\'b  a r\\\"'''\"foxlov  e \""),
                 splitter.split(expression));
-
     }
 
 }

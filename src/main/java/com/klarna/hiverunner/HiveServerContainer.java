@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.klarna.hiverunner.builder.Statement;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -106,9 +107,12 @@ public class HiveServerContainer {
         pingHiveServer();
     }
 
-
     public TemporaryFolder getBaseDir() {
         return context.getBaseDir();
+    }
+
+    public List<Object[]> executeStatement(Statement hiveql) {
+        return executeStatement(hiveql.getSql());
     }
 
     public List<Object[]> executeStatement(String hiveql) {
@@ -118,9 +122,9 @@ public class HiveServerContainer {
             if (handle.hasResultSet()) {
 
                 /*
-                fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to
-                continuously fetch the result set until all rows are fetched.
-                */
+                 * fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to continuously fetch the result set until all
+                 * rows are fetched.
+                 */
                 RowSet rowSet;
                 while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
                     for (Object[] row : rowSet) {
@@ -129,8 +133,8 @@ public class HiveServerContainer {
                 }
             }
 
-            LOGGER.debug("ResultSet:\n" + Joiner.on("\n").join(Iterables.transform(resultSet,
-                    new Function<Object[], String>() {
+            LOGGER.debug("ResultSet:\n"
+                    + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
                         @Nullable
                         @Override
                         public String apply(@Nullable Object[] objects) {
@@ -153,9 +157,8 @@ public class HiveServerContainer {
      */
     public void tearDown() {
 
-
         try {
-          TezJobExecHelper.killRunningJobs();
+            TezJobExecHelper.killRunningJobs();
         } catch (Throwable e) {
             LOGGER.warn("Failed to kill tez session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
@@ -165,8 +168,8 @@ public class HiveServerContainer {
             // Reset to default schema
             executeStatement("USE default");
         } catch (Throwable e) {
-            LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
-                    ". Turn on log level debug for stacktrace");
+            LOGGER.warn("Failed to reset to default schema: " + e.getMessage()
+                    + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 
@@ -219,4 +222,3 @@ public class HiveServerContainer {
 
     }
 }
-

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
+package com.klarna.hiverunner.builder;
 
-import java.util.StringTokenizer;
+public interface Statement {
 
-/**
- * Provides a means to modify and inspect the state of the parsing and splitting
- * of a script.
- */
-public interface Context {
-    StringTokenizer tokenizer();
-    String statement();
-    void append(String chars);
-    void appendWith(Consumer consumer);
-    void flush();
+  /**
+   * Index of statement within all statements of script
+   */
+  int getIndex();
+
+  /**
+   * Original sql of the statement
+   */
+  String getSql();
+  
 }

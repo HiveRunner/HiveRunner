@@ -161,7 +161,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected void configureMetaStore(HiveConf conf) {
-
         configureDerbyLog();
         
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
