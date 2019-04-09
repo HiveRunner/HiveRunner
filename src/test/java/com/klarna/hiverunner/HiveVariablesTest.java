@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,16 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveVariablesTest {
+  
+    @Rule
+    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
     @HiveSQL(files = {}, autoStart = false)
     public HiveShell shell;
@@ -90,5 +95,14 @@ public class HiveVariablesTest {
         shell.start();
         shell.execute("Create database ${system:bar}${system:foo}");
         Assert.assertEquals("nice dog", shell.expandVariableSubstitutes("${system:bar} ${system:foo}"));
+    }
+    
+    @Test
+    public void testEnvironmentVar() {
+        environmentVariables.set("foo", "dog");
+        environmentVariables.set("bar", "nice");
+        shell.start();
+        shell.execute("Create database ${env:bar}${env:foo}");
+        Assert.assertEquals("nice dog", shell.expandVariableSubstitutes("${env:bar} ${env:foo}"));
     }
 }
