@@ -105,6 +105,13 @@
       <version>0.9.8</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>1.19.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Always put this before JUnit or the class loader might load the
       wrong Matcher -->
     <dependency>
