@@ -42,7 +42,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tez.version>0.9.1</tez.version>
-    <hive.version>2.3.4</hive.version>
+    <hive.version>3.0.0</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
   </properties>
