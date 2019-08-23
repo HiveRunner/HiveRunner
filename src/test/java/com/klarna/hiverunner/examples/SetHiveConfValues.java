@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 package com.klarna.hiverunner.examples;
 
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.StandaloneHiveRunner;
-import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.klarna.hiverunner.HiveRunnerExtension;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.annotations.HiveSQL;
+
 /*
-    This example is intended to show how to set HiveConf (or HiveVar) values in HIveRunner.
+    This example is intended to show how to set HiveConf (or HiveVar) values in HiveRunner.
 
     HiveConf can be very useful. For instance you might have a global cutoff value that could be set outside your code
     and used in many places in your queries. Common example would be a threshold value or a cutoff timestamp.
@@ -34,38 +35,39 @@ import java.util.List;
     set the HiveConf values and, before executing any queries, manually start the HIveRunner shell. Make sure this is
     done first in your test setup. like shown in the example below.
  */
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class SetHiveConfValues {
 
-    @HiveSQL(files = {}, autoStart = false)
-    private HiveShell shell;
+  @HiveSQL(files = {}, autoStart = false)
+  private HiveShell shell;
 
-    @Before
-    public void setupDatabases() {
-        shell.setHiveConfValue("cutoff", "50");
-        shell.start();
+  @BeforeEach
+  public void setupDatabases() {
+    shell.setHiveConfValue("cutoff", "50");
+    shell.start();
 
-        shell.execute("CREATE DATABASE source_db");
-        shell.execute(new StringBuilder()
-                .append("CREATE TABLE source_db.table_a (")
-                .append("message STRING, value INT")
-                .append(")")
-                .toString());
+    shell.execute("CREATE DATABASE source_db");
+    shell.execute(new StringBuilder()
+        .append("CREATE TABLE source_db.table_a (")
+        .append("message STRING, value INT")
+        .append(")")
+        .toString());
 
-        shell.insertInto("source_db", "table_a")
-                .withAllColumns()
-                .addRow("An ignored message", 1)
-                .addRow("Hello", 51)
-                .addRow("World", 99)
-                .commit();
+    shell.insertInto("source_db", "table_a")
+        .withAllColumns()
+        .addRow("An ignored message", 1)
+        .addRow("Hello", 51)
+        .addRow("World", 99)
+        .commit();
+  }
+
+  @Test
+  public void useHiveConfValues() {
+    List<Object[]> result = shell.executeStatement(
+        "select message from source_db.table_a where value > ${hiveconf:cutoff}");
+
+    for (Object[] row : result) {
+      System.out.print(row[0] + " ");
     }
-
-    @Test
-    public void useHiveConfValues() {
-        final List<Object[]> result = shell.executeStatement("select message from source_db.table_a where value > ${hiveconf:cutoff}");
-
-        for (Object[] row : result) {
-            System.out.print(row[0] + " ");
-        }
-    }
+  }
 }

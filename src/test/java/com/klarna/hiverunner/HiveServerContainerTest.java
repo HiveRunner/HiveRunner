@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class HiveServerContainerTest {
     public TemporaryFolder basedir = new TemporaryFolder();
     private HiveServerContainer container;
 
+    public HiveServerContainerTest() throws IOException {}
 
     @Before
     public void setup() {

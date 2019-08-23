@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,13 +29,11 @@ import com.klarna.hiverunner.builder.Script;
 /** A rule that executes the scripts under test. */
 public class HiveRunnerRule implements TestRule {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerRule.class);
   private final StandaloneHiveRunner runner;
   private final Object target;
   private final TemporaryFolder testBaseDir;
-
   private List<? extends Script> scriptsUnderTest;
-  
-  protected static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerRule.class);
 
   HiveRunnerRule(StandaloneHiveRunner runner, Object target, TemporaryFolder testBaseDir) {
     this.runner = runner;
@@ -43,13 +41,13 @@ public class HiveRunnerRule implements TestRule {
     this.testBaseDir = testBaseDir;
   }
 
+  public List<? extends Script> getScriptsUnderTest() {
+    return scriptsUnderTest;
+  }
+
   public void setScriptsUnderTest(List<? extends Script> scriptsUnderTest) {
     LOGGER.debug("Setting up hive runner scripts under test");
     this.scriptsUnderTest = scriptsUnderTest;
-  }
-
-  public List<? extends Script> getScriptsUnderTest() {
-    return scriptsUnderTest;
   }
 
   @Override
@@ -60,10 +58,10 @@ public class HiveRunnerRule implements TestRule {
 
   class HiveRunnerRuleStatement extends Statement {
 
-    private Object target;
-    private Statement base;
-    private TemporaryFolder testBaseDir;
-    private StandaloneHiveRunner runner;
+    private final Object target;
+    private final Statement base;
+    private final TemporaryFolder testBaseDir;
+    private final StandaloneHiveRunner runner;
 
     private HiveRunnerRuleStatement(
         StandaloneHiveRunner runner,
@@ -80,13 +78,12 @@ public class HiveRunnerRule implements TestRule {
     public void evaluate() throws Throwable {
       LOGGER.debug("Hive runner rule evaluate method");
       HiveShellContainer container = runner.evaluateStatement(scriptsUnderTest, target, testBaseDir, base);
-      
+
       /**
        * Script list will initially be null. 'evaluateStatement' sets up the script list.
        * Need to set the value here to allow for mutation inside the mutantSwarmRule.
        */
       scriptsUnderTest = container.getScriptsUnderTest();
     }
-
   }
 }
