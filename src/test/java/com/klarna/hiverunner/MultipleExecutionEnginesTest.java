@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ public class MultipleExecutionEnginesTest {
 
         Assert.assertEquals(Arrays.asList("a\tb\tc", "d\te\tf"), shell.executeQuery("select * from foo"));
 
+        shell.execute("set hive.tez.container.size=512");
         shell.execute("set hive.execution.engine=tez");
         Assert.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
 
