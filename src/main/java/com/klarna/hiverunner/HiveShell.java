@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -177,6 +177,7 @@ public interface HiveShell {
    * <p>
    * May only be called pre #start()
    * </p>
+   *
    * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
    */
   @Deprecated
@@ -289,6 +290,7 @@ public interface HiveShell {
 
   /**
    * Resolve all substituted variables with the hive conf.
+   *
    * @throws IllegalArgumentException if not all substitutes could be resolved
    * @throws IllegalStateException    if the HiveShell was not started yet.
    */
@@ -299,6 +301,7 @@ public interface HiveShell {
    *
    * May only be called pre #start().
    * No writes to the stream will be allowed post #start().
+   *
    * @param targetFile The path to the target file relative to the hive work space.
    *
    * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
@@ -311,6 +314,7 @@ public interface HiveShell {
    * <p>
    * May only be called post #start()
    * </p>
+   *
    * @param databaseName The database name
    * @param tableName The table name
    */
