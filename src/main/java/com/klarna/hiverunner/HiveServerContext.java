@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,10 @@
  */
 package com.klarna.hiverunner;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Configuration for the HiveServer.
@@ -54,5 +54,5 @@ public interface HiveServerContext {
    * Each test method will have a new base dir spawned by the HiveRunner engine.
    * </p>
    */
-  TemporaryFolder getBaseDir();
+  Path getBaseDir();
 }

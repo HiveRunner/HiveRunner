@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,10 +33,12 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTOREWAREHOUSE;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.SCRATCHDIR;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,7 +47,6 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,12 +65,12 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 public class StandaloneHiveServerContext implements HiveServerContext {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContext.class);
-  private final TemporaryFolder basedir;
+  private final Path basedir;
   private final HiveRunnerConfig hiveRunnerConfig;
   private final HiveConf hiveConf = new HiveConf();
   private String metaStorageUrl;
 
-  StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+  StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
     this.basedir = basedir;
     this.hiveRunnerConfig = hiveRunnerConfig;
   }
@@ -89,7 +90,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     configureSupportConcurrency(hiveConf);
 
-    configureFileSystem(basedir, hiveConf);
+    try {
+      configureFileSystem(basedir, hiveConf);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
 
     configureAssertionStatus(hiveConf);
 
@@ -213,11 +218,11 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
   }
 
-  private void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
+  private void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
     conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
 
     createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
-    createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
+    //createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
     createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
     createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 
@@ -225,8 +230,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
     createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
-
-
 
         /*
             Tez specific configurations below
@@ -236,20 +239,16 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             It looks like it will do this only once per test suite so it makes sense to keep this in a central location
             rather than in the tmp dir of each test.
          */
-    File installation_dir = newFolder(getBaseDir(), "tez_installation_dir");
+    File installation_dir = newFolder(basedir, "tez_installation_dir").toFile();
 
     conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
     conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
   }
 
-  private File newFolder(TemporaryFolder basedir, String folder) {
-    try {
-      File newFolder = basedir.newFolder(folder);
-      FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
-      return newFolder;
-    } catch (IOException e) {
-      throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
-    }
+  private Path newFolder(Path basedir, String folder) throws IOException {
+    Path newFolder = Files.createTempDirectory(basedir, folder);
+    FileUtil.setPermission(newFolder.toFile(), FsPermission.getDirDefault());
+    return newFolder;
   }
 
   @Override
@@ -258,16 +257,17 @@ public class StandaloneHiveServerContext implements HiveServerContext {
   }
 
   @Override
-  public TemporaryFolder getBaseDir() {
+  public Path getBaseDir() {
     return basedir;
   }
 
-  private final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf,
-      TemporaryFolder basedir) {
-    conf.setVar(var, newFolder(basedir, folder).getAbsolutePath());
+  private final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
+      throws IOException {
+    conf.setVar(var, newFolder(basedir, folder).toAbsolutePath().toString());
   }
 
-  private final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-    conf.set(key, newFolder(basedir, folder).getAbsolutePath());
+  private final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
+      throws IOException {
+    conf.set(key, newFolder(basedir, folder).toAbsolutePath().toString());
   }
 }

@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.rules.TemporaryFolder;
-
 import com.google.common.base.Preconditions;
 import com.google.common.io.Resources;
 import com.klarna.hiverunner.annotations.HiveProperties;
@@ -57,17 +55,22 @@ class HiveRunnerCore {
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
    */
   HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-      TemporaryFolder baseDir, HiveRunnerConfig config)
+      Path baseDir, HiveRunnerConfig config)
       throws IOException {
 
     HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
 
+    return buildShell(scripts, testCase, config, context);
+  }
+
+  private HiveShellContainer buildShell(List<? extends Script> scripts, Object testCase, HiveRunnerConfig config,
+      HiveServerContext context) throws IOException {
     HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
 
     HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
     hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
-    StandaloneHiveRunner.HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
+    HiveRunnerCore.HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
     if (scripts != null) {
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
@@ -89,11 +92,10 @@ class HiveRunnerCore {
     if (shellSetter.isAutoStart()) {
       shell.start();
     }
-
     return shell;
   }
 
-  private StandaloneHiveRunner.HiveShellField loadScriptUnderTest(Object testCaseInstance,
+  private HiveRunnerCore.HiveShellField loadScriptUnderTest(Object testCaseInstance,
       HiveShellBuilder hiveShellBuilder) {
     try {
       Set<Field> fields = ReflectionUtils.getAllFields(
@@ -117,7 +119,7 @@ class HiveRunnerCore {
 
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
-      return new StandaloneHiveRunner.HiveShellField() {
+      return new HiveRunnerCore.HiveShellField() {
         @Override
         public void setShell(HiveShell shell) {
           ReflectionUtils.setField(testCaseInstance, field.getName(), shell);
@@ -202,5 +204,16 @@ class HiveRunnerCore {
       workFlowBuilder.putAllProperties(
           ReflectionUtils.getFieldValue(testCase, hivePropertyField.getName(), Map.class));
     }
+  }
+
+  /**
+   * Used as a handle for the HiveShell field in the test case so that we may set it once the
+   * HiveShell has been instantiated.
+   */
+  interface HiveShellField {
+
+    void setShell(HiveShell shell);
+
+    boolean isAutoStart();
   }
 }

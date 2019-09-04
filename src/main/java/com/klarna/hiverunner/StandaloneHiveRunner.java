@@ -19,7 +19,13 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +35,6 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
-import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -71,7 +76,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
   @Override
   protected List<TestRule> getTestRules(Object target) {
-    TemporaryFolder testBaseDir = new TemporaryFolder();
+    Path testBaseDir = null;
+    Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
+    FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
+    try {
+      testBaseDir = Files.createTempDirectory("hiverunner_tests", permissions);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
 
     HiveRunnerRule hiveRunnerRule = new HiveRunnerRule(this, target, testBaseDir);
 
@@ -82,7 +94,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     List<TestRule> rules = new ArrayList<>();
     rules.addAll(super.getTestRules(target));
     rules.add(hiveRunnerRule);
-    rules.add(testBaseDir);
+    //rules.add(testBaseDir);
     rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
@@ -147,11 +159,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
    * Drives the unit test.
    */
   HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-      TemporaryFolder temporaryFolder, Statement base) throws Throwable {
+      Path temporaryFolder, Statement base) throws Throwable {
     container = null;
-    FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
+    FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
     try {
-      LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
+      LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
       container = createHiveServerContainer(scripts, target, temporaryFolder);
       base.evaluate();
       return container;
@@ -175,12 +187,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
    */
   private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-      TemporaryFolder baseDir)
+      Path baseDir)
       throws IOException {
     HiveRunnerCore core = new HiveRunnerCore();
 
-    HiveShellContainer shell = core.createHiveServerContainer(scripts, testCase, baseDir, config);
-    return shell;
+    return core.createHiveServerContainer(scripts, testCase, baseDir, config);
   }
 
   private TestRule getHiveRunnerConfigRule(Object target) {
@@ -217,16 +228,5 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
     MDC.put("testClass", getTestClass().getJavaClass().getName());
     MDC.put("testMethod", method.getName());
-  }
-
-  /**
-   * Used as a handle for the HiveShell field in the test case so that we may set it once the
-   * HiveShell has been instantiated.
-   */
-  interface HiveShellField {
-
-    void setShell(HiveShell shell);
-
-    boolean isAutoStart();
   }
 }

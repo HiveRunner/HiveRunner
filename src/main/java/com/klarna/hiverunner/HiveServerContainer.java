@@ -15,6 +15,7 @@
  */
 package com.klarna.hiverunner;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.server.HiveServer2;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +108,7 @@ public class HiveServerContainer {
     pingHiveServer();
   }
 
-  public TemporaryFolder getBaseDir() {
+  public Path getBaseDir() {
     return context.getBaseDir();
   }
 

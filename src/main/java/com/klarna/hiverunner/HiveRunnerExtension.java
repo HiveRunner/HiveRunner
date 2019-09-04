@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,15 +20,14 @@ import static org.reflections.ReflectionUtils.withType;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.hadoop.fs.FileUtil;
-import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,25 +44,24 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
 
   private final HiveRunnerCore core;
   private final HiveRunnerConfig config = new HiveRunnerConfig();
-  private TemporaryFolder tempFolder;
+  private Path basedir;
   private HiveShellContainer container;
   private List<? extends Script> scriptsUnderTest;
 
-  public HiveRunnerExtension() throws IOException {
+  public HiveRunnerExtension() {
     core = new HiveRunnerCore();
   }
 
   @Override
   public void postProcessTestInstance(Object target, ExtensionContext extensionContext) {
     setupConfig(target);
-    tempFolder = new TemporaryFolder();
     try {
-      tempFolder.create();
+      basedir = Files.createTempDirectory("hiverunner_test");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
     try {
-      container = evaluateStatement(scriptsUnderTest, target, tempFolder);
+      container = createContainer(scriptsUnderTest, target, basedir);
     } catch (Throwable throwable) {
       throw new RuntimeException(throwable);
     }
@@ -86,13 +84,10 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     }
   }
 
-  private HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-      TemporaryFolder temporaryFolder) throws Throwable {
+  private HiveShellContainer createContainer(List<? extends Script> scripts, Object target, Path basedir)
+      throws Throwable {
     container = null;
-    FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
-
-    LOGGER.info("Setting up {} in {}", target.getClass(), temporaryFolder.getRoot().getAbsolutePath());
-    container = createHiveServerContainer(scripts, target, temporaryFolder);
+    container = createHiveServerContainer(scripts, target, basedir);
     return container;
   }
 
@@ -107,10 +102,9 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     }
   }
 
-  private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-      TemporaryFolder baseDir)
+  private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase, Path basedir)
       throws IOException {
-    return core.createHiveServerContainer(scripts, testCase, baseDir, config);
+    return core.createHiveServerContainer(scripts, testCase, basedir, config);
   }
 
   @Override
