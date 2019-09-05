@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
@@ -73,7 +74,6 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
         Predicates.and(
             withAnnotation(HiveRunnerSetup.class),
             withType(HiveRunnerConfig.class)));
-    LOGGER.info("Fields founds: " + fields.size());
 
     Preconditions.checkState(fields.size() <= 1,
         "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
@@ -96,6 +96,8 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
       LOGGER.info("Tearing down {}", target.getClass());
       try {
         container.tearDown();
+        FileUtils.deleteDirectory(basedir.toFile());
+        LOGGER.info("Deleting directory: " + basedir);
       } catch (Throwable e) {
         LOGGER.warn("Tear down failed: " + e.getMessage(), e);
       }
