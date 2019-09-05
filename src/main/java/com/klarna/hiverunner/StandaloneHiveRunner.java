@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,175 +58,175 @@ import com.klarna.reflection.ReflectionUtils;
  */
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
-  /**
-   * We need to init config because we're going to pass
-   * it around before it is actually fully loaded from the testcase.
-   */
-  private final HiveRunnerConfig config = new HiveRunnerConfig();
-  private HiveShellContainer container;
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
+    /**
+     * We need to init config because we're going to pass
+     * it around before it is actually fully loaded from the testcase.
+     */
+    private final HiveRunnerConfig config = new HiveRunnerConfig();
+    private HiveShellContainer container;
 
-  public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
-    super(clazz);
-  }
-
-  protected HiveRunnerConfig getHiveRunnerConfig() {
-    return config;
-  }
-
-  @Override
-  protected List<TestRule> getTestRules(Object target) {
-    Path testBaseDir = null;
-    Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
-    FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
-    try {
-      testBaseDir = Files.createTempDirectory("hiverunner_tests", permissions);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+    public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
+        super(clazz);
     }
 
-    HiveRunnerRule hiveRunnerRule = new HiveRunnerRule(this, target, testBaseDir);
+    protected HiveRunnerConfig getHiveRunnerConfig() {
+        return config;
+    }
 
-    /*
-     * Note that rules will be executed in reverse order to how they're added.
-     */
+    @Override
+    protected List<TestRule> getTestRules(Object target) {
+        Path testBaseDir = null;
+        Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
+        FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
+        try {
+            testBaseDir = Files.createTempDirectory("hiverunner_tests", permissions);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
 
-    List<TestRule> rules = new ArrayList<>();
-    rules.addAll(super.getTestRules(target));
-    rules.add(hiveRunnerRule);
-    //rules.add(testBaseDir);
-    rules.add(ThrowOnTimeout.create(config, getName()));
+        HiveRunnerRule hiveRunnerRule = new HiveRunnerRule(this, target, testBaseDir);
+
+        /*
+         * Note that rules will be executed in reverse order to how they're added.
+         */
+
+        List<TestRule> rules = new ArrayList<>();
+        rules.addAll(super.getTestRules(target));
+        rules.add(hiveRunnerRule);
+        //rules.add(testBaseDir);
+        rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
          Make sure hive runner config rule is the first rule on the list to be executed so that any subsequent
          statements has access to the final config.
           */
-    rules.add(getHiveRunnerConfigRule(target));
-    return rules;
-  }
-
-  @Override
-  protected void runChild(FrameworkMethod method, RunNotifier notifier) {
-    Description description = describeChild(method);
-    if (method.getAnnotation(Ignore.class) != null) {
-      notifier.fireTestIgnored(description);
-    } else {
-      setLogContext(method);
-      EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
-      eachNotifier.fireTestStarted();
-      try {
-        runTestMethod(method, eachNotifier, config.getTimeoutRetries());
-      } finally {
-        eachNotifier.fireTestFinished();
-        clearLogContext();
-      }
+        rules.add(getHiveRunnerConfigRule(target));
+        return rules;
     }
-  }
 
-  /**
-   * Runs a {@link Statement} that represents a leaf (aka atomic) test.
-   */
-  private final void runTestMethod(FrameworkMethod method,
-      EachTestNotifier notifier, int retriesLeft) {
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+        Description description = describeChild(method);
+        if (method.getAnnotation(Ignore.class) != null) {
+            notifier.fireTestIgnored(description);
+        } else {
+            setLogContext(method);
+            EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
+            eachNotifier.fireTestStarted();
+            try {
+                runTestMethod(method, eachNotifier, config.getTimeoutRetries());
+            } finally {
+                eachNotifier.fireTestFinished();
+                clearLogContext();
+            }
+        }
+    }
 
-    Statement statement = methodBlock(method);
+    /**
+     * Runs a {@link Statement} that represents a leaf (aka atomic) test.
+     */
+    private final void runTestMethod(FrameworkMethod method,
+        EachTestNotifier notifier, int retriesLeft) {
 
-    try {
-      statement.evaluate();
-    } catch (AssumptionViolatedException e) {
-      notifier.addFailedAssumption(e);
-    } catch (TimeoutException e) {
+        Statement statement = methodBlock(method);
+
+        try {
+            statement.evaluate();
+        } catch (AssumptionViolatedException e) {
+            notifier.addFailedAssumption(e);
+        } catch (TimeoutException e) {
             /*
              TimeoutException thrown by ThrowOnTimeout statement. Handling is kept in this class since this is where the
              retry needs to be triggered in order to get the right tear down and test setup between retries.
               */
-      if (--retriesLeft >= 0) {
-        LOGGER.warn(
-            "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
-            retriesLeft);
-        LOGGER.debug(e.getMessage(), e);
-        tearDown();
-        runTestMethod(method, notifier, retriesLeft);
-      } else {
-        notifier.addFailure(e);
-      }
-    } catch (Throwable e) {
-      notifier.addFailure(e);
+            if (--retriesLeft >= 0) {
+                LOGGER.warn(
+                    "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
+                    retriesLeft);
+                LOGGER.debug(e.getMessage(), e);
+                tearDown();
+                runTestMethod(method, notifier, retriesLeft);
+            } else {
+                notifier.addFailure(e);
+            }
+        } catch (Throwable e) {
+            notifier.addFailure(e);
+        }
     }
-  }
 
-  /**
-   * Drives the unit test.
-   */
-  HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-      Path temporaryFolder, Statement base) throws Throwable {
-    container = null;
-    FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
-    try {
-      LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
-      container = createHiveServerContainer(scripts, target, temporaryFolder);
-      base.evaluate();
-      return container;
-    } finally {
-      tearDown();
+    /**
+     * Drives the unit test.
+     */
+    HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
+        Path temporaryFolder, Statement base) throws Throwable {
+        container = null;
+        FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
+        try {
+            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
+            container = createHiveServerContainer(scripts, target, temporaryFolder);
+            base.evaluate();
+            return container;
+        } finally {
+            tearDown();
+        }
     }
-  }
 
-  private void tearDown() {
-    if (container != null) {
-      LOGGER.info("Tearing down {}", getName());
-      try {
-        container.tearDown();
-      } catch (Throwable e) {
-        LOGGER.warn("Tear down failed: " + e.getMessage(), e);
-      }
+    private void tearDown() {
+        if (container != null) {
+            LOGGER.info("Tearing down {}", getName());
+            try {
+                container.tearDown();
+            } catch (Throwable e) {
+                LOGGER.warn("Tear down failed: " + e.getMessage(), e);
+            }
+        }
     }
-  }
 
-  /**
-   * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
-   */
-  private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-      Path baseDir)
-      throws IOException {
-    HiveRunnerCore core = new HiveRunnerCore();
+    /**
+     * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
+     */
+    private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
+        Path baseDir)
+        throws IOException {
+        HiveRunnerCore core = new HiveRunnerCore();
 
-    return core.createHiveServerContainer(scripts, testCase, baseDir, config);
-  }
+        return core.createHiveServerContainer(scripts, testCase, baseDir, config);
+    }
 
-  private TestRule getHiveRunnerConfigRule(Object target) {
-    return new TestRule() {
-      @Override
-      public Statement apply(Statement base, Description description) {
-        Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-            Predicates.and(
-                withAnnotation(HiveRunnerSetup.class),
-                withType(HiveRunnerConfig.class)));
+    private TestRule getHiveRunnerConfigRule(Object target) {
+        return new TestRule() {
+            @Override
+            public Statement apply(Statement base, Description description) {
+                Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
+                    Predicates.and(
+                        withAnnotation(HiveRunnerSetup.class),
+                        withType(HiveRunnerConfig.class)));
 
-        Preconditions.checkState(fields.size() <= 1,
-            "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
+                Preconditions.checkState(fields.size() <= 1,
+                    "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
 
                 /*
                  Override the config with test case config. Taking care to not replace the config instance since it
                   has been passes around and referenced by some of the other test rules.
                   */
-        if (!fields.isEmpty()) {
-          config.override(ReflectionUtils
-              .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
-        }
+                if (!fields.isEmpty()) {
+                    config.override(ReflectionUtils
+                        .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
+                }
 
-        return base;
-      }
-    };
-  }
+                return base;
+            }
+        };
+    }
 
-  private void clearLogContext() {
-    MDC.clear();
-  }
+    private void clearLogContext() {
+        MDC.clear();
+    }
 
-  private void setLogContext(FrameworkMethod method) {
-    MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
-    MDC.put("testClass", getTestClass().getJavaClass().getName());
-    MDC.put("testMethod", method.getName());
-  }
+    private void setLogContext(FrameworkMethod method) {
+        MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
+        MDC.put("testClass", getTestClass().getJavaClass().getName());
+        MDC.put("testMethod", method.getName());
+    }
 }
