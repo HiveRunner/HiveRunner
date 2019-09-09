@@ -68,11 +68,10 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     private String metaStorageUrl;
 
-    private final HiveConf hiveConf = new HiveConf();
+    private HiveConf hiveConf = new HiveConf();
 
     private final Path basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
-
 
     StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
@@ -211,22 +210,21 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     private void configureDerbyLog() {
-        // overriding default derby log path to not go to root of project
-        File derbyLogFile;
-        try {
-            derbyLogFile = File.createTempFile("derby", ".log");
-            LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
-        } catch (IOException e) {
-            throw new RuntimeException("Error creating temporary derby log file", e);
-        }
-        System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
+          // overriding default derby log path to not go to root of project
+          File derbyLogFile;
+          try {
+              derbyLogFile = File.createTempFile("derby", ".log");
+              LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+          } catch (IOException e) {
+              throw new RuntimeException("Error creating temporary derby log file", e);
+          }
+          System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
     private void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
         conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
-        //createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 

@@ -176,7 +176,6 @@ public interface HiveShell {
      * <p>
      * May only be called pre #start()
      * </p>
-     *
      * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
@@ -227,6 +226,7 @@ public interface HiveShell {
      */
     void addResource(String targetFile, Path sourceFile);
 
+
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
@@ -261,6 +261,7 @@ public interface HiveShell {
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
     void addSetupScripts(Charset charset, Path... scripts);
+
 
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.

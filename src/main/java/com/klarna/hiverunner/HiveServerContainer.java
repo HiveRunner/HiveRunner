@@ -15,14 +15,11 @@
  */
 package com.klarna.hiverunner;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.klarna.hiverunner.builder.Statement;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -38,11 +35,12 @@ import org.apache.hive.service.server.HiveServer2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.klarna.hiverunner.builder.Statement;
+import java.nio.file.Path;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HiveServer wrapper
@@ -50,6 +48,7 @@ import com.klarna.hiverunner.builder.Statement;
 public class HiveServerContainer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveServerContainer.class);
+
     private CLIService client;
     private final HiveServerContext context;
     private SessionHandle sessionHandle;
@@ -68,7 +67,7 @@ public class HiveServerContainer {
      * Will start the HiveServer.
      *
      * @param testConfig Specific test case properties. Will be merged with the HiveConf of the context
-     * @param hiveVars HiveVars to pass on to the HiveServer for this session
+     * @param hiveVars   HiveVars to pass on to the HiveServer for this session
      */
     public void init(Map<String, String> testConfig, Map<String, String> hiveVars) {
 
@@ -135,18 +134,18 @@ public class HiveServerContainer {
             }
 
             LOGGER.debug("ResultSet:\n"
-                + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
-                @Nullable
-                @Override
-                public String apply(@Nullable Object[] objects) {
-                    return Joiner.on(", ").useForNull("null").join(objects);
-                }
-            })));
+                    + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable Object[] objects) {
+                            return Joiner.on(", ").useForNull("null").join(objects);
+                        }
+                    })));
 
             return resultSet;
         } catch (HiveSQLException e) {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
-                e);
+                    e);
         }
     }
 
@@ -170,7 +169,7 @@ public class HiveServerContainer {
             executeStatement("USE default");
         } catch (Throwable e) {
             LOGGER.warn("Failed to reset to default schema: " + e.getMessage()
-                + ". Turn on log level debug for stacktrace");
+                    + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 

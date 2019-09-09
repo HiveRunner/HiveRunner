@@ -15,9 +15,9 @@
  */
 package com.klarna.hiverunner;
 
-import java.nio.file.Path;
 import java.util.List;
 
+import java.nio.file.Path;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;

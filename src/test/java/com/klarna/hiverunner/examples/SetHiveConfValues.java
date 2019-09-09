@@ -15,15 +15,14 @@
  */
 package com.klarna.hiverunner.examples;
 
-import java.util.List;
-
+import com.klarna.hiverunner.HiveRunnerExtension;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.klarna.hiverunner.HiveRunnerExtension;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.annotations.HiveSQL;
+import java.util.List;
 
 /*
     This example is intended to show how to set HiveConf (or HiveVar) values in HiveRunner.

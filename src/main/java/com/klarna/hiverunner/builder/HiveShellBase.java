@@ -412,7 +412,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-        String replaceNullWith) {
+            String replaceNullWith) {
         assertStarted();
         assertFileExists(script);
         try {

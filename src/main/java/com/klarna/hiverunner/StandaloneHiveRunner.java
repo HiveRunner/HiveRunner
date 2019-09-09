@@ -15,16 +15,12 @@
  */
 package com.klarna.hiverunner;
 
-import static org.reflections.ReflectionUtils.withAnnotation;
-import static org.reflections.ReflectionUtils.withType;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
+import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
-
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Ignore;
@@ -46,12 +42,12 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static org.reflections.ReflectionUtils.withAnnotation;
+import static org.reflections.ReflectionUtils.withType;
 
 /**
  * JUnit 4 runner that runs hive sql on a HiveServer residing in this JVM. No external dependencies needed.
@@ -60,17 +56,18 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
 
-    private final HiveRunnerConfig config = new HiveRunnerConfig();
     private HiveShellContainer container;
-
-    public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
-        super(clazz);
-    }
 
     /**
      * We need to init config because we're going to pass
      * it around before it is actually fully loaded from the testcase.
      */
+    private final HiveRunnerConfig config = new HiveRunnerConfig();
+
+    public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
+        super(clazz);
+    }
+
     protected HiveRunnerConfig getHiveRunnerConfig() {
       return config;
     }
@@ -125,7 +122,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     private final void runTestMethod(FrameworkMethod method,
-                                     EachTestNotifier notifier, int retriesLeft) {
+        EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -140,8 +137,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
               */
             if (--retriesLeft >= 0) {
                 LOGGER.warn(
-                       "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
-                       retriesLeft);
+                        "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
+                        retriesLeft);
                 LOGGER.debug(e.getMessage(), e);
                 tearDown();
                 runTestMethod(method, notifier, retriesLeft);
@@ -210,7 +207,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                   */
                 if (!fields.isEmpty()) {
                     config.override(ReflectionUtils
-                        .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
+                            .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
                 }
 
                 return base;

@@ -15,18 +15,17 @@
  */
 package com.klarna.hiverunner.examples;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import com.klarna.hiverunner.HiveRunnerExtension;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.data.TsvFileParser;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /*
     This example is intended to be a small show case for some of the ways of setting up your test data in HiveRunner.
@@ -44,92 +43,92 @@ public class InsertTestData {
 
     @BeforeEach
     public void setupDatabase() {
-      shell.execute("CREATE DATABASE source_db");
-      shell.execute(new StringBuilder()
-          .append("CREATE TABLE source_db.test_table (")
-          .append("col_a STRING, col_b INT, col_c BOOLEAN")
-          .append(")")
-          .toString());
+        shell.execute("CREATE DATABASE source_db");
+        shell.execute(new StringBuilder()
+                .append("CREATE TABLE source_db.test_table (")
+                .append("col_a STRING, col_b INT, col_c BOOLEAN")
+                .append(")")
+                .toString());
     }
 
     @Test
     public void insertRowsFromCode() {
-      shell.insertInto("source_db", "test_table")
-          .withAllColumns()
-          .addRow("Value1", 1, true)
-          .addRow("Value2", 99, false)
-          .commit();
+        shell.insertInto("source_db", "test_table")
+                .withAllColumns()
+                .addRow("Value1", 1, true)
+                .addRow("Value2", 99, false)
+                .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table"), "from code");
+        printResult(shell.executeStatement("select * from source_db.test_table"), "from code");
     }
 
     @Test
     public void insertRowsFromCodeWithSelectedColumns() {
-      shell.insertInto("source_db", "test_table")
-          .withColumns("col_a", "col_c")
-          .addRow("Value1", true)
-          .addRow("Value2", false)
-          .commit();
+        shell.insertInto("source_db", "test_table")
+                .withColumns("col_a", "col_c")
+                .addRow("Value1", true)
+                .addRow("Value2", false)
+                .commit();
 
       printResult(shell.executeStatement("select * from source_db.test_table"), "from code selected columns");
     }
 
     @Test
     public void insertRowsFromTsvFile() {
-      File dataFile = new File("src/test/resources/examples/data1.tsv");
-      shell.insertInto("source_db", "test_table")
-          .withAllColumns()
-          .addRowsFromTsv(dataFile)
-          .commit();
+        File dataFile = new File("src/test/resources/examples/data1.tsv");
+        shell.insertInto("source_db", "test_table")
+                .withAllColumns()
+                .addRowsFromTsv(dataFile)
+                .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file");
+        printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file");
     }
 
     @Test
     public void insertRowsFromTsvFileWithHeader() {
-      File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
-      TsvFileParser parser = new TsvFileParser().withHeader();
-      shell.insertInto("source_db", "test_table")
-          .addRowsFrom(dataFile, parser)
-          .commit();
+        File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
+        TsvFileParser parser = new TsvFileParser().withHeader();
+        shell.insertInto("source_db", "test_table")
+                .addRowsFrom(dataFile, parser)
+                .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file header");
+        printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file header");
     }
 
     @Test
     public void insertRowsFromTsvFileWithSubsetHeader() {
-      File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
-      TsvFileParser parser = new TsvFileParser().withHeader();
-      shell.insertInto("source_db", "test_table")
-          .addRowsFrom(dataFile, parser)
-          .commit();
+        File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
+        TsvFileParser parser = new TsvFileParser().withHeader();
+        shell.insertInto("source_db", "test_table")
+                .addRowsFrom(dataFile, parser)
+                .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file subset header");
+        printResult(shell.executeStatement("select * from source_db.test_table"), "TSV file subset header");
     }
 
     @Test
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {
-      File dataFile = new File("src/test/resources/examples/data2.tsv");
-      shell.execute(new StringBuilder()
-          .append("CREATE TABLE source_db.test_table2 (")
-          .append("col_a STRING, col_b INT")
-          .append(")")
-          .append("partitioned by (col_c string)")
-          .append("stored as SEQUENCEFILE")
-          .toString());
+        File dataFile = new File("src/test/resources/examples/data2.tsv");
+        shell.execute(new StringBuilder()
+                  .append("CREATE TABLE source_db.test_table2 (")
+                  .append("col_a STRING, col_b INT")
+                  .append(")")
+                  .append("partitioned by (col_c string)")
+                  .append("stored as SEQUENCEFILE")
+                  .toString());
 
-      shell.insertInto("source_db", "test_table2")
-          .withAllColumns()
-          .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
-          .commit();
+        shell.insertInto("source_db", "test_table2")
+                  .withAllColumns()
+                  .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
+                  .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table2"), "long method name");
+        printResult(shell.executeStatement("select * from source_db.test_table2"), "long method name");
     }
 
     private void printResult(List<Object[]> result, String methodName) {
-      System.out.println(String.format("Result from %s:", methodName));
-      for (Object[] row : result) {
-        System.out.println(Arrays.asList(row));
-      }
+        System.out.println(String.format("Result from %s:", methodName));
+        for (Object[] row : result) {
+            System.out.println(Arrays.asList(row));
+        }
     }
 }
