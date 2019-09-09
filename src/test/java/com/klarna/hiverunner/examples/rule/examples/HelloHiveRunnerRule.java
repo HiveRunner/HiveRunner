@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2018 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples;
+package com.klarna.hiverunner.examples.rule.examples;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.StandaloneHiveRunner;
+import com.klarna.hiverunner.annotations.HiveSQL;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import com.klarna.hiverunner.HiveRunnerExtension;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.annotations.HiveSQL;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query
@@ -38,22 +37,24 @@ import com.klarna.hiverunner.annotations.HiveSQL;
  * <p/>
  * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
  */
-@ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunner {
-
+@RunWith(StandaloneHiveRunner.class)
+public class HelloHiveRunnerRule {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
+    @Before
     public void setupSourceDatabase() {
-      shell.execute("CREATE DATABASE source_db");
-      shell.execute(new StringBuilder()
-          .append("CREATE TABLE source_db.test_table (")
-          .append("year STRING, value INT")
-          .append(")")
-          .toString());
+        shell.execute("CREATE DATABASE source_db");
+        shell.execute(new StringBuilder()
+            .append("CREATE TABLE source_db.test_table (")
+            .append("year STRING, value INT")
+            .append(")")
+            .toString());
+    }
 
-      shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
+    @Before
+    public void setupTargetDatabase() {
+        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class HelloHiveRunner {
         List<Object[]> result = shell.executeStatement("select * from my_schema.result");
 
         assertEquals(2, result.size());
-        assertArrayEquals(new Object[] { "2014", 4 }, result.get(0));
-        assertArrayEquals(new Object[] { "2015", 5 }, result.get(1));
+        assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
+        assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
     }
 }

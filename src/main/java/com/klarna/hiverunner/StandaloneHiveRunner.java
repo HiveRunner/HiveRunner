@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,17 +18,12 @@ package com.klarna.hiverunner;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
+import com.klarna.hiverunner.builder.Script;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
+import com.klarna.reflection.ReflectionUtils;
 
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -46,12 +41,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
-import com.klarna.hiverunner.builder.Script;
-import com.klarna.hiverunner.config.HiveRunnerConfig;
-import com.klarna.reflection.ReflectionUtils;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * JUnit 4 runner that runs hive sql on a HiveServer residing in this JVM. No external dependencies needed.
@@ -59,10 +59,7 @@ import com.klarna.reflection.ReflectionUtils;
 public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveRunner.class);
-    /**
-     * We need to init config because we're going to pass
-     * it around before it is actually fully loaded from the testcase.
-     */
+
     private final HiveRunnerConfig config = new HiveRunnerConfig();
     private HiveShellContainer container;
 
@@ -70,17 +67,19 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         super(clazz);
     }
 
+    /**
+     * We need to init config because we're going to pass
+     * it around before it is actually fully loaded from the testcase.
+     */
     protected HiveRunnerConfig getHiveRunnerConfig() {
-        return config;
+      return config;
     }
 
     @Override
     protected List<TestRule> getTestRules(Object target) {
         Path testBaseDir = null;
-        Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
-        FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
         try {
-            testBaseDir = Files.createTempDirectory("hiverunner_tests", permissions);
+            testBaseDir = Files.createTempDirectory("hiverunner_tests");
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -94,7 +93,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         List<TestRule> rules = new ArrayList<>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
-        //rules.add(testBaseDir);
         rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
@@ -127,7 +125,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     private final void runTestMethod(FrameworkMethod method,
-        EachTestNotifier notifier, int retriesLeft) {
+                                     EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -142,8 +140,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
               */
             if (--retriesLeft >= 0) {
                 LOGGER.warn(
-                    "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
-                    retriesLeft);
+                       "Test case timed out. Will attempt retry {} more times. Turn on log level DEBUG for stacktrace",
+                       retriesLeft);
                 LOGGER.debug(e.getMessage(), e);
                 tearDown();
                 runTestMethod(method, notifier, retriesLeft);
@@ -199,12 +197,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             @Override
             public Statement apply(Statement base, Description description) {
                 Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-                    Predicates.and(
-                        withAnnotation(HiveRunnerSetup.class),
-                        withType(HiveRunnerConfig.class)));
+                        Predicates.and(
+                                withAnnotation(HiveRunnerSetup.class),
+                                withType(HiveRunnerConfig.class)));
 
                 Preconditions.checkState(fields.size() <= 1,
-                    "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
+                        "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
 
                 /*
                  Override the config with test case config. Taking care to not replace the config instance since it

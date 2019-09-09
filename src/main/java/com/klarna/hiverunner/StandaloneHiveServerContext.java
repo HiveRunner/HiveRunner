@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,14 +34,6 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_C
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.UUID;
-
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -49,6 +41,14 @@ import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.UUID;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 
@@ -65,10 +65,14 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 public class StandaloneHiveServerContext implements HiveServerContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContext.class);
+
+    private String metaStorageUrl;
+
+    private final HiveConf hiveConf = new HiveConf();
+
     private final Path basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
-    private final HiveConf hiveConf = new HiveConf();
-    private String metaStorageUrl;
+
 
     StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
@@ -230,6 +234,8 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
+
+
 
         /*
             Tez specific configurations below

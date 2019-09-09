@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,19 +50,22 @@ class HiveShellBase implements HiveShell {
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
     private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
     private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
-    protected final List<HiveResource> resources;
+
+    private boolean started = false;
+
     final HiveServerContainer hiveServerContainer;
+
     private final Map<String, String> hiveConf;
     private final Map<String, String> hiveVars;
     private final List<String> setupScripts;
+    protected final List<HiveResource> resources;
     private final List<Script> scriptsUnderTest;
     private final CommandShellEmulator commandShellEmulator;
     protected StatementLexer lexer;
-    private boolean started = false;
     private Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
-        List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+            List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.commandShellEmulator = commandShellEmulator;
@@ -178,7 +181,7 @@ class HiveShellBase implements HiveShell {
                 setupScripts.add(setupScript);
             } catch (IOException e) {
                 throw new IllegalArgumentException(
-                    "Unable to read setup script file '" + script + "': " + e.getMessage(), e);
+                        "Unable to read setup script file '" + script + "': " + e.getMessage(), e);
             }
         }
     }
@@ -307,10 +310,11 @@ class HiveShellBase implements HiveShell {
                 targetFileOutputStream.close();
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to create resource target file: " + targetFile + " ("
-                    + resource.getTargetFile() + "): " + e.getMessage(), e);
+                        + resource.getTargetFile() + "): " + e.getMessage(), e);
             }
 
             LOGGER.debug("Created hive resource " + targetFile);
+
         }
     }
 
@@ -329,15 +333,15 @@ class HiveShellBase implements HiveShell {
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
 
         Preconditions.checkArgument(isUnexpanded,
-            "File path %s contains " + "unresolved references. Original arg was: %s", expandedPath,
-            resource.getTargetFile());
+                "File path %s contains " + "unresolved references. Original arg was: %s", expandedPath,
+                resource.getTargetFile());
 
         boolean isTargetFileWithinTestDir = expandedPath
-            .startsWith(hiveServerContainer.getBaseDir().toString());
+                .startsWith(hiveServerContainer.getBaseDir().toString());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
-            "All resource target files should be created in a subdirectory to the test case basedir %s : %s",
-            hiveServerContainer.getBaseDir().getRoot(), resource.getTargetFile());
+                "All resource target files should be created in a subdirectory to the test case basedir %s : %s",
+                hiveServerContainer.getBaseDir().getRoot(), resource.getTargetFile());
     }
 
     private final void assertFileExists(Path file) {
@@ -398,7 +402,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-        String replaceNullWith) {
+            String replaceNullWith) {
         return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
     }
 
@@ -421,18 +425,18 @@ class HiveShellBase implements HiveShell {
             return executeQuery(statement.getSql(), rowValuesDelimitedBy, replaceNullWith);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
-                e);
+                    e);
         }
-    }
-
-    @Override
-    public Path getCwd() {
-        return cwd;
     }
 
     @Override
     public void setCwd(Path cwd) {
         assertNotStarted();
         this.cwd = cwd;
+    }
+
+    @Override
+    public Path getCwd() {
+        return cwd;
     }
 }

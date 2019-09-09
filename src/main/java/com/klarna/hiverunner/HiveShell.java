@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +15,14 @@
  */
 package com.klarna.hiverunner;
 
+import com.klarna.hiverunner.data.InsertIntoTable;
+import org.apache.hadoop.hive.conf.HiveConf;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
-
-import org.apache.hadoop.hive.conf.HiveConf;
-
-import com.klarna.hiverunner.data.InsertIntoTable;
 
 /**
  * Test handle to the hive server.
@@ -177,6 +176,7 @@ public interface HiveShell {
      * <p>
      * May only be called pre #start()
      * </p>
+     *
      * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
@@ -203,9 +203,9 @@ public interface HiveShell {
      */
     HiveConf getHiveConf();
 
-    Path getCwd();
-
     void setCwd(Path cwd);
+
+    Path getCwd();
 
     /**
      * Copy test data into hdfs
@@ -282,6 +282,7 @@ public interface HiveShell {
      */
     void addSetupScripts(Path... scripts);
 
+
     /**
      * Get the test case sand box base dir
      */
@@ -299,6 +300,7 @@ public interface HiveShell {
      *
      * May only be called pre #start().
      * No writes to the stream will be allowed post #start().
+     *
      * @param targetFile The path to the target file relative to the hive work space.
      *
      * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
@@ -311,6 +313,7 @@ public interface HiveShell {
      * <p>
      * May only be called post #start()
      * </p>
+     *
      * @param databaseName The database name
      * @param tableName The table name
      */
