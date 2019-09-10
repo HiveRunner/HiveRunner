@@ -68,12 +68,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     private String metaStorageUrl;
 
-    private HiveConf hiveConf = new HiveConf();
+    protected HiveConf hiveConf = new HiveConf();
 
     private final Path basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
-    StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
+    public StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
         this.hiveRunnerConfig = hiveRunnerConfig;
     }
@@ -104,7 +104,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         overrideHiveConf(hiveConf);
     }
 
-    private void configureMiscHiveSettings(HiveConf hiveConf) {
+    protected void configureMiscHiveSettings(HiveConf hiveConf) {
         hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
 
         // Turn of dependency to calcite library
@@ -116,13 +116,13 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         hiveConf.setVar(HADOOPBIN, "NO_BIN!");
     }
 
-    private void overrideHiveConf(HiveConf hiveConf) {
+    protected void overrideHiveConf(HiveConf hiveConf) {
         for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
             hiveConf.set(hiveConfEntry.getKey(), hiveConfEntry.getValue());
         }
     }
 
-    private void configureMrExecutionEngine(HiveConf conf) {
+    protected void configureMrExecutionEngine(HiveConf conf) {
 
         /*
          * Switch off all optimizers otherwise we didn't
@@ -141,7 +141,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
     }
 
-    private void configureTezExecutionEngine(HiveConf conf) {
+    protected void configureTezExecutionEngine(HiveConf conf) {
         /*
         Tez local mode settings
          */
@@ -166,7 +166,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
     }
 
-    private void configureJavaSecurityRealm(HiveConf hiveConf) {
+    protected void configureJavaSecurityRealm(HiveConf hiveConf) {
         // These three properties gets rid of: 'Unable to load realm info from SCDynamicStore'
         // which seems to have a timeout of about 5 secs.
         System.setProperty("java.security.krb5.realm", "");
@@ -174,16 +174,16 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         System.setProperty("java.security.krb5.conf", "/dev/null");
     }
 
-    private void configureAssertionStatus(HiveConf conf) {
+    protected void configureAssertionStatus(HiveConf conf) {
         ClassLoader.getSystemClassLoader().setPackageAssertionStatus("org.apache.hadoop.hive.serde2.objectinspector",
             false);
     }
 
-    private void configureSupportConcurrency(HiveConf conf) {
+    protected void configureSupportConcurrency(HiveConf conf) {
         hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
     }
 
-    private void configureMetaStore(HiveConf conf) {
+    protected void configureMetaStore(HiveConf conf) {
         configureDerbyLog();
 
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
@@ -216,12 +216,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
               derbyLogFile = File.createTempFile("derby", ".log");
               LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
           } catch (IOException e) {
-              throw new RuntimeException("Error creating temporary derby log file", e);
+              throw new UncheckedIOException("Error creating temporary derby log file", e);
           }
           System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
-    private void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
+    protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
         conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);

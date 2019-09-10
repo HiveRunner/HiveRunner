@@ -47,22 +47,22 @@ import com.klarna.hiverunner.sql.split.StatementSplitter;
  */
 class HiveShellBase implements HiveShell {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
-    private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
-    private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
+    protected static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
+    protected static final String DEFAULT_NULL_REPRESENTATION = "NULL";
+    protected static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
 
-    private boolean started = false;
+    protected boolean started = false;
 
     final HiveServerContainer hiveServerContainer;
 
-    private final Map<String, String> hiveConf;
-    private final Map<String, String> hiveVars;
-    private final List<String> setupScripts;
+    protected final Map<String, String> hiveConf;
+    protected final Map<String, String> hiveVars;
+    protected final List<String> setupScripts;
     protected final List<HiveResource> resources;
-    private final List<Script> scriptsUnderTest;
-    private final CommandShellEmulator commandShellEmulator;
+    protected final List<Script> scriptsUnderTest;
+    protected final CommandShellEmulator commandShellEmulator;
     protected StatementLexer lexer;
-    private Path cwd;
+    protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
             List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
@@ -328,7 +328,7 @@ class HiveShellBase implements HiveShell {
         }
     }
 
-    private final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
+    protected final void assertResourcePreconditions(HiveResource resource, String expandedPath) {
         String unexpandedPropertyPattern = ".*\\$\\{.*\\}.*";
         boolean isUnexpanded = !expandedPath.matches(unexpandedPropertyPattern);
 
@@ -344,17 +344,17 @@ class HiveShellBase implements HiveShell {
                 hiveServerContainer.getBaseDir().getRoot(), resource.getTargetFile());
     }
 
-    private final void assertFileExists(Path file) {
+    protected final void assertFileExists(Path file) {
         Preconditions.checkNotNull(file, "File argument is null");
         Preconditions.checkArgument(Files.exists(file), "File %s does not exist", file);
         Preconditions.checkArgument(Files.isRegularFile(file), "%s is not a file", file);
     }
 
-    private final void assertNotStarted() {
+    protected final void assertNotStarted() {
         Preconditions.checkState(!started, "HiveShell was already started");
     }
 
-    private final void assertStarted() {
+    protected final void assertStarted() {
         Preconditions.checkState(started, "HiveShell was not started");
     }
 

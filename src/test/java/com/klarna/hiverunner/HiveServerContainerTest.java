@@ -15,26 +15,23 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.config.HiveRunnerConfig;
-import org.apache.hive.service.cli.HiveSQLException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.hive.service.cli.HiveSQLException;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.klarna.hiverunner.config.HiveRunnerConfig;
+
 public class HiveServerContainerTest {
 
-
-    @Rule
-    public TemporaryFolder basedir = new TemporaryFolder();
+    private Path basedir = Files.createTempDirectory("HiveServerContainerTest");
     private HiveServerContainer container;
 
     public HiveServerContainerTest() throws IOException {}
@@ -43,7 +40,7 @@ public class HiveServerContainerTest {
     public void setup() {
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
         container = new HiveServerContainer(context);
-        container.init(new HashMap<String, String>(), new HashMap<String, String>());
+        container.init(new HashMap<>(), new HashMap<>());
     }
 
     @After
@@ -61,14 +58,14 @@ public class HiveServerContainerTest {
     public void testExecuteStatementMR() {
         List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
-        Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
+        Assert.assertArrayEquals(new Object[] { "default" }, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
         List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
-        Assert.assertArrayEquals(new Object[]{"default"}, actual.get(0));
+        Assert.assertArrayEquals(new Object[] { "default" }, actual.get(0));
     }
 
     @Test

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples.rule.examples;
+package com.klarna.hiverunner.examples.rule;
 
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;

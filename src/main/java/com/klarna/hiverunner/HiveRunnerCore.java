@@ -43,14 +43,6 @@ import com.klarna.reflection.ReflectionUtils;
 
 class HiveRunnerCore {
 
-  private static String readAll(Path path) {
-    try {
-      return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to read " + path + ": " + e.getMessage(), e);
-    }
-  }
-
   /**
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
    */
@@ -70,7 +62,7 @@ class HiveRunnerCore {
     HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
     hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
-    HiveRunnerCore.HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
+    HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
     if (scripts != null) {
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
@@ -95,11 +87,9 @@ class HiveRunnerCore {
     return shell;
   }
 
-  private HiveRunnerCore.HiveShellField loadScriptUnderTest(Object testCaseInstance,
-      HiveShellBuilder hiveShellBuilder) {
+  private HiveShellField loadScriptUnderTest(Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
     try {
-      Set<Field> fields = ReflectionUtils.getAllFields(
-          testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
+      Set<Field> fields = ReflectionUtils.getAllFields(testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
 
       Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
 
@@ -119,7 +109,7 @@ class HiveRunnerCore {
 
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
-      return new HiveRunnerCore.HiveShellField() {
+      return new HiveShellField() {
         @Override
         public void setShell(HiveShell shell) {
           ReflectionUtils.setField(testCaseInstance, field.getName(), shell);
@@ -155,6 +145,14 @@ class HiveRunnerCore {
         throw new IllegalArgumentException(
             "Field annotated with @HiveSetupScript currently only supports type String, File and Path");
       }
+    }
+  }
+
+  private static String readAll(Path path) {
+    try {
+      return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to read " + path + ": " + e.getMessage(), e);
     }
   }
 

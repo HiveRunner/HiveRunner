@@ -121,7 +121,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
-    private final void runTestMethod(FrameworkMethod method,
+    protected final void runTestMethod(FrameworkMethod method,
         EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
@@ -153,7 +153,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Drives the unit test.
      */
-    HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
+    public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
         Path temporaryFolder, Statement base) throws Throwable {
         container = null;
         FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
@@ -203,7 +203,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
                 /*
                  Override the config with test case config. Taking care to not replace the config instance since it
-                  has been passes around and referenced by some of the other test rules.
+                  has been passes around and referenced by some of the other test rule.
                   */
                 if (!fields.isEmpty()) {
                     config.override(ReflectionUtils

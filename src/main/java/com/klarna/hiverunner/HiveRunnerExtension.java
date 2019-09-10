@@ -19,6 +19,7 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,10 +60,10 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     try {
       basedir = Files.createTempDirectory("hiverunner_test");
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
     try {
-      container = createContainer(scriptsUnderTest, target, basedir);
+      container = createHiveServerContainer(scriptsUnderTest, target, basedir);
     } catch (Throwable throwable) {
       throw new RuntimeException(throwable);
     }
@@ -76,19 +77,12 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
             withType(HiveRunnerConfig.class)));
 
     Preconditions.checkState(fields.size() <= 1,
-        "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");
+        "Only one field of type HiveRunnerConfig should be annotated with @HiveRunnerSetup");
 
     if (!fields.isEmpty()) {
       config.override(ReflectionUtils
           .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
     }
-  }
-
-  private HiveShellContainer createContainer(List<? extends Script> scripts, Object target, Path basedir)
-      throws Throwable {
-    container = null;
-    container = createHiveServerContainer(scripts, target, basedir);
-    return container;
   }
 
   private void tearDown(Object target) {
