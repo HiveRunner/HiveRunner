@@ -31,13 +31,12 @@ import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 public class HiveServerContainerTest {
 
-    private Path basedir = Files.createTempDirectory("HiveServerContainerTest");
+    private Path basedir;
     private HiveServerContainer container;
 
-    public HiveServerContainerTest() throws IOException {}
-
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+        basedir = Files.createTempDirectory("HiveServerContainerTest");
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
         container = new HiveServerContainer(context);
         container.init(new HashMap<>(), new HashMap<>());

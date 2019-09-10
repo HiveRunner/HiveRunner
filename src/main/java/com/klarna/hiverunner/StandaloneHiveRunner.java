@@ -203,7 +203,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
                 /*
                  Override the config with test case config. Taking care to not replace the config instance since it
-                  has been passes around and referenced by some of the other test rule.
+                  has been passes around and referenced by some of the other test rules.
                   */
                 if (!fields.isEmpty()) {
                     config.override(ReflectionUtils

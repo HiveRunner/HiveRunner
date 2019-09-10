@@ -47,13 +47,13 @@ import com.klarna.hiverunner.sql.split.StatementSplitter;
  */
 class HiveShellBase implements HiveShell {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
-    protected static final String DEFAULT_NULL_REPRESENTATION = "NULL";
-    protected static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
+    private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
+    private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
 
     protected boolean started = false;
 
-    final HiveServerContainer hiveServerContainer;
+    protected final HiveServerContainer hiveServerContainer;
 
     protected final Map<String, String> hiveConf;
     protected final Map<String, String> hiveVars;
