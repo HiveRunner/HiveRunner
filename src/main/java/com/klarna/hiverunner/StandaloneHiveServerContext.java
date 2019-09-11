@@ -249,7 +249,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
     }
 
-    private Path newFolder(Path basedir, String folder) throws IOException {
+    Path newFolder(Path basedir, String folder) throws IOException {
         Path newFolder = Files.createTempDirectory(basedir, folder);
         FileUtil.setPermission(newFolder.toFile(), FsPermission.getDirDefault());
         return newFolder;
@@ -265,12 +265,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         return basedir;
     }
 
-    private final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
+    protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
         throws IOException {
         conf.setVar(var, newFolder(basedir, folder).toAbsolutePath().toString());
     }
 
-    private final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
+    protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
         throws IOException {
         conf.set(key, newFolder(basedir, folder).toAbsolutePath().toString());
     }
