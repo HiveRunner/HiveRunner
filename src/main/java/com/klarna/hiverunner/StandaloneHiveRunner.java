@@ -90,6 +90,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         List<TestRule> rules = new ArrayList<>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
+        rules.add(new DeleteDirectoryRule(testBaseDir));
         rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
