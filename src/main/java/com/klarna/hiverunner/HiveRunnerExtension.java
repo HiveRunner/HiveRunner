@@ -59,13 +59,9 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     setupConfig(target);
     try {
       basedir = Files.createTempDirectory("hiverunner_test");
+      container = createHiveServerContainer(scriptsUnderTest, target, basedir);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
-    }
-    try {
-      container = createHiveServerContainer(scriptsUnderTest, target, basedir);
-    } catch (Throwable throwable) {
-      throw new RuntimeException(throwable);
     }
     scriptsUnderTest = container.getScriptsUnderTest();
   }
@@ -88,13 +84,16 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   private void tearDown(Object target) {
     if (container != null) {
       LOGGER.info("Tearing down {}", target.getClass());
-      try {
-        container.tearDown();
-        FileUtils.deleteDirectory(basedir.toFile());
-        LOGGER.info("Deleting directory: " + basedir);
-      } catch (Throwable e) {
-        LOGGER.warn("Tear down failed: " + e.getMessage(), e);
-      }
+      container.tearDown();
+      tearDownTempFolder(basedir);
+    }
+  }
+
+  private void tearDownTempFolder(Path directory) {
+    try {
+      FileUtils.deleteDirectory(directory.toFile());
+    } catch (IOException e) {
+      //Failed to delete temporary folder but this error is ignored
     }
   }
 

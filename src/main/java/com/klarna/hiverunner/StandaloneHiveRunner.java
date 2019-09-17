@@ -21,6 +21,8 @@ import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Ignore;
@@ -90,7 +92,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         List<TestRule> rules = new ArrayList<>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
-        rules.add(new DeleteDirectoryRule(testBaseDir));
         rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
@@ -168,7 +169,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void tearDown() {
+    private void tearDown(){
+        tearDownContainer();
+        tearDownTempFolder(container.getBaseDir());
+    }
+
+    private void tearDownContainer(){
         if (container != null) {
             LOGGER.info("Tearing down {}", getName());
             try {
@@ -176,6 +182,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             } catch (Throwable e) {
                 LOGGER.warn("Tear down failed: " + e.getMessage(), e);
             }
+        }
+    }
+
+    private void tearDownTempFolder(Path directory) {
+        try {
+            FileUtils.deleteDirectory(directory.toFile());
+        } catch (IOException e) {
+            //Failed to delete temporary folder but this error is ignored
         }
     }
 
