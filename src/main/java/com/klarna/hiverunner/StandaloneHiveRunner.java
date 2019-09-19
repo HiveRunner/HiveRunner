@@ -189,7 +189,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         try {
             FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
-            //Failed to delete temporary folder but this error is ignored
+          LOGGER.debug("Temporary folder was not deleted successful: " + directory);
         }
     }
 

@@ -85,15 +85,15 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     if (container != null) {
       LOGGER.info("Tearing down {}", target.getClass());
       container.tearDown();
-      tearDownTempFolder(basedir);
     }
+    tearDownTempFolder(basedir);
   }
 
   private void tearDownTempFolder(Path directory) {
     try {
       FileUtils.deleteDirectory(directory.toFile());
     } catch (IOException e) {
-      //Failed to delete temporary folder but this error is ignored
+      LOGGER.debug("Temporary folder was not deleted successful: " + directory);
     }
   }
 
