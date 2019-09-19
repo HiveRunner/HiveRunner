@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [5.0.0] - TBD
 ### Added
-- JUnit5 [Extension](https://junit.org/junit5/docs/current/user-guide/#extensions) support with `HiveRunnerExtension`.
+- JUnit5 [Extension](https://junit.org/junit5/docs/current/user-guide/#extensions) support with `HiveRunnerExtension`. See [#106](https://github.com/klarna/HiveRunner/issues/106).
 
 ### Changed
 - Default supported Hive version is now 2.3.4 (was 2.3.3) as version 2.3.3 has a [vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2018-1314).
