@@ -11,14 +11,14 @@ Welcome to HiveRunner - Zero installation open source unit testing of Hive appli
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
-Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit4 and enables TDD development of HiveQL without the need of any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
+Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of HiveQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
 
-HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as Pull requests and as written requests.
+HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as pull requests and as written requests.
 
 
 ## A word from the inventors
 
-HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, pentaho, Talend, maven, etc…) 
+HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
 
 So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java community.
 
@@ -26,7 +26,7 @@ So, even though your current Hive SQL probably won't run off the shelf within Hi
 
 ## 1. Include HiveRunner
 
-HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file.
+HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file:
 
     <dependency>
         <groupId>com.klarna</groupId>
@@ -35,7 +35,7 @@ HiveRunner is published to [Maven Central](http://search.maven.org/). To start t
         <scope>test</scope>
     </dependency>
 
-Alternatively, if you want to build from source, clone this repo and build with
+Alternatively, if you want to build from source, clone this repo and build with:
 
      mvn install
 
@@ -52,7 +52,7 @@ Also explicitly add the surefire plugin and configure forkMode=always to avoid O
         </configuration>
     </plugin>
 
-as an alternative if this does not solve the OOM issues, try increase the -Xmx and -XX:MaxPermSize settings. For example:
+As an alternative if this does not solve the OOM issues, try increase the -Xmx and -XX:MaxPermSize settings. For example:
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -98,10 +98,10 @@ System property hiveconf_hive.execution.engine to 'tez'.
         </plugin>
 
 ### Timeout
-It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times. This is to cover for the bug
+It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times, but only when using `StandaloneHiveRunner` (this is not available in the `HiveRunnerExtension` (from HiveRunner 5.x and up). This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
 The timeout feature can be configured via the 'enableTimeout', 'timeoutSeconds' and 'timeoutRetries' properties.
-A configuration which enables timeouts after 30 seconds and allows 2 retries would look like
+A configuration which enables timeouts after 30 seconds and allows 2 retries would look like:
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -123,7 +123,9 @@ HiveRunner uses [SLF4J](https://www.slf4j.org/) so you should configure logging 
 
 ## 2. Look at the examples
 
-Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like. If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resources (test data) interactively with HiveShell instead of using annotations.
+Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like in JUnit5. To find JUnit4 versions of the examples, look at [com.klarna.hiverunner.examples.junit4.HelloHiveRunner]((/src/test/java/com/klarna/hiverunner/examples/junit4/HelloHiveRunner.java)).
+
+If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resource (test data) interactively with HiveShell instead of using annotations.
 
 Annotations and interactive mode can be mixed and matched, however you'll always need to include the [com.klarna.hiverunner.annotations.HiveSQL](/src/main/java/com/klarna/hiverunner/annotations/HiveSQL.java) annotation e.g:
 
@@ -161,9 +163,9 @@ See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hi
 
 ## 3. Understand a little bit of the order of execution
 
-HiveRunner will in default mode set up and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked.
+HiveRunner will in default mode set up and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked:
 
-1. Merge any [@HiveProperties](/src/main/java/com/klarna/hiverunner/annotations/HiveProperties.java) from the test case with the hive conf
+1. Merge any [@HiveProperties](/src/main/java/com/klarna/hiverunner/annotations/HiveProperties.java) from the test case with the Hive conf
 2. Start the HiveServer with the merged conf
 3. Copy all [@HiveResource](/src/main/java/com/klarna/hiverunner/annotations/HiveResource.java) data into the temp file area for the test
 4. Execute all fields annotated with [@HiveSetupScript](/src/main/java/com/klarna/hiverunner/annotations/HiveSetupScript.java)
@@ -197,9 +199,9 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 * HiveRunner does not allow the `add jar` statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
 
-* HiveRunner runs Hive and Hive runs on top of hadoop, and hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
+* HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
-* Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead as for a whole test case. Feedback is always welcome!
+* Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead of for a whole test case. Feedback is always welcome!
 
 * Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
 

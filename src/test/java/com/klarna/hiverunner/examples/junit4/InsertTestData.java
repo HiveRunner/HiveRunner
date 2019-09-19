@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples.rule;
+package com.klarna.hiverunner.examples.junit4;
 
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
@@ -37,7 +37,7 @@ import java.util.List;
     or custom NULL keywords in the test data files.
  */
 @RunWith(StandaloneHiveRunner.class)
-public class InsertTestDataRule {
+public class InsertTestData {
     @Rule
     public TestName name = new TestName();
 

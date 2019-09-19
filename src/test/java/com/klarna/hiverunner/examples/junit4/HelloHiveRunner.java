@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples.rule;
+package com.klarna.hiverunner.examples.junit4;
 
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloHiveRunnerRule {
+public class HelloHiveRunner {
     @HiveSQL(files = {})
     private HiveShell shell;
 

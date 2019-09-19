@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples.rule;
+package com.klarna.hiverunner.examples.junit4;
 
 import com.google.common.collect.Sets;
 import com.klarna.hiverunner.HiveShell;
@@ -41,7 +41,7 @@ import java.util.Map;
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloAnnotatedHiveRunnerRule {
+public class HelloAnnotatedHiveRunner {
 
 
     /**
