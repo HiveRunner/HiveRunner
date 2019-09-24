@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,42 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.config.HiveRunnerConfig;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HADOOPBIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVECONVERTJOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEHISTORYFILELOC;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEMETADATAONLYQUERIES;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEOPTINDEXFILTER;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESKEWJOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESTATSAUTOGATHER;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_CBO_ENABLED;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_INFER_BUCKET_SORT;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.LOCALSCRATCHDIR;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORECONNECTURLKEY;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTOREWAREHOUSE;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
+
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 /**
  * Responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
@@ -50,10 +70,10 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected HiveConf hiveConf = new HiveConf();
 
-    private final TemporaryFolder basedir;
+    private final Path basedir;
     private final HiveRunnerConfig hiveRunnerConfig;
 
-    public StandaloneHiveServerContext(TemporaryFolder basedir, HiveRunnerConfig hiveRunnerConfig) {
+    public StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
         this.basedir = basedir;
         this.hiveRunnerConfig = hiveRunnerConfig;
     }
@@ -73,12 +93,15 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         configureSupportConcurrency(hiveConf);
 
-        configureFileSystem(basedir, hiveConf);
+        try {
+            configureFileSystem(basedir, hiveConf);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
 
         configureAssertionStatus(hiveConf);
 
         overrideHiveConf(hiveConf);
-
     }
 
     protected void configureMiscHiveSettings(HiveConf hiveConf) {
@@ -102,9 +125,9 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     protected void configureMrExecutionEngine(HiveConf conf) {
 
         /*
-        * Switch off all optimizers otherwise we didn't
-        * manage to contain the map reduction within this JVM.
-        */
+         * Switch off all optimizers otherwise we didn't
+         * manage to contain the map reduction within this JVM.
+         */
         conf.setBoolVar(HIVE_INFER_BUCKET_SORT, false);
         conf.setBoolVar(HIVEMETADATAONLYQUERIES, false);
         conf.setBoolVar(HIVEOPTINDEXFILTER, false);
@@ -153,7 +176,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureAssertionStatus(HiveConf conf) {
         ClassLoader.getSystemClassLoader().setPackageAssertionStatus("org.apache.hadoop.hive.serde2.objectinspector",
-                false);
+            false);
     }
 
     protected void configureSupportConcurrency(HiveConf conf) {
@@ -162,7 +185,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureMetaStore(HiveConf conf) {
         configureDerbyLog();
-        
+
         String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
         try {
             Class.forName(jdbcDriver);
@@ -187,22 +210,21 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     private void configureDerbyLog() {
-      // overriding default derby log path to not go to root of project
-      File derbyLogFile;
-      try {
-        derbyLogFile = File.createTempFile("derby", ".log");
-        LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
-      } catch (IOException e) {
-        throw new RuntimeException("Error creating temporary derby log file", e);
-      }
-      System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
+          // overriding default derby log path to not go to root of project
+          File derbyLogFile;
+          try {
+              derbyLogFile = File.createTempFile("derby", ".log");
+              LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+          } catch (IOException e) {
+              throw new UncheckedIOException("Error creating temporary derby log file", e);
+          }
+          System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
-    protected void configureFileSystem(TemporaryFolder basedir, HiveConf conf) {
+    protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
         conf.setVar(METASTORECONNECTURLKEY, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
-        createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
         createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
         createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
 
@@ -221,39 +243,35 @@ public class StandaloneHiveServerContext implements HiveServerContext {
             It looks like it will do this only once per test suite so it makes sense to keep this in a central location
             rather than in the tmp dir of each test.
          */
-        File installation_dir = newFolder(getBaseDir(), "tez_installation_dir");
+        File installation_dir = newFolder(basedir, "tez_installation_dir").toFile();
 
         conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
         conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
-
     }
 
-    File newFolder(TemporaryFolder basedir, String folder) {
-        try {
-            File newFolder = basedir.newFolder(folder);
-            FileUtil.setPermission(newFolder, FsPermission.getDirDefault());
-            return newFolder;
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to create tmp dir: " + e.getMessage(), e);
-        }
+    Path newFolder(Path basedir, String folder) throws IOException {
+        Path newFolder = Files.createTempDirectory(basedir, folder);
+        FileUtil.setPermission(newFolder.toFile(), FsPermission.getDirDefault());
+        return newFolder;
     }
 
+    @Override
     public HiveConf getHiveConf() {
         return hiveConf;
     }
 
     @Override
-    public TemporaryFolder getBaseDir() {
+    public Path getBaseDir() {
         return basedir;
     }
 
-    protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf,
-                                                    TemporaryFolder basedir) {
-        conf.setVar(var, newFolder(basedir, folder).getAbsolutePath());
+    protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
+        throws IOException {
+        conf.setVar(var, newFolder(basedir, folder).toAbsolutePath().toString());
     }
 
-    protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-        conf.set(key, newFolder(basedir, folder).getAbsolutePath());
+    protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
+        throws IOException {
+        conf.set(key, newFolder(basedir, folder).toAbsolutePath().toString());
     }
-
 }

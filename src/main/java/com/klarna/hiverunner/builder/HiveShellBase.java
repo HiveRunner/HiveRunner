@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,7 +206,7 @@ class HiveShellBase implements HiveShell {
     }
 
     @Override
-    public TemporaryFolder getBaseDir() {
+    public Path getBaseDir() {
         return hiveServerContainer.getBaseDir();
     }
 
@@ -338,11 +337,11 @@ class HiveShellBase implements HiveShell {
                 resource.getTargetFile());
 
         boolean isTargetFileWithinTestDir = expandedPath
-                .startsWith(hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
+                .startsWith(hiveServerContainer.getBaseDir().toString());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
                 "All resource target files should be created in a subdirectory to the test case basedir %s : %s",
-                hiveServerContainer.getBaseDir().getRoot().getAbsolutePath(), resource.getTargetFile());
+                hiveServerContainer.getBaseDir().getRoot(), resource.getTargetFile());
     }
 
     protected final void assertFileExists(Path file) {
@@ -359,7 +358,7 @@ class HiveShellBase implements HiveShell {
         Preconditions.checkState(started, "HiveShell was not started");
     }
 
-    private OutputStream createPreStartOutputStream(final ByteArrayOutputStream resourceOutputStream) {
+    private OutputStream createPreStartOutputStream(ByteArrayOutputStream resourceOutputStream) {
         return new OutputStream() {
             @Override
             public void write(int b) throws IOException {
@@ -440,5 +439,4 @@ class HiveShellBase implements HiveShell {
     public Path getCwd() {
         return cwd;
     }
-
 }

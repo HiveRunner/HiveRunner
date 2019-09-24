@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,14 @@
  */
 package com.klarna.hiverunner.data;
 
-import static com.google.common.collect.ImmutableMap.of;
 import static java.util.Arrays.asList;
+
 import static org.junit.Assert.assertEquals;
 
+import static com.google.common.collect.ImmutableMap.of;
+
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +50,7 @@ public class TableDataInserterTest {
 
   @Before
   public void setUp() throws IOException {
-    dataLocation = hiveShell.getBaseDir().newFolder("target", "hiverunner_data").getAbsolutePath();
+    dataLocation = Files.createTempDirectory(hiveShell.getBaseDir(), "hiverunner_data").toString();
     hiveShell.execute("create database testdb");
     hiveShell.execute("create table testdb.test_table (a STRING, b STRING) "
         + "PARTITIONED BY(local_date STRING) STORED AS ORC LOCATION '" + dataLocation + "'");
@@ -56,7 +59,7 @@ public class TableDataInserterTest {
   @Test
   public void insertsRowsIntoExistingTable() {
     Multimap<Map<String, String>, HCatRecord> data = ImmutableMultimap
-        .<Map<String, String>, HCatRecord> builder()
+        .<Map<String, String>, HCatRecord>builder()
         .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "aa", "bb")))
         .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "aa2", "bb2")))
         .put(of("local_date", "2015-10-14"), new DefaultHCatRecord(asList((Object) "cc", "dd")))
@@ -86,5 +89,4 @@ public class TableDataInserterTest {
     assertEquals("ff", result.get(3).split("\t")[1]);
     assertEquals("2015-10-15", result.get(3).split("\t")[2]);
   }
-
 }

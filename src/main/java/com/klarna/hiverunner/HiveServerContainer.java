@@ -32,10 +32,10 @@ import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.server.HiveServer2;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +107,7 @@ public class HiveServerContainer {
         pingHiveServer();
     }
 
-    public TemporaryFolder getBaseDir() {
+    public Path getBaseDir() {
         return context.getBaseDir();
     }
 
@@ -117,7 +117,7 @@ public class HiveServerContainer {
 
     public List<Object[]> executeStatement(String hiveql) {
         try {
-            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
+            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
@@ -177,7 +177,7 @@ public class HiveServerContainer {
             client.closeSession(sessionHandle);
         } catch (Throwable e) {
             LOGGER.warn(
-                    "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+                "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 
@@ -212,13 +212,12 @@ public class HiveServerContainer {
         // hivevar:s will not be evaluated.
         SessionState.setCurrentSessionState(currentSessionState);
 
-        final SessionState ss = currentSessionState;
+        SessionState ss = currentSessionState;
         return new VariableSubstitution(new HiveVariableSource() {
             @Override
             public Map<String, String> getHiveVariable() {
                 return ss.getHiveVariables();
             }
         });
-
     }
 }

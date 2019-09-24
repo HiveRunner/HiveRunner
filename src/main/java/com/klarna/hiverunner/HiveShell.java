@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.data.InsertIntoTable;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
-
 
 /**
  * Test handle to the hive server.
@@ -56,7 +54,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(File script);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -64,7 +62,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Path script);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -72,7 +70,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Charset charset, File script);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -80,7 +78,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Charset charset, Path script);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -88,7 +86,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(File script, String rowValuesDelimitedBy, String replaceNullWith);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -96,7 +94,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Path script, String rowValuesDelimitedBy, String replaceNullWith);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -104,7 +102,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy, String replaceNullWith);
-    
+
     /**
      * Executes a single query from a script file, returning any results.
      * <p>
@@ -112,7 +110,7 @@ public interface HiveShell {
      * </p>
      */
     List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy, String replaceNullWith);
-    
+
     /**
      * Execute a single hive query
      * <p>
@@ -137,7 +135,7 @@ public interface HiveShell {
      * </p>
      */
     void execute(File file);
-    
+
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'.
      * Default charset will be used to read the given files.
@@ -154,7 +152,7 @@ public interface HiveShell {
      * </p>
      */
     void execute(Charset charset, File file);
-    
+
     /**
      * Executes a hive script. The script may contain multiple statements delimited by ';'
      * <p>
@@ -205,9 +203,9 @@ public interface HiveShell {
     HiveConf getHiveConf();
 
     void setCwd(Path cwd);
-    
+
     Path getCwd();
-    
+
     /**
      * Copy test data into hdfs
      * May only be called pre #start()
@@ -289,7 +287,7 @@ public interface HiveShell {
     /**
      * Get the test case sand box base dir
      */
-    TemporaryFolder getBaseDir();
+    Path getBaseDir();
 
     /**
      * Resolve all substituted variables with the hive conf.
@@ -303,8 +301,9 @@ public interface HiveShell {
      *
      * May only be called pre #start().
      * No writes to the stream will be allowed post #start().
+     *
      * @param targetFile The path to the target file relative to the hive work space.
-     * 
+     *
      * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
      * with sequence files.
      */
@@ -315,9 +314,9 @@ public interface HiveShell {
      * <p>
      * May only be called post #start()
      * </p>
+     *
      * @param databaseName The database name
      * @param tableName The table name
      */
     InsertIntoTable insertInto(String databaseName, String tableName);
-
 }
