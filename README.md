@@ -98,7 +98,7 @@ System property hiveconf_hive.execution.engine to 'tez'.
         </plugin>
 
 ### Timeout
-It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times, but only when using `StandaloneHiveRunner` (this is not available in the `HiveRunnerExtension` (from HiveRunner 5.x and up). This is to cover for the bug
+It's possible to configure HiveRunner to make tests time out after some time and retry those tests a couple of times, but only when using `StandaloneHiveRunner` as this is not available in the `HiveRunnerExtension` (from HiveRunner 5.x and up). This is to cover for the bug
 https://issues.apache.org/jira/browse/TEZ-2475 that at times causes test cases to not terminate due to a lost DAG reference.
 The timeout feature can be configured via the 'enableTimeout', 'timeoutSeconds' and 'timeoutRetries' properties.
 A configuration which enables timeouts after 30 seconds and allows 2 retries would look like:
