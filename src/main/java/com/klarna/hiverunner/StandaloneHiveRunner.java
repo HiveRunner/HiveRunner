@@ -171,7 +171,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private void tearDown(){
         tearDownContainer();
-        tearDownTempFolder(container.getBaseDir());
+        deleteTempFolder(container.getBaseDir());
     }
 
     private void tearDownContainer(){
@@ -185,11 +185,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void tearDownTempFolder(Path directory) {
+    private void deleteTempFolder(Path directory) {
         try {
             FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
-          LOGGER.debug("Temporary folder was not deleted successful: " + directory);
+          LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
         }
     }
 
