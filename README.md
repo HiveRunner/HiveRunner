@@ -1,7 +1,5 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
-# News
-**2019-04-30:** HiveRunner has been included in the latest [ThoughtWorks Technology Radar](https://www.thoughtworks.com/radar/languages-and-frameworks/hiverunner). It is described as a framework worth trialing for the application of engineering best-practices in a Hive SQL setting.
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
@@ -267,4 +265,4 @@ Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2013-2019 Klarna AB.
+Copyright 2013-2020 Klarna AB.
