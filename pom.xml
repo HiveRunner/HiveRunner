@@ -5,7 +5,7 @@
 
   <groupId>com.klarna</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>5.1.2-SNAPSHOT</version>
+  <version>5.2.0-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
   <url>https://github.com/klarna/HiveRunner</url>
@@ -42,12 +42,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tez.version>0.9.1</tez.version>
-    <hive.version>2.3.6</hive.version>
+    <hive.version>2.3.7</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
     <junit.jupiter.version>5.6.0</junit.jupiter.version>
   </properties>
-
+  
   <dependencies>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -61,13 +61,11 @@
       <version>${hive.version}</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.apache.hive.hcatalog</groupId>
       <artifactId>hive-webhcat-java-client</artifactId>
       <version>${hive.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.hive</groupId>
