@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,6 +83,7 @@ public class InsertIntoTableIntegrationTest {
     assertArrayEquals(new Object[] { "v4", "p2" }, result.get(3));
   }
 
+  // TODO: ClassCastExceptions with Date and Timestamp against Hive 3.1.2
   @Test
   public void insertDataIntoTablePrimitiveParsedStrings() {
     hiveShell
