@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package com.klarna.hiverunner.sql.split;
 
-import static java.util.Arrays.asList;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import static com.klarna.hiverunner.sql.split.StatementSplitter.SQL_SPECIAL_CHARS;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.klarna.hiverunner.builder.Statement;
+import com.klarna.hiverunner.sql.HiveRunnerStatement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
 // Checks the application of rules, not specific emulator implementations. See other tests for that.
@@ -42,23 +44,32 @@ public class StatementSplitterTest {
 
     private StatementSplitter splitter;
 
+    private List<Statement> asStatementList(String... strings) {
+        List<Statement> statements = new ArrayList<>();
+        int index = 0;
+        for (String string : strings) {
+            statements.add(new HiveRunnerStatement(index++, string));
+        }
+        return statements;
+    }
+
     @Before
     public void setupEmulator() {
         // Creates a simple emulator that understands ';' only
         when(emulator.specialCharacters()).thenReturn(SQL_SPECIAL_CHARS);
         when(emulator.splitterRules())
-                .thenReturn(Arrays.<TokenRule> asList(CloseStatementRule.INSTANCE, DefaultTokenRule.INSTANCE));
+                .thenReturn(Arrays.<TokenRule>asList(CloseStatementRule.INSTANCE, DefaultTokenRule.INSTANCE));
         splitter = new StatementSplitter(emulator);
     }
 
     @Test
     public void defaultRule() {
-        assertThat(splitter.split("foo"), is(asList("foo")));
+        assertThat(splitter.split("foo"), is(asStatementList("foo")));
     }
 
     @Test
     public void multipleRules() {
-        assertThat(splitter.split("foo;bar;baz"), is(asList("foo", "bar", "baz")));
+        assertThat(splitter.split("foo;bar;baz"), is(asStatementList("foo", "bar", "baz")));
     }
 
 }

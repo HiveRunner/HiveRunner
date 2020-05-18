@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package com.klarna.hiverunner.sql.split;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.klarna.hiverunner.builder.Statement;
+import com.klarna.hiverunner.sql.HiveRunnerStatement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
 /**
@@ -43,7 +46,7 @@ public class StatementSplitter {
         this.specialChars = specialChars;
     }
 
-    public List<String> split(String expression) {
+    public List<Statement> split(String expression) {
         StringTokenizer tokenizer = new StringTokenizer(expression, specialChars, true);
         BaseContext context = new BaseContext(tokenizer);
         while (tokenizer.hasMoreElements()) {
@@ -58,7 +61,14 @@ public class StatementSplitter {
 
         // Only add statement that is not empty
         context.flush();
-        return context.getStatements();
+        
+        List<Statement> hiveRunnerStatements  = new ArrayList<>();
+        int index = 0;
+        for (String statement : context.getStatements()) {
+          hiveRunnerStatements.add(new HiveRunnerStatement(index++, statement));
+        }
+        
+        return hiveRunnerStatements;
     }
 
 }

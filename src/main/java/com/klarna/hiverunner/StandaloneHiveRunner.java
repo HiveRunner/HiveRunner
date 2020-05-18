@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@ package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
-import com.google.common.io.Resources;
 import com.klarna.hiverunner.annotations.*;
-import com.klarna.hiverunner.builder.HiveShellBuilder;
+import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
-import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -39,17 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.reflections.ReflectionUtils.withAnnotation;
@@ -68,38 +64,34 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * We need to init config because we're going to pass
      * it around before it is actually fully loaded from the testcase.
      */
-    private HiveRunnerConfig config = new HiveRunnerConfig();
+    private final HiveRunnerConfig config = new HiveRunnerConfig();
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
     }
 
+    protected HiveRunnerConfig getHiveRunnerConfig() {
+      return config;
+    }
 
     @Override
-    protected List<TestRule> getTestRules(final Object target) {
-        final TemporaryFolder testBaseDir = new TemporaryFolder();
+    protected List<TestRule> getTestRules(Object target) {
+        Path testBaseDir = null;
+        try {
+            testBaseDir = Files.createTempDirectory("hiverunner_tests");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
 
-        TestRule hiveRunnerRule = new TestRule() {
-            @Override
-            public Statement apply(final Statement base, Description description) {
-                Statement statement = new Statement() {
-                    @Override
-                    public void evaluate() throws Throwable {
-                        evaluateStatement(target, testBaseDir, base);
-                    }
-                };
-                return statement;
-            }
-        };
+        HiveRunnerRule hiveRunnerRule = new HiveRunnerRule(this, target, testBaseDir);
 
         /*
-         *  Note that rules will be executed in reverse order to how they're added.
+         * Note that rules will be executed in reverse order to how they're added.
          */
 
         List<TestRule> rules = new ArrayList<>();
         rules.addAll(super.getTestRules(target));
         rules.add(hiveRunnerRule);
-        rules.add(testBaseDir);
         rules.add(ThrowOnTimeout.create(config, getName()));
 
         /*
@@ -111,7 +103,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
         Description description = describeChild(method);
         if (method.getAnnotation(Ignore.class) != null) {
             notifier.fireTestIgnored(description);
@@ -128,12 +120,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-
     /**
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     protected final void runTestMethod(FrameworkMethod method,
-                                       EachTestNotifier notifier, int retriesLeft) {
+        EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -164,19 +155,26 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     /**
      * Drives the unit test.
      */
-    private void evaluateStatement(Object target, TemporaryFolder temporaryFolder, Statement base) throws Throwable {
+    public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
+        Path temporaryFolder, Statement base) throws Throwable {
         container = null;
-        FileUtil.setPermission(temporaryFolder.getRoot(), FsPermission.getDirDefault());
+        FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
         try {
-            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot().getAbsolutePath());
-            container = createHiveServerContainer(target, temporaryFolder);
+            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
+            container = createHiveServerContainer(scripts, target, temporaryFolder);
             base.evaluate();
+            return container;
         } finally {
             tearDown();
         }
     }
 
-    private void tearDown() {
+    private void tearDown(){
+        tearDownContainer();
+        deleteTempFolder(container.getBaseDir());
+    }
+
+    private void tearDownContainer(){
         if (container != null) {
             LOGGER.info("Tearing down {}", getName());
             try {
@@ -187,162 +185,26 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
+    private void deleteTempFolder(Path directory) {
+        try {
+            FileUtils.deleteDirectory(directory.toFile());
+        } catch (IOException e) {
+          LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+        }
+    }
+
     /**
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
-    private HiveShellContainer createHiveServerContainer(final Object testCase, TemporaryFolder baseDir)
-            throws IOException {
+    private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
+        Path baseDir)
+        throws IOException {
+        HiveRunnerCore core = new HiveRunnerCore();
 
-        HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
-
-        final HiveServerContainer hiveTestHarness = new HiveServerContainer(context);
-
-        HiveShellBuilder hiveShellBuilder = new HiveShellBuilder();
-        hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
-
-        HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
-
-        hiveShellBuilder.setHiveServerContainer(hiveTestHarness);
-
-        loadAnnotatedResources(testCase, hiveShellBuilder);
-
-        loadAnnotatedProperties(testCase, hiveShellBuilder);
-
-        loadAnnotatedSetupScripts(testCase, hiveShellBuilder);
-
-        // Build shell
-        final HiveShellContainer shell = hiveShellBuilder.buildShell();
-
-        // Set shell
-        shellSetter.setShell(shell);
-
-        if (shellSetter.isAutoStart()) {
-            shell.start();
-        }
-
-        return shell;
+        return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
 
-    private HiveShellField loadScriptUnderTest(final Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
-        try {
-            Set<Field> fields = ReflectionUtils.getAllFields(
-                    testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
-
-            Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
-
-            final Field field = fields.iterator().next();
-            List<Path> scripts = new ArrayList<>();
-            HiveSQL annotation = field.getAnnotation(HiveSQL.class);
-            for (String scriptFilePath : annotation.files()) {
-                Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
-                assertFileExists(file);
-                scripts.add(file);
-            }
-
-            Charset charset = annotation.encoding().equals("") ?
-                    Charset.defaultCharset() : Charset.forName(annotation.encoding());
-
-            final boolean isAutoStart = annotation.autoStart();
-
-            hiveShellBuilder.setScriptsUnderTest(scripts, charset);
-
-            return new HiveShellField() {
-                @Override
-                public void setShell(HiveShell shell) {
-                    ReflectionUtils.setField(testCaseInstance, field.getName(), shell);
-                }
-
-                @Override
-                public boolean isAutoStart() {
-                    return isAutoStart;
-                }
-            };
-        } catch (Throwable t) {
-            throw new IllegalArgumentException("Failed to init field annotated with @HiveSQL: " + t.getMessage(), t);
-        }
-    }
-
-    private void assertFileExists(Path file) {
-        Preconditions.checkState(Files.exists(file), "File " + file + " does not exist");
-    }
-
-
-    private void loadAnnotatedSetupScripts(Object testCase, HiveShellBuilder workFlowBuilder) {
-        Set<Field> setupScriptFields = ReflectionUtils.getAllFields(testCase.getClass(),
-                withAnnotation(HiveSetupScript.class));
-
-        for (Field setupScriptField : setupScriptFields) {
-            if (ReflectionUtils.isOfType(setupScriptField, String.class)) {
-                String script = ReflectionUtils.getFieldValue(testCase, setupScriptField.getName(), String.class);
-                workFlowBuilder.addSetupScript(script);
-            } else if (ReflectionUtils.isOfType(setupScriptField, File.class) ||
-                    ReflectionUtils.isOfType(setupScriptField, Path.class)) {
-                Path path = getMandatoryPathFromField(testCase, setupScriptField);
-                workFlowBuilder.addSetupScript(readAll(path));
-            } else {
-                throw new IllegalArgumentException(
-                        "Field annotated with @HiveSetupScript currently only supports type String, File and Path");
-            }
-        }
-    }
-
-    private static String readAll(Path path) {
-        try {
-            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to read " + path + ": " + e.getMessage(), e);
-        }
-    }
-
-    private void loadAnnotatedResources(Object testCase, HiveShellBuilder workFlowBuilder) throws IOException {
-        Set<Field> fields = ReflectionUtils.getAllFields(testCase.getClass(), withAnnotation(HiveResource.class));
-
-        for (Field resourceField : fields) {
-
-            HiveResource annotation = resourceField.getAnnotation(HiveResource.class);
-            String targetFile = annotation.targetFile();
-
-            if (ReflectionUtils.isOfType(resourceField, String.class)) {
-                String data = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), String.class);
-                workFlowBuilder.addResource(targetFile, data);
-            } else if (ReflectionUtils.isOfType(resourceField, File.class) ||
-                    ReflectionUtils.isOfType(resourceField, Path.class)) {
-                Path dataFile = getMandatoryPathFromField(testCase, resourceField);
-                workFlowBuilder.addResource(targetFile, dataFile);
-            } else {
-                throw new IllegalArgumentException(
-                        "Fields annotated with @HiveResource currently only supports field type String, File or Path");
-            }
-        }
-    }
-
-    private Path getMandatoryPathFromField(Object testCase, Field resourceField) {
-        Path path;
-        if (ReflectionUtils.isOfType(resourceField, File.class)) {
-            File dataFile = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), File.class);
-            path = Paths.get(dataFile.toURI());
-        } else if (ReflectionUtils.isOfType(resourceField, Path.class)) {
-            path = ReflectionUtils.getFieldValue(testCase, resourceField.getName(), Path.class);
-        } else {
-            throw new IllegalArgumentException(
-                    "Only Path or File type is allowed on annotated field " + resourceField);
-        }
-
-        Preconditions.checkArgument(Files.exists(path), "File %s does not exist", path);
-        return path;
-    }
-
-    private void loadAnnotatedProperties(Object testCase, HiveShellBuilder workFlowBuilder) {
-        for (Field hivePropertyField : ReflectionUtils.getAllFields(testCase.getClass(),
-                withAnnotation(HiveProperties.class))) {
-            Preconditions.checkState(ReflectionUtils.isOfType(hivePropertyField, Map.class),
-                    "Field annotated with @HiveProperties should be of type Map<String, String>");
-            workFlowBuilder.putAllProperties(
-                    ReflectionUtils.getFieldValue(testCase, hivePropertyField.getName(), Map.class));
-        }
-    }
-
-    private TestRule getHiveRunnerConfigRule(final Object target) {
+    private TestRule getHiveRunnerConfigRule(Object target) {
         return new TestRule() {
             @Override
             public Statement apply(Statement base, Description description) {
@@ -376,15 +238,5 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         MDC.put("testClassShort", getTestClass().getJavaClass().getSimpleName());
         MDC.put("testClass", getTestClass().getJavaClass().getName());
         MDC.put("testMethod", method.getName());
-    }
-
-    /**
-     * Used as a handle for the HiveShell field in the test case so that we may set it once the
-     * HiveShell has been instantiated.
-     */
-    interface HiveShellField {
-        void setShell(HiveShell shell);
-
-        boolean isAutoStart();
     }
 }

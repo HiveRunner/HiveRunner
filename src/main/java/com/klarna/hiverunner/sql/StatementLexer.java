@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.klarna.hiverunner.builder.Statement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 import com.klarna.hiverunner.sql.split.StatementSplitter;
 
@@ -44,10 +45,10 @@ public class StatementLexer {
 
     public List<String> applyToScript(String script) {
         List<String> hiveSqlStatements = new ArrayList<>();
-        List<String> statements = new StatementSplitter(commandShellEmulation)
+        List<Statement> statements = new StatementSplitter(commandShellEmulation)
                 .split(commandShellEmulation.preProcessor().script(script));
-        for (String statement : statements) {
-            hiveSqlStatements.addAll(internalApplyToStatement(statement));
+        for (Statement statement : statements) {
+            hiveSqlStatements.addAll(internalApplyToStatement(statement.getSql()));
         }
         return hiveSqlStatements;
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.klarna.hiverunner.builder.Statement;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -31,10 +32,10 @@ import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.server.HiveServer2;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,21 +107,24 @@ public class HiveServerContainer {
         pingHiveServer();
     }
 
-
-    public TemporaryFolder getBaseDir() {
+    public Path getBaseDir() {
         return context.getBaseDir();
+    }
+
+    public List<Object[]> executeStatement(Statement hiveql) {
+        return executeStatement(hiveql.getSql());
     }
 
     public List<Object[]> executeStatement(String hiveql) {
         try {
-            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<String, String>());
+            OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
                 /*
-                fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to
-                continuously fetch the result set until all rows are fetched.
-                */
+                 * fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to continuously fetch the result set until all
+                 * rows are fetched.
+                 */
                 RowSet rowSet;
                 while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
                     for (Object[] row : rowSet) {
@@ -129,8 +133,8 @@ public class HiveServerContainer {
                 }
             }
 
-            LOGGER.debug("ResultSet:\n" + Joiner.on("\n").join(Iterables.transform(resultSet,
-                    new Function<Object[], String>() {
+            LOGGER.debug("ResultSet:\n"
+                    + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
                         @Nullable
                         @Override
                         public String apply(@Nullable Object[] objects) {
@@ -153,9 +157,8 @@ public class HiveServerContainer {
      */
     public void tearDown() {
 
-
         try {
-          TezJobExecHelper.killRunningJobs();
+            TezJobExecHelper.killRunningJobs();
         } catch (Throwable e) {
             LOGGER.warn("Failed to kill tez session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
@@ -165,8 +168,8 @@ public class HiveServerContainer {
             // Reset to default schema
             executeStatement("USE default");
         } catch (Throwable e) {
-            LOGGER.warn("Failed to reset to default schema: " + e.getMessage() +
-                    ". Turn on log level debug for stacktrace");
+            LOGGER.warn("Failed to reset to default schema: " + e.getMessage()
+                    + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 
@@ -174,7 +177,7 @@ public class HiveServerContainer {
             client.closeSession(sessionHandle);
         } catch (Throwable e) {
             LOGGER.warn(
-                    "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+                "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 
@@ -209,14 +212,12 @@ public class HiveServerContainer {
         // hivevar:s will not be evaluated.
         SessionState.setCurrentSessionState(currentSessionState);
 
-        final SessionState ss = currentSessionState;
+        SessionState ss = currentSessionState;
         return new VariableSubstitution(new HiveVariableSource() {
             @Override
             public Map<String, String> getHiveVariable() {
                 return ss.getHiveVariables();
             }
         });
-
     }
 }
-

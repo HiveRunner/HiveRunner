@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.Map;
  * Builds a HiveShell.
  */
 public class HiveShellBuilder {
-    private final List<String> scriptsUnderTest = new ArrayList<>();
+    private List<Script> scriptsUnderTest = new ArrayList<>();
     private final Map<String, String> props = new HashMap<>();
     private HiveServerContainer hiveServerContainer;
     private final List<HiveResource> resources = new ArrayList<>();
@@ -62,12 +62,14 @@ public class HiveShellBuilder {
     }
 
     public void setScriptsUnderTest(List<Path> scripts, Charset charset) {
-        for (Path script : scripts) {
-            Preconditions.checkState(Files.exists(script), "File %s does not exist", script);
+        int index = 0;
+        for (Path path : scripts) {
+            Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
             try {
-                scriptsUnderTest.add(new String(Files.readAllBytes(script), charset));
+              String sqlText = new String(Files.readAllBytes(path), charset);
+              scriptsUnderTest.add(new HiveRunnerScript(index++, path, sqlText));
             } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to load script file '" + script + "'");
+                throw new IllegalArgumentException("Failed to load script file '" + path + "'");
             }
         }
     }
@@ -79,5 +81,9 @@ public class HiveShellBuilder {
     public HiveShellContainer buildShell() {
         return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
+    
+    public void overrideScriptsUnderTest(List<? extends Script> scripts) {
+      scriptsUnderTest = new ArrayList<>(scripts);
+  }
 }
 

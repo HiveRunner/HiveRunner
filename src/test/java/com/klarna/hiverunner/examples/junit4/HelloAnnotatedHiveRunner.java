@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.examples;
+package com.klarna.hiverunner.examples.junit4;
 
 import com.google.common.collect.Sets;
-import com.klarna.hiverunner.HiveRunnerExtension;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveProperties;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
@@ -26,8 +26,8 @@ import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.HashMap;
@@ -40,15 +40,16 @@ import java.util.Map;
  * <p/>
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class HelloAnnotatedHiveRunner {
+
 
     /**
      * Explicit test class configuration of the HiveRunner runtime.
      * See {@link HiveRunnerConfig} for further details.
      */
     @HiveRunnerSetup
-    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
+    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
         setHiveExecutionEngine("mr");
     }};
 
@@ -57,9 +58,9 @@ public class HelloAnnotatedHiveRunner {
      * Note that the "hadoop.tmp.dir" is one of the dirs defined by the test harness
      */
     @HiveProperties
-    public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new Object[] {
-            "MY.HDFS.DIR", "${hadoop.tmp.dir}",
-            "my.schema", "bar",
+    public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new Object[]{
+        "MY.HDFS.DIR", "${hadoop.tmp.dir}",
+        "my.schema", "bar",
         });
 
     /**
@@ -88,7 +89,8 @@ public class HelloAnnotatedHiveRunner {
      */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
-            new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
+        new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
+
 
     /**
      * Define the script files under test. The files will be loaded in the given order.
@@ -96,10 +98,11 @@ public class HelloAnnotatedHiveRunner {
      * The HiveRunner instantiate and inject the HiveShell
      */
     @HiveSQL(files = {
-            "helloHiveRunner/create_table.sql",
-            "helloHiveRunner/create_ctas.sql"
+        "helloHiveRunner/create_table.sql",
+        "helloHiveRunner/create_ctas.sql"
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
+
 
     @Test
     public void testTablesCreated() {
@@ -121,17 +124,19 @@ public class HelloAnnotatedHiveRunner {
 
         List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
 
-        Assert.assertArrayEquals(new Object[] { null, "bar" }, actual.get(0));
-        Assert.assertArrayEquals(new Object[] { 1, "Hello" }, actual.get(1));
-        Assert.assertArrayEquals(new Object[] { 2, "World" }, actual.get(2));
-        Assert.assertArrayEquals(new Object[] { 3, "!" }, actual.get(3));
+        Assert.assertArrayEquals(new Object[]{null, "bar"}, actual.get(0));
+        Assert.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(1));
+        Assert.assertArrayEquals(new Object[]{2, "World"}, actual.get(2));
+        Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(3));
     }
+
 
     @Test
     public void testSelectFromCtas() {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
         HashSet<String> actual = Sets.newHashSet(hiveShell
-                .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
+            .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
         Assert.assertEquals(expected, actual);
     }
+
 }

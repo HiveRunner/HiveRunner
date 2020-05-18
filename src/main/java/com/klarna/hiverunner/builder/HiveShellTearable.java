@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class HiveShellTearable extends HiveShellBase implements HiveShellContainer {
 
     HiveShellTearable(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf,
                       List<String> setupScripts, List<HiveResource> resources,
-                      List<String> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+                      List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         super(hiveServerContainer, hiveConf, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
 
