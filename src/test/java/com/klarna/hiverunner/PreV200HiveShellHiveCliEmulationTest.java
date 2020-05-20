@@ -29,7 +29,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
-//@Ignore TODO: some of these tests fail with HIve 3, should we fix or remove this functionality?
+//@Ignore TODO: some of these tests fail with Hive 3, should we fix or remove this functionality?
 @RunWith(StandaloneHiveRunner.class)
 public class PreV200HiveShellHiveCliEmulationTest {
 
