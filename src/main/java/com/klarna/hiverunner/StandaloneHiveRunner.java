@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -171,7 +171,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private void tearDown(){
         tearDownContainer();
-        deleteTempFolder(container.getBaseDir());
+        if (container != null) {
+          deleteTempFolder(container.getBaseDir());
+        }
     }
 
     private void tearDownContainer(){
