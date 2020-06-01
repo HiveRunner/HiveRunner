@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-/***
+/**
  * Methods that set up data in HiveRunner use HCatalog, which initially did not support writing to Parquet files.
  *
  * A version of HCatalog with this functionality working was introduced in Hive 3.
