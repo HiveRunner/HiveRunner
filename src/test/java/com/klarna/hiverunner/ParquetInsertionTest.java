@@ -23,30 +23,30 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
+/***
+ * Methods that set up data in HiveRunner use HCatalog, which initially did not support writing to Parquet files.
+ *
+ * A version of HCatalog with this functionality working was introduced in Hive 3.
+ * It was also subsequently back-ported to Hive 2.3.7, which is used in HiveRunner >= 5.2.0.
+ *
+ * This test validates that Parquet insertion is now possible. It has been verified to fail on HiveRunner <= 5.1.x.
+ */
 @RunWith(StandaloneHiveRunner.class)
 public class ParquetInsertionTest {
-    /***
-     * Methods that set up data in HiveRunner use HCatalog, which initially did not support writing to Parquet files.
-     *
-     * A version of HCatalog with this functionality working was introduced in Hive 3.
-     * It was also subsequently back-ported to Hive 2.3.7, which is used in HiveRunner >= 5.2.0.
-     *
-     * This test validates that Parquet insertion is now possible. It has been verified to fail on HiveRunner <= 5.1.x.
-     */
 
     @HiveSQL(files = {})
     private HiveShell hiveShell;
 
-    private static final String tableName = "parquet_test_table";
+    private static final String TABLE_NAME = "parquet_test_table";
 
     @HiveSetupScript
-    private static final String createTableScript = "CREATE TABLE " + tableName + " (col1 string) STORED AS PARQUET;";
+    private static final String CREATE_TABLE_SCRIPT = "CREATE TABLE " + TABLE_NAME + " (col1 string) STORED AS PARQUET;";
 
     @Test
     public void testCanInsertToParquetTable() {
         String textValue = "Some text value";
-        hiveShell.insertInto("default", tableName).addRow(textValue).commit();
-        Assert.assertEquals(hiveShell.executeQuery("SELECT col1 FROM " + tableName), Arrays.asList(textValue));
+        hiveShell.insertInto("default", TABLE_NAME).addRow(textValue).commit();
+        Assert.assertEquals(hiveShell.executeQuery("SELECT col1 FROM " + TABLE_NAME), Arrays.asList(textValue));
     }
 
 }
