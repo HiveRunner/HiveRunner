@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
@@ -81,7 +82,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
          * with some basic tables and will try to run initial test queries against them.
          * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
          */
-        config.getHiveConfSystemOverride().put("hive.in.test", "true");
+        config.getHiveConfSystemOverride().put(HIVE_IN_TEST.name(), "true");
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {

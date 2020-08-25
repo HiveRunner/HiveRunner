@@ -30,7 +30,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.hiverunner.sql.cli.hive.PreV200HiveCliEmulator;
 
-@Ignore
+@Ignore("Disabling the test due to failures when upgrading to Hive 3. This CLI has been deprecated.")
 @RunWith(StandaloneHiveRunner.class)
 public class PreV200HiveShellHiveCliEmulationTest {
 
