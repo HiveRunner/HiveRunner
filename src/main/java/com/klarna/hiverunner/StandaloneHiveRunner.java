@@ -68,6 +68,20 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+        initializeConfig();
+    }
+
+    /**
+     * Set some properties which make good defaults for test scenarios. These can be overridden
+     * in the individual HiveShell instances though, if needed.
+     */
+    private void initializeConfig() {
+        /**
+         * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
+         * with some basic tables and will try to run initial test queries against them.
+         * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
+         */
+        config.getHiveConfSystemOverride().put("hive.in.test", "true");
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
@@ -200,7 +214,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         Path baseDir)
         throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
-
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
 
@@ -224,7 +237,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                     config.override(ReflectionUtils
                             .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
                 }
-
                 return base;
             }
         };

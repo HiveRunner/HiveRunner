@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,6 +39,7 @@ public class HiveServerContainerTest {
     public void setup() throws IOException {
         basedir = Files.createTempDirectory("HiveServerContainerTest");
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
+        context.getHiveConf().setBoolVar(HiveConf.ConfVars.HIVE_IN_TEST, true);
         container = new HiveServerContainer(context);
         container.init(new HashMap<>(), new HashMap<>());
     }
