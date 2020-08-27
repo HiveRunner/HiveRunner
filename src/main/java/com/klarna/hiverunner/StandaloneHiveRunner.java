@@ -186,7 +186,9 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     private void tearDown(){
         tearDownContainer();
-        deleteTempFolder(container.getBaseDir());
+        if (container != null) {
+          deleteTempFolder(container.getBaseDir());
+        }
     }
 
     private void tearDownContainer(){

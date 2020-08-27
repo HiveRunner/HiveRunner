@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - Upgraded Hive version to 3.1.2 (was 2.3.7).
 
+## [5.2.1] - 2020-05-27
+### Fixed
+- NullPointerException in tearDown of `StandaloneHiveRunner`.
+
 ## [5.2.0] - 2020-04-23
 ### Changed
 - Upgraded Hive version to 2.3.7 (was 2.3.6) (allows HiveRunner to be used on JDK>=9).
@@ -28,7 +32,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Default supported Hive version is now 2.3.4 (was 2.3.3) as version 2.3.3 has a [vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2018-1314).
 - `TemporaryFolder` ([JUnit 4](https://junit.org/junit4/javadoc/4.12/org/junit/rules/TemporaryFolder.html)) has been changed to `Path` ([Java NIO](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html)) throughout the project for the JUnit5 update. 
 - NOTE: The `HiveServerContext` class now uses `Path` instead of `TemporaryFolder` in the constructor.
-
 
 ## [4.1.0] - 2019-02-27
 ### Changed
