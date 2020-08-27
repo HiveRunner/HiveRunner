@@ -83,7 +83,6 @@ public class InsertIntoTableIntegrationTest {
     assertArrayEquals(new Object[] { "v4", "p2" }, result.get(3));
   }
 
-  // TODO: ClassCastExceptions with Date and Timestamp against Hive 3.1.2
   @Test
   public void insertDataIntoTablePrimitiveParsedStrings() {
     hiveShell
