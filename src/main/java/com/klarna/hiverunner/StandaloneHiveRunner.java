@@ -82,7 +82,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
          * with some basic tables and will try to run initial test queries against them.
          * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
          */
-        config.getHiveConfSystemOverride().put(HIVE_IN_TEST.name(), "true");
+        config.getHiveConfSystemOverride().put(HIVE_IN_TEST.getVarname(), "true");
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
