@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2020 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,6 @@ import org.apache.commons.beanutils.converters.FloatConverter;
 import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.beanutils.converters.LongConverter;
 import org.apache.commons.beanutils.converters.ShortConverter;
-import org.apache.commons.beanutils.converters.SqlDateConverter;
-import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.apache.commons.beanutils.converters.StringConverter;
 import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
@@ -88,8 +86,8 @@ public final class Converters {
     CONVERTER.register(new LongConverter(), Long.class);
     CONVERTER.register(new FloatConverter(), Float.class);
     CONVERTER.register(new DoubleConverter(), Double.class);
-    CONVERTER.register(new SqlDateConverter(), Date.class);
-    CONVERTER.register(new SqlTimestampConverter(), Timestamp.class);
+    CONVERTER.register(new HiveDateConverter(), Date.class);
+    CONVERTER.register(new HiveTimestampConverter(), Timestamp.class);
     CONVERTER.register(new ByteArrayConverter(), Byte[].class);
     CONVERTER.register(new HiveDecimalConverter(), HiveDecimal.class);
     CONVERTER.register(new HiveVarcharConverter(), HiveVarchar.class);
@@ -140,6 +138,28 @@ public final class Converters {
       try {
         return HiveDecimal.create(new BigDecimal(value.toString()));
       } catch (NumberFormatException e) {
+        throw new ConversionException(e);
+      }
+    }
+  }
+
+  private static class HiveDateConverter implements Converter {
+    @Override
+    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+      try {
+        return org.apache.hadoop.hive.common.type.Date.valueOf(value.toString());
+      } catch (IllegalArgumentException e) {
+        throw new ConversionException(e);
+      }
+    }
+  }
+
+  private static class HiveTimestampConverter implements Converter {
+    @Override
+    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+      try {
+        return org.apache.hadoop.hive.common.type.Timestamp.valueOf(value.toString());
+      } catch (IllegalArgumentException e) {
         throw new ConversionException(e);
       }
     }
