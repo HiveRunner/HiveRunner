@@ -157,23 +157,23 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Drives the unit test.
      */
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-            Path temporaryFolder, Statement base) throws Throwable {
-            container = null;
-            File temporaryFile = temporaryFolder.toFile();
-            if (Files.notExists(temporaryFolder)) {
-                temporaryFile = new File(temporaryFolder.toString());
-                temporaryFile.mkdirs();
-                }
-            FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
-            try {
-                LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
-                container = createHiveServerContainer(scripts, target, temporaryFolder);
-                base.evaluate();
-                return container;
-            } finally {
-                tearDown();
+        Path temporaryFolder, Statement base) throws Throwable {
+        container = null;
+        File temporaryFile = temporaryFolder.toFile();
+        if (Files.notExists(temporaryFolder)) {
+            temporaryFile = new File(temporaryFolder.toString());
+            temporaryFile.mkdirs();
             }
+        FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
+        try {
+            LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
+            container = createHiveServerContainer(scripts, target, temporaryFolder);
+            base.evaluate();
+            return container;
+        } finally {
+            tearDown();
         }
+    }
 
     private void tearDown(){
         tearDownContainer();
