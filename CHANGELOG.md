@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [5.2.2] - TBD
 ### Fixed
-- Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm/pull/18/files) when updating HiveRunner to version 5.2.1.
+- Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
 
 ## [5.2.1] - 2020-05-27
 ### Fixed
