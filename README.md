@@ -1,5 +1,5 @@
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![build](https://github.com/shermosa/HiveRunner/workflows/build/badge.svg?event=push) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![build](https://github.com/klarna/HiveRunner/workflows/build/badge.svg?event=push) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
