@@ -160,8 +160,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         Path temporaryFolder, Statement base) throws Throwable {
         container = null;
         File temporaryFile = temporaryFolder.toFile();
-        if (Files.notExists(temporaryFolder)) {
-            temporaryFile = new File(temporaryFolder.toString());
+        if (!temporaryFile.exists()) {
             temporaryFile.mkdirs();
             }
         FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
