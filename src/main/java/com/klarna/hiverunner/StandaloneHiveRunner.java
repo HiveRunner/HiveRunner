@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
@@ -158,7 +159,11 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
         Path temporaryFolder, Statement base) throws Throwable {
         container = null;
-        FileUtil.setPermission(temporaryFolder.toFile(), FsPermission.getDirDefault());
+        File temporaryFile = temporaryFolder.toFile();
+        if (!temporaryFile.exists()) {
+            temporaryFile.mkdirs();
+        }
+        FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
             container = createHiveServerContainer(scripts, target, temporaryFolder);
