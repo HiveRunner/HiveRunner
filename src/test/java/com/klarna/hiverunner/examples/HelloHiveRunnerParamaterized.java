@@ -64,7 +64,7 @@ public class HelloHiveRunnerParamaterized {
         List<Object[]> result = shell.executeStatement("select year, max(value) from source_db.test_table group by year");
 
         assertEquals(2, result.size());
-        assertArrayEquals(new Object[]{"2014",4}, result.get(0));
-        assertArrayEquals(new Object[]{"2015",5}, result.get(1));
+        assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
+        assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
     }
 }
