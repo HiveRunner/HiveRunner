@@ -44,7 +44,7 @@ public class HelloHiveRunnerParamaterized {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "sequencefile", "ORC", "PARQUET" })
+    @ValueSource(strings = { "SEQUENCEFILE", "ORC", "PARQUET" })
     public void testFileFormats(String fileFormat) {
       shell.executeStatement(new StringBuilder()
           .append("CREATE TABLE source_db.test_table (")
