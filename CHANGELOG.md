@@ -3,10 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [5.2.3] - TBD
+## [5.3.0] - TBD
 ### Changed
-- Made HiveRunnerScript constructor public.
-- Made `scriptsUnderTest` variable protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+- Made `HiveRunnerScript` constructor public.
+- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 
 ## [5.2.2] - 2020-10-14
 ### Fixed
