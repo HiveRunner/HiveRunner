@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.0.2] - TBD
+### Changed
+- Made `HiveRunnerScript` constructor public, so that it is in sync with the Hive 2.x branch.
+- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm) so that it is in sync with the Hive 2.x branch.
+
 ## [6.0.1] - 2020-09-07
 ### Removed
 - Removed shaded jar that was being produced as a side-effect.
