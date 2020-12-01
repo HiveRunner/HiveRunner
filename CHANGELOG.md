@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [6.1.0] - TBD
 ### Changed
 - Upgraded JUnit4 version to 4.13.1 (was 4.12).
+- Made `HiveRunnerScript` constructor public to keep master in sync with the Hive 2x branch.
+- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm) to keep master in sync with the Hive 2x branch.
 
 ## [6.0.1] - 2020-09-07
 ### Removed
