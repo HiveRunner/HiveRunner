@@ -23,6 +23,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   private final HiveRunnerConfig config = new HiveRunnerConfig();
   private Path basedir;
   private HiveShellContainer container;
-  private List<? extends Script> scriptsUnderTest;
+  protected List<Script> scriptsUnderTest = new ArrayList<Script>();
 
   public HiveRunnerExtension() {
     core = new HiveRunnerCore();
