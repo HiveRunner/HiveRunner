@@ -61,7 +61,7 @@ public class HiveShellBuilder {
         resources.add(new HiveResource(targetFile, data));
     }
 
-    public void setScriptsUnderTest(List<Path> scripts, Charset charset) {
+    public List<Script> setScriptsUnderTest(List<Path> scripts, Charset charset) {
         int index = 0;
         for (Path path : scripts) {
             Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
@@ -72,6 +72,7 @@ public class HiveShellBuilder {
                 throw new IllegalArgumentException("Failed to load script file '" + path + "'");
             }
         }
+        return scriptsUnderTest;
     }
     
     public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {

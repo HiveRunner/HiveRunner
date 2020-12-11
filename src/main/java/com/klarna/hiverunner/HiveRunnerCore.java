@@ -20,6 +20,7 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -41,7 +42,7 @@ import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 
-class HiveRunnerCore {
+public class HiveRunnerCore {
 
   /**
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
@@ -86,24 +87,46 @@ class HiveRunnerCore {
     }
     return shell;
   }
+  
+  public List<Path> getScriptPaths(Class classy) throws URISyntaxException{
+    
+    List<Path> scriptPaths = new ArrayList<>();
+    HiveSQL annotation = getAnnotation(classy);
+    for (String scriptFilePath : annotation.files()) {
+      Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
+      assertFileExists(file);
+      scriptPaths.add(file);
+    }
+    return scriptPaths;
+    }
+  
+  public Charset getCharset(Class classy) {
+    HiveSQL annotation = getAnnotation(classy);
+    return annotation.encoding().equals("") ?
+        Charset.defaultCharset() : Charset.forName(annotation.encoding());
+    }
+  
+  public HiveSQL getAnnotation(Class classy) {
+    Set<Field> fields = ReflectionUtils.getAllFields(classy, withAnnotation(HiveSQL.class));
+    Preconditions.checkState(fields.size() == 1, "Exactly one field should be annotated with @HiveSQL");
+    Field field =  fields.iterator().next();
+    return field.getAnnotation(HiveSQL.class);
+  }
+  
+  public Field getField(Class classy) {
+    Set<Field> fields = ReflectionUtils.getAllFields(classy, withAnnotation(HiveSQL.class));
+    Preconditions.checkState(fields.size() == 1, "Exactly one field should be annotated with @HiveSQL");
+    return fields.iterator().next();
+  }
 
   private HiveShellField loadScriptUnderTest(Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
     try {
-      Set<Field> fields = ReflectionUtils.getAllFields(testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
-
-      Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
-
-      Field field = fields.iterator().next();
-      List<Path> scriptPaths = new ArrayList<>();
-      HiveSQL annotation = field.getAnnotation(HiveSQL.class);
-      for (String scriptFilePath : annotation.files()) {
-        Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
-        assertFileExists(file);
-        scriptPaths.add(file);
-      }
-
-      Charset charset = annotation.encoding().equals("") ?
-          Charset.defaultCharset() : Charset.forName(annotation.encoding());
+      
+      Field field = getField(testCaseInstance.getClass());
+      HiveSQL annotation = getAnnotation(testCaseInstance.getClass());
+      
+      List<Path> scriptPaths = getScriptPaths(testCaseInstance.getClass());
+      Charset charset = getCharset(testCaseInstance.getClass());
 
       boolean isAutoStart = annotation.autoStart();
 
