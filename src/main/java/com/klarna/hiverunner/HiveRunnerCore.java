@@ -89,9 +89,9 @@ public class HiveRunnerCore {
   }
   
   public List<Path> getScriptPaths(Class classy) throws URISyntaxException{
-    
+    Field field = getField(classy);
     List<Path> scriptPaths = new ArrayList<>();
-    HiveSQL annotation = getAnnotation(classy);
+    HiveSQL annotation = field.getAnnotation(HiveSQL.class);
     for (String scriptFilePath : annotation.files()) {
       Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
       assertFileExists(file);
@@ -101,17 +101,11 @@ public class HiveRunnerCore {
     }
   
   public Charset getCharset(Class classy) {
-    HiveSQL annotation = getAnnotation(classy);
+    Field field = getField(classy);
+    HiveSQL annotation = field.getAnnotation(HiveSQL.class);
     return annotation.encoding().equals("") ?
         Charset.defaultCharset() : Charset.forName(annotation.encoding());
     }
-  
-  public HiveSQL getAnnotation(Class classy) {
-    Set<Field> fields = ReflectionUtils.getAllFields(classy, withAnnotation(HiveSQL.class));
-    Preconditions.checkState(fields.size() == 1, "Exactly one field should be annotated with @HiveSQL");
-    Field field =  fields.iterator().next();
-    return field.getAnnotation(HiveSQL.class);
-  }
   
   public Field getField(Class classy) {
     Set<Field> fields = ReflectionUtils.getAllFields(classy, withAnnotation(HiveSQL.class));
@@ -123,7 +117,7 @@ public class HiveRunnerCore {
     try {
       
       Field field = getField(testCaseInstance.getClass());
-      HiveSQL annotation = getAnnotation(testCaseInstance.getClass());
+      HiveSQL annotation = field.getAnnotation(HiveSQL.class);
       
       List<Path> scriptPaths = getScriptPaths(testCaseInstance.getClass());
       Charset charset = getCharset(testCaseInstance.getClass());
