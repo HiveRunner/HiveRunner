@@ -87,7 +87,7 @@ class HiveRunnerCore {
     }
     return shell;
   }
-  
+
   private HiveShellField loadScriptUnderTest(Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
     try {
       Set<Field> fields = ReflectionUtils.getAllFields(testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
@@ -101,7 +101,7 @@ class HiveRunnerCore {
       Charset charset = annotation.encoding().equals("") ? Charset.defaultCharset() : Charset.forName(annotation.encoding());
       
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
-      
+
       return new HiveShellField() {
         @Override
         public void setShell(HiveShell shell) {
