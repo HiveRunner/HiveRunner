@@ -100,7 +100,7 @@ public class HiveRunnerCore {
     return scriptPaths;
     }
   
-  private Charset getCharset(Class clazz) {
+  protected Charset getCharset(Class clazz) {
     Field field = getField(clazz);
     HiveSQL annotation = field.getAnnotation(HiveSQL.class);
     return annotation.encoding().equals("") ?
