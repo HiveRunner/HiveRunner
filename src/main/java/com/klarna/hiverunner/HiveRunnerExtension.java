@@ -64,6 +64,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
 
   @Override
   public void postProcessTestInstance(Object target, ExtensionContext extensionContext) {
+
     setupConfig(target);
     try {
       basedir = Files.createTempDirectory("hiverunner_test");

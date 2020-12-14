@@ -94,9 +94,13 @@ class HiveRunnerCore {
       Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
       Field field = fields.iterator().next();
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
-      getScriptPaths(annotation, hiveShellBuilder);
+      List<Path> scriptPaths = getScriptPaths(annotation, hiveShellBuilder);
       
       boolean isAutoStart = annotation.autoStart();
+      
+      Charset charset = annotation.encoding().equals("") ? Charset.defaultCharset() : Charset.forName(annotation.encoding());
+      
+      hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
       
       return new HiveShellField() {
         @Override
@@ -120,8 +124,6 @@ class HiveRunnerCore {
       assertFileExists(file);
       scriptPaths.add(file);
     }
-    Charset charset = annotation.encoding().equals("") ? Charset.defaultCharset() : Charset.forName(annotation.encoding());
-    hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
     return scriptPaths;
   }
 
