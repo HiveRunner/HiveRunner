@@ -42,7 +42,7 @@ import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 
-public class HiveRunnerCore {
+class HiveRunnerCore {
 
   /**
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
@@ -113,7 +113,7 @@ public class HiveRunnerCore {
     }
   }
   
-  public List<Path> getScriptPaths(HiveSQL annotation, HiveShellBuilder hiveShellBuilder) throws URISyntaxException {
+  protected List<Path> getScriptPaths(HiveSQL annotation, HiveShellBuilder hiveShellBuilder) throws URISyntaxException {
     List<Path> scriptPaths = new ArrayList<>();
     for (String scriptFilePath : annotation.files()) {
       Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
