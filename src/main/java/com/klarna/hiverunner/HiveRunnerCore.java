@@ -42,7 +42,7 @@ import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
 
-public class HiveRunnerCore {
+class HiveRunnerCore {
 
   /**
    * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
