@@ -39,7 +39,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.builder.HiveShellBuilder;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
