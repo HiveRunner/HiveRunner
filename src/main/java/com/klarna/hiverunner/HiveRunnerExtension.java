@@ -58,8 +58,8 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     core = new HiveRunnerCore();
   }
   
-  protected List<Path> getScriptPaths(HiveSQL annotation, HiveShellBuilder hiveShellBuilder) throws URISyntaxException {
-    return core.getScriptPaths(annotation, hiveShellBuilder);
+  protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
+    return core.getScriptPaths(annotation);
   }
 
   @Override

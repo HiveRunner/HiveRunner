@@ -94,7 +94,7 @@ class HiveRunnerCore {
       Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
       Field field = fields.iterator().next();
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
-      List<Path> scriptPaths = getScriptPaths(annotation, hiveShellBuilder);
+      List<Path> scriptPaths = getScriptPaths(annotation);
       
       boolean isAutoStart = annotation.autoStart();
       
@@ -117,7 +117,7 @@ class HiveRunnerCore {
     }
   }
   
-  protected List<Path> getScriptPaths(HiveSQL annotation, HiveShellBuilder hiveShellBuilder) throws URISyntaxException {
+  protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
     List<Path> scriptPaths = new ArrayList<>();
     for (String scriptFilePath : annotation.files()) {
       Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
