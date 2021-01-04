@@ -61,19 +61,23 @@ public class HiveShellBuilder {
         resources.add(new HiveResource(targetFile, data));
     }
 
-    public List<Script> setScriptsUnderTest(List<Path> scripts, Charset charset) {
-      scriptsUnderTest.clear();
-        int index = 0;
-        for (Path path : scripts) {
-            Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
-            try {
-              String sqlText = new String(Files.readAllBytes(path), charset);
-              scriptsUnderTest.add(new HiveRunnerScript(index++, path, sqlText));
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to load script file '" + path + "'");
-            }
+    public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
+      scriptsUnderTest = fromScriptPaths(scriptPaths, charset);
+    }
+    
+    public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset){
+    List<Script> scripts = scriptsUnderTest;
+    int index = 0;
+    for (Path path : scriptPaths) {
+        Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
+        try {
+          String sqlText = new String(Files.readAllBytes(path), charset);
+          scripts.add(new HiveRunnerScript(index++, path, sqlText));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to load script file '" + path + "'");
         }
-        return scriptsUnderTest;
+    }
+    return scripts;
     }
     
     public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
