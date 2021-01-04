@@ -62,11 +62,11 @@ public class HiveShellBuilder {
     }
 
     public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
-      scriptsUnderTest = fromScriptPaths(scriptPaths, charset);
+      scriptsUnderTest.addAll(fromScriptPaths(scriptPaths, charset));
     }
     
     public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset){
-    List<Script> scripts = scriptsUnderTest;
+    List<Script> scripts = new ArrayList();
     int index = 0;
     for (Path path : scriptPaths) {
         Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
