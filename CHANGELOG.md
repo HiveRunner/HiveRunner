@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - Upgraded JUnit4 version to 4.13.1 (was 4.12).
 - Made `HiveRunnerScript` constructor public.
-- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected.
-- Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 
 ### Added
