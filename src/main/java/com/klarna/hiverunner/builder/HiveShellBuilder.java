@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2021 Klarna AB
+ * Copyright (C) 2013-2019 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,62 +34,61 @@ import java.util.Map;
  * Builds a HiveShell.
  */
 public class HiveShellBuilder {
-  private List<Script> scriptsUnderTest = new ArrayList<>();
-  private final Map<String, String> props = new HashMap<>();
-  private HiveServerContainer hiveServerContainer;
-  private final List<HiveResource> resources = new ArrayList<>();
-  private final List<String> setupScripts = new ArrayList<>();
-  private CommandShellEmulator commandShellEmulator = HiveCliEmulator.INSTANCE;
+    private List<Script> scriptsUnderTest = new ArrayList<>();
+    private final Map<String, String> props = new HashMap<>();
+    private HiveServerContainer hiveServerContainer;
+    private final List<HiveResource> resources = new ArrayList<>();
+    private final List<String> setupScripts = new ArrayList<>();
+    private CommandShellEmulator commandShellEmulator = HiveCliEmulator.INSTANCE;
 
-  public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
-    this.hiveServerContainer = hiveServerContainer;
-  }
-
-  public void putAllProperties(Map<String, String> props) {
-    this.props.putAll(props);
-  }
-
-  public void addSetupScript(String script) {
-    this.setupScripts.add(script);
-  }
-
-  public void addResource(String targetFile, Path dataFile) throws IOException {
-    resources.add(new HiveResource(targetFile, dataFile));
-  }
-
-  public void addResource(String targetFile, String data) throws IOException {
-    resources.add(new HiveResource(targetFile, data));
-  }
-
-  public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
-    scriptsUnderTest.addAll(fromScriptPaths(scriptPaths, charset));
-  }
-
-  public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset) {
-    List<Script> scripts = new ArrayList();
-    int index = 0;
-    for (Path path : scriptPaths) {
-      Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
-      try {
-        String sqlText = new String(Files.readAllBytes(path), charset);
-        scripts.add(new HiveRunnerScript(index++, path, sqlText));
-      } catch (IOException e) {
-        throw new IllegalArgumentException("Failed to load script file '" + path + "'");
-      }
+    public void setHiveServerContainer(HiveServerContainer hiveServerContainer) {
+        this.hiveServerContainer = hiveServerContainer;
     }
-    return scripts;
-  }
 
-  public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
-    this.commandShellEmulator = commandShellEmulator;
-  }
+    public void putAllProperties(Map<String, String> props) {
+        this.props.putAll(props);
+    }
 
-  public HiveShellContainer buildShell() {
-    return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest,
-        commandShellEmulator);
-  }
+    public void addSetupScript(String script) {
+        this.setupScripts.add(script);
+    }
 
-  public void overrideScriptsUnderTest(List<? extends Script> scripts) {
-    scriptsUnderTest = new ArrayList<>(scripts);
+    public void addResource(String targetFile, Path dataFile) throws IOException {
+        resources.add(new HiveResource(targetFile, dataFile));
+    }
+
+    public void addResource(String targetFile, String data) throws IOException {
+        resources.add(new HiveResource(targetFile, data));
+    }
+
+    public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
+        scriptsUnderTest.addAll(fromScriptPaths(scriptPaths, charset));
+    }
+
+    public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset) {
+        List<Script> scripts = new ArrayList();
+        int index = 0;
+        for (Path path : scriptPaths) {
+            Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
+            try {
+                String sqlText = new String(Files.readAllBytes(path), charset);
+                scripts.add(new HiveRunnerScript(index++, path, sqlText));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Failed to load script file '" + path + "'");
+            }
+        }
+        return scripts;
+    }
+    
+    public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
+      this.commandShellEmulator = commandShellEmulator;
+    }
+
+    public HiveShellContainer buildShell() {
+        return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
+    }
+    
+    public void overrideScriptsUnderTest(List<? extends Script> scripts) {
+      scriptsUnderTest = new ArrayList<>(scripts);
   }
 }
