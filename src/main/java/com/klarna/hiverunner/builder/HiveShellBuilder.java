@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,17 +61,23 @@ public class HiveShellBuilder {
         resources.add(new HiveResource(targetFile, data));
     }
 
-    public void setScriptsUnderTest(List<Path> scripts, Charset charset) {
+    public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
+        scriptsUnderTest.addAll(fromScriptPaths(scriptPaths, charset));
+    }
+
+    public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset) {
+        List<Script> scripts = new ArrayList();
         int index = 0;
-        for (Path path : scripts) {
+        for (Path path : scriptPaths) {
             Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
             try {
-              String sqlText = new String(Files.readAllBytes(path), charset);
-              scriptsUnderTest.add(new HiveRunnerScript(index++, path, sqlText));
+                String sqlText = new String(Files.readAllBytes(path), charset);
+                scripts.add(new HiveRunnerScript(index++, path, sqlText));
             } catch (IOException e) {
                 throw new IllegalArgumentException("Failed to load script file '" + path + "'");
             }
         }
+        return scripts;
     }
     
     public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
