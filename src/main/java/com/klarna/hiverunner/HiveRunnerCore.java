@@ -91,15 +91,19 @@ class HiveRunnerCore {
   private HiveShellField loadScriptUnderTest(Object testCaseInstance, HiveShellBuilder hiveShellBuilder) {
     try {
       Set<Field> fields = ReflectionUtils.getAllFields(testCaseInstance.getClass(), withAnnotation(HiveSQL.class));
+      
       Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
+      
       Field field = fields.iterator().next();
+      
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
       List<Path> scriptPaths = getScriptPaths(annotation);
       
-      Charset charset = annotation.encoding().equals("") ? Charset.defaultCharset() : Charset.forName(annotation.encoding());
+      Charset charset = annotation.encoding().equals("") ?
+          Charset.defaultCharset() : Charset.forName(annotation.encoding());
       
       boolean isAutoStart = annotation.autoStart();
-      
+
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
       return new HiveShellField() {
@@ -107,7 +111,7 @@ class HiveRunnerCore {
         public void setShell(HiveShell shell) {
           ReflectionUtils.setField(testCaseInstance, field.getName(), shell);
         }
-        
+
         @Override
         public boolean isAutoStart() {
           return isAutoStart;
