@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Refactored `setScriptsUnderTest` method in `HiveShellBuilder`.
 - Refactored `loadScriptUnderTest` method in `HiveRunnerCore`.
 
+### Added
+- Added `getScriptPaths` method in `HiveRunnerCore`.
+- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+- Added `fromScriptPaths` method in `HiveShellBuilder`.
+
 ## [5.2.2] - 2020-10-14
 ### Fixed
 - Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
