@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Upgraded JUnit4 version to 4.13.1 (was 4.12).
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected.
+- Made `HiveRunnerScript` constructor public.
+- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+
+### Added
+- Added `getScriptPaths` method in `HiveRunnerCore`.
+- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+- Added `fromScriptPaths` method in `HiveShellBuilder`.
 
 ## [6.0.1] - 2020-09-07
 ### Removed
