@@ -96,9 +96,9 @@ class HiveRunnerCore {
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
       List<Path> scriptPaths = getScriptPaths(annotation);
       
-      boolean isAutoStart = annotation.autoStart();
-      
       Charset charset = annotation.encoding().equals("") ? Charset.defaultCharset() : Charset.forName(annotation.encoding());
+      
+      boolean isAutoStart = annotation.autoStart();
       
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
@@ -107,6 +107,7 @@ class HiveRunnerCore {
         public void setShell(HiveShell shell) {
           ReflectionUtils.setField(testCaseInstance, field.getName(), shell);
         }
+        
         @Override
         public boolean isAutoStart() {
           return isAutoStart;
