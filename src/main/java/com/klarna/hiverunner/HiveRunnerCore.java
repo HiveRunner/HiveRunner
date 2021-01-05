@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -94,14 +95,8 @@ class HiveRunnerCore {
       Preconditions.checkState(fields.size() == 1, "Exact one field should to be annotated with @HiveSQL");
 
       Field field = fields.iterator().next();
-      List<Path> scriptPaths = new ArrayList<>();
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
-      for (String scriptFilePath : annotation.files()) {
-        Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
-        assertFileExists(file);
-        scriptPaths.add(file);
-      }
-
+      List<Path> scriptPaths = getScriptPaths(annotation);
       Charset charset = annotation.encoding().equals("") ?
           Charset.defaultCharset() : Charset.forName(annotation.encoding());
 
@@ -123,6 +118,16 @@ class HiveRunnerCore {
     } catch (Throwable t) {
       throw new IllegalArgumentException("Failed to init field annotated with @HiveSQL: " + t.getMessage(), t);
     }
+  }
+  
+  protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
+    List<Path> scriptPaths = new ArrayList<>();
+    for (String scriptFilePath : annotation.files()) {
+      Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
+      assertFileExists(file);
+      scriptPaths.add(file);
+    }
+    return scriptPaths;
   }
 
   private void assertFileExists(Path file) {
