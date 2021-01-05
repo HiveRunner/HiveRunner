@@ -98,7 +98,6 @@ class HiveRunnerCore {
 
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
       List<Path> scriptPaths = getScriptPaths(annotation);
-      
       Charset charset = annotation.encoding().equals("") ?
           Charset.defaultCharset() : Charset.forName(annotation.encoding());
 

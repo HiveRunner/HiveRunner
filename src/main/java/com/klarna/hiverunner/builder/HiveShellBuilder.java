@@ -92,3 +92,4 @@ public class HiveShellBuilder {
       scriptsUnderTest = new ArrayList<>(scripts);
   }
 }
+
