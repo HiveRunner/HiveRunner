@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,7 @@ public class HelloAnnotatedHiveRunner {
      * <p/>
      * This example is for defining the data in in a resource file.
      */
+    
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
             new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
@@ -106,6 +107,8 @@ public class HelloAnnotatedHiveRunner {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
         HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
 
+        System.out.println(expected);
+        System.out.println(actual);
         Assert.assertEquals(expected, actual);
     }
 
