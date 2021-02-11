@@ -54,9 +54,9 @@ public class ViewTest {
   }
 
   // (expected = IllegalArgumentException.class)
-  @Test(expected = IllegalArgumentException.class)
+  @Test
 
-  public void createViewError() {
+  public void createViewMixedCases() {
     shell.execute("create database test_db");
 
     shell
