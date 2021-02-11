@@ -53,8 +53,31 @@ public class ViewTest {
     shell.executeStatement("select * from test_db.test_view1");
   }
 
+  // (expected = IllegalArgumentException.class)
   @Test(expected = IllegalArgumentException.class)
+
   public void createViewError() {
+    shell.execute("create database test_db");
+
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableA (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableB (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
+
     // Using mixed case in create VIEW statement (with a JOIN ON construction) is not OK
     shell
         .execute(new StringBuilder()
