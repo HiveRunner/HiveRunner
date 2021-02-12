@@ -116,20 +116,14 @@ public class HiveServerContainer {
     }
 
     public List<Object[]> executeStatement(String hiveql) {
-      System.out.println("queryyy:"+hiveql);
-      System.out.println("checkpoint:1");
         try {
-          System.out.println(hiveql);
             if((hiveql.toLowerCase()).contains(" view ")
             && (hiveql.toLowerCase()).contains(" join ")
             && (hiveql.toLowerCase()).contains(" on ")) {
               int index = hiveql.indexOf(" on ");
               hiveql = hiveql.substring(0, index) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
             }
-            System.out.println(hiveql);
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
-            System.out.println("checkpoint:3");
-            System.out.println("handle:"+handle.toString());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
@@ -139,7 +133,6 @@ public class HiveServerContainer {
                  */
                 RowSet rowSet;
                 while ((rowSet = client.fetchResults(handle)) != null && rowSet.numRows() > 0) {
-                  System.out.println("rowSet:"+rowSet.toString());
                     for (Object[] row : rowSet) {
                         resultSet.add(row.clone());
                     }
