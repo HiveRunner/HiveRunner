@@ -105,7 +105,7 @@ public class HelloAnnotatedHiveRunner {
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
         HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
-        
+
         Assert.assertEquals(expected, actual);
     }
 
