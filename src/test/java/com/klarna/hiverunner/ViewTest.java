@@ -113,10 +113,20 @@ public class ViewTest {
             .append("join test_db.TABLEB ")
             .append("on tAbleA.id = tabLeB.id;")
             .toString());
+    
+    // Even MORE mixed cases
+    shell
+        .execute(new StringBuilder()
+            .append("CREAte viEW tEst_Db.test_ViEw5 ")
+            .append("as select 1 from tesT_db.tABleA ")
+            .append("join teSt_db.TABLEB ")
+            .append("on tAbleA.Id = TabLeB.id;")
+            .toString());
 
     
     shell.executeStatement("select * from test_db.test_view3");
     shell.executeStatement("select * from test_db.test_view4");
+    shell.executeStatement("select * from test_db.test_view5");
   }
 
 }
