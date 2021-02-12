@@ -17,16 +17,17 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
 public class ViewTest {
   @HiveSQL(files = {})
   protected HiveShell shell;
-  
-  @BeforeAll
-  public void setUpTables() {
+
+  @Test
+  public void createView() {
+    
+    //creating tables
     shell.execute("create database test_db");
 
     shell
@@ -47,12 +48,8 @@ public class ViewTest {
 
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
     shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
-  }
-
-  @Test
-  public void createView() {
-  
-    // Using alias names is fine
+    
+    // Using alias names
     shell
         .execute(new StringBuilder()
             .append("create view test_db.test_view1 ")
@@ -61,7 +58,7 @@ public class ViewTest {
             .append("on a.id = b.id;")
             .toString());
 
-    // Using all lowercase is fine
+    // Using all lowercase
     shell
         .execute(new StringBuilder()
             .append("create view test_db.test_view2 ")
@@ -71,12 +68,35 @@ public class ViewTest {
             .toString());
 
     shell.executeStatement("select * from test_db.test_view1");
+    shell.executeStatement("select * from test_db.test_view2");
   }
 
   @Test
   public void createViewMixedCases() {
+    
+    //creating tables
+    shell.execute("create database test_db");
 
-    // Using mixed case in create VIEW statement (with a JOIN ON construction) 
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableA (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableB (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
+
+    // Using mixed case in create VIEW statement (with a JOIN ON construction)
     shell
         .execute(new StringBuilder()
             .append("create view test_db.test_view3 ")
@@ -84,15 +104,19 @@ public class ViewTest {
             .append("join test_db.tableB ")
             .append("on tableA.id = tableB.id;")
             .toString());
-    
-    shell
-    .execute(new StringBuilder()
-        .append("create view test_db.test_View3 ")
-        .append("as select 1 from test_db.tAbleA ")
-        .append("join test_db.tabLeB ")
-        .append("on tAbleA.id = tablLeB.id;")
-        .toString());
 
+    // Even more mixed cases
+    shell
+        .execute(new StringBuilder()
+            .append("CREAte view test_db.test_View4 ")
+            .append("as select 1 from test_db.tABleA ")
+            .append("join test_db.TABLEB ")
+            .append("on tAbleA.id = tabLeB.id;")
+            .toString());
+
+    
+    shell.executeStatement("select * from test_db.test_view3");
+    shell.executeStatement("select * from test_db.test_view4");
   }
 
 }

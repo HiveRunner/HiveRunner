@@ -85,7 +85,7 @@ public class HelloAnnotatedHiveRunner {
      * same dir as the create table statement in the script under test.
      * <p/>
      * This example is for defining the data in in a resource file.
-     */ 
+     */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
             new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
@@ -105,6 +105,7 @@ public class HelloAnnotatedHiveRunner {
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
         HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
+        
         Assert.assertEquals(expected, actual);
     }
 
