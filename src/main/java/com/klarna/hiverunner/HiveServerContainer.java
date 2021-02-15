@@ -154,9 +154,10 @@ public class HiveServerContainer {
     }
 
     public boolean isViewJoin(String hiveql){
-        return (hiveql.toLowerCase()).contains(" view ")
-            && (hiveql.toLowerCase()).contains(" join ")
-            && (hiveql.toLowerCase()).contains(" on ");
+        hiveql = hiveql.toLowerCase();
+        return (hiveql.contains(" view ")
+            && hiveql.contains(" join ")
+            && hiveql.contains(" on "));
     }
 
     /**
