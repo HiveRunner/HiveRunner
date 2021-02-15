@@ -26,7 +26,7 @@ public class ViewTest {
 
   @Test
   public void createView() {
-    
+
     //creating tables
     shell.execute("create database test_db");
 
@@ -48,7 +48,7 @@ public class ViewTest {
 
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
     shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
-    
+
     // Using alias names
     shell
         .execute(new StringBuilder()
@@ -73,7 +73,7 @@ public class ViewTest {
 
   @Test
   public void createViewMixedCases() {
-    
+
     //creating tables
     shell.execute("create database test_db");
 
@@ -113,19 +113,44 @@ public class ViewTest {
             .append("join test_db.TABLEB ")
             .append("on tAbleA.id = tabLeB.id;")
             .toString());
-    
-    // Even MORE mixed cases
+
+    shell.executeStatement("select * from test_db.test_view3");
+    shell.executeStatement("select * from test_db.test_view4");
+  }
+
+  @Test
+  public void createViewMoreMixedCases() {
+
+    //creating tables
+    shell.execute("create database test_db");
+
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableA (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell
+        .execute(new StringBuilder()
+            .append("create table test_db.tableB (")
+            .append("id int, ")
+            .append("value string")
+            .append(")")
+            .toString());
+
+    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
+
     shell
         .execute(new StringBuilder()
             .append("CREAte viEW tEst_Db.test_ViEw5 ")
             .append("as select 1 from tesT_db.tABleA ")
-            .append("join teSt_db.TABLEB ")
-            .append("on tAbleA.Id = TabLeB.id;")
+            .append("joIN teSt_db.TABLEB ")
+            .append("On tAbleA.Id = TabLeB.id;")
             .toString());
 
-    
-    shell.executeStatement("select * from test_db.test_view3");
-    shell.executeStatement("select * from test_db.test_view4");
     shell.executeStatement("select * from test_db.test_view5");
   }
 
