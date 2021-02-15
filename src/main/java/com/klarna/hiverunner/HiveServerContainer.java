@@ -117,11 +117,9 @@ public class HiveServerContainer {
 
     public List<Object[]> executeStatement(String hiveql) {
         try {
-            if((hiveql.toLowerCase()).contains(" view ")
-            && (hiveql.toLowerCase()).contains(" join ")
-            && (hiveql.toLowerCase()).contains(" on ")) {
+            if(isViewJoin(hiveql)) {
               int index = hiveql.indexOf(" on ");
-              hiveql = hiveql.substring(0, index) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
+              hiveql = hiveql.substring(0, hiveql.indexOf(" on ")) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             List<Object[]> resultSet = new ArrayList<>();
@@ -153,6 +151,12 @@ public class HiveServerContainer {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
                     e);
         }
+    }
+
+    public boolean isViewJoin(String hiveql){
+        return (hiveql.toLowerCase()).contains(" view ")
+            && (hiveql.toLowerCase()).contains(" join ")
+            && (hiveql.toLowerCase()).contains(" on ");
     }
 
     /**
