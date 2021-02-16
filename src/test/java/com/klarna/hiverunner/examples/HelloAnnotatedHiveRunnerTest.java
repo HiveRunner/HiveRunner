@@ -102,31 +102,19 @@ public class HelloAnnotatedHiveRunnerTest {
             "helloHiveRunner/create_table.sql",
             "helloHiveRunner/create_ctas.sql"
     }, encoding = "UTF-8")
-    private HiveShell hiveShell;
+    private HiveShell shell;
 
     
     @BeforeEach
     public void setupSourceDatabase() {
-//        hiveShell.execute("CREATE DATABASE source_db");
-//        hiveShell.execute(new StringBuilder()
-//            .append("CREATE TABLE source_db.test_table (")
-//            .append("year STRING, value INT")
-//            .append(")")
-//            .toString());
+        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_table.sql"));
+        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_ctas.sql"));
+    }
 
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_table.sql"));
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_ctas.sql"));
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
-    }
-    
-    @Before
-    public void setupTargetDatabase() {
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
-    }
     @Test
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
-        HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
+        HashSet<String> actual = Sets.newHashSet(shell.executeQuery("show tables"));
 
         Assert.assertEquals(expected, actual);
     }
@@ -134,14 +122,14 @@ public class HelloAnnotatedHiveRunnerTest {
     @Test
     public void testSelectFromFooWithCustomDelimiter() {
         HashSet<String> expected = Sets.newHashSet("3,!", "2,World", "1,Hello", "N/A,bar");
-        HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("select * from foo", ",", "N/A"));
+        HashSet<String> actual = Sets.newHashSet(shell.executeQuery("select * from foo", ",", "N/A"));
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testSelectFromFooWithTypeCheck() {
 
-        List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
+        List<Object[]> actual = shell.executeStatement("select * from foo order by i");
 
         Assert.assertArrayEquals(new Object[] { null, "bar" }, actual.get(0));
         Assert.assertArrayEquals(new Object[] { 1, "Hello" }, actual.get(1));
@@ -152,7 +140,7 @@ public class HelloAnnotatedHiveRunnerTest {
     @Test
     public void testSelectFromCtas() {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
-        HashSet<String> actual = Sets.newHashSet(hiveShell
+        HashSet<String> actual = Sets.newHashSet(shell
                 .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
         Assert.assertEquals(expected, actual);
     }
