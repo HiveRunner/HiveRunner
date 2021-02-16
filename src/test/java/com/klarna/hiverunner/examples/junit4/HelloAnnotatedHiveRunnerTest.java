@@ -41,7 +41,7 @@ import java.util.Map;
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloAnnotatedHiveRunner {
+public class HelloAnnotatedHiveRunnerTest {
 
     /**
      * Explicit test class configuration of the HiveRunner runtime.

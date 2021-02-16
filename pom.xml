@@ -46,7 +46,7 @@
     <hive.execution.engine>mr</hive.execution.engine>
     <junit.jupiter.version>5.6.0</junit.jupiter.version>
   </properties>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -172,6 +172,17 @@
             <timeoutSeconds>30</timeoutSeconds>
             <timeoutRetries>2</timeoutRetries>
           </systemProperties>
+          <includes>
+            <include>**/Test*.java</include>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+            <include>**/*TestCase.java</include>
+            <include>AnnotatedBaseTestClass.java</include>
+            <include>NeverEndingUdf.java</include>
+            <include>SlowlyFailingUdf.java</include>
+            <include>ToUpperCaseSerDe.java</include>
+            
+          </includes>
         </configuration>
       </plugin>
       <plugin>
