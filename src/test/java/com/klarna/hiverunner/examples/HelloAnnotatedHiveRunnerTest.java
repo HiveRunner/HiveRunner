@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,13 @@ import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,14 +44,14 @@ import java.util.Map;
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloAnnotatedHiveRunner {
+public class HelloAnnotatedHiveRunnerTest {
 
     /**
      * Explicit test class configuration of the HiveRunner runtime.
      * See {@link HiveRunnerConfig} for further details.
      */
     @HiveRunnerSetup
-    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
+    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
         setHiveExecutionEngine("mr");
     }};
 
@@ -101,6 +104,25 @@ public class HelloAnnotatedHiveRunner {
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
+    
+    @BeforeEach
+    public void setupSourceDatabase() {
+//        hiveShell.execute("CREATE DATABASE source_db");
+//        hiveShell.execute(new StringBuilder()
+//            .append("CREATE TABLE source_db.test_table (")
+//            .append("year STRING, value INT")
+//            .append(")")
+//            .toString());
+
+        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_table.sql"));
+        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_ctas.sql"));
+        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
+    }
+    
+    @Before
+    public void setupTargetDatabase() {
+        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
+    }
     @Test
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");

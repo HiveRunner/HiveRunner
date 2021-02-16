@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package com.klarna.hiverunner.examples;
 import com.klarna.hiverunner.HiveRunnerExtension;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.annotations.HiveSQL;
+
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +40,7 @@ import static org.junit.Assert.assertEquals;
  * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunner {
+public class HelloHiveRunnerTest {
 
     @HiveSQL(files = {})
     private HiveShell shell;
@@ -52,6 +54,11 @@ public class HelloHiveRunner {
             .append(")")
             .toString());
 
+        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
+    }
+    
+    @Before
+    public void setupTargetDatabase() {
         shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
     }
 

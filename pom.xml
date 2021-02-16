@@ -148,12 +148,12 @@
 </dependency> -->
     
 
-<!--     <dependency>
+<dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
-      <version>5.8.0-M1</version>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
-    </dependency> -->
+    </dependency>
 
   </dependencies>
 

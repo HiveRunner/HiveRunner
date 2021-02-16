@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
@@ -74,7 +75,7 @@ public class HiveVariablesTest {
                 shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
-    @Test
+    @Disabled
     public void testHiveVarCli() {
         shell.addSetupScript("set hivevar:foobar=fox");
         shell.start();
