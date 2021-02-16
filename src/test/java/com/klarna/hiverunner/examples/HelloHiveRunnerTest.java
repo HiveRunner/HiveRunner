@@ -56,11 +56,6 @@ public class HelloHiveRunnerTest {
 
         shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
     }
-    
-    @Before
-    public void setupTargetDatabase() {
-        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
-    }
 
     @Test
     public void testMaxValueByYear() {
