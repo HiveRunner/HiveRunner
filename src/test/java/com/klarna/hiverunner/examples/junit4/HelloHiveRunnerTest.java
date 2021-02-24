@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloHiveRunner {
+public class HelloHiveRunnerTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 

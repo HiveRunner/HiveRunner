@@ -121,7 +121,7 @@ HiveRunner uses [SLF4J](https://www.slf4j.org/) so you should configure logging 
 
 ## 2. Look at the examples
 
-Look at the [com.klarna.hiverunner.examples.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunner.java) reference test case to get a feeling for how a typical test case looks like in JUnit5. To find JUnit4 versions of the examples, look at [com.klarna.hiverunner.examples.junit4.HelloHiveRunner](/src/test/java/com/klarna/hiverunner/examples/junit4/HelloHiveRunner.java).
+Look at the [com.klarna.hiverunner.examples.HelloHiveRunnerTest](/src/test/java/com/klarna/hiverunner/examples/HelloHiveRunnerTest.java) reference test case to get a feeling for how a typical test case looks like in JUnit5. To find JUnit4 versions of the examples, look at [com.klarna.hiverunner.examples.junit4.HelloHiveRunnerTest](/src/test/java/com/klarna/hiverunner/examples/junit4/HelloHiveRunnerTest.java).
 
 If you're put off by the verbosity of the annotations, there's always the possibility to use HiveShell in a more interactive mode.  The [com.klarna.hiverunner.SerdeTest](/src/test/java/com/klarna/hiverunner/SerdeTest.java) adds a resource (test data) interactively with HiveShell instead of using annotations.
 
@@ -157,7 +157,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
         .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
         .commit();
 
-See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hiverunner/examples/InsertTestData.java) for working examples.
+See [com.klarna.hiverunner.examples.InsertTestDataTest](/src/test/java/com/klarna/hiverunner/examples/InsertTestDataTest.java) for working examples.
 
 ## 3. Understand a little bit of the order of execution
 
