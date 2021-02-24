@@ -9,11 +9,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
+- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
+- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples` to `HelloHiveRunnerTest`.
+- Renamed `InsertTestData` in `com.klarna.hiverunner.examples` to `InsertTestDataTest`.
+- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples` to `SetHiveConfValuesTest`.
+- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloAnnotatedHiveRunnerTest`.
+- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloHiveRunnerTest`.
+- Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
+- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
+- Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
+- Added version `5.6.0` of `junit-vintage-engine`.
 
 ## [6.0.1] - 2020-09-07
 ### Removed
