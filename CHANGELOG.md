@@ -2,22 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-<<<<<<< HEAD
-## [5.3.1] - TBD
-### Changed
-- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
-- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples` to `HelloHiveRunnerTest`.
-- Renamed `InsertTestData` in `com.klarna.hiverunner.examples` to `InsertTestDataTest`.
-- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples` to `SetHiveConfValuesTest`.
-- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloAnnotatedHiveRunnerTest`.
-- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloHiveRunnerTest`.
-- Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
-- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
-- Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
 
-### Added
-- Added version `5.6.0` of `junit-vintage-engine`.
-=======
 ## [6.1.0] - TBD
 ### Changed
 - Upgraded JUnit4 version to 4.13.1 (was 4.12).
@@ -37,7 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [6.0.0] - 2020-09-03
 ### Changed
 - Upgraded Hive version to 3.1.2 (was 2.3.7).
->>>>>>> fb00a98f37abdb779547c1c98ef6fbe54d373e0c
+
+## [5.3.1] - TBD
+### Changed
+- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
+- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples` to `HelloHiveRunnerTest`.
+- Renamed `InsertTestData` in `com.klarna.hiverunner.examples` to `InsertTestDataTest`.
+- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples` to `SetHiveConfValuesTest`.
+- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloAnnotatedHiveRunnerTest`.
+- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloHiveRunnerTest`.
+- Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
+- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
+- Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
+
+### Added
+- Added version `5.6.0` of `junit-vintage-engine`.
 
 ## [5.3.0] - 2021-01-05
 ### Changed
@@ -46,11 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
-<<<<<<< HEAD
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
-=======
-- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swar$
->>>>>>> fb00a98f37abdb779547c1c98ef6fbe54d373e0c
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
 
 ## [5.2.2] - 2020-10-14
