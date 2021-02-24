@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Added `getScriptPaths` method in `HiveRunnerCore`.
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
-- Added version `5.6.0` of `junit-vintage-engine`.
+- Added version `5.7.0` of `junit-vintage-engine`.
 
 ## [6.0.1] - 2020-09-07
 ### Removed
