@@ -157,7 +157,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
         .addRowsFrom(file, fileParser)                    // parses custom data out of a file resource
         .commit();
 
-See [com.klarna.hiverunner.examples.InsertTestData](/src/test/java/com/klarna/hiverunner/examples/InsertTestData.java) for working examples.
+See [com.klarna.hiverunner.examples.InsertTestDataTest](/src/test/java/com/klarna/hiverunner/examples/InsertTestDataTest.java) for working examples.
 
 ## 3. Understand a little bit of the order of execution
 
