@@ -16,6 +16,8 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,9 +26,8 @@ public class ViewTest {
   @HiveSQL(files = {})
   protected HiveShell shell;
 
-  @Test
-  public void createView() {
-
+  @Before
+  public void setUpTables(){
     //creating tables
     shell.execute("create database test_db");
 
@@ -48,6 +49,10 @@ public class ViewTest {
 
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
     shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
+  }
+
+  @Test
+  public void createView() {
 
     // Using alias names
     shell
@@ -74,28 +79,6 @@ public class ViewTest {
   @Test
   public void createViewMixedCases() {
 
-    //creating tables
-    shell.execute("create database test_db");
-
-    shell
-        .execute(new StringBuilder()
-            .append("create table test_db.tableA (")
-            .append("id int, ")
-            .append("value string")
-            .append(")")
-            .toString());
-
-    shell
-        .execute(new StringBuilder()
-            .append("create table test_db.tableB (")
-            .append("id int, ")
-            .append("value string")
-            .append(")")
-            .toString());
-
-    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
-    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
-
     // Using mixed case in create VIEW statement (with a JOIN ON construction)
     shell
         .execute(new StringBuilder()
@@ -120,28 +103,6 @@ public class ViewTest {
 
   @Test
   public void createViewMoreMixedCases() {
-
-    //creating tables
-    shell.execute("create database test_db");
-
-    shell
-        .execute(new StringBuilder()
-            .append("create table test_db.tableA (")
-            .append("id int, ")
-            .append("value string")
-            .append(")")
-            .toString());
-
-    shell
-        .execute(new StringBuilder()
-            .append("create table test_db.tableB (")
-            .append("id int, ")
-            .append("value string")
-            .append(")")
-            .toString());
-
-    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "v2").commit();
-    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "v4").commit();
 
     shell
         .execute(new StringBuilder()

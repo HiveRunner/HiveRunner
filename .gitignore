@@ -72,4 +72,9 @@ Thumbs.db
 .project
 .settings/
 
+# IntelliJ #
+############
+.gradle/
+*.eml
+
 /pubring.kbx

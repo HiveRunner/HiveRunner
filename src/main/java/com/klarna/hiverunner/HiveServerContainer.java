@@ -119,7 +119,7 @@ public class HiveServerContainer {
         try {
             if(isViewJoin(hiveql)) {
               int index = hiveql.toLowerCase().indexOf(" on ");
-              hiveql = hiveql.substring(0, hiveql.toLowerCase().indexOf(" on ")) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
+              hiveql = hiveql.substring(0, index) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             List<Object[]> resultSet = new ArrayList<>();
