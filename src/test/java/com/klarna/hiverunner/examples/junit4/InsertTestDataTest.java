@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD:src/test/java/com/klarna/hiverunner/examples/junit4/InsertTestDataTest.java
  * Copyright (C) 2013-2021 Klarna AB
+=======
+ * Copyright (C) 2013-2020 Klarna AB
+>>>>>>> fb00a98f37abdb779547c1c98ef6fbe54d373e0c:src/test/java/com/klarna/hiverunner/examples/junit4/InsertTestData.java
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+<<<<<<< HEAD
 ## [5.3.1] - TBD
 ### Changed
 - Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
@@ -16,6 +17,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Added version `5.6.0` of `junit-vintage-engine`.
+=======
+## [6.1.0] - TBD
+### Changed
+- Upgraded JUnit4 version to 4.13.1 (was 4.12).
+- Made `HiveRunnerScript` constructor public.
+- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+- Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
+
+### Added
+- Added `getScriptPaths` method in `HiveRunnerCore`.
+- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+- Added `fromScriptPaths` method in `HiveShellBuilder`.
+
+## [6.0.1] - 2020-09-07
+### Removed
+- Removed shaded jar that was being produced as a side-effect.
+
+## [6.0.0] - 2020-09-03
+### Changed
+- Upgraded Hive version to 3.1.2 (was 2.3.7).
+>>>>>>> fb00a98f37abdb779547c1c98ef6fbe54d373e0c
 
 ## [5.3.0] - 2021-01-05
 ### Changed
@@ -24,7 +46,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
+<<<<<<< HEAD
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
+=======
+- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swar$
+>>>>>>> fb00a98f37abdb779547c1c98ef6fbe54d373e0c
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
 
 ## [5.2.2] - 2020-10-14
@@ -56,7 +82,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Default supported Hive version is now 2.3.4 (was 2.3.3) as version 2.3.3 has a [vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2018-1314).
 - `TemporaryFolder` ([JUnit 4](https://junit.org/junit4/javadoc/4.12/org/junit/rules/TemporaryFolder.html)) has been changed to `Path` ([Java NIO](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html)) throughout the project for the JUnit5 update. 
 - NOTE: The `HiveServerContext` class now uses `Path` instead of `TemporaryFolder` in the constructor.
-
 
 ## [4.1.0] - 2019-02-27
 ### Changed
