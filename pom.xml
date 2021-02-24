@@ -45,7 +45,7 @@
     <hive.version>2.3.7</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
-    <junit.jupiter.version>5.6.0</junit.jupiter.version>
+    <junit.jupiter.version>5.7.0</junit.jupiter.version>
   </properties>
   
   <dependencies>
