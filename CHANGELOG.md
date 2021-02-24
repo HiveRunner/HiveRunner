@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
+- Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
 
 ### Added
 - Added version `5.6.0` of `junit-vintage-engine`.
