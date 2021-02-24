@@ -48,7 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
 
 ### Added
-- Added version `5.6.0` of `junit-vintage-engine`.
+- Added version `5.7.0` of `junit-vintage-engine`.
 
 ## [5.3.0] - 2021-01-05
 ### Changed
