@@ -15,6 +15,12 @@
  */
 package com.klarna.hiverunner;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+
+import java.util.Arrays;
+import java.util.List;
+
 import com.klarna.hiverunner.annotations.HiveSQL;
 
 import org.junit.Before;
@@ -52,13 +58,28 @@ public class ViewTest {
   }
 
   @Test
+  public void testing() {
+    shell
+        .execute(new StringBuilder()
+            .append("create view test_db.test_view0 ")
+            .append("as select a.value as value1, b.value as value2 from test_db.tableA a ")
+            .append("join test_db.tableB b ")
+            .append("on a.id = b.id;")
+            .toString());
+
+    List<String> result = shell.executeQuery("select * from test_db.test_view0");
+    List<String> expected = Arrays.asList("v1\tv3", "v2\tv4");
+    assertThat(expected, is(result));
+  }
+
+  @Test
   public void createView() {
 
     // Using alias names
     shell
         .execute(new StringBuilder()
             .append("create view test_db.test_view1 ")
-            .append("as select 1 from test_db.tableA a ")
+            .append("as select a.value from test_db.tableA a ")
             .append("join test_db.tableB b ")
             .append("on a.id = b.id;")
             .toString());
@@ -67,13 +88,15 @@ public class ViewTest {
     shell
         .execute(new StringBuilder()
             .append("create view test_db.test_view2 ")
-            .append("as select 1 from test_db.tablea ")
+            .append("as select 2 from test_db.tablea ")
             .append("join test_db.tableb ")
             .append("on tablea.id = tableb.id;")
             .toString());
 
-    shell.executeStatement("select * from test_db.test_view1");
-    shell.executeStatement("select * from test_db.test_view2");
+    List<String> result = shell.executeQuery("select * from test_db.test_view1");
+    System.out.println("result2:"+result);
+    List<String> result2 = shell.executeQuery("select * from test_db.test_view2");
+    System.out.println("result3:"+result2);
   }
 
   @Test
@@ -92,7 +115,7 @@ public class ViewTest {
     shell
         .execute(new StringBuilder()
             .append("CREAte view test_db.test_View4 ")
-            .append("as select 1 from test_db.tABleA ")
+            .append("as select 2 from test_db.tABleA ")
             .append("join test_db.TABLEB ")
             .append("on tAbleA.id = tabLeB.id;")
             .toString());
