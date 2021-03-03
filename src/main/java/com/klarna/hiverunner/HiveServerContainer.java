@@ -20,6 +20,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.klarna.hiverunner.builder.Statement;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -118,10 +120,14 @@ public class HiveServerContainer {
     public List<Object[]> executeStatement(String hiveql) {
         try {
             if(isViewJoin(hiveql)) {
-              int index = hiveql.toLowerCase().indexOf(" on ");
-              hiveql = hiveql.substring(0, index) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
+                hiveql = transformQuery3(hiveql);
+              //hiveql =  transformQuery2(hiveql);
+              //int index = hiveql.toLowerCase().indexOf(" on ");
+              //hiveql = hiveql.substring(0, index) + hiveql.substring(index, hiveql.length()).toLowerCase() ;
+              System.out.println("hiveqtransformed:"+hiveql);
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
+            System.out.println("executes hiveql");
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
@@ -151,6 +157,107 @@ public class HiveServerContainer {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
                     e);
         }
+    }
+
+    public String transformQuery3(String hiveql) {
+        String result = hiveql;
+        if(hiveql.contains("'")){
+            //First we leave the query untouched from whatever is before the on
+            int indexOn = hiveql.toLowerCase().indexOf(" on ");
+            result = hiveql.substring(0, indexOn);
+
+            System.out.println("initial result1:"+result);
+            int indexFirstComa = hiveql.indexOf("'");
+            //result = result + hiveql.substring(indexOn, indexFirstComa).toLowerCase();
+
+            //System.out.println("initial result2:"+result);
+
+            String subString = hiveql.substring(indexOn, hiveql.length());
+            int count = StringUtils.countMatches(subString, "'");
+            System.out.println("count:"+count);
+            int indexStart = subString.indexOf("'");
+
+            for(int i = 0; i < count/2; i++) {
+                indexStart = subString.indexOf("'");
+                result = result + subString.substring(0,indexStart).toLowerCase();
+
+
+                System.out.println("result3:"+result);
+                System.out.println("substring:"+subString);
+                //subString = hiveql.substring(index, hiveql.length());
+
+                //result = result + result.substring(indexStart,)
+                System.out.println("index of first ':"+indexStart);
+                String caseSensitiveString = subString.substring(indexStart+1, subString.length());
+                System.out.println("sensitive string1:"+caseSensitiveString);
+                int indexEnd = caseSensitiveString.indexOf("'");
+                System.out.println("indexEnd:"+indexEnd);
+                caseSensitiveString = caseSensitiveString.substring(0, indexEnd);
+                System.out.println("sensitive string2:"+caseSensitiveString);
+                result = result +"'"+ caseSensitiveString +"'";
+                System.out.println("result4:"+result);
+                subString = subString.substring(indexStart+caseSensitiveString.length()+2,subString.length());
+                System.out.println("new substring:"+subString);
+                indexStart = indexEnd;
+
+            }
+            result = result + hiveql.substring(result.length(),hiveql.length());
+        }
+        return result;
+    }
+    public String transformQuery2(String hiveql){
+        //System.out.println("before transformation:"+hiveql);
+        int indexOn = hiveql.toLowerCase().indexOf(" on ");
+        String subString = hiveql.substring(indexOn, hiveql.length());
+        int indexEqual = subString.indexOf("=");
+
+        //delete all whitespace after equal
+        while(String.valueOf(subString.charAt(indexEqual+1)).equals(" ")){
+            StringBuilder sb = new StringBuilder(subString);
+            sb.deleteCharAt(indexEqual+1);
+            subString = sb.toString();
+        }
+        //delete all whitespace before equal
+        while(String.valueOf(subString.charAt(indexEqual-1)).equals(" ")){
+            StringBuilder sb = new StringBuilder(subString);
+            sb.deleteCharAt(indexEqual-1);
+            subString = sb.toString();
+            indexEqual = subString.indexOf("=");
+        }
+        //now we find the indexes, find index of first whitespace AFTER equal
+        int indexEnd = indexEqual;
+        while(!String.valueOf(subString.charAt(indexEnd+1)).equals(" ")){
+            indexEnd++;
+        }
+
+        //Find index of first whitespace BEFORE equal
+        int indexStart = indexEqual;
+        while(!String.valueOf(subString.charAt(indexStart-1)).equals(" ")){
+            indexStart--;
+        }
+
+        //Now we can turn to lowercase exactly what we want
+        subString = subString.substring(0, indexStart) + subString.substring(indexStart, indexEnd).toLowerCase() + subString.substring(indexEnd, subString.length());
+        hiveql =  hiveql.substring(0, indexOn) + subString;
+        //System.out.println("after transformation:"+hiveql);
+        return hiveql;
+    }
+
+    public String transformQuery(String hiveql){
+        int indexOn = hiveql.toLowerCase().indexOf(" on ");
+        String subQuery = hiveql.substring(indexOn, hiveql.length()).toLowerCase();
+
+        int indexWhere = subQuery.toLowerCase().indexOf(" where ");
+        System.out.println("index where:"+indexWhere);
+        int indexAnd= subQuery.toLowerCase().indexOf(" and ");
+        System.out.println("index and :"+indexAnd);
+        int indexOr= subQuery.toLowerCase().indexOf(" or ");
+        System.out.println("index or :"+indexOr);
+        List<Integer> indexes = null;
+        indexes.add(indexWhere);
+        indexes.add(indexOr);
+        indexes.add(indexAnd);
+        return "LOL";
     }
 
     public boolean isViewJoin(String hiveql){
