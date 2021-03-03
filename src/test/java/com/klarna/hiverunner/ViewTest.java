@@ -61,8 +61,8 @@ public class ViewTest {
             .append(")")
             .toString());
 
-    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "VvV2").commit();
-    shell.insertInto("test_db", "tableB").addRow(1, "v1").addRow(2, "VvV2").commit();
+    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2: MiXedCases").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v1").addRow(2, "V2: MiXedCases").commit();
   }
 
 //  @Test
