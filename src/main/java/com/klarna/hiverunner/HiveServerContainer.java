@@ -123,7 +123,6 @@ public class HiveServerContainer {
                 hiveql = transformQuery(hiveql);
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
-            System.out.println("executes hiveql");
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
 
