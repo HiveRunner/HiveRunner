@@ -64,7 +64,7 @@ public class ViewTest {
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
     shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "V4:MiXedCases").commit();
   }
-  
+
   @Test
   public void viewJoin() {
     shell

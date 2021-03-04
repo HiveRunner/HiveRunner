@@ -120,9 +120,7 @@ public class HiveServerContainer {
     public List<Object[]> executeStatement(String hiveql) {
         try {
             if(isViewJoin(hiveql)) {
-                System.out.println("before transformation:"+hiveql);
                 hiveql = transformQuery(hiveql);
-                System.out.println("after transformation:"+hiveql);
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             System.out.println("executes hiveql");
@@ -164,30 +162,32 @@ public class HiveServerContainer {
     */
     public String transformQuery(String hiveql) {
         String result = hiveql;
+        int indexOn = hiveql.toLowerCase().indexOf(" on ");
         if(hiveql.contains("'")){
             //First we leave the query untouched from whatever is before the on
-            int indexOn = hiveql.toLowerCase().indexOf(" on ");
             result = hiveql.substring(0, indexOn);
             int indexFirstComa = hiveql.indexOf("'");
             String subString = hiveql.substring(indexOn, hiveql.length());
+            //Count how many case sensitive strings there is
             int count = StringUtils.countMatches(subString, "'");
             int indexStart = subString.indexOf("'");
 
             for(int i = 0; i < count/2; i++) {
                 indexStart = subString.indexOf("'");
+                //First we turn to lowercase whatever is before the case sensitive string
                 result = result + subString.substring(0,indexStart).toLowerCase();
+                //We add the case sensitive part without lowercasing it
                 String caseSensitiveString = subString.substring(indexStart+1, subString.length());
                 int indexEnd = caseSensitiveString.indexOf("'");
                 caseSensitiveString = caseSensitiveString.substring(0, indexEnd);
                 result = result +"'"+ caseSensitiveString +"'";
                 subString = subString.substring(indexStart+caseSensitiveString.length()+2,subString.length());
-                indexStart = indexEnd;
 
             }
             result = result + hiveql.substring(result.length(),hiveql.length());
         }
         else{
-            int indexOn = hiveql.toLowerCase().indexOf(" on ");
+            //If there are no case sensitive strings, just lowercase everything after the 'join on'
             result = hiveql.substring(0, indexOn) + hiveql.substring(indexOn).toLowerCase();
         }
         return result;
