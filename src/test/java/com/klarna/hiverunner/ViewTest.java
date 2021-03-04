@@ -15,8 +15,8 @@
  */
 package com.klarna.hiverunner;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,131 +62,61 @@ public class ViewTest {
             .toString());
 
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
-    shell.insertInto("test_db", "tableB").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "V4:MiXedCases").commit();
   }
 
-//  @Test
-//  public void viewAlias() {
-//    shell
-//        .execute(new StringBuilder()
-//            .append("create view test_db.test_view1 ")
-//            .append("as select a.value as value1, b.value as value2 from test_db.tableA a ")
-//            .append("join test_db.tableB b ")
-//            .append("on a.id = b.id AND a.id = b.id;")
-//            .toString());
-//
-//    List<String> result = shell.executeQuery("select * from test_db.test_view1");
-//    List<String> expected = Arrays.asList("v1\tv3", "v2\tV4");
-//    assertThat(expected, is(result));
-//  }
-//
-//  @Test
-//  public void viewLowercase() {
-//    shell
-//        .execute(new StringBuilder()
-//            .append("create view test_db.test_view2 ")
-//            .append("as select tablea.value as value2, tableb.value as value1 from test_db.tablea ")
-//            .append("join test_db.tableb ")
-//            .append("on tablea.id = tableb.id;")
-//            .toString());
-//
-//    List<String> result = shell.executeQuery("select * from test_db.test_view2");
-//    List<String> expected = Arrays.asList("v1\tv3", "v2\tV4");
-//    assertThat(expected, is(result));
-//  }
-
   @Test
-  public void viewMixedCases5() {
+  public void viewJoin() {
 
-    // Using mixed case in create VIEW statement (with a JOIN ON construction)
-    //tAbleA.value ='v2'
-    shell
-        .execute(new StringBuilder()
-            .append("CREAte viEW tEst_Db.test_ViEw3 ")
-            .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
-            .append("joIN teSt_db.TABLEB ")
-            .append("On    tablea.id     =    tableb.id WHERE tablea.value ='V2:MiXedCases'")
-            .toString());
+    shell.execute(new StringBuilder()
+        .append("create view test_db.test_view ")
+        .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from test_db.tablea ")
+        .append("join test_db.tableb ")
+        .append("on tablea.id = tableb.id;")
+        .toString());
 
-
-    List<String> result = shell.executeQuery("select * from test_db.test_view3");
-    List<String> expected = Arrays.asList("V2:MiXedCases\tV2:MiXedCases");
+    List<String> result = shell.executeQuery("SELECT * FROM test_db.test_view");
+    List<String> expected = Arrays.asList("v1\tv3","V2:MiXedCases\tV4:MiXedCasest");
     System.out.println("result: "+result);
     System.out.println("expected :"+expected);
     assertThat(expected, is(result));
   }
 
   @Test
-  public void viewMixedCases15() {
+  public void viewJoinCaseSensitiveString() {
 
-    // Using mixed case in create VIEW statement (with a JOIN ON construction)
-    //tAbleA.value ='v2'
     shell
         .execute(new StringBuilder()
-            .append("CREAte viEW tEst_Db.test_ViEw3 ")
+            .append("CREAte viEW tEst_Db.test_ViEw ")
             .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
             .append("joIN teSt_db.TABLEB ")
-            .append("On    tAblea.id     =    taBleb.id    WHERE (tabLea.value ='V2:MiXedCases' and Tablea.value ='V2:MiXedCases' anD Tablea.value='V2:MiXedCases') ")
+            .append("On    tablEA.id     =    TAbleb.id WHERE tablea.value ='V2:MiXedCases';")
             .toString());
 
-    List<String> result = shell.executeQuery("select * from test_db.test_view3");
-    List<String> expected = Arrays.asList("V2:MiXedCases\tV2:MiXedCases");
+
+    List<String> result = shell.executeQuery("select * from test_db.test_view");
+    List<String> expected = Arrays.asList("V2:MiXedCases\tV4:MiXedCases");
     System.out.println("result: "+result);
     System.out.println("expected :"+expected);
     assertThat(expected, is(result));
   }
 
-//  @Test
-//  public void viewMixedCases3() {
-//
-//    // Using mixed case in create VIEW statement (with a JOIN ON construction)
-//    //tAbleA.value ='v2'
-//    shell
-//        .execute(new StringBuilder()
-//            .append("CREAte viEW tEst_Db.test_ViEw3 ")
-//            .append("as select taBlEA.vAlue aS vaLue2 from tesT_db.tABleA ")
-//            .append(" ")
-//            .append("WHERE tAblea.value ='V2'")
-//            .toString());
-//
-//    List<String> result = shell.executeQuery("select * from test_db.test_view3");
-//    List<String> expected = Arrays.asList("V2");
-//    System.out.println("result: "+result);
-//    System.out.println("expected :"+expected);
-//    assertThat(expected, is(result));
-//  }
+  @Test
+  public void viewJoinCaseMultipleSensitiveStrings() {
 
-//  @Test
-//  public void viewMixedCases2() {
-//
-//    // Using mixed case in create VIEW statement (with a JOIN ON construction)
-//    //tAbleA.value ='v2'
-//    shell
-//        .execute(new StringBuilder()
-//            .append("CREAte viEW tEst_Db.test_ViEw3 ")
-//            .append("as (select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.tABleA ")
-//            .append("joIN teSt_db.TABLEB ")
-//            .append("On    tAbleA.Id     =    TabLeB.id    WHERE tAbleA.value ='V2')")
-//            .append("UNION (select taBlEA.vAlue aS vaLue3, taBleb.vaLue as value4 from tesT_db.tABleA ")
-//            .append("joIN teSt_db.TABLEB ")
-//            .append("On tAbleA.Id = TabLeB.id WHERE tAbleA.value ='V2');")
-//            .toString());
-//
-//    List<String> result = shell.executeQuery("select * from test_db.test_view3");
-//    List<String> expected = Arrays.asList("V2\tv2");
-//    System.out.println("result: "+result);
-//    System.out.println("expected :"+expected);
-//    assertThat(expected, is(result));
-//  }
+    shell
+        .execute(new StringBuilder()
+            .append("CREAte viEW tEst_Db.test_ViEw ")
+            .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
+            .append("joIN teSt_db.TABLEB ")
+            .append("On    tAblea.id     =    taBleb.id    WHERE (tabLea.value ='V2:MiXedCases' and Tablea.value ='V2:MiXedCases' anD Tablea.value='V2:MiXedCases') ;")
+            .toString());
+
+    List<String> result = shell.executeQuery("select * from test_db.test_view");
+    List<String> expected = Arrays.asList("V2:MiXedCases\tV4:MiXedCases");
+    System.out.println("result: "+result);
+    System.out.println("expected :"+expected);
+    assertThat(expected, is(result));
+  }
 
 }
-
-//This one doesn't create an error even thought it has a view and a join (or could uit be because the lowercae method is working)
-//    shell
-//        .execute(new StringBuilder()
-//        .append("CREAte viEW tEst_Db.test_ViEw3 ")
-//        .append("as select taBlEA.vAlue aS vaLue2 from tesT_db.TABLEA ")
-//
-//        .append(" joIN teSt_db.TABLEB ")
-//        .append("On    tAbleA.Id     =    TabLeB.id   ")
-//        .toString());

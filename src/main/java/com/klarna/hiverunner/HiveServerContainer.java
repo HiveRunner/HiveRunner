@@ -120,7 +120,9 @@ public class HiveServerContainer {
     public List<Object[]> executeStatement(String hiveql) {
         try {
             if(isViewJoin(hiveql)) {
+                System.out.println("before transformation:"+hiveql);
                 hiveql = transformQuery(hiveql);
+                System.out.println("after transformation:"+hiveql);
             }
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             System.out.println("executes hiveql");
@@ -186,7 +188,7 @@ public class HiveServerContainer {
         }
         else{
             int indexOn = hiveql.toLowerCase().indexOf(" on ");
-            result = hiveql.substring(0, indexOn) + hiveql.substring(indexOn);
+            result = hiveql.substring(0, indexOn) + hiveql.substring(indexOn).toLowerCase();
         }
         return result;
     }
