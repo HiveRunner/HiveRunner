@@ -64,19 +64,20 @@ public class ViewTest {
     shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
     shell.insertInto("test_db", "tableB").addRow(1, "v3").addRow(2, "V4:MiXedCases").commit();
   }
-
+  
   @Test
   public void viewJoin() {
+    shell
+        .execute(new StringBuilder()
+            .append("CREAte viEW tEst_Db.test_ViEw ")
+            .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
+            .append("joIN teSt_db.TABLEB ")
+            .append("On    tablEA.id     =    TAbleb.id ")
+            .toString());
 
-    shell.execute(new StringBuilder()
-        .append("create view test_db.test_view ")
-        .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from test_db.tablea ")
-        .append("join test_db.tableb ")
-        .append("on tablea.id = tableb.id;")
-        .toString());
 
-    List<String> result = shell.executeQuery("SELECT * FROM test_db.test_view");
-    List<String> expected = Arrays.asList("v1\tv3","V2:MiXedCases\tV4:MiXedCasest");
+    List<String> result = shell.executeQuery("select * from test_db.test_view");
+    List<String> expected = Arrays.asList("v1\tv3","V2:MiXedCases\tV4:MiXedCases");
     System.out.println("result: "+result);
     System.out.println("expected :"+expected);
     assertThat(expected, is(result));
