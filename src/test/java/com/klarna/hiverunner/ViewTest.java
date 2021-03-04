@@ -103,7 +103,7 @@ public class ViewTest {
   }
 
   @Test
-  public void viewJoinCaseMultipleSensitiveStrings() {
+  public void viewJoinMultipleCaseSensitiveStrings() {
 
     shell
         .execute(new StringBuilder()
