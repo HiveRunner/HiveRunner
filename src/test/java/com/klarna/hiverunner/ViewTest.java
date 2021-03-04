@@ -61,8 +61,8 @@ public class ViewTest {
             .append(")")
             .toString());
 
-    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2: MiXedCases").commit();
-    shell.insertInto("test_db", "tableB").addRow(1, "v1").addRow(2, "V2: MiXedCases").commit();
+    shell.insertInto("test_db", "tableA").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
+    shell.insertInto("test_db", "tableB").addRow(1, "v1").addRow(2, "V2:MiXedCases").commit();
   }
 
 //  @Test
@@ -105,12 +105,12 @@ public class ViewTest {
             .append("CREAte viEW tEst_Db.test_ViEw3 ")
             .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
             .append("joIN teSt_db.TABLEB ")
-            .append("On    tablea.id     =    tableb.id WHERE tablea.value ='VvV2'")
+            .append("On    tablea.id     =    tableb.id WHERE tablea.value ='V2:MiXedCases'")
             .toString());
 
 
     List<String> result = shell.executeQuery("select * from test_db.test_view3");
-    List<String> expected = Arrays.asList("V2\tV2");
+    List<String> expected = Arrays.asList("V2:MiXedCases\tV2:MiXedCases");
     System.out.println("result: "+result);
     System.out.println("expected :"+expected);
     assertThat(expected, is(result));
@@ -126,11 +126,11 @@ public class ViewTest {
             .append("CREAte viEW tEst_Db.test_ViEw3 ")
             .append("as select taBlEA.vAlue aS vaLue2, taBleb.vaLue as value1 from tesT_db.TABLEA ")
             .append("joIN teSt_db.TABLEB ")
-            .append("On    tAblea.id     =    taBleb.id    WHERE (tabLea.value ='VvV2' and Tablea.value ='VvV2' anD Tablea.value='Vv2') ")
+            .append("On    tAblea.id     =    taBleb.id    WHERE (tabLea.value ='V2:MiXedCases' and Tablea.value ='V2:MiXedCases' anD Tablea.value='V2:MiXedCases') ")
             .toString());
 
     List<String> result = shell.executeQuery("select * from test_db.test_view3");
-    List<String> expected = Arrays.asList("V2\tV2");
+    List<String> expected = Arrays.asList("V2:MiXedCases\tV2:MiXedCases");
     System.out.println("result: "+result);
     System.out.println("expected :"+expected);
     assertThat(expected, is(result));
