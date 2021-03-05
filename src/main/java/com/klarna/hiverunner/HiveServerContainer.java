@@ -160,36 +160,23 @@ public class HiveServerContainer {
     of the query that are case insensitive are lowercase
     */
     public String transformQuery(String hiveql) {
-        String result = hiveql;
         int indexOn = hiveql.toLowerCase().indexOf(" on ");
-        if(hiveql.contains("'")){
-            //First we leave the query untouched from whatever is before the on
-            result = hiveql.substring(0, indexOn);
-            int indexFirstComa = hiveql.indexOf("'");
-            String subString = hiveql.substring(indexOn, hiveql.length());
-            //Count how many case sensitive strings there is
-            int count = StringUtils.countMatches(subString, "'");
-            int indexStart = subString.indexOf("'");
-
-            for(int i = 0; i < count/2; i++) {
-                indexStart = subString.indexOf("'");
-                //First we turn to lowercase whatever is before the case sensitive string
-                result = result + subString.substring(0,indexStart).toLowerCase();
-                //We add the case sensitive part without lowercasing it
-                String caseSensitiveString = subString.substring(indexStart+1, subString.length());
-                int indexEnd = caseSensitiveString.indexOf("'");
-                caseSensitiveString = caseSensitiveString.substring(0, indexEnd);
-                result = result +"'"+ caseSensitiveString +"'";
-                subString = subString.substring(indexStart+caseSensitiveString.length()+2,subString.length());
-
-            }
-            result = result + hiveql.substring(result.length(),hiveql.length());
+        return hiveql.substring(0, indexOn) + transform(hiveql.substring(indexOn));
+    }
+    private String transform(String query) {
+        if (query.contains("'")) {
+            return lowercase(query);
         }
-        else{
-            //If there are no case sensitive strings, just lowercase everything after the 'join on'
-            result = hiveql.substring(0, indexOn) + hiveql.substring(indexOn).toLowerCase();
-        }
-        return result;
+        return query.toLowerCase();
+    }
+    private String lowercase(String query) {
+        int startQuoteIndex = query.indexOf("'");
+        int endQuoteIndex = query.indexOf("'", startQuoteIndex + 1);
+        String caseSensitiveString = query.substring(startQuoteIndex, endQuoteIndex + 1);
+        String lowered = query.substring(0, startQuoteIndex).toLowerCase();
+        String leftToLower = query.substring(endQuoteIndex + 1);
+        String restOfString = transform(leftToLower);
+        return lowered + caseSensitiveString + restOfString;
     }
 
     //Method to check if the query is a View query with a Join
