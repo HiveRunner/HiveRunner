@@ -78,8 +78,6 @@ public class ViewTest {
 
     List<String> result = shell.executeQuery("select * from test_db.test_view");
     List<String> expected = Arrays.asList("v1\tv3","V2:MiXedCases\tV4:MiXedCases");
-    System.out.println("result: "+result);
-    System.out.println("expected :"+expected);
     assertThat(expected, is(result));
   }
 
@@ -97,8 +95,6 @@ public class ViewTest {
 
     List<String> result = shell.executeQuery("select * from test_db.test_view");
     List<String> expected = Arrays.asList("v1\tv3","V2:MiXedCases\tV4:MiXedCases");
-    System.out.println("result: "+result);
-    System.out.println("expected :"+expected);
     assertThat(expected, is(result));
   }
 
@@ -115,8 +111,6 @@ public class ViewTest {
 
     List<String> result = shell.executeQuery("select * from test_db.test_view");
     List<String> expected = Arrays.asList("V2:MiXedCases\tV4:MiXedCases");
-    System.out.println("result: "+result);
-    System.out.println("expected :"+expected);
     assertThat(expected, is(result));
   }
 
