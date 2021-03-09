@@ -21,7 +21,6 @@ public class AggregateViewTest {
    * Adding unit test to check that issue#70 (https://github.com/klarna/HiveRunner/issues/70) doesn't happen anymore.
    * This bug is solved when upgrading HiveRunner to any version above 3.2.1 (at least 4.0.0).
    */
-
   @Test
   public void aggregateView() {
     shell.insertInto("db", "mvtdescriptionchangeinfo").addRow("123", "testname", "REMOVED", "contents of test...", "hostname", "6/21/17","20").commit();
