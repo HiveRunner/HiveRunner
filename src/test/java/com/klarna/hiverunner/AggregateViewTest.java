@@ -6,12 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class AggregateViewTest {
 
   @HiveSQL(files = {"AggregateViewTest/create_table.sql"}, autoStart = true)
