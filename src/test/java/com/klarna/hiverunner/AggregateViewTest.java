@@ -19,7 +19,7 @@ public class AggregateViewTest {
 
   /**
    * Adding unit test to check that issue#70 (https://github.com/klarna/HiveRunner/issues/70) doesn't happen anymore.
-   * This bug is solved when upgrading HiveRunner to any version above 3.2.1 (at least 4.0.0).
+   * This bug is solved when upgrading HiveRunner to version 4.0.0 or above (most likely due to move from Hive 1.x to 2.x).
    */
   @Test
   public void aggregateView() {
