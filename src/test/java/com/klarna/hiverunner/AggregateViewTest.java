@@ -30,7 +30,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 public class AggregateViewTest {
 
   @HiveSQL(files = {"AggregateViewTest/create_table.sql"})
-  protected HiveShell shell;
+  private HiveShell shell;
 
   /**
    * Adding unit test to check that issue#70 (https://github.com/klarna/HiveRunner/issues/70) doesn't happen anymore.
