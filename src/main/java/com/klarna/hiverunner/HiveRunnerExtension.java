@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,10 @@ import static org.reflections.ReflectionUtils.withType;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
+import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
@@ -48,10 +51,14 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   private final HiveRunnerConfig config = new HiveRunnerConfig();
   private Path basedir;
   private HiveShellContainer container;
-  private List<? extends Script> scriptsUnderTest;
+  protected List<Script> scriptsUnderTest = new ArrayList<Script>();
 
   public HiveRunnerExtension() {
     core = new HiveRunnerCore();
+  }
+  
+  protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
+    return core.getScriptPaths(annotation);
   }
 
   @Override

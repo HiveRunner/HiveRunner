@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ import java.util.Map;
  * All HiveRunner tests should run with the StandaloneHiveRunner
  */
 @RunWith(StandaloneHiveRunner.class)
-public class HelloAnnotatedHiveRunner {
-
+public class HelloAnnotatedHiveRunnerTest {
 
     /**
      * Explicit test class configuration of the HiveRunner runtime.
@@ -91,7 +90,6 @@ public class HelloAnnotatedHiveRunner {
     private File dataFromFile =
         new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
 
-
     /**
      * Define the script files under test. The files will be loaded in the given order.
      * <p/>
@@ -130,7 +128,6 @@ public class HelloAnnotatedHiveRunner {
         Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(3));
     }
 
-
     @Test
     public void testSelectFromCtas() {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
@@ -138,5 +135,4 @@ public class HelloAnnotatedHiveRunner {
             .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
         Assert.assertEquals(expected, actual);
     }
-
 }

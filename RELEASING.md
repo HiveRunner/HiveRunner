@@ -32,7 +32,7 @@ Basically follow this guide: http://central.sonatype.org/pages/apache-maven.html
 ```
 
 * Travis builds and deploys. Make sure to check the status of the build in Travis (https://travis-ci.org/klarna/HiveRunner).
-* Check that the artifacts are now available in Maven Central.
+* Check that the artifacts are now available in Maven Central (https://repo1.maven.org/maven2/com/klarna/hiverunner/).
 * Change version number in pom to next SNAPSHOT version.
 * Commit and push:
 
