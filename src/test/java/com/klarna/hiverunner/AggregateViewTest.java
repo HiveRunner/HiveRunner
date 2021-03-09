@@ -29,7 +29,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class AggregateViewTest {
 
-  @HiveSQL(files = {"AggregateViewTest/create_table.sql"}, autoStart = true)
+  @HiveSQL(files = {"AggregateViewTest/create_table.sql"})
   protected HiveShell shell;
 
   /**
