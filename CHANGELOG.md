@@ -26,6 +26,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
 - Added version `5.7.0` of `junit-vintage-engine`.
 
+### Fixed
+- Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ.
+
 ## [6.0.1] - 2020-09-07
 ### Removed
 - Removed shaded jar that was being produced as a side-effect.
