@@ -18,6 +18,7 @@ package com.klarna.hiverunner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class AggregateViewTest {
 
-  @HiveSQL(files = {"AggregateViewTest/create_table.sql"})
+  @HiveSQL(files = {})
   private HiveShell shell;
 
   /**
@@ -38,6 +39,7 @@ public class AggregateViewTest {
    */
   @Test
   public void aggregateView() {
+    this.shell.execute(Paths.get("src/test/resources/aggregateViewTest/create_table.sql"));
     shell.insertInto("db", "mvtdescriptionchangeinfo").addRow("123", "testname", "REMOVED", "contents of test...", "hostname", "6/21/17","20").commit();
     List<String> result = shell.executeQuery("SELECT * FROM db.latesttestchangepairs");
     List<String> expected = Arrays.asList("testname\tREMOVED");
