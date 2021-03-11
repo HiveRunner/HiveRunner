@@ -103,13 +103,6 @@ public class HelloAnnotatedHiveRunnerTest {
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
-    
-    @BeforeEach
-    public void setupSourceDatabase() {
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_table.sql"));
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_ctas.sql"));
-    }
-
     @Test
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");

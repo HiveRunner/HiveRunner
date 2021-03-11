@@ -51,7 +51,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   private final HiveRunnerConfig config = new HiveRunnerConfig();
   private Path basedir;
   private HiveShellContainer container;
-  protected List<Script> scriptsUnderTest = new ArrayList<Script>();
+  protected List<Script> scriptsUnderTest = null;
 
   public HiveRunnerExtension() {
     core = new HiveRunnerCore();
@@ -66,6 +66,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     setupConfig(target);
     try {
       basedir = Files.createTempDirectory("hiverunner_test");
+      System.out.println("AAA postProcessTestInstance1, scriptsUnderTest:"+scriptsUnderTest);
       container = createHiveServerContainer(scriptsUnderTest, target, basedir);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

@@ -52,7 +52,7 @@ class HiveRunnerCore {
       throws IOException {
 
     HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
-
+  System.out.println("AAA createHiveServerContainer, scripts:"+scripts);
     return buildShell(scripts, testCase, config, context);
   }
 
@@ -65,7 +65,9 @@ class HiveRunnerCore {
 
     HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
     //change this, if the scripts are empty
-    if (!scripts.isEmpty()) {
+    //System.out.println("AAA scripts after loading:"+scripts.toString());
+
+    if (scripts!=null) {
       System.out.println("AAA scripts are not null:"+scripts);
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
