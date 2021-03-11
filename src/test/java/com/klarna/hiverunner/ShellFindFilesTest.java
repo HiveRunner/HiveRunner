@@ -21,30 +21,19 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-//import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
 @ExtendWith(HiveRunnerExtension.class)
-//@RunWith(StandaloneHiveRunner.class)
 public class ShellFindFilesTest {
 
   @HiveSQL(files = {"shellFindFilesTest/test_query.sql"})
   protected HiveShell shell;
 
-//  @Before
-//  public void addTestData(){
-//    shell.insertInto("testdb", "test_table").addRow("randomstring1", "randomstring2").commit();
-//
-//  }
-
   @Test
   public void shellFindFiles(){
-    //shell.insertInto("testdb", "test_table").addRow("randomstring1", "randomstring2").commit();
     List<String> actual = shell.executeQuery("select * from testdb.test_table");
     List<String> expected = Arrays.asList();
     assertThat(actual,is(expected));

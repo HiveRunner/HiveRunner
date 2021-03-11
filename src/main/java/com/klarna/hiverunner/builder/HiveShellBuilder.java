@@ -62,10 +62,7 @@ public class HiveShellBuilder {
     }
 
     public void setScriptsUnderTest(List<Path> scriptPaths, Charset charset) {
-        System.out.println("AAA setScriptsUnderTest1, scriptPaths:"+scriptPaths);
         scriptsUnderTest.addAll(fromScriptPaths(scriptPaths, charset));
-        System.out.println("AAA setScriptsUnderTest2, scriptsundertest:"+scriptsUnderTest.toString());
-        //this one works
     }
 
     public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset) {
@@ -88,16 +85,11 @@ public class HiveShellBuilder {
     }
 
     public HiveShellContainer buildShell() {
-        System.out.println("AAA just before building shell, scriptsundertest:"+scriptsUnderTest);
         return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
     
     public void overrideScriptsUnderTest(List<? extends Script> scripts) {
-        System.out.println("AAA overrideScriptsUnderTest1:"+scriptsUnderTest);
-        System.out.println("AAA overrideScriptsUnderTestSCRIPTS:"+scripts);
-
       scriptsUnderTest = new ArrayList<>(scripts);
-        System.out.println("AAA overrideScriptsUnderTest2:"+scriptsUnderTest);
   }
 }
 

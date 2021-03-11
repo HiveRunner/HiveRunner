@@ -181,7 +181,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
-            System.out.println("AAA scripts:"+scripts);
             container = createHiveServerContainer(scripts, target, temporaryFolder);
             base.evaluate();
             return container;
@@ -223,7 +222,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         Path baseDir)
         throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
-        System.out.println("AAA scripts:"+scripts);
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
 

@@ -66,7 +66,6 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
     setupConfig(target);
     try {
       basedir = Files.createTempDirectory("hiverunner_test");
-      System.out.println("AAA postProcessTestInstance1, scriptsUnderTest:"+scriptsUnderTest);
       container = createHiveServerContainer(scriptsUnderTest, target, basedir);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
