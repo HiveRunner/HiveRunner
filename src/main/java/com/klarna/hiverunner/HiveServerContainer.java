@@ -118,8 +118,8 @@ public class HiveServerContainer {
     }
 
     public List<Object[]> executeStatement(String hiveql) {
-        //this PrintStream hack can be removed if/when IntelliJ fixes https://youtrack.jetbrains.com/issue/IDEA-120628
-        //see https://github.com/klarna/HiveRunner/issues/94 for more info
+        // This PrintStream hack can be removed if/when IntelliJ fixes https://youtrack.jetbrains.com/issue/IDEA-120628
+        // See https://github.com/klarna/HiveRunner/issues/94 for more info.
         PrintStream initialPrintStream = System.out;
         try {
             System.setOut(new IgnoreClosePrintStream(System.out));
