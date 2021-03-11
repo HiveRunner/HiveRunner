@@ -65,11 +65,11 @@ class HiveRunnerCore {
 
     HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
 
-    System.out.println(scripts);
     if (!scripts.isEmpty()) {
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
-    System.out.println(scripts);
+
+    hiveShellBuilder.setHiveServerContainer(hiveTestHarness);
 
     loadAnnotatedResources(testCase, hiveShellBuilder);
 
