@@ -64,7 +64,6 @@ class HiveRunnerCore {
     hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
     HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
-
     if (!scripts.isEmpty()) {
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
