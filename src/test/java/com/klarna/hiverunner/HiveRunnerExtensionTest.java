@@ -29,7 +29,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerExtensionTest {
 
-  @HiveSQL(files = { "hiveRunnerExtensionTest/test_query.sql" })
+  @HiveSQL(files = { "HiveRunnerExtensionTest/test_query.sql" })
   private HiveShell shell;
 
   @Test
