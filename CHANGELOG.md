@@ -19,13 +19,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
 - Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
-- Initialised `scriptsUnderTest` variable in `HiveRunnerExtension` as `null` instead of en empty list.
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
 - Added version `5.7.0` of `junit-vintage-engine`.
+
+### Fixed
+- Fixed that the files specified in `@HiveSQL` weren't being run when using `HiveRunnerExtension`.
 
 ## [6.0.1] - 2020-09-07
 ### Removed
