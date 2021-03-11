@@ -51,7 +51,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   private final HiveRunnerConfig config = new HiveRunnerConfig();
   private Path basedir;
   private HiveShellContainer container;
-  protected List<Script> scriptsUnderTest =  new ArrayList<>();
+  protected List<Script> scriptsUnderTest = new ArrayList<>();
 
   public HiveRunnerExtension() {
     core = new HiveRunnerCore();
