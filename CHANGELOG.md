@@ -21,6 +21,9 @@ NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.
 ### Added
 - Added version `5.7.0` of `junit-vintage-engine`.
 
+### Fixed
+- Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).
+
 ## [5.3.0] - 2021-01-05
 ### Changed
 - Made `HiveRunnerScript` constructor public.
