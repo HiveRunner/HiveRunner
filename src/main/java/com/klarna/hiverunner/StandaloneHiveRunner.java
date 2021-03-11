@@ -173,6 +173,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      */
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
         Path temporaryFolder, Statement base) throws Throwable {
+        scripts = new ArrayList<>();
         container = null;
         File temporaryFile = temporaryFolder.toFile();
         if (!temporaryFile.exists()) {
