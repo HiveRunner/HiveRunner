@@ -52,6 +52,7 @@ class HiveRunnerCore {
       throws IOException {
 
     HiveServerContext context = new StandaloneHiveServerContext(baseDir, config);
+
     return buildShell(scripts, testCase, config, context);
   }
 
@@ -63,7 +64,7 @@ class HiveRunnerCore {
     hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
     HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
-    if (scripts!=null) {
+    if (scripts != null) {
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
 

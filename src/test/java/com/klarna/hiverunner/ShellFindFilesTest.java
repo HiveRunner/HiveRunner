@@ -34,8 +34,9 @@ public class ShellFindFilesTest {
 
   @Test
   public void shellFindFiles(){
+    shell.insertInto("testdb", "test_table").addRow("v1", "v2").commit();
     List<String> actual = shell.executeQuery("select * from testdb.test_table");
-    List<String> expected = Arrays.asList();
+    List<String> expected = Arrays.asList("v1\tv2");
     assertThat(actual,is(expected));
   }
 
