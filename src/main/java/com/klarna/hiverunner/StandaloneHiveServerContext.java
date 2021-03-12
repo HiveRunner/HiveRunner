@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_C
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.SCRATCHDIR;
+import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,7 +125,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
   }
 
   protected void configureMrExecutionEngine(HiveConf conf) {
-
     /*
      * Switch off all optimizers otherwise we didn't manage to contain the map reduction within this JVM.
      */
@@ -207,6 +207,13 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     // No pooling needed. This will save us a lot of threads
     setMetastoreProperty("datanucleus.connectionPoolingType", "None");
 
+    /**
+     * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
+     * with some basic tables and will try to run initial test queries against them.
+     * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
+     */
+    setMetastoreProperty(HIVE_IN_TEST.getVarname(), "true");
+    
     setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "true");
     setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "true");
     setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "true");
