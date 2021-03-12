@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.x) and above please refer to https://github.com/klarna/HiveRunner/blob/main/CHANGELOG.md.
+
 ## [5.3.1] - TBD
 ### Changed
 - Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
@@ -17,6 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Added version `5.7.0` of `junit-vintage-engine`.
+
+### Fixed
+- Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).
 
 ## [5.3.0] - 2021-01-05
 ### Changed

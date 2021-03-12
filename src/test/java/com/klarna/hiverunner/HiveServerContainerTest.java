@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.klarna.hiverunner;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -49,7 +50,6 @@ public class HiveServerContainerTest {
 
     @Test
     public void testGetBasedir() {
-
         Assert.assertEquals(basedir.getRoot(), container.getBaseDir().getRoot());
     }
 
@@ -65,6 +65,24 @@ public class HiveServerContainerTest {
         List<Object[]> actual = container.executeStatement("show databases");
         Assert.assertEquals(1, actual.size());
         Assert.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+    }
+
+    @Test
+    public void testExecuteStatementOutputStreamReset() {
+        PrintStream initialPrintStream = System.out;
+        container.executeStatement("show databases");
+        Assert.assertEquals(initialPrintStream, System.out);
+    }
+
+    @Test
+    public void testExecuteStatementOutputStreamResetIfException() {
+        PrintStream initialPrintStream = System.out;
+        try {
+            container.executeStatement("use non-existent");
+            Assert.fail("Exception should be thrown");
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals(initialPrintStream, System.out);
+        }
     }
 
     @Test

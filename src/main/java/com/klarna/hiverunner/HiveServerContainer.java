@@ -20,6 +20,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.klarna.hiverunner.builder.Statement;
+import com.klarna.hiverunner.io.IgnoreClosePrintStream;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
@@ -35,6 +36,7 @@ import org.apache.hive.service.server.HiveServer2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintStream;
 import java.nio.file.Path;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -116,11 +118,14 @@ public class HiveServerContainer {
     }
 
     public List<Object[]> executeStatement(String hiveql) {
+        // This PrintStream hack can be removed if/when IntelliJ fixes https://youtrack.jetbrains.com/issue/IDEA-120628
+        // See https://github.com/klarna/HiveRunner/issues/94 for more info.
+        PrintStream initialPrintStream = System.out;
         try {
+            System.setOut(new IgnoreClosePrintStream(System.out));
             OperationHandle handle = client.executeStatement(sessionHandle, hiveql, new HashMap<>());
             List<Object[]> resultSet = new ArrayList<>();
             if (handle.hasResultSet()) {
-
                 /*
                  * fetchResults will by default return 100 rows per fetch (hive 14). For big result sets we need to continuously fetch the result set until all
                  * rows are fetched.
@@ -146,6 +151,8 @@ public class HiveServerContainer {
         } catch (HiveSQLException e) {
             throw new IllegalArgumentException("Failed to executeQuery Hive query " + hiveql + ": " + e.getMessage(),
                     e);
+        } finally {
+            System.setOut(initialPrintStream);
         }
     }
 
