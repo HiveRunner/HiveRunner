@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.klarna.hiverunner.sql.cli.hive;
 
-import static org.junit.Assertions.assertEquals;
+import static org.jupiter.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;

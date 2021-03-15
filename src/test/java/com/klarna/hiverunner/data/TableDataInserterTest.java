@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package com.klarna.hiverunner.data;
 
 import static java.util.Arrays.asList;
 
-import static org.junit.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static com.google.common.collect.ImmutableMap.of;
 
