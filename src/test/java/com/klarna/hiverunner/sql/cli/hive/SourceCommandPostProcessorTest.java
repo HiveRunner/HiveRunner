@@ -18,7 +18,6 @@ package com.klarna.hiverunner.sql.cli.hive;
 import static java.util.Arrays.asList;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 

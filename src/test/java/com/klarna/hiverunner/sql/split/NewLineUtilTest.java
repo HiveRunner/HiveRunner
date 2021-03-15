@@ -16,7 +16,6 @@
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static com.klarna.hiverunner.sql.split.NewLineUtil.removeLeadingTrailingNewLines;

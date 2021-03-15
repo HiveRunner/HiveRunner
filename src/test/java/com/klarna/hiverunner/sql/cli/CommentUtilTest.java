@@ -17,7 +17,6 @@ package com.klarna.hiverunner.sql.cli;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static com.klarna.hiverunner.sql.cli.CommentUtil.stripFullLineComments;

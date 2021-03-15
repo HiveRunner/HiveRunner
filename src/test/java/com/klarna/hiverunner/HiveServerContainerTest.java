@@ -96,6 +96,6 @@ public class HiveServerContainerTest {
 
     @Test
     public void testInvalidQuery() throws Throwable {
-        Assertions.assertThrows(HiveSQLException.class, () -> container.executeStatement("use foo"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> container.executeStatement("use foo"));
     }
 }

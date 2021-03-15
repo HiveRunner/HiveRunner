@@ -16,7 +16,6 @@
 package com.klarna.hiverunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -28,13 +27,13 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class ExecuteFileBasedScriptIntegrationTest {
 
       @Rule
