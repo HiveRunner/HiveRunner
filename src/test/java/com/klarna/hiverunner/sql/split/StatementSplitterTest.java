@@ -30,14 +30,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.klarna.hiverunner.builder.Statement;
 import com.klarna.hiverunner.sql.HiveRunnerStatement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
 // Checks the application of rules, not specific emulator implementations. See other tests for that.
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StatementSplitterTest {
 
     @Mock
