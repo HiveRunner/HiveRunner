@@ -18,7 +18,8 @@ package com.klarna.hiverunner.builder;
 import static com.google.common.base.Charsets.UTF_8;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
