@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,9 +67,9 @@ public class RunCommandPostProcessorTest {
         assertThat(processor.getImportPath("!run x"), is("x"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void importPathInvalid() {
-        processor.getImportPath("!run;");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> processor.getImportPath("!run;"));
     }
 
     @Test

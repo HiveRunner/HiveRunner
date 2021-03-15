@@ -41,7 +41,7 @@ public class InsertTestDataTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEachEach
+    @BeforeEach
     public void setupDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()

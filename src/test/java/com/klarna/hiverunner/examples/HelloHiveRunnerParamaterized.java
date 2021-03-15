@@ -38,7 +38,7 @@ public class HelloHiveRunnerParamaterized {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEachEach
+    @BeforeEach
     public void setupSourceDatabase() {
         shell.executeStatement("CREATE DATABASE source_db");
     }

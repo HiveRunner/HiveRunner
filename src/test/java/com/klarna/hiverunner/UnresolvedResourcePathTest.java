@@ -30,10 +30,10 @@ public class UnresolvedResourcePathTest {
     private HiveShell shell;
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resourceFileShouldNotBeCreatedIfReferencesAreUnresolved() {
         shell.addResource("${hiveconf:foo}/bar/baz.csv", "A,B,C");
-        shell.start();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> shell.start());
     }
 
     @Test
@@ -43,10 +43,10 @@ public class UnresolvedResourcePathTest {
         Assertions.assertTrue(new File(shell.getHiveConf().get("hadoop.tmp.dir"), "bar/baz.csv").exists());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resourceFilePathShouldAlwaysBeInsideTempDir() {
         shell.addResource("/bar/baz.csv", "A,B,C");
-        shell.start();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> shell.start());
     }
 
 

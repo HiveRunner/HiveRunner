@@ -40,7 +40,7 @@ public class SetHiveConfValuesTest {
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @BeforeEachEach
+    @BeforeEach
     public void setupDatabases() {
         shell.setHiveConfValue("cutoff", "50");
         shell.start();

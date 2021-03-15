@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory.valueOf;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
@@ -51,8 +52,8 @@ public class CommandShellEmulatorFactoryTest {
       assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unknown() {
-        valueOf("unknown");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {valueOf("unknown");});
     }
 }

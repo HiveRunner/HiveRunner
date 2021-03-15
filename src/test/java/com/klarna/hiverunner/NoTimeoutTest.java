@@ -18,6 +18,8 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,8 +56,8 @@ public class NoTimeoutTest {
      *
      * If the deadlock is introduced, this test will never terminate.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test() {
-        hiveShell.executeQuery("select sleep_one_second_udf(bar) from foo");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> hiveShell.executeQuery("select sleep_one_second_udf(bar) from foo"));
     }
 }

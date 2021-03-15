@@ -43,7 +43,7 @@ public class HelloHiveRunnerTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEachEach
+    @BeforeEach
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
