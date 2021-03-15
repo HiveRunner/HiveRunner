@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -55,9 +56,9 @@ public class HiveShellHiveCliEmulationTest {
     assertThat(results, is(Arrays.asList("x=1")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testQueryStripFullLineComment() {
-    hiveCliShell.executeQuery("-- a");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> hiveCliShell.executeQuery("-- a"));
   }
 
   @Test

@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class TsvFileParserTest {
@@ -37,11 +38,11 @@ public class TsvFileParserTest {
     assertArrayEquals(new String[] { "a2", "b2", "c2", "d2", "e2" }, result.get(1));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void parsesTsvNotEnoughFieldsInFile() {
     File dataFile = new File("src/test/resources/data/data.tsv");
     TsvFileParser tsvFileParser = new TsvFileParser();
-    tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e", "f"));
+    Assertions.assertThrows(IllegalStateException.class, () -> {tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e", "f"));});
   }
 
   @Test

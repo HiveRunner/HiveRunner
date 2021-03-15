@@ -16,12 +16,12 @@
 package com.klarna.hiverunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -57,9 +57,9 @@ public class HiveShellBeeLineEmulationTest {
     assertThat(results, is(Arrays.asList("x=1")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testQueryStripFullLineComment() {
-    beeLineShell.executeQuery("-- a");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> beeLineShell.executeQuery("-- a"));
   }
 
   @Test
