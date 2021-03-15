@@ -16,9 +16,9 @@
 package com.klarna.hiverunner.sql.cli.beeline;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BeelineEmulatorTest {
 

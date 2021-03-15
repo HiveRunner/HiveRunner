@@ -16,13 +16,13 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class UnresolvedResourcePathTest {
 
 
@@ -40,7 +40,7 @@ public class UnresolvedResourcePathTest {
     public void resourceFileShouldBeCreatedInsideTempDir() {
         shell.addResource("${hiveconf:hadoop.tmp.dir}/bar/baz.csv", "A,B,C");
         shell.start();
-        Assert.assertTrue(new File(shell.getHiveConf().get("hadoop.tmp.dir"), "bar/baz.csv").exists());
+        Assertions.assertTrue(new File(shell.getHiveConf().get("hadoop.tmp.dir"), "bar/baz.csv").exists());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -16,16 +16,16 @@
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import static com.klarna.hiverunner.sql.split.Consumer.UNTIL_EOL;
 
 import java.util.StringTokenizer;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -37,7 +37,7 @@ public class ConsumerEolTest {
     @Mock
     private StringTokenizer tokenizer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(context.tokenizer()).thenReturn(tokenizer);
     }

@@ -31,11 +31,11 @@ import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.timestampTy
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.unknownTypeInfo;
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.varcharTypeInfo;
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.voidTypeInfo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assertions.assertArrayEquals;
+import static org.junit.Assertions.assertEquals;
+import static org.junit.Assertions.assertNull;
+import static org.junit.Assertions.assertTrue;
+import static org.junit.Assertions.fail;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -45,7 +45,7 @@ import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConvertersTest {
 

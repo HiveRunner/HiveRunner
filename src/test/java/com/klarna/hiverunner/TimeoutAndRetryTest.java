@@ -18,10 +18,10 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for verifying the Timeout functionality of HiveRunner.
@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
  * Timeout by setting the 'TimeoutAndRetryTest.timeout.seconds' property in pom.xml or by passing it via command line
  * like -DTimeoutAndRetryTest.timeout.seconds=60
  */
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class TimeoutAndRetryTest {
 
     @HiveRunnerSetup
@@ -50,7 +50,7 @@ public class TimeoutAndRetryTest {
     @HiveSQL(files = {})
     private HiveShell hiveShell;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         String disableTimeout = System.getProperty("disableTimeout");
         if (disableTimeout != null && Boolean.parseBoolean(disableTimeout)) {

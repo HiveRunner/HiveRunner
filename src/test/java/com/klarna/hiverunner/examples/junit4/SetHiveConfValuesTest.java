@@ -19,7 +19,7 @@ import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class SetHiveConfValuesTest {
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @Before
+    @BeforeEach
     public void setupDatabases() {
         shell.setHiveConfValue("cutoff", "50");
         shell.start();

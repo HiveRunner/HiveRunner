@@ -16,11 +16,11 @@
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 
 import java.util.StringTokenizer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PreserveCommentsRuleTest {
 

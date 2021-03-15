@@ -16,11 +16,11 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class SetPropertyTest {
 
     @HiveSQL(files = {}, autoStart = false)
@@ -36,7 +36,7 @@ public class SetPropertyTest {
     public void propertyShouldBeSetInHiveConfiguration() {
         shell.setHiveConfValue("foo", "bar");
         shell.start();
-        Assert.assertEquals("bar", shell.getHiveConf().get("foo"));
+        Assertions.assertEquals("bar", shell.getHiveConf().get("foo"));
     }
 
 

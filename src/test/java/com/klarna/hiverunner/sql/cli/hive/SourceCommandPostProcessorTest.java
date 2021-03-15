@@ -18,15 +18,15 @@ package com.klarna.hiverunner.sql.cli.hive;
 import static java.util.Arrays.asList;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -41,7 +41,7 @@ public class SourceCommandPostProcessorTest {
 
     private AbstractImportPostProcessor processor;
 
-    @Before
+    @BeforeEach
     public void setup() {
         processor = new SourceCommandPostProcessor(lexer);
     }

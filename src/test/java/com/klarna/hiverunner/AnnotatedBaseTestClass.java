@@ -16,15 +16,15 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public abstract class AnnotatedBaseTestClass {
     @HiveSQL(files = {})
     protected HiveShell shell;
 
-    @Before
+    @BeforeEach
     public void setup() {
         shell.execute("create database test_db");
 

@@ -15,8 +15,8 @@
  */
 package com.klarna.hiverunner.examples;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertArrayEquals;
+import static org.junit.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class HelloHiveRunnerParamaterized {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
+    @BeforeEachEach
     public void setupSourceDatabase() {
         shell.executeStatement("CREATE DATABASE source_db");
     }

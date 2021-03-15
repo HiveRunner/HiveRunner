@@ -16,15 +16,15 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class TestMethodIntegrityTest {
 
     @HiveSQL(files = {}, autoStart = false)
@@ -43,7 +43,7 @@ public class TestMethodIntegrityTest {
         shell.start();
         List<String> actual = shell.executeQuery("select * from foo.bar");
         List<String> expected = Arrays.asList("1", "2", "3", "4", "5");
-        Assert.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
+        Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
 
     }
 
@@ -60,7 +60,7 @@ public class TestMethodIntegrityTest {
         shell.start();
         List<String> actual = shell.executeQuery("select * from foo.bar");
         List<String> expected = Arrays.asList("2", "6", "7", "8", "9");
-        Assert.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
+        Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
 
     }
 

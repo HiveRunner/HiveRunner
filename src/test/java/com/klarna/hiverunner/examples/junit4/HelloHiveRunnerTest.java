@@ -19,14 +19,14 @@ import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertArrayEquals;
+import static org.junit.Assertions.assertEquals;
 
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query
@@ -42,7 +42,7 @@ public class HelloHiveRunnerTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @Before
+    @BeforeEach
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
@@ -52,7 +52,7 @@ public class HelloHiveRunnerTest {
             .toString());
     }
 
-    @Before
+    @BeforeEach
     public void setupTargetDatabase() {
         shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
     }

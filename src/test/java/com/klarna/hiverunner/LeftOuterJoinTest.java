@@ -17,14 +17,14 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class LeftOuterJoinTest {
 
     private final String hdfsSourceFoo = "${hiveconf:hadoop.tmp.dir}/foo";
@@ -68,7 +68,7 @@ public class LeftOuterJoinTest {
         List<String> expected = Arrays.asList("id1\tbar_value1", "id3\tNULL");
         List<String> actual = hiveShell.executeQuery(query);
 
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 

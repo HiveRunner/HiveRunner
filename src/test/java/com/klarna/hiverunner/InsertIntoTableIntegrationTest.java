@@ -15,27 +15,27 @@
  */
 package com.klarna.hiverunner;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertArrayEquals;
+import static org.junit.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.data.TsvFileParser;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class InsertIntoTableIntegrationTest {
 
   @HiveSQL(files = {})
   private HiveShell hiveShell;
 
-  @Before
+  @BeforeEach
   public void before() {
     hiveShell.execute("create database test_db");
   }

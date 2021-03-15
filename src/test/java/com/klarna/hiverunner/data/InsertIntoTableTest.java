@@ -23,9 +23,9 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.hive.hcatalog.data.HCatRecord;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -41,7 +41,7 @@ public class InsertIntoTableTest {
 
   private InsertIntoTable insert;
 
-  @Before
+  @BeforeEach
   public void before() {
     insert = new InsertIntoTable(builder, inserter);
   }

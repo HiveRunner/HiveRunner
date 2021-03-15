@@ -17,11 +17,11 @@ package com.klarna.hiverunner.sql.cli;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 
 import static com.klarna.hiverunner.sql.cli.CommandShellEmulatorFactory.valueOf;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;

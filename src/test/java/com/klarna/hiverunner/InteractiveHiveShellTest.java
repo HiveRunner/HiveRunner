@@ -17,11 +17,11 @@ package com.klarna.hiverunner;
 
 import com.google.common.io.Files;
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class InteractiveHiveShellTest {
 
     @HiveSQL(files = {}, autoStart = false)
@@ -46,7 +46,7 @@ public class InteractiveHiveShellTest {
         shell.start();
         List<String> actual = shell.executeQuery("show databases");
         List<String> expected = Arrays.asList("default", "foo");
-        Assert.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
+        Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
     }
 
     @Test
@@ -58,11 +58,11 @@ public class InteractiveHiveShellTest {
 
         List<String> actual = shell.executeQuery("show databases");
         List<String> expected = Arrays.asList("default", "foo");
-        Assert.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
+        Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
 
         List<String> actualTable = shell.executeQuery("show tables in foo");
         List<String> expectedTable = Arrays.asList("bar");
-        Assert.assertEquals(new HashSet<>(expectedTable), new HashSet<>(actualTable));
+        Assertions.assertEquals(new HashSet<>(expectedTable), new HashSet<>(actualTable));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class InteractiveHiveShellTest {
 
         List<String> actualTable = shell.executeQuery("show tables in foo");
         List<String> expectedTable = Arrays.asList("bar");
-        Assert.assertEquals(new HashSet<>(expectedTable), new HashSet<>(actualTable));
+        Assertions.assertEquals(new HashSet<>(expectedTable), new HashSet<>(actualTable));
     }
 
     private File createFileBasedScript(String script) throws IOException {

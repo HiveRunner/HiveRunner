@@ -15,12 +15,12 @@
  */
 package com.klarna.hiverunner.sql.cli.beeline;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Joiner;
 import com.klarna.hiverunner.builder.Statement;

@@ -16,7 +16,7 @@
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import static com.klarna.hiverunner.sql.split.StatementSplitter.SQL_SPECIAL_CHARS;
@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -53,7 +53,7 @@ public class StatementSplitterTest {
         return statements;
     }
 
-    @Before
+    @BeforeEach
     public void setupEmulator() {
         // Creates a simple emulator that understands ';' only
         when(emulator.specialCharacters()).thenReturn(SQL_SPECIAL_CHARS);

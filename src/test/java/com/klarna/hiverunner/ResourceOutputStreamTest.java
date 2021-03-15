@@ -21,15 +21,15 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class ResourceOutputStreamTest {
 
     @HiveSQL(files = {}, autoStart = false)
@@ -60,7 +60,7 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("Foo", "Bar", "Baz"), shell.executeQuery("select * from foobar"));
+        Assertions.assertEquals(Arrays.asList("Foo", "Bar", "Baz"), shell.executeQuery("select * from foobar"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("Foo", "Bar", "_NULL_", "Baz"),
+        Assertions.assertEquals(Arrays.asList("Foo", "Bar", "_NULL_", "Baz"),
                 shell.executeQuery("select * from foobar", "\t", "_NULL_"));
     }
 

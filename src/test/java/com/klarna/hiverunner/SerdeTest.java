@@ -18,16 +18,16 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class SerdeTest {
 
     private final String hdfsSource = "${hiveconf:hadoop.tmp.dir}/serde";
@@ -49,7 +49,7 @@ public class SerdeTest {
     public void testWithProvidedRegexSerde() {
         hiveShell.addResource(hdfsSource + "/data.csv", "123#FOO");
         hiveShell.start();
-        Assert.assertEquals(Arrays.asList("123\tFOO"), hiveShell.executeQuery("SELECT * FROM serde_test"));
+        Assertions.assertEquals(Arrays.asList("123\tFOO"), hiveShell.executeQuery("SELECT * FROM serde_test"));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SerdeTest {
         Collections.sort(actual);
         Collections.sort(expected);
 
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 

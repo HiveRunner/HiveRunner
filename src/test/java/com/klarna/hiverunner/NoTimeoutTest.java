@@ -18,11 +18,11 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class NoTimeoutTest {
 
     @HiveRunnerSetup
@@ -35,7 +35,7 @@ public class NoTimeoutTest {
     @HiveSQL(files = {})
     private HiveShell hiveShell;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         String disableTimeout = System.getProperty("disableTimeout");
         if (disableTimeout != null && Boolean.parseBoolean(disableTimeout)) {

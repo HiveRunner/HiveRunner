@@ -25,8 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertArrayEquals;
+import static org.junit.Assertions.assertEquals;
 
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query
@@ -43,7 +43,7 @@ public class HelloHiveRunnerTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
+    @BeforeEachEach
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()

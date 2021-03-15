@@ -15,17 +15,17 @@
  */
 package com.klarna.hiverunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class CommentTest {
   @HiveSQL(files = {"commentTest/comment.sql"})
   public HiveShell hiveShell;
