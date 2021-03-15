@@ -21,24 +21,16 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@RunWith(StandaloneHiveRunner.class)
 @ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerExtensionTest {
 
   @HiveSQL(files = { "HiveRunnerExtensionTest/test_query.sql" })
   private HiveShell shell;
-  @Before
-  @BeforeEach
-  @AfterEach
 
   @Test
   public void shellFindFiles(){

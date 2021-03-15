@@ -19,7 +19,7 @@ import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.nio.file.Paths;
@@ -42,7 +42,7 @@ public class HelloHiveRunnerTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
+    @Before
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
@@ -52,7 +52,7 @@ public class HelloHiveRunnerTest {
             .toString());
     }
 
-    @BeforeEach
+    @Before
     public void setupTargetDatabase() {
         shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
     }

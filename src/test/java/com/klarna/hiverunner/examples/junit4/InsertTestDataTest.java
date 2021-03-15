@@ -21,7 +21,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.data.TsvFileParser;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
@@ -44,7 +44,7 @@ public class InsertTestDataTest {
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
+    @Before
     public void setupDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
