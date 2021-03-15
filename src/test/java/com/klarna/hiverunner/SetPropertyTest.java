@@ -26,10 +26,10 @@ public class SetPropertyTest {
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void propertyShouldNotBeSetIfShellIsAlreadyStarted() {
         shell.start();
-        shell.setHiveConfValue("foo", "bar");
+        Assertions.assertThrows(IllegalStateException.class, () -> shell.setHiveConfValue("foo", "bar"));
     }
 
     @Test

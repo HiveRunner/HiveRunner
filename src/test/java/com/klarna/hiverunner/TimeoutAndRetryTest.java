@@ -18,6 +18,8 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
@@ -80,19 +82,21 @@ public class TimeoutAndRetryTest {
         hiveShell.executeQuery("select nonstop(bar) from foo");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void expectTest() {
-        throw new IllegalArgumentException("This should be expected");
-    }
+//    @Test
+//        //(expected = IllegalArgumentException.class)
+//    public void expectTest() {
+//        throw new IllegalArgumentException("This should be expected");
+//    }
 
-    @Test(expected = TimeoutException.class)
+    @Test
     public void expectTimoutTest() {
-        throw new TimeoutException("This should be expected");
+        TimeoutException timeoutException = new TimeoutException("This should be expected");
+        Assertions.assertThrows(TimeoutException.class, () -> {throw timeoutException;});
     }
 
     private static int throwOnSecondRunTimouts = 0;
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void throwOnSecondRun() {
         if (throwOnSecondRunTimouts == 0) {
             throwOnSecondRunTimouts++;
@@ -106,7 +110,7 @@ public class TimeoutAndRetryTest {
 
             System.out.println("SECOND RUN!!!!");
 
-            throw new ArrayIndexOutOfBoundsException();
+            Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {throw new ArrayIndexOutOfBoundsException();});
         }
 
     }
@@ -114,7 +118,7 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts2 = 0;
 
-    @Test(expected = TimeoutException.class)
+    @Test
     public void throwOnSecondRun2() {
         if (throwOnSecondRunTimouts2 == 0) {
             throwOnSecondRunTimouts2++;
@@ -128,7 +132,7 @@ public class TimeoutAndRetryTest {
 
             System.out.println("SECOND RUN!!!!");
 
-            throw new TimeoutException();
+            Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {throw new TimeoutException();});
         }
 
     }

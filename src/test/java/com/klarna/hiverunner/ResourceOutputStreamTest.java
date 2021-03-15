@@ -35,7 +35,7 @@ public class ResourceOutputStreamTest {
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void writeShouldOnlyBeAllowedBeforeStartHasBeenCalled() throws IOException {
 
         OutputStream resourceOutputStream =
@@ -43,7 +43,8 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        resourceOutputStream.write("Foo\nBar\nBaz".getBytes());
+        Assertions.assertThrows(IllegalStateException.class, () -> resourceOutputStream.write("Foo\nBar\nBaz".getBytes()));
+
     }
 
     @Test
