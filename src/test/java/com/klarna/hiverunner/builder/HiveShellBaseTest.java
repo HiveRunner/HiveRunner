@@ -34,6 +34,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.CLIService;
 import org.junit.Rule;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,10 +61,10 @@ public class HiveShellBaseTest {
     @Captor
     private ArgumentCaptor<String> hiveSqlStatementCaptor;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void variableSubstitutionShouldBlowUpIfShellIsNotStarted() {
         HiveShell shell = createHiveCliShell("origin", "spanish");
-        shell.expandVariableSubstitutes("The ${hiveconf:origin} fox");
+        Assertions.assertThrows(IllegalStateException.class, () -> {shell.expandVariableSubstitutes("The ${hiveconf:origin} fox");});
     }
 
     @Test
@@ -82,25 +83,26 @@ public class HiveShellBaseTest {
     }
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void setupScriptMayNotBeAddedAfterShellIsStarted() {
         HiveShell shell = createHiveCliShell();
         shell.start();
         shell.addSetupScript("foo");
+        Assertions.assertThrows(IllegalStateException.class, () -> {shell.addSetupScript("foo");});
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void invalidFilePathShouldThrowException() {
         HiveShell shell = createHiveCliShell();
-        shell.addSetupScripts(new File("foo"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {shell.addSetupScripts(new File("foo"));});
     }
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void setupScriptsMayNotBeAddedAfterShellIsStarted() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
-        shell.addSetupScripts(tempFolder.newFile("foo"));
+        Assertions.assertThrows(IllegalStateException.class, () -> {shell.addSetupScripts(tempFolder.newFile("foo"));});
     }
 
     @Test
@@ -159,21 +161,21 @@ public class HiveShellBaseTest {
       verify(container).executeStatement(hiveSql);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void executeScriptFileNotExists() throws IOException {
       File file = new File(tempFolder.getRoot(), "script.sql");
 
       HiveShell shell = createHiveCliShell();
       shell.start();
-      shell.execute(UTF_8, Paths.get(file.toURI()));
+      Assertions.assertThrows(IllegalArgumentException.class, () -> {shell.execute(UTF_8, Paths.get(file.toURI()));});
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void executeScriptNotStarted() throws IOException {
       File file = new File(tempFolder.getRoot(), "script.sql");
       
       HiveShell shell = createHiveCliShell();
-      shell.execute(UTF_8, Paths.get(file.toURI()));
+      Assertions.assertThrows(IllegalStateException.class, () -> {shell.execute(UTF_8, Paths.get(file.toURI()));});
     }
     
     @Test
@@ -193,7 +195,7 @@ public class HiveShellBaseTest {
         assertThat(results.get(0), is("defaultxxxyyyxxx100"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void executeQueryFromFileMoreThanOneStatement() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
@@ -202,11 +204,10 @@ public class HiveShellBaseTest {
         
         File file = new File(tempFolder.getRoot(), "script.sql");
         Files.write(hiveSql, file, UTF_8);
-        
-        shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");});
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void executeQueryFromFileZeroStatements() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
@@ -215,8 +216,9 @@ public class HiveShellBaseTest {
         
         File file = new File(tempFolder.getRoot(), "script.sql");
         Files.write(hiveSql, file, UTF_8);
-        
-        shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");});
+
     }
 
     @Test
