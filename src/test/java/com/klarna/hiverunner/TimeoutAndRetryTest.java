@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2021 Klarna AB
+ * Copyright (C) 2013-2018 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test cases for verifying the Timeout functionality of HiveRunner.
@@ -32,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Timeout by setting the 'TimeoutAndRetryTest.timeout.seconds' property in pom.xml or by passing it via command line
  * like -DTimeoutAndRetryTest.timeout.seconds=60
  */
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class TimeoutAndRetryTest {
 
     @HiveRunnerSetup
@@ -52,7 +50,7 @@ public class TimeoutAndRetryTest {
     @HiveSQL(files = {})
     private HiveShell hiveShell;
 
-    @BeforeEach
+    @Before
     public void prepare() {
         String disableTimeout = System.getProperty("disableTimeout");
         if (disableTimeout != null && Boolean.parseBoolean(disableTimeout)) {
@@ -82,21 +80,19 @@ public class TimeoutAndRetryTest {
         hiveShell.executeQuery("select nonstop(bar) from foo");
     }
 
-//    @Test
-//        //(expected = IllegalArgumentException.class)
-//    public void expectTest() {
-//        throw new IllegalArgumentException("This should be expected");
-//    }
+    @Test(expected = IllegalArgumentException.class)
+    public void expectTest() {
+        throw new IllegalArgumentException("This should be expected");
+    }
 
-    @Test
+    @Test(expected = TimeoutException.class)
     public void expectTimoutTest() {
-        TimeoutException timeoutException = new TimeoutException("This should be expected");
-        Assertions.assertThrows(TimeoutException.class, () -> {throw timeoutException;});
+        throw new TimeoutException("This should be expected");
     }
 
     private static int throwOnSecondRunTimouts = 0;
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void throwOnSecondRun() {
         if (throwOnSecondRunTimouts == 0) {
             throwOnSecondRunTimouts++;
@@ -110,7 +106,7 @@ public class TimeoutAndRetryTest {
 
             System.out.println("SECOND RUN!!!!");
 
-            Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {throw new ArrayIndexOutOfBoundsException();});
+            throw new ArrayIndexOutOfBoundsException();
         }
 
     }
@@ -118,7 +114,7 @@ public class TimeoutAndRetryTest {
 
     private static int throwOnSecondRunTimouts2 = 0;
 
-    @Test
+    @Test(expected = TimeoutException.class)
     public void throwOnSecondRun2() {
         if (throwOnSecondRunTimouts2 == 0) {
             throwOnSecondRunTimouts2++;
@@ -132,7 +128,7 @@ public class TimeoutAndRetryTest {
 
             System.out.println("SECOND RUN!!!!");
 
-            Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> {throw new TimeoutException();});
+            throw new TimeoutException();
         }
 
     }

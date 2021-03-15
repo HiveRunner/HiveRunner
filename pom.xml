@@ -45,7 +45,7 @@
     <hadoop.version>3.1.0</hadoop.version>
     <hive.execution.engine>mr</hive.execution.engine>
     <hive.version>3.1.2</hive.version>
-    <junit.jupiter.version>5.8.0-M1</junit.jupiter.version>
+    <junit.jupiter.version>5.7.1</junit.jupiter.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <tez.version>0.9.1</tez.version>
   </properties>
