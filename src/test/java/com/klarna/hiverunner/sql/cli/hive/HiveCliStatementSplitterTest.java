@@ -15,7 +15,7 @@
  */
 package com.klarna.hiverunner.sql.cli.hive;
 
-import static org.jupiter.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
