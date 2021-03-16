@@ -15,6 +15,7 @@
  */
 package com.klarna.hiverunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class HiveRunnerRule implements TestRule {
     private final StandaloneHiveRunner runner;
     private final Object target;
     private final Path testBaseDir;
-    private List<? extends Script> scriptsUnderTest;
+    private List<? extends Script> scriptsUnderTest = new ArrayList<>();
 
     HiveRunnerRule(StandaloneHiveRunner runner, Object target, Path testBaseDir) {
         this.runner = runner;
