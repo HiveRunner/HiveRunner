@@ -24,13 +24,13 @@ import java.io.PrintStream;
 import java.util.List;
 
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class ExecuteScriptIntegrationTest {
 
   @Rule
