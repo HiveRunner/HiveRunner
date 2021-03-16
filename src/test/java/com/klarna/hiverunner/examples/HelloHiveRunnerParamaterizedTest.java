@@ -33,7 +33,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
  * A basic Hive Runner example showing how to use JUnit5's ParameterizedTest.
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunnerParamaterized {
+public class HelloHiveRunnerParamaterizedTest {
 
     @HiveSQL(files = {})
     private HiveShell shell;
