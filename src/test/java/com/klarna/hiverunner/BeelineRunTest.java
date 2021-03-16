@@ -23,16 +23,16 @@ import java.io.PrintStream;
 import java.util.List;
 
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class BeelineRunTest {
 
     private static final String TEST_DB = "test_db";

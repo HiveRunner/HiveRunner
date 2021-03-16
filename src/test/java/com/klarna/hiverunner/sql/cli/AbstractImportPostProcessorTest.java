@@ -48,11 +48,11 @@ public class AbstractImportPostProcessorTest {
     @BeforeEach
     public void setup() {
         expected = singletonList(NON_IMPORT_STATEMENT);
-        when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
     }
     
     @Test
     public void scriptImport() {
+        when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
         PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
         List<String> actual = processor.statement(IMPORT_STATEMENT);
         assertThat(actual, is(equalTo(expected)));

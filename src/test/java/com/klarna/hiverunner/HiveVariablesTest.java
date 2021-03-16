@@ -18,11 +18,11 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 
-@ExtendWith(HiveRunnerExtension.class)
+@RunWith(StandaloneHiveRunner.class)
 public class HiveVariablesTest {
   
     @Rule
