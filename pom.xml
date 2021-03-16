@@ -148,12 +148,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <version>${junit.jupiter.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <version>3.8.0</version>
@@ -165,6 +159,12 @@
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
     </dependency>
 
     <dependency>
