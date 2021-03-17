@@ -6,11 +6,8 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-//import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
