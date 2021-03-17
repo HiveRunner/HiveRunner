@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.klarna.hiverunner.annotations.HiveSQL;
 
 @ExtendWith(HiveRunnerExtension.class)
-public class ShellFindFilesTest {
+public class HiveRunnerExtensionTest {
 
   @HiveSQL(files = {"shellFindFilesTest/test_query.sql"})
   protected HiveShell shell;
