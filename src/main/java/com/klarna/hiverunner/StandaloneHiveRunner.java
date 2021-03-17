@@ -222,6 +222,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         Path baseDir)
         throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
+
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
 
@@ -245,6 +246,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                     config.override(ReflectionUtils
                             .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
                 }
+
                 return base;
             }
         };
