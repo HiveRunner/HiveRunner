@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Added version `5.7.0` of `junit-vintage-engine`.
 
 ### Fixed
+- Fixed bug where the files specified in `@HiveSQL` weren't being run when using `HiveRunnerExtension`.
 - Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).
 
 ## [6.0.1] - 2020-09-07
