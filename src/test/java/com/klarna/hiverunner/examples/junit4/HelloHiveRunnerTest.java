@@ -15,6 +15,9 @@
  */
 package com.klarna.hiverunner.examples.junit4;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
@@ -24,9 +27,6 @@ import org.junit.runner.RunWith;
 
 import java.nio.file.Paths;
 import java.util.List;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query

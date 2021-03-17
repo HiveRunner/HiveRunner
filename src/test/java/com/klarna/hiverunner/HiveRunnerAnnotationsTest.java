@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import org.apache.commons.collections.MapUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -35,7 +35,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsArrayContaining.hasItemInArray;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerAnnotationsTest {
 
     @HiveSetupScript
@@ -66,7 +66,7 @@ public class HiveRunnerAnnotationsTest {
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromPath.csv")
     public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").getPath());
 
-    @Before
+    @BeforeEach
     public void setup() {
         hiveShell.start();
     }
@@ -102,8 +102,8 @@ public class HiveRunnerAnnotationsTest {
 
     @Test
     public void testPropertiesLoaded() {
-        Assert.assertEquals("value1", hiveShell.getHiveConf().get("key1"));
-        Assert.assertEquals("value2", hiveShell.getHiveConf().get("key2"));
+        Assertions.assertEquals("value1", hiveShell.getHiveConf().get("key1"));
+        Assertions.assertEquals("value2", hiveShell.getHiveConf().get("key2"));
     }
 
     @Test

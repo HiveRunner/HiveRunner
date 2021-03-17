@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.klarna.hiverunner.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,15 +35,16 @@ import org.apache.hive.hcatalog.api.HCatTable;
 import org.apache.hive.hcatalog.common.HCatException;
 import org.apache.hive.hcatalog.data.HCatRecord;
 import org.apache.hive.hcatalog.data.schema.HCatFieldSchema;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.Multimap;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TableDataBuilderTest {
 
   private static final String DATABASE_NAME = "test_db";
@@ -53,18 +54,16 @@ public class TableDataBuilderTest {
 
   private static final PrimitiveTypeInfo STRING = TypeInfoFactory.stringTypeInfo;
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnknownColumnNameWithColumnMask() {
     HCatTable table = table().cols(columns(COLUMN_1));
-
-    new TableDataBuilder(table).withColumns("unknown_column");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {new TableDataBuilder(table).withColumns("unknown_column");});
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnknownColumnNameOnSet() {
     HCatTable table = table().cols(columns(COLUMN_1));
-
-    new TableDataBuilder(table).set("unknown_column", "value");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {new TableDataBuilder(table).set("unknown_column", "value");});
   }
 
   @Mock
@@ -83,25 +82,22 @@ public class TableDataBuilderTest {
     verify(tableDataBuilder, times(1)).withColumns("column_1", "column_2", "column_3");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddRowWithNoArguments() {
     HCatTable table = table().cols(columns(COLUMN_1));
-
-    new TableDataBuilder(table).addRow();
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {new TableDataBuilder(table).addRow();});
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddRowWithIncorrectNumberOfArguments() {
     HCatTable table = table().cols(columns(COLUMN_1));
-
-    new TableDataBuilder(table).addRow("value1", "value2");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {new TableDataBuilder(table).addRow("value1", "value2");});
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testCopyRowWhenNoRowToCopy() {
     HCatTable table = table().cols(columns(COLUMN_1));
-
-    new TableDataBuilder(table).copyRow();
+    Assertions.assertThrows(IllegalStateException.class, () -> {new TableDataBuilder(table).copyRow();});
   }
 
   @Test
@@ -145,11 +141,10 @@ public class TableDataBuilderTest {
     assertEquals(Arrays.asList((Object) "value"), row.getAll());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testPartitionedNullPartitionColumnValue() {
     HCatTable table = table().cols(columns(COLUMN_1)).partCols(columns(PARTITION_COLUMN_1));
-
-    new TableDataBuilder(table).newRow().build();
+    Assertions.assertThrows(IllegalStateException.class, () -> {new TableDataBuilder(table).newRow().build();});
   }
 
   @Test

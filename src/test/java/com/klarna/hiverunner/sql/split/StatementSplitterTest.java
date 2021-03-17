@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.klarna.hiverunner.sql.split;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import static com.klarna.hiverunner.sql.split.StatementSplitter.SQL_SPECIAL_CHARS;
@@ -25,18 +25,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.klarna.hiverunner.builder.Statement;
 import com.klarna.hiverunner.sql.HiveRunnerStatement;
 import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
 
 // Checks the application of rules, not specific emulator implementations. See other tests for that.
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StatementSplitterTest {
 
     @Mock
@@ -53,7 +53,7 @@ public class StatementSplitterTest {
         return statements;
     }
 
-    @Before
+    @BeforeEach
     public void setupEmulator() {
         // Creates a simple emulator that understands ';' only
         when(emulator.specialCharacters()).thenReturn(SQL_SPECIAL_CHARS);
