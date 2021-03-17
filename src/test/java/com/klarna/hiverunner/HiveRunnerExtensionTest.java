@@ -14,15 +14,14 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerExtensionTest {
 
-  @HiveSQL(files = {"shellFindFilesTest/test_query.sql"})
+  @HiveSQL(files = {"HiveRunnerExtensionTest/test_query.sql"})
   protected HiveShell shell;
-
 
   @Test
   public void shellFindFiles(){
-    shell.insertInto("testdb", "test_table").addRow("randomstring1", "randomstring2").commit();
+    shell.insertInto("testdb", "test_table").addRow("v1", "v2").commit();
     List<String> actual = shell.executeQuery("select * from testdb.test_table");
-    List<String> expected = Arrays.asList();
+    List<String> expected = Arrays.asList("v1\tv2");
     assertThat(actual,is(expected));
   }
 
