@@ -64,7 +64,9 @@ class HiveRunnerCore {
     hiveShellBuilder.setCommandShellEmulation(config.getCommandShellEmulator());
 
     HiveShellField shellSetter = loadScriptUnderTest(testCase, hiveShellBuilder);
-    if (scripts != null) {
+    //change this, if the scripts are empty
+    if (!scripts.isEmpty()) {
+      System.out.println("AAA scripts are not null:"+scripts);
       hiveShellBuilder.overrideScriptsUnderTest(scripts);
     }
 
@@ -77,6 +79,7 @@ class HiveRunnerCore {
     loadAnnotatedSetupScripts(testCase, hiveShellBuilder);
 
     // Build shell
+    //error happens before here
     HiveShellContainer shell = hiveShellBuilder.buildShell();
 
     // Set shell
@@ -102,6 +105,7 @@ class HiveRunnerCore {
 
       boolean isAutoStart = annotation.autoStart();
 
+      System.out.println("AAA scriptpaths2:"+scriptPaths.toString());
       hiveShellBuilder.setScriptsUnderTest(scriptPaths, charset);
 
       return new HiveShellField() {
@@ -123,10 +127,13 @@ class HiveRunnerCore {
   protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
     List<Path> scriptPaths = new ArrayList<>();
     for (String scriptFilePath : annotation.files()) {
+      //System.out.println("goes throught this");
+      //System.out.println("AAA Resources.getResource(scriptFilePath).toURI()"+ Resources.getResource(scriptFilePath).toURI());
       Path file = Paths.get(Resources.getResource(scriptFilePath).toURI());
       assertFileExists(file);
       scriptPaths.add(file);
     }
+    System.out.println("AAA scriptPaths:"+scriptPaths.toString());
     return scriptPaths;
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
@@ -69,6 +70,20 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
 
     public StandaloneHiveRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+        initializeConfig();
+    }
+
+    /**
+     * Set some properties which make good defaults for test scenarios. These can be overridden
+     * in the individual HiveShell instances though, if needed.
+     */
+    private void initializeConfig() {
+        /**
+         * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
+         * with some basic tables and will try to run initial test queries against them.
+         * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
+         */
+        config.getHiveConfSystemOverride().put(HIVE_IN_TEST.getVarname(), "true");
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
@@ -166,6 +181,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         FileUtil.setPermission(temporaryFile, FsPermission.getDirDefault());
         try {
             LOGGER.info("Setting up {} in {}", getName(), temporaryFolder.getRoot());
+            System.out.println("AAA scripts:"+scripts);
             container = createHiveServerContainer(scripts, target, temporaryFolder);
             base.evaluate();
             return container;
@@ -207,7 +223,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         Path baseDir)
         throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
-
+        System.out.println("AAA scripts:"+scripts);
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
 
@@ -231,7 +247,6 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
                     config.override(ReflectionUtils
                             .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
                 }
-
                 return base;
             }
         };
