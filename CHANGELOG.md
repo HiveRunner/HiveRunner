@@ -23,6 +23,7 @@ NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.
 
 ### Fixed
 - Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).
+- Fixed bug where the files specified in `@HiveSQL` weren't being run when using `HiveRunnerExtension`.
 
 ## [5.3.0] - 2021-01-05
 ### Changed
