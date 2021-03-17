@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.klarna.hiverunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class HiveRunnerRule implements TestRule {
     private final StandaloneHiveRunner runner;
     private final Object target;
     private final Path testBaseDir;
-    private List<? extends Script> scriptsUnderTest;
+    private List<? extends Script> scriptsUnderTest = new ArrayList<>();
 
     HiveRunnerRule(StandaloneHiveRunner runner, Object target, Path testBaseDir) {
         this.runner = runner;

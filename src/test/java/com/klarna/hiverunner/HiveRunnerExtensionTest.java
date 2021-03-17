@@ -38,7 +38,6 @@ public class HiveRunnerExtensionTest {
     List<String> actual = shell.executeQuery("select * from testdb.test_table");
     List<String> expected = Arrays.asList("v1\tv2");
     assertThat(actual,is(expected));
-
   }
 
 }
