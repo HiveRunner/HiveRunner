@@ -154,7 +154,7 @@ public final class InsertIntoTable {
    *
    * @param file The file to read the data from.
    * @param delimiter A column delimiter.
-   * @param nullValue Value to be treated as null in the source TsvFileParserTest.
+   * @param nullValue Value to be treated as null in the source data.
    * @return {@code this}
    */
   public InsertIntoTable addRowsFromDelimited(File file, String delimiter, Object nullValue) {
@@ -198,7 +198,7 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Inserts the data into the table. This does not replace any existing TsvFileParserTest, but appends new part files to the
+   * Inserts the data into the table. This does not replace any existing data, but appends new part files to the
    * table/partition location(s).
    */
   public void commit() {

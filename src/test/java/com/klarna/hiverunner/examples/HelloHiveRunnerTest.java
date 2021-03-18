@@ -58,7 +58,7 @@ public class HelloHiveRunnerTest {
     @Test
     public void testMaxValueByYear() {
         /*
-         * Insert some source TsvFileParserTest
+         * Insert some source data
          */
         shell.insertInto("source_db", "test_table")
                 .withColumns("year", "value")

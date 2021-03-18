@@ -41,7 +41,7 @@ public class BigResultSetTest {
     public void bigResultSetTest() throws IOException {
         hiveShell.setHiveConfValue("location", "${hiveconf:hadoop.tmp.dir}/foo");
         hiveShell.addSetupScript("CREATE table FOO (s String) LOCATION '${hiveconf:location}'");
-        OutputStream ros = hiveShell.getResourceOutputStream("${hiveconf:location}/foo.TsvFileParserTest");
+        OutputStream ros = hiveShell.getResourceOutputStream("${hiveconf:location}/foo.data");
 
         List<String> rows = new ArrayList<>();
 

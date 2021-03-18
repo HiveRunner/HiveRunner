@@ -148,7 +148,7 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromTsvFileIntoOrcTable() throws IOException {
-    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/TsvFileParserTest.tsv");
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/data.tsv");
     hiveShell
         .execute(new StringBuilder()
             .append("create table test_db.test_table (")
