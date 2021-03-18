@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class data {
+public class TsvFileParserTest {
 
   @Test
   public void parsesTsv() {
