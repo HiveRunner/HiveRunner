@@ -39,10 +39,10 @@ import static org.hamcrest.collection.IsArrayContaining.hasItemInArray;
 public class HiveRunnerAnnotationsTest {
 
     @HiveSetupScript
-    private File setupFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupFile.csv").getPath());
+    private File setupFile = new File(ClassLoader.getSystemResource("HiveRunnerAnnotationsTest/setupFile.csv").getPath());
 
     @HiveSetupScript
-    private Path setupPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupPath.csv").getPath());
+    private Path setupPath = Paths.get(ClassLoader.getSystemResource("HiveRunnerAnnotationsTest/setupPath.csv").getPath());
 
 
     @HiveSetupScript
@@ -54,17 +54,17 @@ public class HiveRunnerAnnotationsTest {
             "key2", "value2"
     });
 
-    @HiveSQL(files = {"hiveRunnerAnnotationsTest/hql1.sql"}, autoStart = false)
+    @HiveSQL(files = { "HiveRunnerAnnotationsTest/hql1.sql" }, autoStart = false)
     private HiveShell hiveShell;
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromString.csv")
     public String dataFromString = "1,B\n2,D\nE,F";
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromFile.csv")
-    public File dataFromFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData.csv").getPath());
+    public File dataFromFile = new File(ClassLoader.getSystemResource("HiveRunnerAnnotationsTest/testData.csv").getPath());
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromPath.csv")
-    public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").getPath());
+    public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("HiveRunnerAnnotationsTest/testData2.csv").getPath());
 
     @Before
     public void setup() {

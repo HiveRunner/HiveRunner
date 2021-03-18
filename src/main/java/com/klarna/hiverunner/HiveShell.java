@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Test handle to the hive server.
  *
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  */
 public interface HiveShell {
 
@@ -207,7 +207,7 @@ public interface HiveShell {
     Path getCwd();
 
     /**
-     * Copy test data into hdfs
+     * Copy test TsvFileParserTest into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -217,7 +217,7 @@ public interface HiveShell {
     void addResource(String targetFile, File sourceFile);
 
     /**
-     * Copy test data into hdfs
+     * Copy test TsvFileParserTest into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -228,7 +228,7 @@ public interface HiveShell {
 
 
     /**
-     * Copy test data into hdfs
+     * Copy test TsvFileParserTest into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -297,7 +297,7 @@ public interface HiveShell {
     String expandVariableSubstitutes(String expression);
 
     /**
-     * Open up a stream to write test data into HDFS.
+     * Open up a stream to write test TsvFileParserTest into HDFS.
      *
      * May only be called pre #start().
      * No writes to the stream will be allowed post #start().
@@ -310,7 +310,7 @@ public interface HiveShell {
     OutputStream getResourceOutputStream(String targetFile);
 
     /**
-     * Returns an {@link InsertIntoTable} that allows programmatically inserting data into a table in a fluent manner.
+     * Returns an {@link InsertIntoTable} that allows programmatically inserting TsvFileParserTest into a table in a fluent manner.
      * <p>
      * May only be called post #start()
      * </p>

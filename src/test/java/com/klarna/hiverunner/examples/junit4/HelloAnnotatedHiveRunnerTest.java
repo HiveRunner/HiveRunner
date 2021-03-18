@@ -72,23 +72,23 @@ public class HelloAnnotatedHiveRunnerTest {
     private String createSchemaScript = "create schema ${hiveconf:my.schema}";
 
     /**
-     * Create some data in the target directory. Note that the 'targetFile' references the
+     * Create some TsvFileParserTest in the target directory. Note that the 'targetFile' references the
      * same dir as the create table statement in the script under test.
      * <p/>
-     * This example is for defining the data in line as a string.
+     * This example is for defining the TsvFileParserTest in line as a string.
      */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_string.csv")
     private String dataFromString = "2,World\n3,!";
 
     /**
-     * Create some data in the target directory. Note that the 'targetFile' references the
+     * Create some TsvFileParserTest in the target directory. Note that the 'targetFile' references the
      * same dir as the create table statement in the script under test.
      * <p/>
-     * This example is for defining the data in in a resource file.
+     * This example is for defining the TsvFileParserTest in in a resource file.
      */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
-        new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
+        new File(ClassLoader.getSystemResource("HelloHiveRunnerTest/hello_hive_runner.csv").getPath());
 
     /**
      * Define the script files under test. The files will be loaded in the given order.
@@ -96,8 +96,8 @@ public class HelloAnnotatedHiveRunnerTest {
      * The HiveRunner instantiate and inject the HiveShell
      */
     @HiveSQL(files = {
-        "helloHiveRunner/create_table.sql",
-        "helloHiveRunner/create_ctas.sql"
+        "HelloHiveRunnerTest/create_table.sql",
+        "HelloHiveRunnerTest/create_ctas.sql"
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 

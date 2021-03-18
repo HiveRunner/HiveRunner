@@ -29,7 +29,7 @@ public class TsvFileParserTest {
 
   @Test
   public void parsesTsv() {
-    File dataFile = new File("src/test/resources/data/data.tsv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/data.tsv");
     TsvFileParser tsvFileParser = new TsvFileParser();
     List<Object[]> result = tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e"));
     assertEquals(2, result.size());
@@ -39,14 +39,14 @@ public class TsvFileParserTest {
 
   @Test(expected = IllegalStateException.class)
   public void parsesTsvNotEnoughFieldsInFile() {
-    File dataFile = new File("src/test/resources/data/data.tsv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/data.tsv");
     TsvFileParser tsvFileParser = new TsvFileParser();
     tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e", "f"));
   }
 
   @Test
   public void parsesTsvSubSelectFields() {
-    File dataFile = new File("src/test/resources/data/data.tsv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/data.tsv");
     TsvFileParser tsvFileParser = new TsvFileParser();
     List<Object[]> result = tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d"));
     assertEquals(2, result.size());
@@ -56,7 +56,7 @@ public class TsvFileParserTest {
 
   @Test
   public void parsesCsvWithEmptyFields() {
-    File dataFile = new File("src/test/resources/data/data.csv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/data.csv");
     TsvFileParser tsvFileParser = new TsvFileParser().withDelimiter(",");
     List<Object[]> result = tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e"));
     assertEquals(2, result.size());
@@ -66,7 +66,7 @@ public class TsvFileParserTest {
 
   @Test
   public void csvWithCustomNullValue() {
-    File dataFile = new File("src/test/resources/data/dataWithCustomNullValue.csv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/dataWithCustomNullValue.csv");
     TsvFileParser tsvFileParser = new TsvFileParser().withDelimiter(",").withNullValue("NULL");
     List<Object[]> result = tsvFileParser.parse(dataFile, null, Arrays.asList("a", "b", "c", "d", "e"));
     assertEquals(2, result.size());
@@ -76,7 +76,7 @@ public class TsvFileParserTest {
 
   @Test
   public void tsvWithHeader() {
-    File dataFile = new File("src/test/resources/data/dataWithHeader.tsv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/dataWithHeader.tsv");
     TsvFileParser tsvFileParser = new TsvFileParser().withHeader();
 
     assertTrue(tsvFileParser.hasColumnNames());
@@ -90,7 +90,7 @@ public class TsvFileParserTest {
 
   @Test
   public void csvWithHeader() {
-    File dataFile = new File("src/test/resources/data/dataWithHeader.csv");
+    File dataFile = new File("src/test/resources/TsvFileParserTest/dataWithHeader.csv");
     TsvFileParser tsvFileParser = new TsvFileParser().withDelimiter(",").withHeader();
 
     assertTrue(tsvFileParser.hasColumnNames());

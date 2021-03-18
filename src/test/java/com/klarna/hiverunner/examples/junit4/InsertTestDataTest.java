@@ -30,11 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
-    This example is intended to be a small show case for some of the ways of setting up your test data in HiveRunner.
+    This example is intended to be a small show case for some of the ways of setting up your test TsvFileParserTest in HiveRunner.
     It will only print out some result and thus is not a strict unit test suite.
-    The examples will go through cases with adding test data from "code" or from file, and how you only need to supply
+    The examples will go through cases with adding test TsvFileParserTest from "code" or from file, and how you only need to supply
     a selected subset of the columns or how to use more advanced features like files with custom separator characters
-    or custom NULL keywords in the test data files.
+    or custom NULL keywords in the test TsvFileParserTest files.
  */
 @RunWith(StandaloneHiveRunner.class)
 public class InsertTestDataTest {
@@ -81,7 +81,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFile() {
-        File dataFile = new File("src/test/resources/examples/data1.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/data1.tsv");
         shell.insertInto("source_db", "test_table")
             .withAllColumns()
             .addRowsFromTsv(dataFile)
@@ -93,7 +93,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFileWithHeader() {
-        File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader1.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
             .addRowsFrom(dataFile, parser)
@@ -104,7 +104,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFileWithSubsetHeader() {
-        File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader2.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
             .addRowsFrom(dataFile, parser)
@@ -116,7 +116,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {
-        File dataFile = new File("src/test/resources/examples/data2.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/data2.tsv");
         shell.execute(new StringBuilder()
             .append("CREATE TABLE source_db.test_table2 (")
             .append("col_a STRING, col_b INT")

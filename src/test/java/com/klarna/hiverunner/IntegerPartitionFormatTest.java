@@ -32,7 +32,7 @@ public class IntegerPartitionFormatTest {
     @HiveSQL(files = {})
     public HiveShell hiveShell;
 
-    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/month=07/foo.data")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/month=07/foo.TsvFileParserTest")
     public String data = "06\n6";
 
     @HiveSetupScript

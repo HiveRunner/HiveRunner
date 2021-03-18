@@ -32,7 +32,7 @@ public class MacroTest {
     @HiveSQL(files = {})
     public HiveShell hiveShell;
 
-    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/foo.data")
+    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/foo.TsvFileParserTest")
     public String data = "easteregg";
 
     @HiveSetupScript

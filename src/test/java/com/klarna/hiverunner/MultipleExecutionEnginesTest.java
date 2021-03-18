@@ -32,7 +32,7 @@ public class MultipleExecutionEnginesTest {
 
     @Test
     public void test() throws IOException {
-        shell.getResourceOutputStream("${hiveconf:hadoop.tmp.dir}/foo/data.txt").write("a,b,c\nd,e,f".getBytes());
+        shell.getResourceOutputStream("${hiveconf:hadoop.tmp.dir}/foo/TsvFileParserTest.txt").write("a,b,c\nd,e,f".getBytes());
         shell.addSetupScript(
                 "create external table foo (s1 string, s2 string, s3 string) " +
                         "ROW FORMAT DELIMITED " +

@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
  * <p>
  * The field should be of type <pre>Map&lt;String, String&gt;</pre>.
  * </p><p>
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

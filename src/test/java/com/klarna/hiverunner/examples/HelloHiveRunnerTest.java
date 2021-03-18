@@ -52,13 +52,13 @@ public class HelloHiveRunnerTest {
             .append(")")
             .toString());
 
-        shell.execute(Paths.get("src/test/resources/helloHiveRunner/create_max.sql"));
+        shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/create_max.sql"));
     }
 
     @Test
     public void testMaxValueByYear() {
         /*
-         * Insert some source data
+         * Insert some source TsvFileParserTest
          */
         shell.insertInto("source_db", "test_table")
                 .withColumns("year", "value")
@@ -71,7 +71,7 @@ public class HelloHiveRunnerTest {
         /*
          * Execute the query
          */
-        shell.execute(Paths.get("src/test/resources/helloHiveRunner/calculate_max.sql"));
+        shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/calculate_max.sql"));
 
         /*
          * Verify the result

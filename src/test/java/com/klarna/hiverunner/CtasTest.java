@@ -30,7 +30,7 @@ public class CtasTest {
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/data.csv")
     private String data = "A,B\nC,D\nE,F";
 
-    @HiveSQL(files = {"ctasTest/ctas.sql"})
+    @HiveSQL(files = {"CtasTest/ctas.sql"})
     private HiveShell hiveShell;
 
     @Test

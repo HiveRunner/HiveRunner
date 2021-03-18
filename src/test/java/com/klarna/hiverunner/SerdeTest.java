@@ -42,7 +42,7 @@ public class SerdeTest {
             "u,i,o";
 
 
-    @HiveSQL(files = {"serdeTest/create_table.sql", "serdeTest/hql_custom_serde.sql"}, autoStart = false)
+    @HiveSQL(files = { "SerdeTest/create_table.sql", "SerdeTest/hql_custom_serde.sql" }, autoStart = false)
     private HiveShell hiveShell;
 
     @Test

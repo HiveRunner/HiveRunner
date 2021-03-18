@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.hive.hcatalog.data.schema.HCatSchema;
 
 /**
- * A {@link File} parsing class to be used with {@link InsertIntoTable} for inserting data into a Hive table from a
+ * A {@link File} parsing class to be used with {@link InsertIntoTable} for inserting TsvFileParserTest into a Hive table from a
  * {@link File}.
  */
 public interface FileParser {

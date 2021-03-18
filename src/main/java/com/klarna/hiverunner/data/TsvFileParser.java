@@ -30,7 +30,7 @@ import org.apache.hive.hcatalog.data.schema.HCatSchema;
 import com.google.common.base.Splitter;
 
 /**
- * A {@link FileParser} for parsing data out of a TSV file.
+ * A {@link FileParser} for parsing TsvFileParserTest out of a TSV file.
  */
 public class TsvFileParser implements FileParser {
 

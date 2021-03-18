@@ -34,14 +34,14 @@ public class BigResultSetTest {
 
 
     /**
-     * This test verifies that we can fetch more than 100 rows of data from hive.
+     * This test verifies that we can fetch more than 100 rows of TsvFileParserTest from hive.
      * This test was added due to tests failing with result sets bigger than 100 rows.
      */
     @Test
     public void bigResultSetTest() throws IOException {
         hiveShell.setHiveConfValue("location", "${hiveconf:hadoop.tmp.dir}/foo");
         hiveShell.addSetupScript("CREATE table FOO (s String) LOCATION '${hiveconf:location}'");
-        OutputStream ros = hiveShell.getResourceOutputStream("${hiveconf:location}/foo.data");
+        OutputStream ros = hiveShell.getResourceOutputStream("${hiveconf:location}/foo.TsvFileParserTest");
 
         List<String> rows = new ArrayList<>();
 

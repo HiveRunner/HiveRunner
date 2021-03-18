@@ -48,7 +48,7 @@ public class PartitionSupportTest {
             "HDFS_ROOT_FOO", "${hiveconf:hadoop.tmp.dir}"
     });
 
-    @HiveSQL(files = "partitionSupportTest/hql_example.sql")
+    @HiveSQL(files = "PartitionSupportTest/hql_example.sql")
     public HiveShell hiveShell;
 
 
