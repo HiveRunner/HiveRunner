@@ -30,11 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
-    This example is intended to be a small show case for some of the ways of setting up your test TsvFileParserTest in HiveRunner.
+    This example is intended to be a small show case for some of the ways of setting up your test data in HiveRunner.
     It will only print out some result and thus is not a strict unit test suite.
-    The examples will go through cases with adding test TsvFileParserTest from "code" or from file, and how you only need to supply
+    The examples will go through cases with adding test data from "code" or from file, and how you only need to supply
     a selected subset of the columns or how to use more advanced features like files with custom separator characters
-    or custom NULL keywords in the test TsvFileParserTest files.
+    or custom NULL keywords in the test data files.
  */
 @RunWith(StandaloneHiveRunner.class)
 public class InsertTestDataTest {

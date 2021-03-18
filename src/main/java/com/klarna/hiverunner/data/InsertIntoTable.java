@@ -141,7 +141,7 @@ public final class InsertIntoTable {
    * Adds all rows from the TSV file specified. The default delimiter is tab and the default null value is an empty
    * string.
    *
-   * @param file The file to read the TsvFileParserTest from.
+   * @param file The file to read the data from.
    * @return {@code this}
    */
   public InsertIntoTable addRowsFromTsv(File file) {
@@ -152,7 +152,7 @@ public final class InsertIntoTable {
   /**
    * Adds all rows from the TSV file specified, using the provided delimiter and null value.
    *
-   * @param file The file to read the TsvFileParserTest from.
+   * @param file The file to read the data from.
    * @param delimiter A column delimiter.
    * @param nullValue Value to be treated as null in the source TsvFileParserTest.
    * @return {@code this}
@@ -165,7 +165,7 @@ public final class InsertIntoTable {
   /**
    * Adds all rows from the file specified, using the provided parser.
    *
-   * @param file File to read the TsvFileParserTest from.
+   * @param file File to read the data from.
    * @param fileParser Parser to be used to parse the file.
    * @return {@code this}
    */
@@ -198,7 +198,7 @@ public final class InsertIntoTable {
   }
 
   /**
-   * Inserts the TsvFileParserTest into the table. This does not replace any existing TsvFileParserTest, but appends new part files to the
+   * Inserts the data into the table. This does not replace any existing TsvFileParserTest, but appends new part files to the
    * table/partition location(s).
    */
   public void commit() {

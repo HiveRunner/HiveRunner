@@ -19,8 +19,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marks a field to contain test TsvFileParserTest input. The field might either be of type String, File or Path.
- * The TsvFileParserTest will be copied into the specified target file by the HiveRunner engine.
+ * Marks a field to contain test data input. The field might either be of type String, File or Path.
+ * The data will be copied into the specified target file by the HiveRunner engine.
  * <p>
  * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  * </p>
@@ -29,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface HiveResource {
 
     /**
-     * Specifies where the TsvFileParserTest should be made available in HDFS.
+     * Specifies where the data should be made available in HDFS.
      * <p>
      * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
      * </p>

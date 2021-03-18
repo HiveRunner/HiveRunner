@@ -207,7 +207,7 @@ public interface HiveShell {
     Path getCwd();
 
     /**
-     * Copy test TsvFileParserTest into hdfs
+     * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -217,7 +217,7 @@ public interface HiveShell {
     void addResource(String targetFile, File sourceFile);
 
     /**
-     * Copy test TsvFileParserTest into hdfs
+     * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -228,7 +228,7 @@ public interface HiveShell {
 
 
     /**
-     * Copy test TsvFileParserTest into hdfs
+     * Copy test data into hdfs
      * May only be called pre #start()
      * <p>
      * {@link com.klarna.hiverunner.MethodLevelResourceTest#resourceLoadingAsFileTest()}
@@ -297,7 +297,7 @@ public interface HiveShell {
     String expandVariableSubstitutes(String expression);
 
     /**
-     * Open up a stream to write test TsvFileParserTest into HDFS.
+     * Open up a stream to write test data into HDFS.
      *
      * May only be called pre #start().
      * No writes to the stream will be allowed post #start().
@@ -310,7 +310,7 @@ public interface HiveShell {
     OutputStream getResourceOutputStream(String targetFile);
 
     /**
-     * Returns an {@link InsertIntoTable} that allows programmatically inserting TsvFileParserTest into a table in a fluent manner.
+     * Returns an {@link InsertIntoTable} that allows programmatically inserting data into a table in a fluent manner.
      * <p>
      * May only be called post #start()
      * </p>

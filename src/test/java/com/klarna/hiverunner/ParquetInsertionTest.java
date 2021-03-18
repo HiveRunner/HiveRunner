@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 /**
- * Methods that set up TsvFileParserTest in HiveRunner use HCatalog, which initially did not support writing to Parquet files.
+ * Methods that set up data in HiveRunner use HCatalog, which initially did not support writing to Parquet files.
  *
  * A version of HCatalog with this functionality working was introduced in Hive 3.
  * It was also subsequently back-ported to Hive 2.3.7, which is used in HiveRunner >= 5.2.0.

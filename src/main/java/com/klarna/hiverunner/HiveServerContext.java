@@ -48,7 +48,7 @@ public interface HiveServerContext {
     HiveConf getHiveConf();
 
     /**
-     * Get file folder that acts as the base dir for the test TsvFileParserTest. This is the sand box for the
+     * Get file folder that acts as the base dir for the test data. This is the sand box for the
      * file system that the HiveRunner uses as replacement for HDFS.
      * <p>
      * Each test method will have a new base dir spawned by the HiveRunner engine.

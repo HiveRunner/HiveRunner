@@ -63,7 +63,7 @@ class TableDataInserter {
       writer.write(rows.iterator());
       master.commit(context);
     } catch (HCatException e) {
-      throw new RuntimeException("An error occurred while inserting TsvFileParserTest to " + databaseName + "." + tableName, e);
+      throw new RuntimeException("An error occurred while inserting data to " + databaseName + "." + tableName, e);
     }
   }
 

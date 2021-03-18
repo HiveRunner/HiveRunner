@@ -301,7 +301,7 @@ class HiveShellBase implements HiveShell {
 
             Path targetFile = Paths.get(expandedPath);
 
-            // Create target file in the tmp dir and write test TsvFileParserTest to it.
+            // Create target file in the tmp dir and write test data to it.
             try {
                 Files.createDirectories(targetFile.getParent());
                 OutputStream targetFileOutputStream = Files.newOutputStream(targetFile, StandardOpenOption.CREATE_NEW);

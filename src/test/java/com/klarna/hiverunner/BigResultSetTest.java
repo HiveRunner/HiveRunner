@@ -34,7 +34,7 @@ public class BigResultSetTest {
 
 
     /**
-     * This test verifies that we can fetch more than 100 rows of TsvFileParserTest from hive.
+     * This test verifies that we can fetch more than 100 rows of data from hive.
      * This test was added due to tests failing with result sets bigger than 100 rows.
      */
     @Test
