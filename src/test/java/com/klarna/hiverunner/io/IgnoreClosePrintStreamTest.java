@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
+package com.klarna.hiverunner.io;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+
+import java.io.PrintStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,17 +26,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class DefaultTokenRuleTest {
+public class IgnoreClosePrintStreamTest {
 
-    private static TokenRule rule = DefaultTokenRule.INSTANCE;
-    
     @Mock
-    private Context context;
+    private PrintStream printStream;
 
     @Test
-    public void handle() {
-        rule.handle("x", context);
-        verify(context).append("x");
+    public void closeIgnored() {
+        IgnoreClosePrintStream ignoreClosePrintStream = new IgnoreClosePrintStream(printStream);
+        ignoreClosePrintStream.close();
+        verify(printStream, never()).close();
     }
-    
+
 }

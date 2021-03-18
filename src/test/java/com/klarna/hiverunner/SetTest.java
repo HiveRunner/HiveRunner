@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
-
-import static org.mockito.Mockito.verify;
+package com.klarna.hiverunner;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-public class DefaultTokenRuleTest {
+import com.klarna.hiverunner.annotations.HiveSQL;
 
-    private static TokenRule rule = DefaultTokenRule.INSTANCE;
-    
-    @Mock
-    private Context context;
+import java.nio.file.Paths;
 
-    @Test
-    public void handle() {
-        rule.handle("x", context);
-        verify(context).append("x");
-    }
-    
+@ExtendWith(HiveRunnerExtension.class)
+public class SetTest {
+
+	@HiveSQL(files = {}, autoStart = true)
+    private HiveShell shell;
+
+	/**
+	 *  This test doesn't actually fail but if it shows up as terminated in IntelliJ (which we can't assert on)
+	 *  then there is a problem.
+	 *
+	 *  See https://github.com/klarna/HiveRunner/issues/94 for more details.
+	 */
+	@Test
+	public void testWithSet() {
+		this.shell.execute(Paths.get("src/test/resources/SetTest/test_with_set.hql"));
+	}
+
 }

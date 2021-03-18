@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.klarna.hiverunner.sql.split;
+package com.klarna.hiverunner;
 
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-public class DefaultTokenRuleTest {
+import com.klarna.hiverunner.annotations.HiveSQL;
 
-    private static TokenRule rule = DefaultTokenRule.INSTANCE;
-    
-    @Mock
-    private Context context;
+@ExtendWith(HiveRunnerExtension.class)
+public class HiveRunnerExtensionTest {
 
-    @Test
-    public void handle() {
-        rule.handle("x", context);
-        verify(context).append("x");
-    }
-    
+  @HiveSQL(files = { "HiveRunnerExtensionTest/test_query.sql" })
+  private HiveShell shell;
+
+  @Test
+  public void shellFindFiles(){
+    shell.insertInto("testdb", "test_table").addRow("v1", "v2").commit();
+    List<String> actual = shell.executeQuery("select * from testdb.test_table");
+    List<String> expected = Arrays.asList("v1\tv2");
+    assertThat(actual,is(expected));
+  }
+
 }

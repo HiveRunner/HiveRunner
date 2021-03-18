@@ -17,15 +17,15 @@ package com.klarna.hiverunner;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class MacroTest {
 
 
@@ -49,7 +49,7 @@ public class MacroTest {
 
     @Test
     public void testMacro() {
-        Assert.assertEquals(Arrays.asList("fooeastereggbar"), hiveShell.executeQuery("select foobarize(stanza) from corpus"));
+        Assertions.assertEquals(Arrays.asList("fooeastereggbar"), hiveShell.executeQuery("select foobarize(stanza) from corpus"));
     }
 
 }

@@ -25,8 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query

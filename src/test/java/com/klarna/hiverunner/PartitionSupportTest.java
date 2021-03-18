@@ -20,17 +20,17 @@ import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.apache.commons.collections.MapUtils;
 import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class PartitionSupportTest {
 
     private final String tableName = "foo_bar";
@@ -52,7 +52,7 @@ public class PartitionSupportTest {
     public HiveShell hiveShell;
 
 
-    @Before
+    @BeforeEach
     public void repairPartitions() {
         // TODO: Incorporate support for REPAIR TABLE in HiveRunner fwk.
         // if new partitions are directly added to HDFS the metastore is not aware of these partitions.
@@ -64,18 +64,18 @@ public class PartitionSupportTest {
 
     @Test
     public void testSelectMax() throws TException, IOException {
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 Arrays.asList("11"),
                 hiveShell.executeQuery(String.format("select max(month) from %s", tableName)));
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 Arrays.asList("2"),
                 hiveShell.executeQuery(String.format("select min(month) from %s", tableName)));
     }
 
     @Test
     public void testShowTables() {
-        Assert.assertEquals(Arrays.asList(tableName), hiveShell.executeQuery("SHOW TABLES"));
+        Assertions.assertEquals(Arrays.asList(tableName), hiveShell.executeQuery("SHOW TABLES"));
     }
 
 
