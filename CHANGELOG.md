@@ -5,7 +5,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [6.1.0] - TBD
 ### Changed
-- Upgraded JUnit4 version to 4.13.1 (was 4.12).
 - Set `HIVE_IN_TEST` to true in `StandaloneHiverServerContext` instead of `StandaloneHiveRunner` so checks for non-existent tables are skipped by both the JUnit4 runner and the JUnit5 extension (this removes a lot of log noise from tests using the latter).
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
@@ -19,9 +18,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
-- Updated `junit.jupiter.version` from `5.6.0` to `5.7.1`.
+- Updated `junit.jupiter.version` (JUnit5) from `5.6.0` to `5.7.1`.
+- Updated `junit` (JUnit4) from `4.13.1` to `4.13.2`.
 - Updated `mockito-core` from `2.18.3` to `3.8.0`.
-- Updated `junit` from `4.13.1` to `4.13.2`.
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
