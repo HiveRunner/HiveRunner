@@ -37,12 +37,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class ConvertersTest {
 
@@ -123,14 +126,14 @@ public class ConvertersTest {
   @Test
   public void dateTypeInfo() {
     assertConversionException("foo", dateTypeInfo);
-    assertEquals(org.apache.hadoop.hive.common.type.Date.valueOf("2015-10-15"),
+    assertEquals(Date.valueOf("2015-10-15"),
         Converters.convert("2015-10-15", dateTypeInfo));
   }
 
   @Test
   public void timestampTypeInfo() {
     assertConversionException("foo", timestampTypeInfo);
-    assertEquals(org.apache.hadoop.hive.common.type.Timestamp.valueOf("2015-10-15 23:59:59.999"),
+    assertEquals(Timestamp.valueOf("2015-10-15 23:59:59.999"),
         Converters.convert("2015-10-15 23:59:59.999", timestampTypeInfo));
   }
 

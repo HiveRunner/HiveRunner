@@ -34,7 +34,7 @@ public class PreV200HiveShellHiveCliEmulationTest {
 
   @HiveRunnerSetup
   public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-    setCommandShellEmulator(PreV200HiveCliEmulator.INSTANCE);
+      setCommandShellEmulator(PreV200HiveCliEmulator.INSTANCE);
   }};
 
   @HiveSQL(files = {}, encoding = "UTF-8")
