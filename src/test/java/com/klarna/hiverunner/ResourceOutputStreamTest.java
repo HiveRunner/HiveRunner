@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,21 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class ResourceOutputStreamTest {
 
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void writeShouldOnlyBeAllowedBeforeStartHasBeenCalled() throws IOException {
 
         OutputStream resourceOutputStream =
@@ -43,7 +43,8 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        resourceOutputStream.write("Foo\nBar\nBaz".getBytes());
+        Assertions.assertThrows(IllegalStateException.class, () -> resourceOutputStream.write("Foo\nBar\nBaz".getBytes()));
+
     }
 
     @Test
@@ -60,7 +61,7 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("Foo", "Bar", "Baz"), shell.executeQuery("select * from foobar"));
+        Assertions.assertEquals(Arrays.asList("Foo", "Bar", "Baz"), shell.executeQuery("select * from foobar"));
     }
 
     @Test
@@ -83,7 +84,7 @@ public class ResourceOutputStreamTest {
 
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("Foo", "Bar", "_NULL_", "Baz"),
+        Assertions.assertEquals(Arrays.asList("Foo", "Bar", "_NULL_", "Baz"),
                 shell.executeQuery("select * from foobar", "\t", "_NULL_"));
     }
 

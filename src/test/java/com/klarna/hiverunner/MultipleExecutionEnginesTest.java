@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class MultipleExecutionEnginesTest {
 
     @HiveSQL(files = {}, autoStart = false)
@@ -40,20 +40,20 @@ public class MultipleExecutionEnginesTest {
                         "LOCATION '${hiveconf:hadoop.tmp.dir}/foo/'");
         shell.start();
 
-        Assert.assertEquals(Arrays.asList("a\tb\tc", "d\te\tf"), shell.executeQuery("select * from foo"));
+        Assertions.assertEquals(Arrays.asList("a\tb\tc", "d\te\tf"), shell.executeQuery("select * from foo"));
 
         shell.execute("set hive.tez.container.size=512");
         shell.execute("set hive.execution.engine=tez");
-        Assert.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
+        Assertions.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
 
         shell.execute("set hive.execution.engine=mr");
-        Assert.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
+        Assertions.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
 
         shell.execute("set hive.execution.engine=tez");
-        Assert.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
+        Assertions.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
 
         shell.execute("set hive.execution.engine=mr");
-        Assert.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
+        Assertions.assertEquals(Arrays.asList("2"), shell.executeQuery("select count(1) from foo"));
 
 
     }

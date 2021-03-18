@@ -19,13 +19,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
-- Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
+- Updated `junit.jupiter.version` from `5.6.0` to `5.7.1`.
+- Updated `mockito-core` from `2.18.3` to `3.8.0`.
+- Updated `junit` from `4.13.1` to `4.13.2`.
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
-- Added version `5.7.0` of `junit-vintage-engine`.
+- Added version `5.7.1` of `junit-vintage-engine`.
+- Added version `3.8.0` of `mockito-junit-jupiter`.
 
 ### Fixed
 - Fixed bug where the files specified in `@HiveSQL` weren't being run when using `HiveRunnerExtension`.
