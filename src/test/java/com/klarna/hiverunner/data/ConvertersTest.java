@@ -126,8 +126,7 @@ public class ConvertersTest {
   @Test
   public void dateTypeInfo() {
     assertConversionException("foo", dateTypeInfo);
-    assertEquals(Date.valueOf("2015-10-15"),
-        Converters.convert("2015-10-15", dateTypeInfo));
+    assertEquals(Date.valueOf("2015-10-15"), Converters.convert("2015-10-15", dateTypeInfo));
   }
 
   @Test
