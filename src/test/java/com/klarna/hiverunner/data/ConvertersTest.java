@@ -66,7 +66,7 @@ public class ConvertersTest {
   @Test
   public void stringTypeInfo() {
     assertEquals("foo", Converters.convert("foo", stringTypeInfo));
-  } 
+  }
 
   @Test
   public void booleanTypeInfo() {
