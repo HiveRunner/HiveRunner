@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Test handle to the hive server.
  *
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  */
 public interface HiveShell {
 

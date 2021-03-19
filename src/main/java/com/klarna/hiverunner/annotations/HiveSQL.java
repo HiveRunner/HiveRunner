@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
  * Marks a field (of type HiveShell) in a unit test. This field with its annotation is mandatory.
  * The HiveRunner will set the HiveShell instance before each test method is called.
  * <p>
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
