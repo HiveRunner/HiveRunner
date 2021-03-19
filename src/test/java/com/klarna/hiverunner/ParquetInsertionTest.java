@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 
@@ -31,7 +31,7 @@ import java.util.Arrays;
  *
  * This test validates that Parquet insertion is now possible. It has been verified to fail on HiveRunner <= 5.1.x.
  */
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class ParquetInsertionTest {
 
     @HiveSQL(files = {})
@@ -46,7 +46,7 @@ public class ParquetInsertionTest {
     public void testCanInsertToParquetTable() {
         String textValue = "Some text value";
         hiveShell.insertInto("default", TABLE_NAME).addRow(textValue).commit();
-        Assert.assertEquals(hiveShell.executeQuery("SELECT col1 FROM " + TABLE_NAME), Arrays.asList(textValue));
+        Assertions.assertEquals(hiveShell.executeQuery("SELECT col1 FROM " + TABLE_NAME), Arrays.asList(textValue));
     }
 
 }

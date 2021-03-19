@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [6.1.0] - TBD
 ### Changed
-- Upgraded JUnit4 version to 4.13.1 (was 4.12).
+- Set `HIVE_IN_TEST` to true in `StandaloneHiverServerContext` instead of `StandaloneHiveRunner` so checks for non-existent tables are skipped by both the JUnit4 runner and the JUnit5 extension (this removes a lot of log noise from tests using the latter).
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
@@ -18,13 +18,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
-- Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
+- Updated `junit.jupiter.version` (JUnit5) from `5.6.0` to `5.7.1`.
+- Updated `junit` (JUnit4) from `4.13.1` to `4.13.2`.
+- Updated `mockito-core` from `2.18.3` to `3.8.0`.
 
 ### Added
 - Added `getScriptPaths` method in `HiveRunnerCore`.
 - Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
 - Added `fromScriptPaths` method in `HiveShellBuilder`.
-- Added version `5.7.0` of `junit-vintage-engine`.
+- Added version `5.7.1` of `junit-vintage-engine`.
+- Added version `3.8.0` of `mockito-junit-jupiter`.
+
+### Fixed
+- Fixed bug where the files specified in `@HiveSQL` weren't being run when using `HiveRunnerExtension`.
+- Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).
 
 ## [6.0.1] - 2020-09-07
 ### Removed
@@ -34,52 +41,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - Upgraded Hive version to 3.1.2 (was 2.3.7).
 
-## [5.3.1] - TBD
-### Changed
-- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
-- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples` to `HelloHiveRunnerTest`.
-- Renamed `InsertTestData` in `com.klarna.hiverunner.examples` to `InsertTestDataTest`.
-- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples` to `SetHiveConfValuesTest`.
-- Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloAnnotatedHiveRunnerTest`.
-- Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples.junit4` to `HelloHiveRunnerTest`.
-- Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
-- Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
-- Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
-- Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
-
-### Added
-- Added version `5.7.0` of `junit-vintage-engine`.
-
-## [5.3.0] - 2021-01-05
-### Changed
-- Made `HiveRunnerScript` constructor public.
-- Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
-
-### Added
-- Added `getScriptPaths` method in `HiveRunnerCore`.
-- Added `getScriptPaths` method in `HiveRunnerExtension` to be able to access the other method in `HiveRunnerCore` so that it can be used downstream in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
-- Added `fromScriptPaths` method in `HiveShellBuilder`.
-
-## [5.2.2] - 2020-10-14
-### Fixed
-- Fixed bug that appears in [Mutant Swarm](https://github.com/HotelsDotCom/mutant-swarm) when updating HiveRunner to version 5.2.1.
-
-## [5.2.1] - 2020-05-27
-### Fixed
-- NullPointerException in tearDown of `StandaloneHiveRunner`.
-
-## [5.2.0] - 2020-04-23
-### Changed
-- Upgraded Hive version to 2.3.7 (was 2.3.6) (allows HiveRunner to be used on JDK>=9).
-
-## [5.1.1] - 2020-03-06
-### Changed
-- Upgraded Hive version to 2.3.6 (was 2.3.4).
-
-## [5.1.0] - 2020-01-24
-### Changed
-- Upgraded JUnit Jupiter version to 5.6.0 (was 5.5.1).
-- Depend on `junit-jupiter` instead of `junit-jupiter-api`.
+## [5.x]
+### NOTE
+- Releases from the 5.x (Hive 2) line are not tracked in this CHANGELOG, it only tracks 6.0.0 and above. For changes in 5.x please refer to https://github.com/klarna/HiveRunner/blob/hive-2.x/CHANGELOG.md.
 
 ## [5.0.0] - 2019-09-30
 ### Added

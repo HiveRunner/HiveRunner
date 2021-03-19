@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,23 @@ package com.klarna.hiverunner.sql.cli.beeline;
 import static java.util.Arrays.asList;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.klarna.hiverunner.sql.StatementLexer;
 import com.klarna.hiverunner.sql.cli.AbstractImportPostProcessor;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RunCommandPostProcessorTest {
 
     @Mock
@@ -41,7 +42,7 @@ public class RunCommandPostProcessorTest {
 
     private AbstractImportPostProcessor processor;
 
-    @Before
+    @BeforeEach
     public void setup() {
         processor = new RunCommandPostProcessor(lexer);
     }
@@ -66,9 +67,9 @@ public class RunCommandPostProcessorTest {
         assertThat(processor.getImportPath("!run x"), is("x"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void importPathInvalid() {
-        processor.getImportPath("!run;");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> processor.getImportPath("!run;"));
     }
 
     @Test

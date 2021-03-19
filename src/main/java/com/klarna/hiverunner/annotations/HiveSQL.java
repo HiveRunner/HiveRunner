@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public @interface HiveSQL {
     /**
      * If the shell should be started automatically before the JUnit test method is called.
      * <p>
-     * If set to false this leaves the tester to do additional setup in @Before or within actual test method. However,
+     * If set to false this leaves the tester to do additional setup in @BeforeEach (for JUnit 5) or @Before (for JUnit 4) or within actual test method. However,
      * HiveShell.start() has to be called explicit when setup is done.
      * </p>
      */

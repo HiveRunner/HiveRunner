@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.klarna.hiverunner;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -23,10 +24,10 @@ import java.util.List;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.cli.HiveSQLException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 
@@ -35,7 +36,7 @@ public class HiveServerContainerTest {
     private Path basedir;
     private HiveServerContainer container;
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         basedir = Files.createTempDirectory("HiveServerContainerTest");
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
@@ -44,29 +45,46 @@ public class HiveServerContainerTest {
         container.init(new HashMap<>(), new HashMap<>());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         container.tearDown();
     }
 
     @Test
     public void testGetBasedir() {
-
-        Assert.assertEquals(basedir.getRoot(), container.getBaseDir().getRoot());
+        Assertions.assertEquals(basedir.getRoot(), container.getBaseDir().getRoot());
     }
 
     @Test
     public void testExecuteStatementMR() {
         List<Object[]> actual = container.executeStatement("show databases");
-        Assert.assertEquals(1, actual.size());
-        Assert.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+        Assertions.assertEquals(1, actual.size());
+        Assertions.assertArrayEquals(new Object[] { "default" }, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
         List<Object[]> actual = container.executeStatement("show databases");
-        Assert.assertEquals(1, actual.size());
-        Assert.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+        Assertions.assertEquals(1, actual.size());
+        Assertions.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+    }
+
+    @Test
+    public void testExecuteStatementOutputStreamReset() {
+        PrintStream initialPrintStream = System.out;
+        container.executeStatement("show databases");
+        Assertions.assertEquals(initialPrintStream, System.out);
+    }
+
+    @Test
+    public void testExecuteStatementOutputStreamResetIfException() {
+        PrintStream initialPrintStream = System.out;
+        try {
+            container.executeStatement("use non-existent");
+            Assertions.fail("Exception should be thrown");
+        } catch (IllegalArgumentException e) {
+            Assertions.assertEquals(initialPrintStream, System.out);
+        }
     }
 
     @Test
@@ -76,12 +94,12 @@ public class HiveServerContainerTest {
         container.tearDown();
     }
 
-    @Test(expected = HiveSQLException.class)
+    @Test
     public void testInvalidQuery() throws Throwable {
         try {
             container.executeStatement("use foo");
         } catch (IllegalArgumentException e) {
-            throw e.getCause();
+            Assertions.assertThrows(HiveSQLException.class, () -> {throw e.getCause();});
         }
     }
 }

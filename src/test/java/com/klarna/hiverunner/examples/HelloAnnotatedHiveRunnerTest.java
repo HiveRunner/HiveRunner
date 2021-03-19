@@ -25,7 +25,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.collections.MapUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -103,26 +103,19 @@ public class HelloAnnotatedHiveRunnerTest {
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
-    
-    @BeforeEach
-    public void setupSourceDatabase() {
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_table.sql"));
-        hiveShell.execute(Paths.get("src/test/resources/helloHiveRunner/create_ctas.sql"));
-    }
-
     @Test
     public void testTablesCreated() {
         HashSet<String> expected = Sets.newHashSet("foo", "foo_prim");
         HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("show tables"));
 
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void testSelectFromFooWithCustomDelimiter() {
         HashSet<String> expected = Sets.newHashSet("3,!", "2,World", "1,Hello", "N/A,bar");
         HashSet<String> actual = Sets.newHashSet(hiveShell.executeQuery("select * from foo", ",", "N/A"));
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -130,10 +123,10 @@ public class HelloAnnotatedHiveRunnerTest {
 
         List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
 
-        Assert.assertArrayEquals(new Object[] { null, "bar" }, actual.get(0));
-        Assert.assertArrayEquals(new Object[] { 1, "Hello" }, actual.get(1));
-        Assert.assertArrayEquals(new Object[] { 2, "World" }, actual.get(2));
-        Assert.assertArrayEquals(new Object[] { 3, "!" }, actual.get(3));
+        Assertions.assertArrayEquals(new Object[] { null, "bar" }, actual.get(0));
+        Assertions.assertArrayEquals(new Object[] { 1, "Hello" }, actual.get(1));
+        Assertions.assertArrayEquals(new Object[] { 2, "World" }, actual.get(2));
+        Assertions.assertArrayEquals(new Object[] { 3, "!" }, actual.get(3));
     }
 
     @Test
@@ -141,6 +134,6 @@ public class HelloAnnotatedHiveRunnerTest {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
         HashSet<String> actual = Sets.newHashSet(hiveShell
                 .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 }
