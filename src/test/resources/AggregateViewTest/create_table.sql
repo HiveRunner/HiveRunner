@@ -21,4 +21,3 @@ PARTITIONED BY (
   FROM db.mvtdescriptionchangeinfo a
   INNER JOIN db.latestnodemvtchanges b ON a.testid = b.testid AND a.`timestamp` = b.mts
   GROUP BY a.testid, a.type;
-  
