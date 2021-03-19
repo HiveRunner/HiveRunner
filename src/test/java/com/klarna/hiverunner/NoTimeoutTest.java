@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,13 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(StandaloneHiveRunner.class)
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(HiveRunnerExtension.class)
 public class NoTimeoutTest {
 
     @HiveRunnerSetup
@@ -35,7 +37,7 @@ public class NoTimeoutTest {
     @HiveSQL(files = {})
     private HiveShell hiveShell;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         String disableTimeout = System.getProperty("disableTimeout");
         if (disableTimeout != null && Boolean.parseBoolean(disableTimeout)) {
@@ -54,8 +56,8 @@ public class NoTimeoutTest {
      *
      * If the deadlock is introduced, this test will never terminate.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test() {
-        hiveShell.executeQuery("select sleep_one_second_udf(bar) from foo");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> hiveShell.executeQuery("select sleep_one_second_udf(bar) from foo"));
     }
 }

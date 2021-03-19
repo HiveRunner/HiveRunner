@@ -18,14 +18,14 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class IntegerPartitionFormatTest {
 
 
@@ -43,7 +43,7 @@ public class IntegerPartitionFormatTest {
                     "  STORED AS TEXTFILE" +
                     "  LOCATION '${hiveconf:hadoop.tmp.dir}/foo';";
 
-    @Before
+    @BeforeEach
     public void repair() {
         // MSCK REPAIR TABLE adds metadata about partitions to the Hive metastore for
         // partitions for which such metadata doesn't already exist
@@ -53,23 +53,23 @@ public class IntegerPartitionFormatTest {
 
     @Test
     public void testInteger() {
-        Assert.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6"));
+        Assertions.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6"));
     }
 
     @Test
     public void testPrefixedInteger() {
-        Assert.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 06"));
+        Assertions.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 06"));
     }
 
 
     @Test
     public void testPrefixedPartitionInteger() {
-        Assert.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6 and month = 07"));
+        Assertions.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6 and month = 07"));
     }
 
 
     @Test
     public void testNonPrefixedPartitionInteger() {
-        Assert.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6 and month = 7"));
+        Assertions.assertEquals(Arrays.asList("6\t7", "6\t7"), hiveShell.executeQuery("select * from foo where id = 6 and month = 7"));
     }
 }

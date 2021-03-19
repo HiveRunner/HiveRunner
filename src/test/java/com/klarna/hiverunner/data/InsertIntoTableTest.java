@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,15 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.hive.hcatalog.data.HCatRecord;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.Multimap;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InsertIntoTableTest {
 
   @Mock
@@ -41,7 +41,7 @@ public class InsertIntoTableTest {
 
   private InsertIntoTable insert;
 
-  @Before
+  @BeforeEach
   public void before() {
     insert = new InsertIntoTable(builder, inserter);
   }

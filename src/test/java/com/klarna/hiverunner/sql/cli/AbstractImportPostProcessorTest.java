@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ import static java.util.Collections.singletonList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.klarna.hiverunner.sql.StatementLexer;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractImportPostProcessorTest {
 
     private static final String PATH = "path";
@@ -45,14 +45,14 @@ public class AbstractImportPostProcessorTest {
     
     private List<String> expected;
 
-    @Before
+    @BeforeEach
     public void setup() {
         expected = singletonList(NON_IMPORT_STATEMENT);
-        when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
     }
     
     @Test
     public void scriptImport() {
+        when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
         PostProcessor processor = new TestAbstractImportPostProcessor(true, PATH, lexer);
         List<String> actual = processor.statement(IMPORT_STATEMENT);
         assertThat(actual, is(equalTo(expected)));

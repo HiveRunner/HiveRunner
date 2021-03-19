@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package com.klarna.hiverunner.examples;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
  * A basic Hive Runner example showing how to use JUnit5's ParameterizedTest.
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunnerParamaterized {
+public class HelloHiveRunnerParamaterizedTest {
 
     @HiveSQL(files = {})
     private HiveShell shell;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package com.klarna.hiverunner.data;
 
 import static java.util.Arrays.asList;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static com.google.common.collect.ImmutableMap.of;
 
@@ -29,17 +29,18 @@ import java.util.Map;
 
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
 import org.apache.hive.hcatalog.data.HCatRecord;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.klarna.hiverunner.HiveRunnerExtension;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class TableDataInserterTest {
 
   private static final String TEST_TABLE = "test_table";
@@ -48,7 +49,7 @@ public class TableDataInserterTest {
   private HiveShell hiveShell;
   private String dataLocation;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     dataLocation = Files.createTempDirectory(hiveShell.getBaseDir(), "hiverunner_data").toString();
     hiveShell.execute("create database testdb");

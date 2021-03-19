@@ -245,4 +245,4 @@ Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2013-2020 Klarna AB.
+Copyright 2013-2021 Klarna AB.

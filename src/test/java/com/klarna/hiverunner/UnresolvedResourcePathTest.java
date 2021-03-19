@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class UnresolvedResourcePathTest {
 
 
@@ -30,23 +30,23 @@ public class UnresolvedResourcePathTest {
     private HiveShell shell;
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resourceFileShouldNotBeCreatedIfReferencesAreUnresolved() {
         shell.addResource("${hiveconf:foo}/bar/baz.csv", "A,B,C");
-        shell.start();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> shell.start());
     }
 
     @Test
     public void resourceFileShouldBeCreatedInsideTempDir() {
         shell.addResource("${hiveconf:hadoop.tmp.dir}/bar/baz.csv", "A,B,C");
         shell.start();
-        Assert.assertTrue(new File(shell.getHiveConf().get("hadoop.tmp.dir"), "bar/baz.csv").exists());
+        Assertions.assertTrue(new File(shell.getHiveConf().get("hadoop.tmp.dir"), "bar/baz.csv").exists());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resourceFilePathShouldAlwaysBeInsideTempDir() {
         shell.addResource("/bar/baz.csv", "A,B,C");
-        shell.start();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> shell.start());
     }
 
 

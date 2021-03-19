@@ -15,4 +15,4 @@ jobs:
       with:
         java-version: 8
     - name: Run Maven Targets
-      run: mvn package
+      run: mvn package --batch-mode --show-version --no-transfer-progress
