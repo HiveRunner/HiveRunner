@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
  * <p>
  * The field should be of type <pre>Map&lt;String, String&gt;</pre>.
  * </p><p>
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

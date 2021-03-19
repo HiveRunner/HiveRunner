@@ -30,7 +30,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 public class HiveRunnerExtensionTest {
 
   @HiveSQL(files = {"HiveRunnerExtensionTest/test_query.sql"})
-  protected HiveShell shell;
+  private HiveShell shell;
 
   @Test
   public void shellFindFiles(){
