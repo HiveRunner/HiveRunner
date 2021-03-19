@@ -39,17 +39,17 @@ public class InsertIntoTableIntegrationTest {
   public void before() {
     hiveShell.execute("create database test_db");
   }
-
+  
   @Test
   public void insertDataIntoOrcPartitionedTable() {
     testInsertDataIntoPartitionedTable("orc");
   }
-
+  
   @Test
   public void insertDataIntoTextPartitionedTable() {
     testInsertDataIntoPartitionedTable("textfile");
   }
-
+  
   @Test
   public void insertDataIntoSequenceFilePartitionedTable() {
     testInsertDataIntoPartitionedTable("sequencefile");
