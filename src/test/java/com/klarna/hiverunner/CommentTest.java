@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package com.klarna.hiverunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class CommentTest {
   @HiveSQL(files = {"commentTest/comment.sql"})
   public HiveShell hiveShell;

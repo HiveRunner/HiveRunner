@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,27 @@
  */
 package com.klarna.hiverunner;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.StandaloneHiveRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.data.TsvFileParser;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class InsertIntoTableIntegrationTest {
 
   @HiveSQL(files = {})
   private HiveShell hiveShell;
 
-  @Before
+  @BeforeEach
   public void before() {
     hiveShell.execute("create database test_db");
   }

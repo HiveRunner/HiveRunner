@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.timestampTy
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.unknownTypeInfo;
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.varcharTypeInfo;
 import static org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory.voidTypeInfo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.Date;
 import java.sql.Timestamp;

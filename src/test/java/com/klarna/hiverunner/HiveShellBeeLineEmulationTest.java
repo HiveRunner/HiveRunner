@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 package com.klarna.hiverunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.hiverunner.sql.cli.beeline.BeelineEmulator;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class HiveShellBeeLineEmulationTest {
 
   @HiveRunnerSetup
@@ -56,9 +57,9 @@ public class HiveShellBeeLineEmulationTest {
     assertThat(results, is(Arrays.asList("x=1")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testQueryStripFullLineComment() {
-    beeLineShell.executeQuery("-- a");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> beeLineShell.executeQuery("-- a"));
   }
 
   @Test

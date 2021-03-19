@@ -16,7 +16,7 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
@@ -36,7 +36,7 @@ public class HiveVariablesTest {
         shell.setHiveConfValue("origin", "spanish");
         shell.start();
 
-        Assert.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} fox"));
+        Assertions.assertEquals("The spanish fox", shell.expandVariableSubstitutes("The ${hiveconf:origin} fox"));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class HiveVariablesTest {
         shell.setHiveConfValue("substitute", "origin_animal");
         shell.start();
 
-        Assert.assertEquals("The spanish fox",
+        Assertions.assertEquals("The spanish fox",
                 shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
     }
 
@@ -62,7 +62,7 @@ public class HiveVariablesTest {
         shell.setProperty("substitute", "origin_animal");
         shell.start();
 
-        Assert.assertEquals("The spanish fox",
+        Assertions.assertEquals("The spanish fox",
                 shell.expandVariableSubstitutes("The ${hiveconf:${hiveconf:substitute}}"));
     }
 
@@ -70,7 +70,7 @@ public class HiveVariablesTest {
     public void unexpandableSubstitutesShouldNotBeExpanded() {
         shell.setHiveConfValue("origin", "spanish");
         shell.start();
-        Assert.assertEquals("The spanish ${hiveconf:animal}",
+        Assertions.assertEquals("The spanish ${hiveconf:animal}",
                 shell.expandVariableSubstitutes("The ${hiveconf:origin} ${hiveconf:animal}"));
     }
 
@@ -78,14 +78,14 @@ public class HiveVariablesTest {
     public void testHiveVarCli() {
         shell.addSetupScript("set hivevar:foobar=fox");
         shell.start();
-        Assert.assertEquals("fox love fox", shell.expandVariableSubstitutes("${hivevar:foobar} love ${foobar}"));
+        Assertions.assertEquals("fox love fox", shell.expandVariableSubstitutes("${hivevar:foobar} love ${foobar}"));
     }
 
     @Test
     public void testHiveVar() {
         shell.setHiveVarValue("foobar", "fox");
         shell.start();
-        Assert.assertEquals("fox love fox", shell.expandVariableSubstitutes("${hivevar:foobar} love ${foobar}"));
+        Assertions.assertEquals("fox love fox", shell.expandVariableSubstitutes("${hivevar:foobar} love ${foobar}"));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class HiveVariablesTest {
         System.setProperty("bar", "nice");
         shell.start();
         shell.execute("Create database ${system:bar}${system:foo}");
-        Assert.assertEquals("nice dog", shell.expandVariableSubstitutes("${system:bar} ${system:foo}"));
+        Assertions.assertEquals("nice dog", shell.expandVariableSubstitutes("${system:bar} ${system:foo}"));
     }
     
     @Test
@@ -103,6 +103,6 @@ public class HiveVariablesTest {
         environmentVariables.set("bar", "nice");
         shell.start();
         shell.execute("Create database ${env:bar}${env:foo}");
-        Assert.assertEquals("nice dog", shell.expandVariableSubstitutes("${env:bar} ${env:foo}"));
+        Assertions.assertEquals("nice dog", shell.expandVariableSubstitutes("${env:bar} ${env:foo}"));
     }
 }

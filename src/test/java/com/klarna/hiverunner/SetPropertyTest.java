@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class SetPropertyTest {
 
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell shell;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void propertyShouldNotBeSetIfShellIsAlreadyStarted() {
         shell.start();
-        shell.setHiveConfValue("foo", "bar");
+        Assertions.assertThrows(IllegalStateException.class, () -> shell.setHiveConfValue("foo", "bar"));
     }
 
     @Test
     public void propertyShouldBeSetInHiveConfiguration() {
         shell.setHiveConfValue("foo", "bar");
         shell.start();
-        Assert.assertEquals("bar", shell.getHiveConf().get("foo"));
+        Assertions.assertEquals("bar", shell.getHiveConf().get("foo"));
     }
 
 

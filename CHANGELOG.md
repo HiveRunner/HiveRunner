@@ -16,10 +16,13 @@ NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples.junit4` to `InsertTestDataTest`.
 - Renamed `SetHiveConfValues` in `com.klarna.hiverunner.examples.junit4` to `SetHiveConfValuesTest`.
 - Updated `surefire-version-plugin` from `2.21.0` to `2.22.0`.
-- Updated `junit.jupiter.version` from `5.6.0` to `5.7.0`.
+- Updated `junit.jupiter.version` (JUnit5) from `5.6.0` to `5.7.1`.
+- Updated `mockito-core` from `2.18.3` to `3.8.0`.
+- Updated `junit` (JUnit4) from `4.12` to `4.13.2`.
 
 ### Added
-- Added version `5.7.0` of `junit-vintage-engine`.
+- Added version `5.7.1` of `junit-vintage-engine`.
+- Added version `3.8.0` of `mockito-junit-jupiter`.
 
 ### Fixed
 - Successful tests using "SET" no longer marked as "terminated" when run in IntelliJ. See [#94](https://github.com/klarna/HiveRunner/issues/94).

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public abstract class AnnotatedBaseTestClass {
     @HiveSQL(files = {})
     protected HiveShell shell;
 
-    @Before
+    @BeforeEach
     public void setup() {
         shell.execute("create database test_db");
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(StandaloneHiveRunner.class)
+@ExtendWith(HiveRunnerExtension.class)
 public class CtasTest {
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/data.csv")
@@ -37,21 +37,21 @@ public class CtasTest {
     public void tablesShouldBeCreated() {
         List<String> expected = Arrays.asList("foo", "foo_prim");
         List<String> actual = hiveShell.executeQuery("show tables");
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void verifyThatDataIsAvailableInCtas() {
         List<String> expected = Arrays.asList("A\tB", "C\tD", "E\tF");
         List<String> actual = hiveShell.executeQuery("select * from foo_prim");
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void testCountCtas() {
         List<String> expected = Arrays.asList("3");
         List<String> actual = hiveShell.executeQuery("select count(*) from foo_prim");
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 }
