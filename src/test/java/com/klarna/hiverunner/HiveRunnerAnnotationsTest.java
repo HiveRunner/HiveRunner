@@ -54,7 +54,7 @@ public class HiveRunnerAnnotationsTest {
             "key2", "value2"
     });
 
-    @HiveSQL(files = { "HiveRunnerAnnotationsTest/hql1.sql" }, autoStart = false)
+    @HiveSQL(files = {"HiveRunnerAnnotationsTest/hql1.sql"}, autoStart = false)
     private HiveShell hiveShell;
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromString.csv")
