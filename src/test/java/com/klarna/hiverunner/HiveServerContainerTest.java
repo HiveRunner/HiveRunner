@@ -40,7 +40,6 @@ public class HiveServerContainerTest {
     public void setup() throws IOException {
         basedir = Files.createTempDirectory("HiveServerContainerTest");
         StandaloneHiveServerContext context = new StandaloneHiveServerContext(basedir, new HiveRunnerConfig());
-        context.getHiveConf().setBoolVar(HiveConf.ConfVars.HIVE_IN_TEST, true);
         container = new HiveServerContainer(context);
         container.init(new HashMap<>(), new HashMap<>());
     }
