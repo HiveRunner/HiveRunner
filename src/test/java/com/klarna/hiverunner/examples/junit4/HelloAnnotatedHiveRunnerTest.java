@@ -88,7 +88,7 @@ public class HelloAnnotatedHiveRunnerTest {
      */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
-        new File(ClassLoader.getSystemResource("helloHiveRunner/hello_hive_runner.csv").getPath());
+        new File(ClassLoader.getSystemResource("HelloHiveRunnerTest/hello_hive_runner.csv").getPath());
 
     /**
      * Define the script files under test. The files will be loaded in the given order.
@@ -96,8 +96,8 @@ public class HelloAnnotatedHiveRunnerTest {
      * The HiveRunner instantiate and inject the HiveShell
      */
     @HiveSQL(files = {
-        "helloHiveRunner/create_table.sql",
-        "helloHiveRunner/create_ctas.sql"
+        "HelloHiveRunnerTest/create_table.sql",
+        "HelloHiveRunnerTest/create_ctas.sql"
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 

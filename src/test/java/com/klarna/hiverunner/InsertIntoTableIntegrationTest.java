@@ -39,30 +39,31 @@ public class InsertIntoTableIntegrationTest {
   public void before() {
     hiveShell.execute("create database test_db");
   }
-  
+
   @Test
   public void insertDataIntoOrcPartitionedTable() {
     testInsertDataIntoPartitionedTable("orc");
   }
-  
+
   @Test
   public void insertDataIntoTextPartitionedTable() {
     testInsertDataIntoPartitionedTable("textfile");
   }
-  
+
   @Test
   public void insertDataIntoSequenceFilePartitionedTable() {
     testInsertDataIntoPartitionedTable("sequencefile");
   }
 
   private void testInsertDataIntoPartitionedTable(String storedAs) {
-    hiveShell.execute(new StringBuilder()
-        .append("create table test_db.test_table (")
-        .append("c0 string")
-        .append(")")
-        .append("partitioned by (c1 string)")
-        .append("stored as " + storedAs)
-        .toString());
+    hiveShell
+        .execute(new StringBuilder()
+            .append("create table test_db.test_table (")
+            .append("c0 string")
+            .append(")")
+            .append("partitioned by (c1 string)")
+            .append("stored as " + storedAs)
+            .toString());
 
     hiveShell
         .insertInto("test_db", "test_table")
@@ -84,25 +85,26 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertDataIntoTablePrimitiveParsedStrings() {
-    hiveShell.execute(new StringBuilder()
-        .append("create table test_db.test_table (")
-        .append("c0 string,")
-        .append("c1 boolean,")
-        .append("c2 tinyint,")
-        .append("c3 smallint,")
-        .append("c4 int,")
-        .append("c5 bigint,")
-        .append("c6 float,")
-        .append("c7 double,")
-        .append("c8 date,")
-        .append("c9 timestamp,")
-        .append("c10 binary,")
-        .append("c11 decimal(3,2),")
-        .append("c12 varchar(1),")
-        .append("c13 char(1)")
-        .append(")")
-        .append("stored as orc")
-        .toString());
+    hiveShell
+        .execute(new StringBuilder()
+            .append("create table test_db.test_table (")
+            .append("c0 string,")
+            .append("c1 boolean,")
+            .append("c2 tinyint,")
+            .append("c3 smallint,")
+            .append("c4 int,")
+            .append("c5 bigint,")
+            .append("c6 float,")
+            .append("c7 double,")
+            .append("c8 date,")
+            .append("c9 timestamp,")
+            .append("c10 binary,")
+            .append("c11 decimal(3,2),")
+            .append("c12 varchar(1),")
+            .append("c13 char(1)")
+            .append(")")
+            .append("stored as orc")
+            .toString());
 
     hiveShell
         .insertInto("test_db", "test_table")
@@ -146,17 +148,18 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromTsvFileIntoOrcTable() throws IOException {
-    File dataFile = new File("src/test/resources/data/data.tsv");
-    hiveShell.execute(new StringBuilder()
-        .append("create table test_db.test_table (")
-        .append("a string,")
-        .append("b string,")
-        .append("c string,")
-        .append("d string,")
-        .append("e string")
-        .append(")")
-        .append("stored as orc")
-        .toString());
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/data.tsv");
+    hiveShell
+        .execute(new StringBuilder()
+            .append("create table test_db.test_table (")
+            .append("a string,")
+            .append("b string,")
+            .append("c string,")
+            .append("d string,")
+            .append("e string")
+            .append(")")
+            .append("stored as orc")
+            .toString());
     hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromTsv(dataFile).commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
@@ -167,17 +170,18 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromTsvFileWithCustomDelimiterAndNullValue() throws IOException {
-    File dataFile = new File("src/test/resources/data/dataWithCustomNullValue.csv");
-    hiveShell.execute(new StringBuilder()
-        .append("create table test_db.test_table (")
-        .append("a string,")
-        .append("b string,")
-        .append("c string,")
-        .append("d string,")
-        .append("e string")
-        .append(")")
-        .append("stored as orc")
-        .toString());
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/dataWithCustomNullValue.csv");
+    hiveShell
+        .execute(new StringBuilder()
+            .append("create table test_db.test_table (")
+            .append("a string,")
+            .append("b string,")
+            .append("c string,")
+            .append("d string,")
+            .append("e string")
+            .append(")")
+            .append("stored as orc")
+            .toString());
     hiveShell.insertInto("test_db", "test_table").withAllColumns().addRowsFromDelimited(dataFile, ",", "NULL").commit();
     List<Object[]> result = hiveShell.executeStatement("select * from test_db.test_table");
     assertEquals(2, result.size());
@@ -187,17 +191,18 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromFileWithCustomStrategy() throws IOException {
-    File dataFile = new File("src/test/resources/data/dataWithCustomNullValue.csv");
-    hiveShell.execute(new StringBuilder()
-        .append("create table test_db.test_table (")
-        .append("a string,")
-        .append("b string,")
-        .append("c string,")
-        .append("d string,")
-        .append("e string")
-        .append(")")
-        .append("stored as orc")
-        .toString());
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/dataWithCustomNullValue.csv");
+    hiveShell
+        .execute(new StringBuilder()
+            .append("create table test_db.test_table (")
+            .append("a string,")
+            .append("b string,")
+            .append("c string,")
+            .append("d string,")
+            .append("e string")
+            .append(")")
+            .append("stored as orc")
+            .toString());
     hiveShell
         .insertInto("test_db", "test_table")
         .withAllColumns()

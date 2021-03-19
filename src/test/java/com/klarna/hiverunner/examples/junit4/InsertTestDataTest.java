@@ -81,7 +81,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFile() {
-        File dataFile = new File("src/test/resources/examples/data1.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/data1.tsv");
         shell.insertInto("source_db", "test_table")
             .withAllColumns()
             .addRowsFromTsv(dataFile)
@@ -93,7 +93,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFileWithHeader() {
-        File dataFile = new File("src/test/resources/examples/dataWithHeader1.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader1.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
             .addRowsFrom(dataFile, parser)
@@ -104,7 +104,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsFromTsvFileWithSubsetHeader() {
-        File dataFile = new File("src/test/resources/examples/dataWithHeader2.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader2.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
             .addRowsFrom(dataFile, parser)
@@ -116,7 +116,7 @@ public class InsertTestDataTest {
 
     @Test
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {
-        File dataFile = new File("src/test/resources/examples/data2.tsv");
+        File dataFile = new File("src/test/resources/InsertTestDataTest/data2.tsv");
         shell.execute(new StringBuilder()
             .append("CREATE TABLE source_db.test_table2 (")
             .append("col_a STRING, col_b INT")

@@ -51,7 +51,7 @@ public class MethodLevelResourceTest {
     public void resourceLoadingAsFileTest() throws URISyntaxException {
 
         hiveShell.addResource("${hiveconf:hadoop.tmp.dir}/data.csv",
-                new File(Resources.getResource("methodLevelResourceTest/MethodLevelResourceTest.txt").toURI()));
+                new File(Resources.getResource("MethodLevelResourceTest/MethodLevelResourceTest.txt").toURI()));
 
         hiveShell.start();
         Assertions.assertEquals(Arrays.asList("1\t2\t3"), hiveShell.executeQuery("SELECT * FROM foo"));

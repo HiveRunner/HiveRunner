@@ -29,8 +29,8 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerExtensionTest {
 
-  @HiveSQL(files = {"HiveRunnerExtensionTest/test_query.sql"})
-  protected HiveShell shell;
+  @HiveSQL(files = { "HiveRunnerExtensionTest/test_query.sql" })
+  private HiveShell shell;
 
   @Test
   public void shellFindFiles(){
