@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
  * Marks a field to refer to a setup script. The field should be of type String, File or Path.
  * If its a String the value of the field should be the actual script, not a path.
  * <p>
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2020 Klarna AB
+ * Copyright (C) 2013-2021 Klarna AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Test handle to the hive server.
  *
- * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunner} for usage examples.
+ * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  */
 public interface HiveShell {
 

@@ -27,7 +27,7 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 
 @ExtendWith(HiveRunnerExtension.class)
 public class CommentTest {
-  @HiveSQL(files = {"commentTest/comment.sql"})
+  @HiveSQL(files = {"CommentTest/comment.sql"})
   public HiveShell hiveShell;
   
   @Test

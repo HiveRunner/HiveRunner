@@ -148,7 +148,7 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromTsvFileIntoOrcTable() throws IOException {
-    File dataFile = new File("src/test/resources/data/data.tsv");
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/data.tsv");
     hiveShell
         .execute(new StringBuilder()
             .append("create table test_db.test_table (")
@@ -170,7 +170,7 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromTsvFileWithCustomDelimiterAndNullValue() throws IOException {
-    File dataFile = new File("src/test/resources/data/dataWithCustomNullValue.csv");
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/dataWithCustomNullValue.csv");
     hiveShell
         .execute(new StringBuilder()
             .append("create table test_db.test_table (")
@@ -191,7 +191,7 @@ public class InsertIntoTableIntegrationTest {
 
   @Test
   public void insertsDataFromFileWithCustomStrategy() throws IOException {
-    File dataFile = new File("src/test/resources/data/dataWithCustomNullValue.csv");
+    File dataFile = new File("src/test/resources/InsertIntoTableIntegrationTest/dataWithCustomNullValue.csv");
     hiveShell
         .execute(new StringBuilder()
             .append("create table test_db.test_table (")
