@@ -8,8 +8,9 @@
   <version>6.1.0-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
-  <url>https://github.com/klarna/HiveRunner</url>
-  <inceptionYear>2013</inceptionYear>
+  <url>https://github.com/HiveRunner/HiveRunner</url>
+  <!-- below isn't the actual inception year but is the year the copyright changed -->
+  <inceptionYear>2021</inceptionYear>
 
   <licenses>
     <license>
@@ -19,23 +20,10 @@
     </license>
   </licenses>
 
-  <developers>
-    <developer>
-      <name>Per Ullberg</name>
-      <organization>Klarna</organization>
-      <organizationUrl>http://www.klarna.com</organizationUrl>
-    </developer>
-    <developer>
-      <name>Thomas Larsson</name>
-      <organization>Klarna</organization>
-      <organizationUrl>http://www.klarna.com</organizationUrl>
-    </developer>
-  </developers>
-
   <scm>
-    <connection>scm:git:https://github.com/klarna/HiveRunner.git</connection>
-    <developerConnection>scm:git:https://github.com/klarna/HiveRunner.git</developerConnection>
-    <url>git@github.com:klarna/HiveRunner.git</url>
+    <connection>scm:git:https://github.com/HiveRunner/HiveRunner.git</connection>
+    <developerConnection>scm:git:https://github.com/HiveRunner/HiveRunner.git</developerConnection>
+    <url>git@github.com:HiveRunner/HiveRunner.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -187,7 +175,7 @@
           <!-- Hiverunner need this for some queries (property -XX:MaxPermSize
             was removed in java 8) -->
           <argLine>-Xmx2024m</argLine>
-          <!-- below needed due to https://github.com/klarna/HiveRunner/commit/1f9a9b353c3b072f7898a6b4fa277474674d4b54 -->
+          <!-- below needed due to https://github.com/HiveRunner/HiveRunner/commit/1f9a9b353c3b072f7898a6b4fa277474674d4b54 -->
           <reuseForks>false</reuseForks>
           <systemProperties>
             <!--
@@ -241,7 +229,7 @@
         <configuration>
           <header>src/main/license/APACHE-2.txt</header>
           <properties>
-            <owner>Klarna AB</owner>
+            <owner>The HiveRunner Contributors</owner>
           </properties>
           <includes>
             <include>src/main/java/**</include>
