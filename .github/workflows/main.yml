@@ -16,4 +16,4 @@ jobs:
         distribution: 'adopt'
         java-version: '8'
     - name: Run Maven Targets
-      run: mvn test -Dtest=MultipleExecutionEnginesTest --batch-mode --show-version --no-transfer-progress 
+      run: mvn package --batch-mode --show-version --no-transfer-progress
