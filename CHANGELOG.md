@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [6.1.0] - TBD
 ### Changed
+- Maven Group Id changed from `com.klarna` to `io.github.hiverunner`.
 - Set `HIVE_IN_TEST` to true in `StandaloneHiverServerContext` instead of `StandaloneHiveRunner` so checks for non-existent tables are skipped by both the JUnit4 runner and the JUnit5 extension (this removes a lot of log noise from tests using the latter).
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
