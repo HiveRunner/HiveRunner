@@ -1,5 +1,7 @@
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![build](https://github.com/klarna/HiveRunner/workflows/build/badge.svg?event=push) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner/badge.svg?subject=io.github.hiverunner:hiverunner)](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner) 
+[![Build](https://github.com/HiveRunner/HiveRunner/workflows/Build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
@@ -27,7 +29,7 @@ So, even though your current Hive SQL probably won't run off the shelf within Hi
 HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file:
 
     <dependency>
-        <groupId>com.klarna</groupId>
+        <groupId>io.github.hiverunner</groupId>
         <artifactId>hiverunner</artifactId>
         <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
