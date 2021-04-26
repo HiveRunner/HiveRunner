@@ -1,0 +1,28 @@
+name: Deploy SNAPSHOT
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "The branch to use to deploy a SNAPSHOT from."
+        required: true
+        default: "main"
+jobs:
+  deploy:
+    name: Deploy SNAPSHOT to Maven Central
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '8'
+    - name: Run Maven Targets
+      run: mvn --batch-mode --show-version --no-transfer-progress deploy -s .maven-settings.xml
+      env:
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+
+ 
