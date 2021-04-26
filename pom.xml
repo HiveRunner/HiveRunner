@@ -263,7 +263,7 @@
 
   <profiles>
     <profile>
-      <id>release</id>
+      <id>oss-release</id>
       <distributionManagement>
         <snapshotRepository>
           <id>ossrh</id>
