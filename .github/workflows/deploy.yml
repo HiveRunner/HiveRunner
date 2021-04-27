@@ -5,7 +5,8 @@ on:
       branch:
         description: "The branch to use to deploy a SNAPSHOT from."
         required: true
-        default: "main"
+        default: "deploy-snapshot-workflow"
+#        default: "main"
 jobs:
   deploy:
     name: Deploy SNAPSHOT to Sonatype
@@ -27,7 +28,7 @@ jobs:
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
         gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase        
     - name: Run Maven Targets
-      run: mvn --batch-mode --show-version --no-transfer-progress -DskipTests=true -Dgpg.passphrase=${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }} deploy --settings .maven-settings.xml --activate-profiles oss-release
+      run: mvn -X --batch-mode --show-version --no-transfer-progress -DskipTests=true -Dgpg.passphrase=${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }} deploy --settings .maven-settings.xml --activate-profiles oss-release
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
