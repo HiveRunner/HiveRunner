@@ -336,8 +336,6 @@
                         <arg>--pinentry-mode</arg>
                         <arg>loopback</arg>
                     </gpgArguments>                
-                  <!-- homedir>${project.basedir}</homedir>
-                  <passphrase>${env.GPG_PASSPHRASE}</passphrase-->
                 </configuration>
               </execution>
             </executions>
