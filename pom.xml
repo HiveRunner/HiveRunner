@@ -297,6 +297,7 @@
                <encoding>${project.build.sourceEncoding}</encoding>
                <source>8</source>
                <detectJavaApiLink>false</detectJavaApiLink>
+               <doclint>none</doclint>
             </configuration>            
             <executions>
               <execution>
