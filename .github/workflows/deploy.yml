@@ -26,9 +26,9 @@ jobs:
         server-password: SONATYPE_PASSWORD # env variable for token in deploy        
         # only signed artifacts will be released to maven central. this sets up things for the maven-gpg-plugin
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-        gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase        
+        settings-path: ${{ github.workspace }}        
     - name: Run Maven Targets
-      run: mvn -X --batch-mode --show-version --no-transfer-progress -DskipTests=true -Dgpg.passphrase=${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }} deploy --activate-profiles oss-release
+      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --batch-mode --show-version --no-transfer-progress --activate-profiles oss-release -DskipTests=true -Dgpg.passphrase=${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
