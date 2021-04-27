@@ -19,6 +19,10 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '8'
+        # this also creates settings.xml with the following server
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: SONATYPE_USERNAME # env variable for username in deploy
+        server-password: SONATYPE_PASSWORD # env variable for token in deploy        
         # only signed artifacts will be released to maven central. this sets up things for the maven-gpg-plugin
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
         gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase        
@@ -27,6 +31,3 @@ jobs:
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-
- 
