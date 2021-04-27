@@ -319,10 +319,10 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
-                <configuration>
+                <!-- configuration>
                   <homedir>${project.basedir}</homedir>
                   <passphrase>${env.GPG_PASSPHRASE}</passphrase>
-                </configuration>
+                </configuration-->
               </execution>
             </executions>
           </plugin>
