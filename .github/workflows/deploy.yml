@@ -5,8 +5,7 @@ on:
       branch:
         description: "The branch to use to deploy a SNAPSHOT from."
         required: true
-        default: "deploy-snapshot-workflow"
-#        default: "main"
+        default: "main"
 jobs:
   deploy:
     name: Deploy SNAPSHOT to Sonatype
@@ -20,15 +19,18 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '8'
-        # this also creates settings.xml with the following server
+        # this creates a settings.xml with the following server
+        settings-path: ${{ github.workspace }}
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: SONATYPE_USERNAME # env variable for username in deploy
         server-password: SONATYPE_PASSWORD # env variable for token in deploy        
         # only signed artifacts will be released to maven central. this sets up things for the maven-gpg-plugin
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-        settings-path: ${{ github.workspace }}        
+        gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
+       
     - name: Run Maven Targets
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --batch-mode --show-version --no-transfer-progress --activate-profiles oss-release -DskipTests=true -Dgpg.passphrase=${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+      run: mvn deploy --settings $GITHUB_WORKSPACE/settings.xml --batch-mode --show-version --no-transfer-progress --activate-profiles oss-release -DskipTests=true
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
