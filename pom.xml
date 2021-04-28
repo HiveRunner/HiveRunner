@@ -3,7 +3,7 @@
 
   <groupId>io.github.hiverunner</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>6.1.1-SNAPSHOT</version>
+  <version>6.1.0-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
   <url>https://github.com/HiveRunner/HiveRunner</url>
@@ -17,6 +17,14 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  
+  <developers>
+    <developer>
+      <name>HiveRunner Committers</name>
+      <organization>HiveRunner</organization>
+      <organizationUrl>https://github.com/HiveRunner</organizationUrl>
+    </developer>
+  </developers>  
 
   <scm>
     <connection>scm:git:https://github.com/HiveRunner/HiveRunner.git</connection>
@@ -249,6 +257,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>3.0.0-M1</version>
         <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <useReleaseProfile>false</useReleaseProfile>
           <releaseProfiles>oss-release</releaseProfiles>
