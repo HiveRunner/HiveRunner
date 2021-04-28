@@ -11,9 +11,9 @@ jobs:
     name: Release to Maven Central
     runs-on: ubuntu-20.04
     steps:
-    -name Checkout source code
-     uses: actions/checkout@v2
-     with:
+    - name Checkout source code
+      uses: actions/checkout@v2
+      with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.branch }}
 
