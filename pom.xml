@@ -3,7 +3,7 @@
 
   <groupId>io.github.hiverunner</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>5.4.0</version>
+  <version>5.4.1-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
   <url>https://github.com/HiveRunner/HiveRunner</url>
@@ -30,7 +30,7 @@
     <connection>scm:git:https://github.com/HiveRunner/HiveRunner.git</connection>
     <developerConnection>scm:git:https://github.com/HiveRunner/HiveRunner.git</developerConnection>
     <url>git@github.com:HiveRunner/HiveRunner.git</url>
-    <tag>v5.4.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
