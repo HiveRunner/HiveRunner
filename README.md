@@ -1,6 +1,6 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner/badge.svg?subject=io.github.hiverunner:hiverunner)](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner) 
-[![Build](https://github.com/HiveRunner/HiveRunner/workflows/Build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
+[![Build](https://github.com/HiveRunner/hiverunner/workflows/build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
