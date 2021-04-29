@@ -5,8 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.x) and above please refer to https://github.com/klarna/HiveRunner/blob/main/CHANGELOG.md.
 
-## [5.3.1] - TBD
+## [5.4.0] - 2021-04-29
 ### Changed
+- Maven Group Id changed from `com.klarna` to `io.github.hiverunner`.
 - Renamed `HelloAnnotatedHiveRunner` in `com.klarna.hiverunner.examples` to `HelloAnnotatedHiveRunnerTest`.
 - Renamed `HelloHiveRunner` in `com.klarna.hiverunner.examples` to `HelloHiveRunnerTest`.
 - Renamed `InsertTestData` in `com.klarna.hiverunner.examples` to `InsertTestDataTest`.

@@ -1,5 +1,7 @@
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner/badge.svg?subject=com.klarna:hiverunner)](https://maven-badges.herokuapp.com/maven-central/com.klarna/hiverunner) [![Build Status](https://travis-ci.org/klarna/HiveRunner.svg?branch=master)](https://travis-ci.org/klarna/HiveRunner) ![build](https://github.com/klarna/HiveRunner/workflows/build/badge.svg?event=push) ![GitHub license](https://img.shields.io/github/license/klarna/hiverunner.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner/badge.svg?subject=io.github.hiverunner:hiverunner)](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner) 
+[![Build](https://github.com/HiveRunner/hiverunner/workflows/build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
 
@@ -27,7 +29,7 @@ So, even though your current Hive SQL probably won't run off the shelf within Hi
 HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file:
 
     <dependency>
-        <groupId>com.klarna</groupId>
+        <groupId>io.github.hiverunner</groupId>
         <artifactId>hiverunner</artifactId>
         <version>[HIVERUNNER VERSION]</version>
         <scope>test</scope>
@@ -174,7 +176,8 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 # Hive version compatibility
 
-- This version of HiveRunner is built for Hive 2.3.7.
+- This version of HiveRunner is built for Hive 2.x.
+- For Hive 3.x support please use HiveRunner 6.x.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
@@ -197,7 +200,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 * HiveRunner does not allow the `add jar` statement. It is considered bad practice to keep environment specific code together with the business logic that targets HiveRunner. Keep environment specific stuff in separate files and use your build/orchestration/workflow tool to run the right files in the right order in the right environment. When running HiveRunner, all SerDes available on the classpath of the IDE/maven will be available.
 
-* HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
+* HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for Windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
 * Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead of for a whole test case. Feedback is always welcome!
 
@@ -211,27 +214,6 @@ Usually a restart of my machine solved it, but last time I got some corporate
 stuff installed the restarts stopped working and I kept getting UnknownHostExceptions. 
 Following this simple guide solved my problem:
 http://crunchify.com/getting-java-net-unknownhostexception-nodename-nor-servname-provided-or-not-known-error-on-mac-os-x-update-your-privateetchosts-file/
-
-
-### IOException in Hive 0.14.0
-Described in this issue: https://github.com/klarna/HiveRunner/issues/3
-
-This is a known bug in hive. Try setting hive.exec.counters.pull.interval to 1000 millis. It has worked for some projects.
-You can do this in the surefire plugin:
- 
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.17</version>
-              <configuration>
-                  <systemProperties>
-                      <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
-                  </systemProperties>
-              </configuration>
-          </plugin>
- 
-Also you can try to use the retry functionality in Surefire: https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html 
-
 
 ### Tez queries do not terminate
 Tez will at times forget the process id of a random DAG. This will cause the query to never terminate. To get around this there is 
@@ -265,4 +247,5 @@ Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2013-2020 Klarna AB.
+Copyright 2021 The HiveRunner Contributors
+Copyright 2013-2021 Klarna AB
