@@ -177,7 +177,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 # Hive version compatibility
 
 - This version of HiveRunner is built for Hive 3.1.2.
-- For Hive 2.x support please use HiveRunner 5.2.1.
+- For Hive 2.x support please use HiveRunner 5.x.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
@@ -247,4 +247,5 @@ Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2013-2021 Klarna AB.
+Copyright 2021 The HiveRunner Contributors
+Copyright 2013-2021 Klarna AB
