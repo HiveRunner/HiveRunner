@@ -11,14 +11,14 @@ Welcome to HiveRunner - Zero installation open source unit testing of Hive appli
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
-Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of HiveQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
+Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of Hive SQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
 
-HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as pull requests and as written requests.
+HiveRunner is under constant development. It is used extensively by many companies. Please feel free to suggest improvements both as pull requests and as written requests.
 
 
-## A word from the inventors
+## Overview
 
-HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
+HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize Hive SQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
 
 So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java community.
 
@@ -26,7 +26,7 @@ So, even though your current Hive SQL probably won't run off the shelf within Hi
 
 ## 1. Include HiveRunner
 
-HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file:
+HiveRunner is published to [Maven Central](https://search.maven.org/search?q=hiverunner). To start to use it, add a dependency to HiveRunner to your pom file:
 
     <dependency>
         <groupId>io.github.hiverunner</groupId>
@@ -80,8 +80,8 @@ With forkCount and reuseForks there is a possibility to reduce the test executio
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using Tez, set the 
-System property hiveconf_hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for Hive. If you wish to run using Tez, set the 
+System property `hiveconf_hive.execution.engine` to 'tez'.
 
 (Any Hive conf property may be overridden by prefixing it with 'hiveconf_')
         
@@ -161,7 +161,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
 
 See [com.klarna.hiverunner.examples.InsertTestDataTest](/src/test/java/com/klarna/hiverunner/examples/InsertTestDataTest.java) for working examples.
 
-## 3. Understand a little bit of the order of execution
+## 3. Understand the order of execution
 
 HiveRunner will in default mode set up and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked:
 
@@ -202,14 +202,12 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 * HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for Windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
-* Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead of for a whole test case. Feedback is always welcome!
-
-* Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
+* Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging. See [#69](https://github.com/HiveRunner/HiveRunner/issues/69).
 
 # Known Issues
 
 ### UnknownHostException
-I've had issues with UnknownHostException on OS X after upgrading my system or running docker. 
+I've had issues with UnknownHostException on OS X after upgrading my system or running Docker. 
 Usually a restart of my machine solved it, but last time I got some corporate 
 stuff installed the restarts stopped working and I kept getting UnknownHostExceptions. 
 Following this simple guide solved my problem:
@@ -241,8 +239,9 @@ If you would like to ask any questions about or discuss HiveRunner please join o
 
   [https://groups.google.com/forum/#!forum/hive-runner-user](https://groups.google.com/forum/#!forum/hive-runner-user)
 
-# Tags
-Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
+# History
+
+This project was initially developed and maintained by [Klarna[(https://klarna.github.io/) and then by [Expedia Group](https://expediagroup.github.io/) before moving to its own top-level organisation on GitHub.
 
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
