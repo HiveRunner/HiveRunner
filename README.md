@@ -241,7 +241,7 @@ If you would like to ask any questions about or discuss HiveRunner please join o
 
 # History
 
-This project was initially developed and maintained by [Klarna[(https://klarna.github.io/) and then by [Expedia Group](https://expediagroup.github.io/) before moving to its own top-level organisation on GitHub.
+This project was initially developed and maintained by [Klarna](https://klarna.github.io/) and then by [Expedia Group](https://expediagroup.github.io/) before moving to its own top-level organisation on GitHub.
 
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
