@@ -36,54 +36,138 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tez.version>0.9.1</tez.version>
-    <hive.version>2.3.7</hive.version>
+    <hive.version>2.3.9</hive.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <hive.execution.engine>mr</hive.execution.engine>
     <junit.jupiter.version>5.7.1</junit.jupiter.version>
     <mockito.version>3.8.0</mockito.version>
+    <log4j2.version>2.17.1</log4j2.version>
   </properties>
   
   <dependencies>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-serde</artifactId>
       <version>${hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.apache.logging.log4j</groupId>
+      	  <artifactId>log4j-1.2-api</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.apache.logging.log4j</groupId>
+      	  <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
       <version>${hive.version}</version>
+      <exclusions>
+        <exclusion>
+      	  <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.apache.hive.hcatalog</groupId>
       <artifactId>hive-webhcat-java-client</artifactId>
       <version>${hive.version}</version>
+      <exclusions>
+        <exclusion>
+      	  <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.apache.logging.log4j</groupId>
+      	  <artifactId>log4j-1.2-api</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.apache.logging.log4j</groupId>
+      	  <artifactId>log4j-slf4j-impl</artifactId>
+      	</exclusion>
+      	<exclusion>
+          <groupId>org.pentaho</groupId>
+          <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-service</artifactId>
       <version>${hive.version}</version>
+      <exclusions>
+      	<exclusion>
+      	  <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.slf4j</groupId>
+      	  <artifactId>slf4j-log4j12</artifactId>
+      	</exclusion>
+      	<exclusion>
+          <groupId>org.pentaho</groupId>
+          <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <artifactId>tez-dag</artifactId>
       <groupId>org.apache.tez</groupId>
       <version>${tez.version}</version>
+      <exclusions>
+      	<exclusion>
+      	  <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.slf4j</groupId>
+      	  <artifactId>slf4j-log4j12</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <artifactId>tez-common</artifactId>
       <groupId>org.apache.tez</groupId>
       <version>${tez.version}</version>
+      <exclusions>
+      	<exclusion>
+      	  <groupId>log4j</groupId>
+      	  <artifactId>log4j</artifactId>
+      	</exclusion>
+      	<exclusion>
+      	  <groupId>org.slf4j</groupId>
+      	  <artifactId>slf4j-log4j12</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <artifactId>tez-mapreduce</artifactId>
       <groupId>org.apache.tez</groupId>
       <version>${tez.version}</version>
+      <exclusions>
+      	<exclusion>
+      	  <groupId>org.slf4j</groupId>
+      	  <artifactId>slf4j-log4j12</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -91,12 +175,39 @@
       <artifactId>hive-contrib</artifactId>
       <version>${hive.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.pentaho</groupId>
+          <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <version>0.9.8</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-1.2-api</artifactId>
+      <version>${log4j2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.21</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j2.version}</version>
     </dependency>
 
     <dependency>
