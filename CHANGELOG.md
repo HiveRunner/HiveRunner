@@ -8,6 +8,7 @@ NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.
 ## [5.5.0] - 2023-01-23 
 ### Changed
 - Upgraded to log4j2.
+- Upgraded Hive version to `2.3.9` (was `2.3.7`).
 
 ## [5.4.1] - 2023-01-20 [YANKED]
 ### Changed
