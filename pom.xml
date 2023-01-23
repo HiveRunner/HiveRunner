@@ -45,6 +45,7 @@
   </properties>
   
   <dependencies>
+   <!--Hive uses Guava 14.0.1-->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
