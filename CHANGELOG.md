@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 NOTE: This CHANGELOG tracks changes in the 5.x (Hive 2.x) line. For 6.x (Hive 3.x) and above please refer to https://github.com/klarna/HiveRunner/blob/main/CHANGELOG.md.
 
-
-
 ## [5.5.0] - 2023-01-23 
 ### Changed
 - Upgraded to log4j2.
