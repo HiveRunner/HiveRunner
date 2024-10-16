@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.2.0] - 2024-10-16
+### Changed
+- Updated dependency versions for hive, hadoop, datanucleus, reflections, guava, tez, mockito, junit
+- Updated maven plugin versions
+- Adjusted code for Java21 and removed Guava Optional
+- Changed Hive property names in StandaloneHiveServerContext
+- Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works on new hive dependency version
+
 ## [6.1.0] - 2021-04-28
 ### Changed
 - Maven Group Id changed from `com.klarna` to `io.github.hiverunner`.
