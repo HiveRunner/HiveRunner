@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
- *
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,15 +18,13 @@ package com.klarna.reflection;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.function.Predicate;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static org.reflections.util.ReflectionUtilsPredicates.withName;
 
 /**
  * Collection of Reflection related helper functions.
@@ -39,7 +37,7 @@ public final class ReflectionUtils {
     private ReflectionUtils() {
     }
 
-    public static void setStaticField(Class clazz, String fieldName, Object value) {
+    public static void setStaticField(Class<?> clazz, String fieldName, Object value) {
         setField(clazz, null, fieldName, value);
     }
 
@@ -47,7 +45,7 @@ public final class ReflectionUtils {
         setField(instance.getClass(), instance, fieldName, value);
     }
 
-    private static void setField(Class clazz, Object instance, String fieldName, Object value) {
+    private static void setField(Class<?> clazz, Object instance, String fieldName, Object value) {
         try {
             final Optional<Field> optional = getField(clazz, fieldName);
             Preconditions.checkArgument(optional.isPresent(), "Failed to set field '" + fieldName + "' on '" + instance);
@@ -71,16 +69,15 @@ public final class ReflectionUtils {
      * @return an {@code Optional}. Use isPresent() to find out if the field name was found.
      */
     public static Optional<Field> getField(Class<?> type, final String fieldName) {
-        Optional<Field> field = Iterables.tryFind(newArrayList(type.getDeclaredFields()), havingFieldName(fieldName));
-
-        if (!field.isPresent() && type.getSuperclass() != null){
+        Optional<Field> field = Optional.of(org.reflections.ReflectionUtils.getAllFields(type, withName(fieldName)).stream().findAny().get());
+        if (!field.isPresent() && type.getSuperclass() != null) {
             field = getField(type.getSuperclass(), fieldName);
         }
 
         return field;
     }
 
-    public static Set<Field> getAllFields(Class aClass, Predicate<? super Field> predicate) {
+    public static Set<Field> getAllFields(Class<?> aClass, Predicate<? super Field> predicate) {
         return org.reflections.ReflectionUtils.getAllFields(aClass, predicate);
     }
 
@@ -88,11 +85,11 @@ public final class ReflectionUtils {
         return getFieldValue(testCase, testCase.getClass(), name, type, false);
     }
 
-    public static <T> T getStaticFieldValue(Class testCaseClass, String name, Class<T> type) {
+    public static <T> T getStaticFieldValue(Class<?> testCaseClass, String name, Class<T> type) {
         return getFieldValue(null, testCaseClass, name, type, true);
     }
 
-    private static <T> T getFieldValue(Object testCase, Class testCaseClass, String name, Class<T> type, boolean isStatic) {
+    private static <T> T getFieldValue(Object testCase, Class<?> testCaseClass, String name, Class<T> type, boolean isStatic) {
         try {
             Field field = testCaseClass.getDeclaredField(name);
             boolean accessible = field.isAccessible();
@@ -113,18 +110,33 @@ public final class ReflectionUtils {
         }
     }
 
-    public static boolean isOfType(Field setupScriptField, Class type) {
+    public static boolean isOfType(Field setupScriptField, Class<?> type) {
         return setupScriptField.getType().isAssignableFrom(type);
     }
 
 
     private static Predicate<Field> havingFieldName(final String fieldName) {
         return new Predicate<Field>() {
+
             @Override
-            public boolean apply(@Nullable Field field) {
+            public boolean test(Field field) {
                 return fieldName.equals(field.getName());
+            }
+
+            @Override
+            public Predicate<Field> and(Predicate<? super Field> other) {
+                return Predicate.super.and(other);
+            }
+
+            @Override
+            public Predicate<Field> negate() {
+                return Predicate.super.negate();
+            }
+
+            @Override
+            public Predicate<Field> or(Predicate<? super Field> other) {
+                return Predicate.super.or(other);
             }
         };
     }
-
 }

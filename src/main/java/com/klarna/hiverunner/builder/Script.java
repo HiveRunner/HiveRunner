@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
- *
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,13 @@ import java.nio.file.Path;
 
 public interface Script {
 
-  /**
-   * index of script within all scripts in source
-   */
-  int getIndex();
-  
-  Path getPath();
+    /**
+     * index of script within all scripts in source
+     */
+    int getIndex();
 
-  String getSql();
+    Path getPath();
+
+    String getSql();
 
 }

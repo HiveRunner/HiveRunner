@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
- *
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,18 @@
  * limitations under the License.
  */
 package com.klarna.hiverunner.builder;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.HiveServerContainer;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementLexer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,19 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.StatementLexer;
-import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
-import com.klarna.hiverunner.sql.split.StatementSplitter;
-
 /**
  * HiveShell implementation delegating to HiveServerContainer
  */
@@ -50,7 +49,7 @@ class HiveShellBase implements HiveShell {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
     private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
-    private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
+    private static final String DEFAULT_ROW_VALUE_DELIMITER = "\t";
 
     protected boolean started = false;
 
@@ -66,7 +65,7 @@ class HiveShellBase implements HiveShell {
     protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
-            List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+                  List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.commandShellEmulator = commandShellEmulator;
@@ -79,7 +78,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(String hiveSql) {
-        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
@@ -178,7 +177,7 @@ class HiveShellBase implements HiveShell {
         for (Path script : scripts) {
             assertFileExists(script);
             try {
-                String setupScript = new String(Files.readAllBytes(script), charset);
+                String setupScript = Files.readString(script, charset);
                 setupScripts.add(setupScript);
             } catch (IOException e) {
                 throw new IllegalArgumentException(
@@ -242,8 +241,7 @@ class HiveShellBase implements HiveShell {
             assertNotStarted();
             HiveResource resource = new HiveResource(targetFile);
             resources.add(resource);
-            OutputStream hiveShellStateAwareOutputStream = createPreStartOutputStream(resource.getOutputStream());
-            return hiveShellStateAwareOutputStream;
+            return createPreStartOutputStream(resource.getOutputStream());
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -383,12 +381,12 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script) {
-        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
     public List<String> executeQuery(Charset charset, Path script) {
-        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
@@ -403,7 +401,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-            String replaceNullWith) {
+                                     String replaceNullWith) {
         return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
     }
 
@@ -413,20 +411,19 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-            String replaceNullWith) {
+                                     String replaceNullWith) {
         assertStarted();
         assertFileExists(script);
         try {
-            String statements = new String(Files.readAllBytes(script), charset);
+            String statements = Files.readString(script, charset);
             List<Statement> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
             if (splitStatements.size() != 1) {
                 throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
             }
-            Statement statement = splitStatements.get(0);
+            Statement statement = splitStatements.getFirst();
             return executeQuery(statement.getSql(), rowValuesDelimitedBy, replaceNullWith);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
-                    e);
+            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(), e);
         }
     }
 

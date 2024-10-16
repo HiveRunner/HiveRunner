@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
- *
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Test handle to the hive server.
- *
+ * <p>
  * Please refer to test class {@code com.klarna.hiverunner.examples.HelloHiveRunnerTest} for usage examples.
  */
 public interface HiveShell {
@@ -177,6 +177,7 @@ public interface HiveShell {
      * <p>
      * May only be called pre #start()
      * </p>
+     *
      * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
@@ -241,7 +242,7 @@ public interface HiveShell {
     /**
      * Add a hive script that will be executed when the hive shell is started
      * Scripts will be executed in the order they are added.
-     *
+     * <p>
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
@@ -249,7 +250,7 @@ public interface HiveShell {
 
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
-     *
+     * <p>
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
@@ -257,7 +258,7 @@ public interface HiveShell {
 
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
-     *
+     * <p>
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
@@ -266,9 +267,9 @@ public interface HiveShell {
 
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
-     *
+     * <p>
      * Default charset will be used to read the given files
-     *
+     * <p>
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
@@ -276,9 +277,9 @@ public interface HiveShell {
 
     /**
      * Add hive scripts that will be executed when the hive shell is started. Scripts will be executed in given order.
-     *
+     * <p>
      * Default charset will be used to read the given files
-     *
+     * <p>
      * Note that execution order is not guaranteed with
      * fields annotated with {@link com.klarna.hiverunner.annotations.HiveSetupScript}
      */
@@ -292,6 +293,7 @@ public interface HiveShell {
 
     /**
      * Resolve all substituted variables with the hive conf.
+     *
      * @throws IllegalArgumentException if not all substitutes could be resolved
      * @throws IllegalStateException    if the HiveShell was not started yet.
      */
@@ -299,14 +301,14 @@ public interface HiveShell {
 
     /**
      * Open up a stream to write test data into HDFS.
-     *
+     * <p>
      * May only be called pre #start().
      * No writes to the stream will be allowed post #start().
      *
      * @param targetFile The path to the target file relative to the hive work space.
-     *
-     * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
-     * with sequence files.
+     *                   <p>
+     *                   See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
+     *                   with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);
 
@@ -317,7 +319,7 @@ public interface HiveShell {
      * </p>
      *
      * @param databaseName The database name
-     * @param tableName The table name
+     * @param tableName    The table name
      */
     InsertIntoTable insertInto(String databaseName, String tableName);
 }

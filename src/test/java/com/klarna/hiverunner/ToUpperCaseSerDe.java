@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class ToUpperCaseSerDe extends AbstractSerDe {
 
     private List<String> columns;
 
-    @Override
+
     public void initialize(Configuration configuration, Properties properties) throws SerDeException {
         columns = Arrays.asList(((String) properties.get(serdeConstants.LIST_COLUMNS)).split(","));
     }

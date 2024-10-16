@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021 The HiveRunner Contributors
- *
+ * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,17 +16,16 @@
  */
 package com.klarna.hiverunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.nio.file.Path;
+import com.klarna.hiverunner.builder.Script;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.klarna.hiverunner.builder.Script;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A rule that executes the scripts under test
@@ -62,16 +61,16 @@ public class HiveRunnerRule implements TestRule {
 
     class HiveRunnerRuleStatement extends Statement {
 
-        private Object target;
-        private Statement base;
-        private Path testBaseDir;
-        private StandaloneHiveRunner runner;
+        private final Object target;
+        private final Statement base;
+        private final Path testBaseDir;
+        private final StandaloneHiveRunner runner;
 
         private HiveRunnerRuleStatement(
-            StandaloneHiveRunner runner,
-            Object target,
-            Statement base,
-            Path testBaseDir) {
+                StandaloneHiveRunner runner,
+                Object target,
+                Statement base,
+                Path testBaseDir) {
             this.runner = runner;
             this.target = target;
             this.base = base;

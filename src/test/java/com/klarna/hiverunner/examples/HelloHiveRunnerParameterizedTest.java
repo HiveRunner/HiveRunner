@@ -18,50 +18,45 @@ package com.klarna.hiverunner.examples;
 
 import com.klarna.hiverunner.HiveRunnerExtension;
 import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * A basic Hive Runner example showing how to setup the test source database and target database, execute the query
- * and then validate the result.
- * <p>
- * In this example we want to test some very simple code, calculate_max.sql, that calculate a max value by year.
- * <p>
- * <p/>
- * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
+ * A basic Hive Runner example showing how to use JUnit5's ParameterizedTest.
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunnerTest {
+public class HelloHiveRunnerParameterizedTest {
 
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @BeforeEach
-    public void setupSourceDatabase() {
-        shell.execute("CREATE DATABASE source_db");
-        shell.execute(new StringBuilder()
-                .append("CREATE TABLE source_db.test_table (")
-                .append("year STRING, value INT")
-                .append(")")
-                .toString());
+    @HiveRunnerSetup
+    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
+        setHiveExecutionEngine("tez");
+    }};
 
-        shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/create_max.sql"));
-    }
+    @ParameterizedTest
+    @ValueSource(strings = {"SEQUENCEFILE", "ORC", "PARQUET"})
+    public void testFileFormats(String fileFormat) {
+        String dbName = "source_db_" + fileFormat.toLowerCase();
+        String tableName = "test_table_" + fileFormat.toLowerCase();
 
-    @Test
-    public void testMaxValueByYear() {
-        /*
-         * Insert some source data
-         */
-        shell.insertInto("source_db", "test_table")
+        shell.executeStatement("CREATE DATABASE " + dbName);
+
+        shell.executeStatement("CREATE TABLE " + dbName + "." + tableName + " (" +
+                "year STRING, value INT" +
+                ") stored as " + fileFormat);
+
+        shell.insertInto(dbName, tableName)
                 .withColumns("year", "value")
                 .addRow("2014", 3)
                 .addRow("2014", 4)
@@ -69,18 +64,12 @@ public class HelloHiveRunnerTest {
                 .addRow("2015", 5)
                 .commit();
 
-        /*
-         * Execute the query
-         */
-        shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/calculate_max.sql"));
-
-        /*
-         * Verify the result
-         */
-        List<Object[]> result = shell.executeStatement("select * from my_schema.result");
+        List<Object[]> result = shell.executeStatement("select year, max(value) from " + dbName + "." + tableName + " group by year");
 
         assertEquals(2, result.size());
         assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
         assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
+
+        shell.executeStatement("DROP DATABASE " + dbName + " CASCADE");
     }
 }
