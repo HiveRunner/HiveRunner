@@ -401,7 +401,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-                                     String replaceNullWith) {
+            String replaceNullWith) {
         return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
     }
 
@@ -411,7 +411,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-                                     String replaceNullWith) {
+            String replaceNullWith) {
         assertStarted();
         assertFileExists(script);
         try {
@@ -423,7 +423,8 @@ class HiveShellBase implements HiveShell {
             Statement statement = splitStatements.getFirst();
             return executeQuery(statement.getSql(), rowValuesDelimitedBy, replaceNullWith);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(), e);
+            throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),
+                    e);
         }
     }
 
