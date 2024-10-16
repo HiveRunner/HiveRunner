@@ -27,18 +27,15 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class ToUpperCaseSerDe extends AbstractSerDe {
 
     private List<String> columns;
 
-
-    public void initialize(Configuration configuration, Properties properties) throws SerDeException {
-        columns = Arrays.asList(((String) properties.get(serdeConstants.LIST_COLUMNS)).split(","));
+    @Override
+    public void initialize(Configuration configuration, Properties tableProperties, Properties partitionProperties) {
+        columns = Arrays.asList(((String) tableProperties.get(serdeConstants.LIST_COLUMNS)).split(","));
     }
 
     @Override
@@ -52,13 +49,14 @@ public class ToUpperCaseSerDe extends AbstractSerDe {
     }
 
     @Override
-    public Object deserialize(Writable writable) throws SerDeException {
+    public Object deserialize(Writable writable) {
         String[] values = writable.toString().toUpperCase().split(",");
         return Arrays.asList(values);
     }
 
     @Override
-    public ObjectInspector getObjectInspector() throws SerDeException {
+    public ObjectInspector getObjectInspector() {
+        Objects.requireNonNull(columns, "columns can not be null");
         // Constructing the row ObjectInspector:
         // The row consists of some string columns, each column will be a java
         // String object.

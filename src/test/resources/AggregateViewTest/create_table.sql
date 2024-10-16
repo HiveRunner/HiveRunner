@@ -1,6 +1,6 @@
 CREATE DATABASE db;
 
-CREATE EXTERNAL TABLE `db.mvtdescriptionchangeinfo`(
+CREATE EXTERNAL TABLE db.mvtdescriptionchangeinfo(
   `timestamp` bigint COMMENT '',
   `testid` string COMMENT '',
   `type` string COMMENT '',
