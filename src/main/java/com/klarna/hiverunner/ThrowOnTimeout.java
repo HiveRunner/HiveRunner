@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021-2024 The HiveRunner Contributors
+ * Copyright (C) 2021 The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,17 +53,20 @@ public class ThrowOnTimeout extends Statement {
             LOGGER.info("Starting timeout monitoring ({}s) of test case {}.", config.getTimeoutSeconds(), target);
         }
 
-        Thread statementThread = new Thread(() -> {
-            try {
-                stopWatch.start();
-                originalStatement.evaluate();
-                finished = true;
-            } catch (InterruptedException e) {
-                // Ignore the InterruptedException
-                LOGGER.debug(e.getMessage(), e);
-            } catch (Throwable e) {
-                synchronized (target) {
-                    statementException = e;
+        Thread statementThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    stopWatch.start();
+                    originalStatement.evaluate();
+                    finished = true;
+                } catch (InterruptedException e) {
+                    // Ignore the InterruptedException
+                    LOGGER.debug(e.getMessage(), e);
+                } catch (Throwable e) {
+                    synchronized (target) {
+                        statementException = e;
+                    }
                 }
             }
         });

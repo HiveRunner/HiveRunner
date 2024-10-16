@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021-2024 The HiveRunner Contributors
+ * Copyright (C) 2021 The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ class HiveShellBase implements HiveShell {
     protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
-                  List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+            List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.commandShellEmulator = commandShellEmulator;

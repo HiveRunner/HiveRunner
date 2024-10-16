@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021-2024 The HiveRunner Contributors
+ * Copyright (C) 2021 The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,10 @@ public final class ReflectionUtils {
      * @return an {@code Optional}. Use isPresent() to find out if the field name was found.
      */
     public static Optional<Field> getField(Class<?> type, final String fieldName) {
-        Optional<Field> field = org.reflections.ReflectionUtils.getAllFields(type, withName(fieldName)).stream().findAny();
+        Optional<Field> field = org.reflections.ReflectionUtils.getAllFields(type, withName(fieldName))
+                .stream()
+                .findAny();
+
         if (!field.isPresent() && type.getSuperclass() != null) {
             field = getField(type.getSuperclass(), fieldName);
         }
@@ -116,7 +119,7 @@ public final class ReflectionUtils {
 
 
     private static Predicate<Field> havingFieldName(final String fieldName) {
-        return new Predicate<Field>() {
+        return new Predicate<>() {
 
             @Override
             public boolean test(Field field) {

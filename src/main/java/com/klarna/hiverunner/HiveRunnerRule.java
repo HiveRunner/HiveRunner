@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021-2024 The HiveRunner Contributors
+ * Copyright (C) 2021 The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,10 +62,10 @@ public class HiveRunnerRule implements TestRule {
 
     class HiveRunnerRuleStatement extends Statement {
 
-        private final Object target;
-        private final Statement base;
-        private final Path testBaseDir;
-        private final StandaloneHiveRunner runner;
+        private Object target;
+        private Statement base;
+        private Path testBaseDir;
+        private StandaloneHiveRunner runner;
 
         private HiveRunnerRuleStatement(
             StandaloneHiveRunner runner,
