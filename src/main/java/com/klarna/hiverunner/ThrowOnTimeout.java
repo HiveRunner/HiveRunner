@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.lang.time.StopWatch;
-import org.jetbrains.annotations.NotNull;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -54,8 +53,23 @@ public class ThrowOnTimeout extends Statement {
             LOGGER.info("Starting timeout monitoring ({}s) of test case {}.", config.getTimeoutSeconds(), target);
         }
 
-        Thread statementThread = getStatementThread(stopWatch);
-        statementThread.join(config.getTimeoutSeconds() * 1000L);
+        Thread statementThread = new Thread(() -> {
+            try {
+                stopWatch.start();
+                originalStatement.evaluate();
+                finished = true;
+            } catch (InterruptedException e) {
+                // Ignore the InterruptedException
+                LOGGER.debug(e.getMessage(), e);
+            } catch (Throwable e) {
+                synchronized (target) {
+                    statementException = e;
+                }
+            }
+        });
+
+        statementThread.start();
+        statementThread.join(config.getTimeoutSeconds() * 1000);
 
         synchronized (target) {
             if (statementException != null) {
@@ -77,26 +91,6 @@ public class ThrowOnTimeout extends Statement {
         if (statementException != null) {
             throw statementException;
         }
-    }
-
-    private @NotNull Thread getStatementThread(StopWatch stopWatch) {
-        Thread statementThread = new Thread(() -> {
-            try {
-                stopWatch.start();
-                originalStatement.evaluate();
-                finished = true;
-            } catch (InterruptedException e) {
-                // Ignore the InterruptedException
-                LOGGER.debug(e.getMessage(), e);
-            } catch (Throwable e) {
-                synchronized (target) {
-                    statementException = e;
-                }
-            }
-        });
-
-        statementThread.start();
-        return statementThread;
     }
 
     public static TestRule create(final HiveRunnerConfig config, final Object target) {

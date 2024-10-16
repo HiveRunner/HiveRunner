@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,14 +28,18 @@ import org.apache.hadoop.hive.conf.VariableSubstitution;
 import org.apache.hadoop.hive.ql.exec.tez.TezJobExecHelper;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hive.service.Service;
-import org.apache.hive.service.cli.*;
+import org.apache.hive.service.cli.CLIService;
+import org.apache.hive.service.cli.HiveSQLException;
+import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.RowSet;
+import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.server.HiveServer2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +73,7 @@ public class HiveServerContainer {
      * @param hiveVars   HiveVars to pass on to the HiveServer for this session
      */
     public void init(Map<String, String> testConfig, Map<String, String> hiveVars) {
+
         context.init();
 
         HiveConf hiveConf = context.getHiveConf();
@@ -135,12 +140,12 @@ public class HiveServerContainer {
 
             LOGGER.debug("ResultSet:\n"
                     + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
-                @Override
-                public String apply(@Nullable Object[] objects) {
-                    assert objects != null;
-                    return Joiner.on(", ").useForNull("null").join(objects);
-                }
-            })));
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable Object[] objects) {
+                            return Joiner.on(", ").useForNull("null").join(objects);
+                        }
+                    })));
 
             return resultSet;
         } catch (HiveSQLException e) {
@@ -179,7 +184,7 @@ public class HiveServerContainer {
             client.closeSession(sessionHandle);
         } catch (Throwable e) {
             LOGGER.warn(
-                    "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+                "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 

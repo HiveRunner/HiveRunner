@@ -1,6 +1,6 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner/badge.svg?subject=io.github.hiverunner:hiverunner)](https://maven-badges.herokuapp.com/maven-central/io.github.hiverunner/hiverunner) 
-[![Build](https://github.com/HiveRunner/HiveRunner/workflows/Build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
+[![Build](https://github.com/HiveRunner/hiverunner/workflows/build/badge.svg)](https://github.com/HiveRunner/HiveRunner/actions?query=workflow:"build")
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![ScreenShot](/images/HiveRunnerSplash.png)
@@ -11,14 +11,14 @@ Welcome to HiveRunner - Zero installation open source unit testing of Hive appli
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
-Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of HiveQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
+Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of Hive SQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
 
-HiveRunner is under constant development. We use it extensively in all our Hive projects. Please feel free to suggest improvements both as pull requests and as written requests.
+HiveRunner is under constant development. It is used extensively by many companies. Please feel free to suggest improvements both as pull requests and as written requests.
 
 
-## A word from the inventors
+## Overview
 
-HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize HiveQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
+HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize Hive SQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
 
 So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java community.
 
@@ -26,7 +26,7 @@ So, even though your current Hive SQL probably won't run off the shelf within Hi
 
 ## 1. Include HiveRunner
 
-HiveRunner is published to [Maven Central](http://search.maven.org/). To start to use it, add a dependency to HiveRunner to your pom file:
+HiveRunner is published to [Maven Central](https://search.maven.org/search?q=hiverunner). To start to use it, add a dependency to HiveRunner to your pom file:
 
     <dependency>
         <groupId>io.github.hiverunner</groupId>
@@ -41,12 +41,12 @@ Alternatively, if you want to build from source, clone this repo and build with:
 
 Then add the dependency as mentioned above.
 
-Also explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
+Also, explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
@@ -57,7 +57,7 @@ As an alternative if this does not solve the OOM issues, try increase the -Xmx a
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkCount>1</forkCount>
             <reuseForks>false</reuseForks>
@@ -65,14 +65,16 @@ As an alternative if this does not solve the OOM issues, try increase the -Xmx a
         </configuration>
     </plugin>
 
-(please note that the forkMode option is deprecated and you should use forkCount and reuseForks instead)
+(please note that the forkMode option is deprecated, you should use forkCount and reuseForks instead)
+
+(please note that -XX:MaxPermSize will not work for Java > 8)
 
 With forkCount and reuseForks there is a possibility to reduce the test execution time drastically, depending on your hardware. A plugin configuration which are using one fork per CPU core and reuse threads would look like:
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkCount>1C</forkCount>
             <reuseForks>true</reuseForks>
@@ -80,20 +82,67 @@ With forkCount and reuseForks there is a possibility to reduce the test executio
         </configuration>
     </plugin>
 
-By default, HiveRunner uses mapreduce (mr) as the execution engine for hive. If you wish to run using Tez, set the 
-System property hiveconf_hive.execution.engine to 'tez'.
+By default, HiveRunner uses mapreduce (mr) as the execution engine for Hive. If you wish to run using Tez, set the 
+System property `hiveconf_hive.execution.engine` to 'tez'.
 
 (Any Hive conf property may be overridden by prefixing it with 'hiveconf_')
         
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
+            <version>3.5.1</version>
             <configuration>
                 <systemProperties>
                     <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
                     <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
                 </systemProperties>
+            </configuration>
+        </plugin>
+
+Tun run unit/integration tests, configuration below can be used
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+                <forkCount>1</forkCount>
+                <reuseForks>false</reuseForks>
+                <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>3.5.1</version>
+            <executions>
+                <execution>
+                    <id>run-integration-tests</id>
+                    <phase>integration-test</phase>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
+                <classpathDependencyExcludes>
+                    <classpathDependencyExclude>org.antlr:*</classpathDependencyExclude>
+                </classpathDependencyExcludes>
+                <additionalClasspathDependencies>
+                    <!-- To make Hive partitions work (HQL WERE statement throws error if used without it) -->
+                    <additionalClasspathDependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-runtime</artifactId>
+                        <version>4.9.3</version>
+                    </additionalClasspathDependency>
+                </additionalClasspathDependencies>
             </configuration>
         </plugin>
 
@@ -106,7 +155,7 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <systemProperties>
                 <enableTimeout>true</enableTimeout>
@@ -132,13 +181,13 @@ Annotations and interactive mode can be mixed and matched, however you'll always
          @HiveSQL(files = {"serdeTest/create_table.sql", "serdeTest/hql_custom_serde.sql"}, autoStart = false)
          public HiveShell hiveShell;
 
-Note that the *autostart = false* is needed for the interactive mode. It can be left out when running with only annotations.
+Note that the *autoStart = false* is needed for the interactive mode. It can be left out when running with only annotations.
 
 ### Sequence files
 If you work with __sequence files__ (Or anything else than regular text files) make sure to take a look at [ResourceOutputStreamTest](/src/test/java/com/klarna/hiverunner/ResourceOutputStreamTest.java) 
 for an example of how to use the new method [HiveShell](src/main/java/com/klarna/hiverunner/HiveShell.java)\#getResourceOutputStream to manage test input data. 
 
-### Programatically create test input data
+### Programmatically create test input data
 
 Test data can be programmatically inserted into any Hive table using `HiveShell.insertInto(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
 
@@ -161,7 +210,7 @@ Test data can be programmatically inserted into any Hive table using `HiveShell.
 
 See [com.klarna.hiverunner.examples.InsertTestDataTest](/src/test/java/com/klarna/hiverunner/examples/InsertTestDataTest.java) for working examples.
 
-## 3. Understand a little bit of the order of execution
+## 3. Understand the order of execution
 
 HiveRunner will in default mode set up and start the HiveShell before the test method is invoked. If autostart is set to false, the [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) must be started manually from within the test method. Either way, HiveRunner will do the following steps when start is invoked:
 
@@ -176,14 +225,14 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 # Hive version compatibility
 
-- This version of HiveRunner is built for Hive 3.1.2.
-- For Hive 2.x support please use HiveRunner 5.2.1.
+- This version of HiveRunner is built for Hive 4.0.x.
+- For Hive 2.x support please use HiveRunner 5.x.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
+            <version>3.5.1</version>
             <configuration>
                 <systemProperties>
                     <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
@@ -202,14 +251,12 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 * HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for Windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
-* Some of the HiveRunner annotations should probably be rebuilt to be more test method specific. E.g. Resources may be described on a test method basis instead of for a whole test case. Feedback is always welcome!
-
-* Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging.
+* Currently, the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging. See [#69](https://github.com/HiveRunner/HiveRunner/issues/69).
 
 # Known Issues
 
 ### UnknownHostException
-I've had issues with UnknownHostException on OS X after upgrading my system or running docker. 
+I've had issues with UnknownHostException on OS X after upgrading my system or running Docker. 
 Usually a restart of my machine solved it, but last time I got some corporate 
 stuff installed the restarts stopped working and I kept getting UnknownHostExceptions. 
 Following this simple guide solved my problem:
@@ -222,7 +269,7 @@ a timeout and retry functionality implemented in HiveRunner:
          <plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.21.0</version>
+             <version>3.5.1</version>
              <configuration>
                  <systemProperties>
                      <enableTimeout>true</enableTimeout>
@@ -241,10 +288,12 @@ If you would like to ask any questions about or discuss HiveRunner please join o
 
   [https://groups.google.com/forum/#!forum/hive-runner-user](https://groups.google.com/forum/#!forum/hive-runner-user)
 
-# Tags
-Hive Hadoop HiveRunner HDFS Unit test JUnit SQL HiveSQL HiveQL
+# History
+
+This project was initially developed and maintained by [Klarna](https://klarna.github.io/) and then by [Expedia Group](https://expediagroup.github.io/) before moving to its own top-level organisation on GitHub.
 
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2013-2021 Klarna AB.
+Copyright 2021 The HiveRunner Contributors
+Copyright 2013-2021 Klarna AB

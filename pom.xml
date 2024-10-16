@@ -6,33 +6,35 @@
     <artifactId>hiverunner</artifactId>
     <version>6.2.0-SNAPSHOT</version>
     <name>HiveRunner</name>
-    <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
+    <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL
+        without the need of any installed dependencies.
+    </description>
     <url>https://github.com/HiveRunner/HiveRunner</url>
     <!-- below isn't the actual inception year but is the year the copyright changed -->
-  <inceptionYear>2021</inceptionYear>
+    <inceptionYear>2021</inceptionYear>
 
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
-  <developers>
-    <developer>
-      <name>HiveRunner Committers</name>
-      <organization>HiveRunner</organization>
-      <organizationUrl>https://github.com/HiveRunner</organizationUrl>
-    </developer>
-  </developers>  
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>scm:git:https://github.com/HiveRunner/HiveRunner.git</connection>
-    <developerConnection>scm:git:https://github.com/HiveRunner/HiveRunner.git</developerConnection>
-    <url>git@github.com:HiveRunner/HiveRunner.git</url>
-    <tag>HEAD</tag>
-  </scm>
+    <developers>
+        <developer>
+            <name>HiveRunner Committers</name>
+            <organization>HiveRunner</organization>
+            <organizationUrl>https://github.com/HiveRunner</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/HiveRunner/HiveRunner.git</connection>
+        <developerConnection>scm:git:https://github.com/HiveRunner/HiveRunner.git</developerConnection>
+        <url>git@github.com:HiveRunner/HiveRunner.git</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +44,8 @@
         <junit.jupiter.version>5.11.2</junit.jupiter.version>
         <tez.version>0.10.4</tez.version>
         <mockito.version>5.14.1</mockito.version>
+
+        <license.maven.plugin.version>3.0</license.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -385,14 +389,13 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <!-- To make Hive partitions work -->
-<!--        <dependency>-->
-<!--            <groupId>org.antlr</groupId>-->
-<!--            <artifactId>antlr4-runtime</artifactId>-->
-<!--            <version>4.9.3</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <!-- To make Hive partitions work in WHERE HQL statement -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.9.3</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -405,7 +408,11 @@
                 <version>3.5.1</version>
                 <configuration>
                     <!-- Hiverunner need this for some queries (property -XX:MaxPermSize was removed in java 8) -->
-                    <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
+                    <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens
+                        java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens
+                        java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens
+                        java.base/java.util.concurrent.atomic=ALL-UNNAMED
+                    </argLine>
                     <!-- below needed due to https://github.com/HiveRunner/HiveRunner/commit/1f9a9b353c3b072f7898a6b4fa277474674d4b54 -->
                     <reuseForks>false</reuseForks>
                     <systemProperties>
@@ -448,138 +455,138 @@
                 </configuration>
             </plugin>
 
- <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <version>${license.maven.plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.mycila</groupId>
-            <artifactId>license-maven-plugin-git</artifactId>
-            <version>${license.maven.plugin.version}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <header>src/main/license/APACHE-2.txt</header>
-          <properties>
-            <owner>The HiveRunner Contributors</owner>
-          </properties>
-          <includes>
-            <include>src/main/java/**</include>
-            <include>src/test/java/**</include>
-          </includes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>format</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M1</version>
-        <configuration>
-          <tagNameFormat>v@{project.version}</tagNameFormat>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <useReleaseProfile>false</useReleaseProfile>
-          <releaseProfiles>oss-release</releaseProfiles>
-          <goals>deploy</goals>
-        </configuration>
-      </plugin>      
-
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
-      </plugins>
-    </build>
-<profiles>
-    <profile>
-      <id>oss-release</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.2.0</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.2.0</version>
-            <configuration>
-               <encoding>${project.build.sourceEncoding}</encoding>
-               <source>8</source>
-               <detectJavaApiLink>false</detectJavaApiLink>
-               <doclint>none</doclint>
-            </configuration>            
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license.maven.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin-git</artifactId>
+                        <version>${license.maven.plugin.version}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <gpgArguments>
-                        <arg>--pinentry-mode</arg>
-                        <arg>loopback</arg>
-                    </gpgArguments>                
+                    <header>src/main/license/APACHE-2.txt</header>
+                    <properties>
+                        <owner>The HiveRunner Contributors</owner>
+                    </properties>
+                    <includes>
+                        <include>src/main/java/**</include>
+                        <include>src/test/java/**</include>
+                    </includes>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>oss-release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>tez</id>
-      <properties>
-        <hive.execution.engine>tez</hive.execution.engine>
-      </properties>
-    </profile>
-  </profiles>    
-  </project>
+    </build>
+    <profiles>
+        <profile>
+            <id>oss-release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.10.1</version>
+                        <configuration>
+                            <encoding>${project.build.sourceEncoding}</encoding>
+                            <source>8</source>
+                            <detectJavaApiLink>false</detectJavaApiLink>
+                            <doclint>none</doclint>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>tez</id>
+            <properties>
+                <hive.execution.engine>tez</hive.execution.engine>
+            </properties>
+        </profile>
+    </profiles>
+</project>

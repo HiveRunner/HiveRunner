@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,15 +16,20 @@
  */
 package com.klarna.hiverunner.sql.cli.beeline;
 
-import com.klarna.hiverunner.sql.StatementLexer;
-import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
-import com.klarna.hiverunner.sql.cli.DefaultPreProcessor;
-import com.klarna.hiverunner.sql.cli.PostProcessor;
-import com.klarna.hiverunner.sql.cli.PreProcessor;
-import com.klarna.hiverunner.sql.split.*;
-
 import java.util.Arrays;
 import java.util.List;
+
+import com.klarna.hiverunner.sql.StatementLexer;
+import com.klarna.hiverunner.sql.cli.DefaultPreProcessor;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.cli.PostProcessor;
+import com.klarna.hiverunner.sql.cli.PreProcessor;
+import com.klarna.hiverunner.sql.split.CloseStatementRule;
+import com.klarna.hiverunner.sql.split.DefaultTokenRule;
+import com.klarna.hiverunner.sql.split.PreserveCommentsRule;
+import com.klarna.hiverunner.sql.split.PreserveQuotesRule;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
+import com.klarna.hiverunner.sql.split.TokenRule;
 
 /**
  * Emulates CLI behaviours specific to beeline. This includes interpretation of {@code !run} commands, and full line
@@ -59,7 +64,7 @@ public enum BeelineEmulator implements CommandShellEmulator {
     public List<TokenRule> splitterRules() {
         // This order is important as rules may be progressively greedy. DefaultTokenRule will consume
         // all tokens for example.
-        return Arrays.<TokenRule>asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
+        return Arrays.asList(CloseStatementRule.INSTANCE, PreserveCommentsRule.INSTANCE,
                 PreserveQuotesRule.INSTANCE, SqlLineCommandRule.INSTANCE, DefaultTokenRule.INSTANCE);
 
     }

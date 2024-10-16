@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
@@ -48,63 +49,63 @@ import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_
  */
 public class StandaloneHiveServerContext implements HiveServerContext {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneHiveServerContext.class);
 
-    private String metaStorageUrl;
+  private String metaStorageUrl;
 
-    protected HiveConf hiveConf = new HiveConf();
+  protected HiveConf hiveConf = new HiveConf();
 
-    private final Path basedir;
-    private final HiveRunnerConfig hiveRunnerConfig;
+  private final Path basedir;
+  private final HiveRunnerConfig hiveRunnerConfig;
 
-    public StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
-        this.basedir = basedir;
-        this.hiveRunnerConfig = hiveRunnerConfig;
+  public StandaloneHiveServerContext(Path basedir, HiveRunnerConfig hiveRunnerConfig) {
+    this.basedir = basedir;
+    this.hiveRunnerConfig = hiveRunnerConfig;
+  }
+
+  @Override
+  public final void init() {
+
+    configureMiscHiveSettings(hiveConf);
+
+    configureMetaStore(hiveConf);
+
+    configureMrExecutionEngine(hiveConf);
+
+    configureTezExecutionEngine(hiveConf);
+
+    configureJavaSecurityRealm(hiveConf);
+
+    configureSupportConcurrency(hiveConf);
+
+    try {
+      configureFileSystem(basedir, hiveConf);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
 
-    @Override
-    public final void init() {
+    configureAssertionStatus(hiveConf);
 
-        configureMiscHiveSettings(hiveConf);
+    overrideHiveConf(hiveConf);
+  }
 
-        configureMetaStore(hiveConf);
+  protected void configureMiscHiveSettings(HiveConf hiveConf) {
+    hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
 
-        configureMrExecutionEngine(hiveConf);
+    // Turn of dependency to calcite library
+    hiveConf.setBoolVar(HIVE_CBO_ENABLED, false);
 
-        configureTezExecutionEngine(hiveConf);
-
-        configureJavaSecurityRealm(hiveConf);
-
-        configureSupportConcurrency(hiveConf);
-
-        try {
-            configureFileSystem(basedir, hiveConf);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        configureAssertionStatus(hiveConf);
-
-        overrideHiveConf(hiveConf);
-    }
-
-    protected void configureMiscHiveSettings(HiveConf hiveConf) {
-        hiveConf.setBoolVar(HIVESTATSAUTOGATHER, false);
-
-        // Turn of dependency to calcite library
-        hiveConf.setBoolVar(HIVE_CBO_ENABLED, false);
-
-        // Disable to get rid of clean up exception when stopping the Session.
-        hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
+    // Disable to get rid of clean up exception when stopping the Session.
+    hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
 
         hiveConf.setVar(HADOOP_BIN, "NO_BIN!");
     }
 
-    protected void overrideHiveConf(HiveConf hiveConf) {
-        for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
-            hiveConf.set(hiveConfEntry.getKey(), hiveConfEntry.getValue());
-        }
+  protected void overrideHiveConf(HiveConf hiveConf) {
+    for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
+      hiveConf.set(hiveConfEntry.getKey(), hiveConfEntry.getValue());
     }
+  }
 
     protected void configureMrExecutionEngine(HiveConf conf) {
         /*
@@ -120,65 +121,65 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
         hiveConf.setLongVar(HIVE_COUNTERS_PULL_INTERVAL, 1L);
 
-        hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
+    hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
+  }
+
+  protected void configureTezExecutionEngine(HiveConf conf) {
+    /*
+     * Tez local mode settings
+     */
+    conf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
+    conf.set("fs.defaultFS", "file:///");
+    conf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
+
+    /*
+     * Set to be able to run tests offline
+     */
+    conf.set(TezConfiguration.TEZ_AM_DISABLE_CLIENT_VERSION_CHECK, "true");
+
+    /*
+     * General attempts to strip of unnecessary functionality to speed up test execution and increase stability
+     */
+    conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
+    conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
+    conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+    conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
+    conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
+    conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
+    conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
+  }
+
+  protected void configureJavaSecurityRealm(HiveConf hiveConf) {
+    // These three properties gets rid of: 'Unable to load realm info from SCDynamicStore'
+    // which seems to have a timeout of about 5 secs.
+    System.setProperty("java.security.krb5.realm", "");
+    System.setProperty("java.security.krb5.kdc", "");
+    System.setProperty("java.security.krb5.conf", "/dev/null");
+  }
+
+  protected void configureAssertionStatus(HiveConf conf) {
+    ClassLoader
+        .getSystemClassLoader()
+        .setPackageAssertionStatus("org.apache.hadoop.hive.serde2.objectinspector", false);
+  }
+
+  protected void configureSupportConcurrency(HiveConf conf) {
+    hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
+  }
+
+  protected void configureMetaStore(HiveConf conf) {
+    configureDerbyLog();
+
+    String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
+    try {
+      Class.forName(jdbcDriver);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
     }
-
-    protected void configureTezExecutionEngine(HiveConf conf) {
-        /*
-         * Tez local mode settings
-         */
-        conf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
-        conf.set("fs.defaultFS", "file:///");
-        conf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
-
-        /*
-         * Set to be able to run tests offline
-         */
-        conf.set(TezConfiguration.TEZ_AM_DISABLE_CLIENT_VERSION_CHECK, "true");
-
-        /*
-         * General attempts to strip of unnecessary functionality to speed up test execution and increase stability
-         */
-        conf.set(TezConfiguration.TEZ_AM_USE_CONCURRENT_DISPATCHER, "false");
-        conf.set(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, "false");
-        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
-        conf.set(TezConfiguration.TEZ_TASK_GET_TASK_SLEEP_INTERVAL_MS_MAX, "1");
-        conf.set(TezConfiguration.TEZ_AM_WEBSERVICE_ENABLE, "false");
-        conf.set(TezConfiguration.DAG_RECOVERY_ENABLED, "false");
-        conf.set(TezConfiguration.TEZ_AM_NODE_BLACKLISTING_ENABLED, "false");
-    }
-
-    protected void configureJavaSecurityRealm(HiveConf hiveConf) {
-        // These three properties gets rid of: 'Unable to load realm info from SCDynamicStore'
-        // which seems to have a timeout of about 5 secs.
-        System.setProperty("java.security.krb5.realm", "");
-        System.setProperty("java.security.krb5.kdc", "");
-        System.setProperty("java.security.krb5.conf", "/dev/null");
-    }
-
-    protected void configureAssertionStatus(HiveConf conf) {
-        ClassLoader
-                .getSystemClassLoader()
-                .setPackageAssertionStatus("org.apache.hadoop.hive.serde2.objectinspector", false);
-    }
-
-    protected void configureSupportConcurrency(HiveConf conf) {
-        hiveConf.setBoolVar(HIVE_SUPPORT_CONCURRENCY, false);
-    }
-
-    protected void configureMetaStore(HiveConf conf) {
-        configureDerbyLog();
-
-        final String jdbcDriver = org.apache.derby.jdbc.EmbeddedDriver.class.getName();
-        try {
-            Class.forName(jdbcDriver);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
 
         // https://lists.apache.org/thread/crlomzvvn3hrzwc7t933rzkxpf8p9wgt
         // Set the Hive Metastore DB driver
-        metaStorageUrl = "jdbc:derby:memory:DBS";
+        metaStorageUrl = "jdbc:derby:memory:db_" + UUID.randomUUID();
         setMetastoreProperty("hive.metastore.local", "true");
         setMetastoreProperty("hive.metastore.schema.verification.record.version", "false");
         setMetastoreProperty("hive.metastore.fastpath", "true");
@@ -215,22 +216,24 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         setMetastoreProperty(HIVE_NOTFICATION_EVENT_POLL_INTERVAL.varname, "-1");
         setMetastoreProperty(HIVE_NOTFICATION_EVENT_CONSUMERS.varname, "");
         setMetastoreProperty(HIVE_SERVER2_TRANSPORT_MODE.varname, "");
+
+        // To enable discovery but it is not needed for tests
         //setMetastoreProperty(HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY.varname, "true");
         //setMetastoreProperty(HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname, "true");
         //setMetastoreProperty(HIVE_ZOOKEEPER_QUORUM.varname, "test");
     }
 
-    private void configureDerbyLog() {
-        // overriding default derby log path to not go to root of project
-        File derbyLogFile;
-        try {
-            derbyLogFile = File.createTempFile("derby", ".log");
-            LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error creating temporary derby log file", e);
-        }
-        System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
+  private void configureDerbyLog() {
+    // overriding default derby log path to not go to root of project
+    File derbyLogFile;
+    try {
+      derbyLogFile = File.createTempFile("derby", ".log");
+      LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+    } catch (IOException e) {
+      throw new UncheckedIOException("Error creating temporary derby log file", e);
     }
+    System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
+  }
 
     protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
         setMetastoreProperty(METASTORE_CONNECT_URL_KEY.varname, metaStorageUrl + ";create=true");
@@ -244,47 +247,47 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         createAndSetFolderProperty("hadoop.tmp.dir", "hadoop_tmp_dir", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
 
-        /*
-         * Tez specific configurations below
-         */
-        /*
-         * Tez will upload a hive-exec.jar to this location. It looks like it will do this only once per test suite so it
-         * makes sense to keep this in a central location rather than in the tmp dir of each test.
-         */
-        File installation_dir = newFolder(basedir, "tez_installation_dir").toFile();
+    /*
+     * Tez specific configurations below
+     */
+    /*
+     * Tez will upload a hive-exec.jar to this location. It looks like it will do this only once per test suite so it
+     * makes sense to keep this in a central location rather than in the tmp dir of each test.
+     */
+    File installation_dir = newFolder(basedir, "tez_installation_dir").toFile();
 
-        conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
-        conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
-    }
+    conf.setVar(HiveConf.ConfVars.HIVE_JAR_DIRECTORY, installation_dir.getAbsolutePath());
+    conf.setVar(HiveConf.ConfVars.HIVE_USER_INSTALL_DIR, installation_dir.getAbsolutePath());
+  }
 
-    Path newFolder(Path basedir, String folder) throws IOException {
-        Path newFolder = Files.createTempDirectory(basedir, folder);
-        FileUtil.setPermission(newFolder.toFile(), FsPermission.getDirDefault());
-        return newFolder;
-    }
+  Path newFolder(Path basedir, String folder) throws IOException {
+    Path newFolder = Files.createTempDirectory(basedir, folder);
+    FileUtil.setPermission(newFolder.toFile(), FsPermission.getDirDefault());
+    return newFolder;
+  }
 
-    @Override
-    public HiveConf getHiveConf() {
-        return hiveConf;
-    }
+  @Override
+  public HiveConf getHiveConf() {
+    return hiveConf;
+  }
 
-    @Override
-    public Path getBaseDir() {
-        return basedir;
-    }
+  @Override
+  public Path getBaseDir() {
+    return basedir;
+  }
 
-    protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
-            throws IOException {
-        setMetastoreProperty(var.varname, newFolder(basedir, folder).toAbsolutePath().toString());
-    }
+  protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
+    throws IOException {
+    setMetastoreProperty(var.varname, newFolder(basedir, folder).toAbsolutePath().toString());
+  }
 
-    protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
-            throws IOException {
-        setMetastoreProperty(key, newFolder(basedir, folder).toAbsolutePath().toString());
-    }
+  protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
+    throws IOException {
+    setMetastoreProperty(key, newFolder(basedir, folder).toAbsolutePath().toString());
+  }
 
-    protected final void setMetastoreProperty(String key, String value) {
-        hiveConf.set(key, value);
-        System.setProperty(key, value);
-    }
+  protected final void setMetastoreProperty(String key, String value) {
+    hiveConf.set(key, value);
+    System.setProperty(key, value);
+  }
 }

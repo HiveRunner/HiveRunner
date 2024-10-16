@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,16 +16,17 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.builder.Script;
+import java.util.ArrayList;
+import java.util.List;
+
+import java.nio.file.Path;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import com.klarna.hiverunner.builder.Script;
 
 /**
  * A rule that executes the scripts under test
@@ -67,10 +68,10 @@ public class HiveRunnerRule implements TestRule {
         private final StandaloneHiveRunner runner;
 
         private HiveRunnerRuleStatement(
-                StandaloneHiveRunner runner,
-                Object target,
-                Statement base,
-                Path testBaseDir) {
+            StandaloneHiveRunner runner,
+            Object target,
+            Statement base,
+            Path testBaseDir) {
             this.runner = runner;
             this.target = target;
             this.base = base;

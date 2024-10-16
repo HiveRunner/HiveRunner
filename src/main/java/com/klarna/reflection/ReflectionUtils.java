@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,11 @@
  */
 package com.klarna.reflection;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -69,7 +69,7 @@ public final class ReflectionUtils {
      * @return an {@code Optional}. Use isPresent() to find out if the field name was found.
      */
     public static Optional<Field> getField(Class<?> type, final String fieldName) {
-        Optional<Field> field = Optional.of(org.reflections.ReflectionUtils.getAllFields(type, withName(fieldName)).stream().findAny().get());
+        Optional<Field> field = org.reflections.ReflectionUtils.getAllFields(type, withName(fieldName)).stream().findAny();
         if (!field.isPresent() && type.getSuperclass() != null) {
             field = getField(type.getSuperclass(), fieldName);
         }

@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,12 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
+import com.google.common.base.Predicates;
+import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import com.klarna.reflection.ReflectionUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -48,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
@@ -71,7 +74,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
-        return config;
+      return config;
     }
 
     @Override
@@ -123,7 +126,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     protected final void runTestMethod(FrameworkMethod method,
-                                       EachTestNotifier notifier, int retriesLeft) {
+        EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -155,7 +158,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Drives the unit test.
      */
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-                                                Path temporaryFolder, Statement base) throws Throwable {
+        Path temporaryFolder, Statement base) throws Throwable {
         container = null;
         File temporaryFile = temporaryFolder.toFile();
         if (!temporaryFile.exists()) {
@@ -172,14 +175,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void tearDown() {
+    private void tearDown(){
         tearDownContainer();
         if (container != null) {
-            deleteTempFolder(container.getBaseDir());
+          deleteTempFolder(container.getBaseDir());
         }
     }
 
-    private void tearDownContainer() {
+    private void tearDownContainer(){
         if (container != null) {
             LOGGER.info("Tearing down {}", getName());
             try {
@@ -194,7 +197,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         try {
             FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
-            LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+          LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
         }
     }
 
@@ -202,8 +205,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
     private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-                                                         Path baseDir)
-            throws IOException {
+        Path baseDir)
+        throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
@@ -212,8 +215,12 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         return new TestRule() {
             @Override
             public Statement apply(Statement base, Description description) {
-                Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-                        withType(HiveRunnerConfig.class).and(withAnnotation(HiveRunnerSetup.class))
+                Set<Field> fields = ReflectionUtils.getAllFields(
+                        target.getClass(),
+                        withType(HiveRunnerConfig.class)
+                                .and(
+                                        withAnnotation(HiveRunnerSetup.class)
+                                )
                 );
 
                 Preconditions.checkState(fields.size() <= 1,

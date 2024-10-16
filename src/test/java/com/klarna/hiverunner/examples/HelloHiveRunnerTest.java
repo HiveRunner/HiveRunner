@@ -1,13 +1,13 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) ${license.git.copyrightYears} The HiveRunner Contributors
- * <p>
+ * Copyright (C) 2021-2024 The HiveRunner Contributors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,9 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * A basic Hive Runner example showing how to setup the test source database and target database, execute the query
  * and then validate the result.
- * <p>
+ *
  * In this example we want to test some very simple code, calculate_max.sql, that calculate a max value by year.
- * <p>
+ *
  * <p/>
  * All HiveRunner tests should run with the StandaloneHiveRunner and have a reference to HiveShell.
  */
@@ -48,10 +48,10 @@ public class HelloHiveRunnerTest {
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
-                .append("CREATE TABLE source_db.test_table (")
-                .append("year STRING, value INT")
-                .append(")")
-                .toString());
+            .append("CREATE TABLE source_db.test_table (")
+            .append("year STRING, value INT")
+            .append(")")
+            .toString());
 
         shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/create_max.sql"));
     }
@@ -80,7 +80,7 @@ public class HelloHiveRunnerTest {
         List<Object[]> result = shell.executeStatement("select * from my_schema.result");
 
         assertEquals(2, result.size());
-        assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
-        assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
+        assertArrayEquals(new Object[]{"2014",4}, result.get(0));
+        assertArrayEquals(new Object[]{"2015",5}, result.get(1));
     }
 }
