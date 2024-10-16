@@ -130,13 +130,14 @@ Tun run unit/integration tests, configuration below can be used
                     </goals>
                 </execution>
             </executions>
+            <!-- A hack to run integration tests (*IT.java) if your production code uses org.antlr in version 3 -->
             <configuration>
                 <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
                 <classpathDependencyExcludes>
                     <classpathDependencyExclude>org.antlr:*</classpathDependencyExclude>
                 </classpathDependencyExcludes>
                 <additionalClasspathDependencies>
-                    <!-- To make Hive partitions work (HQL WERE statement throws error if used without it) -->
+                    <!-- To make Hive partitions work (example: HQL WHERE statement throws an error if used without it) -->
                     <additionalClasspathDependency>
                         <groupId>org.antlr</groupId>
                         <artifactId>antlr4-runtime</artifactId>
@@ -252,6 +253,10 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 * HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for Windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
 * Currently, the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging. See [#69](https://github.com/HiveRunner/HiveRunner/issues/69).
+
+* Fix a warning from Datanucleus JDO: org.apache.hadoop.hive.metastore.MetastoreDirectSqlUtils:79 - Failed to execute [select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ? ] with parameters [hive]
+  javax.jdo.JDODataStoreException: Error executing SQL query "select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ?".
+  ... Caused by: org.apache.derby.iapi.error.StandardException: Table/View 'FUNCS' does not exist.
 
 # Known Issues
 

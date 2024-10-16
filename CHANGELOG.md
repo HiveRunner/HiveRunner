@@ -5,11 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [6.2.0] - 2024-10-16
 ### Changed
-- Updated dependency versions for hive, hadoop, datanucleus, reflections, guava, tez, mockito, junit
-- Updated maven plugin versions
-- Adjusted code for Java21 and removed Guava Optional
+- Updated all dependency versions for hive, hadoop, datanucleus, reflections, guava, tez, mockito, junit and added them in pom.xml <properties> section
+- Updated all maven plugin versions
+- Adjusted code for Java21 and removed Guava Optional from the code
 - Changed Hive property names in StandaloneHiveServerContext
-- Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works on new hive dependency version
+- Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works on a new hive dependency versions
+- Fixed unit tests
 
 ## [6.1.0] - 2021-04-28
 ### Changed
