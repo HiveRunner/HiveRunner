@@ -98,7 +98,9 @@ public class HiveServerContainer {
             Preconditions.checkNotNull(client, "ClIService was not initialized by HiveServer2");
 
             sessionHandle = client.openSession("noUser", "noPassword", null);
-            currentSessionState = client.getSessionManager().getSession(sessionHandle).getSessionState();
+
+            SessionState sessionState = client.getSessionManager().getSession(sessionHandle).getSessionState();
+            currentSessionState = sessionState;
             currentSessionState.setHiveVariables(hiveVars);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to create HiveServer :" + e.getMessage(), e);

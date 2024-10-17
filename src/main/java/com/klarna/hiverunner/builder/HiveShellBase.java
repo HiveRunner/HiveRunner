@@ -16,18 +16,6 @@
  */
 package com.klarna.hiverunner.builder;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.klarna.hiverunner.HiveServerContainer;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.data.InsertIntoTable;
-import com.klarna.hiverunner.sql.StatementLexer;
-import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
-import com.klarna.hiverunner.sql.split.StatementSplitter;
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +30,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.klarna.hiverunner.HiveServerContainer;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.data.InsertIntoTable;
+import com.klarna.hiverunner.sql.StatementLexer;
+import com.klarna.hiverunner.sql.cli.CommandShellEmulator;
+import com.klarna.hiverunner.sql.split.StatementSplitter;
+
 /**
  * HiveShell implementation delegating to HiveServerContainer
  */
@@ -49,7 +50,7 @@ class HiveShellBase implements HiveShell {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveShellBase.class);
     private static final String DEFAULT_NULL_REPRESENTATION = "NULL";
-    private static final String DEFAULT_ROW_VALUE_DELIMITER = "\t";
+    private static final String DEFAULT_ROW_VALUE_DELIMTER = "\t";
 
     protected boolean started = false;
 
@@ -78,7 +79,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(String hiveSql) {
-        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(hiveSql, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
@@ -241,7 +242,8 @@ class HiveShellBase implements HiveShell {
             assertNotStarted();
             HiveResource resource = new HiveResource(targetFile);
             resources.add(resource);
-            return createPreStartOutputStream(resource.getOutputStream());
+            OutputStream hiveShellStateAwareOutputStream = createPreStartOutputStream(resource.getOutputStream());
+            return hiveShellStateAwareOutputStream;
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -381,12 +383,12 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script) {
-        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override
     public List<String> executeQuery(Charset charset, Path script) {
-        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMITER, DEFAULT_NULL_REPRESENTATION);
+        return executeQuery(charset, script, DEFAULT_ROW_VALUE_DELIMTER, DEFAULT_NULL_REPRESENTATION);
     }
 
     @Override

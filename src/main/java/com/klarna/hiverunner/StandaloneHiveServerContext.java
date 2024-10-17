@@ -16,15 +16,7 @@
  */
 package com.klarna.hiverunner;
 
-import com.klarna.hiverunner.config.HiveRunnerConfig;
-import org.apache.hadoop.fs.FileUtil;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.tez.dag.api.TezConfiguration;
-import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -33,8 +25,15 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
-import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.tez.dag.api.TezConfiguration;
+import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.klarna.hiverunner.config.HiveRunnerConfig;
 
 /**
  * Responsible for common configuration for running the HiveServer within this JVM with zero external dependencies.
@@ -207,7 +206,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
          * with some basic tables and will try to run initial test queries against them.
          * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
          */
-        setMetastoreProperty(HIVE_IN_TEST.getVarname(), "true");
+        setMetastoreProperty(HIVE_IN_TEST.varname, "true");
         setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "false");
         setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "false");
         setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "false");
@@ -217,7 +216,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         setMetastoreProperty(HIVE_NOTFICATION_EVENT_CONSUMERS.varname, "");
         setMetastoreProperty(HIVE_SERVER2_TRANSPORT_MODE.varname, "");
 
-        // To enable discovery but it is not needed for tests
+        // To enable discovery, but it is not needed for tests
         //setMetastoreProperty(HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY.varname, "true");
         //setMetastoreProperty(HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname, "true");
         //setMetastoreProperty(HIVE_ZOOKEEPER_QUORUM.varname, "test");
@@ -239,13 +238,13 @@ public class StandaloneHiveServerContext implements HiveServerContext {
         setMetastoreProperty(METASTORE_CONNECT_URL_KEY.varname, metaStorageUrl + ";create=true");
 
         createAndSetFolderProperty(METASTORE_WAREHOUSE, "warehouse", conf, basedir);
-        createAndSetFolderProperty("hive.metastore.metadb.dir", "warehouse", conf, basedir);
         createAndSetFolderProperty(SCRATCH_DIR, "scratch_dir", conf, basedir);
         createAndSetFolderProperty(LOCAL_SCRATCH_DIR, "local_scratch_dir", conf, basedir);
         createAndSetFolderProperty(HIVE_HISTORY_FILE_LOC, "tmp", conf, basedir);
 
         createAndSetFolderProperty("hadoop.tmp.dir", "hadoop_tmp_dir", conf, basedir);
         createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
+        createAndSetFolderProperty("hive.metastore.metadb.dir", "warehouse", conf, basedir);
 
     /*
      * Tez specific configurations below

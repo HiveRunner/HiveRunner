@@ -16,15 +16,18 @@
  */
 package com.klarna.hiverunner.sql.cli.beeline;
 
-import com.klarna.hiverunner.sql.split.Consumer;
-import com.klarna.hiverunner.sql.split.Context;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.klarna.hiverunner.sql.split.Consumer;
+import com.klarna.hiverunner.sql.split.Context;
 
 @ExtendWith(MockitoExtension.class)
 public class SqlLineCommandRuleTest {

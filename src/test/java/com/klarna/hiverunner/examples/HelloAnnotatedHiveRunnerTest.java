@@ -26,7 +26,6 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.annotations.HiveSetupScript;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
 import org.apache.commons.collections.MapUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,10 +122,10 @@ public class HelloAnnotatedHiveRunnerTest {
 
         List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
 
-        Assert.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(0));
-        Assert.assertArrayEquals(new Object[]{2, "World"}, actual.get(1));
-        Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(2));
-        Assert.assertArrayEquals(new Object[]{null, "bar"}, actual.get(3));
+        Assertions.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(0));
+        Assertions.assertArrayEquals(new Object[]{2, "World"}, actual.get(1));
+        Assertions.assertArrayEquals(new Object[]{3, "!"}, actual.get(2));
+        Assertions.assertArrayEquals(new Object[]{null, "bar"}, actual.get(3));
     }
 
     @Test

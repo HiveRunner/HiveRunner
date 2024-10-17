@@ -16,15 +16,13 @@
  */
 package com.klarna.reflection;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
-
-import static org.reflections.util.ReflectionUtilsPredicates.withName;
 
 /**
  * Collection of Reflection related helper functions.
