@@ -176,51 +176,50 @@ public class StandaloneHiveServerContext implements HiveServerContext {
       throw new RuntimeException(e);
     }
 
-        // https://lists.apache.org/thread/crlomzvvn3hrzwc7t933rzkxpf8p9wgt
-        // Set the Hive Metastore DB driver
-        metaStorageUrl = "jdbc:derby:memory:db_" + UUID.randomUUID();
-        setMetastoreProperty("hive.metastore.local", "true");
-        setMetastoreProperty("hive.metastore.schema.verification.record.version", "false");
-        setMetastoreProperty("hive.metastore.fastpath", "true");
-        setMetastoreProperty("metastore.try.direct.sql", "false");
-        setMetastoreProperty("fs.permissions.umask-mode", "022");
+    // https://lists.apache.org/thread/crlomzvvn3hrzwc7t933rzkxpf8p9wgt
+    // Set the Hive Metastore DB driver
+    metaStorageUrl = "jdbc:derby:memory:db_" + UUID.randomUUID();
+    setMetastoreProperty("hive.metastore.local", "true");
+    setMetastoreProperty("hive.metastore.schema.verification.record.version", "false");
+    setMetastoreProperty("hive.metastore.fastpath", "true");
+    setMetastoreProperty("metastore.try.direct.sql", "false");
+    setMetastoreProperty("fs.permissions.umask-mode", "022");
 
-        setMetastoreProperty("datanucleus.schema.autoCreateColumns", "true");
-        setMetastoreProperty("datanucleus.schema.autoCreateTables", "true");
-        setMetastoreProperty("datanucleus.schema.autoCreateSchema", "true");
-        setMetastoreProperty("datanucleus.schema.autoCreateAll", "true");
-        setMetastoreProperty("datanucleus.fixedDatastore", "true");
-        setMetastoreProperty("datanucleus.autoStartMechanism", "SchemaTable");
-        setMetastoreProperty("hive.metastore.schema.verification", "false");
-        setMetastoreProperty("metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl");
-        setMetastoreProperty("javax.jdo.option.ConnectionUserName", "noUser");
-        setMetastoreProperty("javax.jdo.option.ConnectionPassword", "noPassword");
-        setMetastoreProperty("datanucleus.connectiondrivername", jdbcDriver);
-        setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
+    // No pooling needed. This will save us a lot of threads
+    setMetastoreProperty("datanucleus.connectionPoolingType", "None");
+    setMetastoreProperty("datanucleus.schema.autoCreateColumns", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateTables", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateSchema", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateAll", "true");
+    setMetastoreProperty("datanucleus.fixedDatastore", "true");
+    setMetastoreProperty("datanucleus.autoStartMechanism", "SchemaTable");
+    setMetastoreProperty("datanucleus.connectiondrivername", jdbcDriver);
+    setMetastoreProperty("hive.metastore.schema.verification", "false");
+    setMetastoreProperty("metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl");
+    setMetastoreProperty("javax.jdo.option.ConnectionUserName", "noUser");
+    setMetastoreProperty("javax.jdo.option.ConnectionPassword", "noPassword");
+    setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
-        // No pooling needed. This will save us a lot of threads
-        setMetastoreProperty("datanucleus.connectionPoolingType", "None");
+    /**
+    * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
+    * with some basic tables and will try to run initial test queries against them.
+    * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
+    */
+    setMetastoreProperty(HIVE_IN_TEST.varname, "true");
+    setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "false");
+    setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "false");
+    setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "false");
+    setMetastoreProperty(HIVE_SERVER2_MATERIALIZED_VIEWS_REGISTRY_IMPL.varname, "DUMMY");
+    setMetastoreProperty(HIVE_SCHEDULED_QUERIES_EXECUTOR_ENABLED.varname, "false");
+    setMetastoreProperty(HIVE_NOTFICATION_EVENT_POLL_INTERVAL.varname, "-1");
+    setMetastoreProperty(HIVE_NOTFICATION_EVENT_CONSUMERS.varname, "");
+    setMetastoreProperty(HIVE_SERVER2_TRANSPORT_MODE.varname, "");
 
-        /**
-         * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
-         * with some basic tables and will try to run initial test queries against them.
-         * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
-         */
-        setMetastoreProperty(HIVE_IN_TEST.varname, "true");
-        setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "false");
-        setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "false");
-        setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "false");
-        setMetastoreProperty(HIVE_SERVER2_MATERIALIZED_VIEWS_REGISTRY_IMPL.varname, "DUMMY");
-        setMetastoreProperty(HIVE_SCHEDULED_QUERIES_EXECUTOR_ENABLED.varname, "false");
-        setMetastoreProperty(HIVE_NOTFICATION_EVENT_POLL_INTERVAL.varname, "-1");
-        setMetastoreProperty(HIVE_NOTFICATION_EVENT_CONSUMERS.varname, "");
-        setMetastoreProperty(HIVE_SERVER2_TRANSPORT_MODE.varname, "");
-
-        // To enable discovery, but it is not needed for tests
-        //setMetastoreProperty(HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY.varname, "true");
-        //setMetastoreProperty(HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname, "true");
-        //setMetastoreProperty(HIVE_ZOOKEEPER_QUORUM.varname, "test");
-    }
+    // To enable HS2 service discovery, but it is not needed for tests
+    // setMetastoreProperty(HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY.varname, "true");
+    // setMetastoreProperty(HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname, "true");
+    // setMetastoreProperty(HIVE_ZOOKEEPER_QUORUM.varname, "test");
+  }
 
   private void configureDerbyLog() {
     // overriding default derby log path to not go to root of project
