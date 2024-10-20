@@ -422,7 +422,7 @@ class HiveShellBase implements HiveShell {
             if (splitStatements.size() != 1) {
                 throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");
             }
-            Statement statement = splitStatements.getFirst();
+            Statement statement = splitStatements.get(0);
             return executeQuery(statement.getSql(), rowValuesDelimitedBy, replaceNullWith);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to read setup script file '" + script + "': " + e.getMessage(),

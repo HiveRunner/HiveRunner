@@ -42,7 +42,7 @@
         <tez.version>0.10.4</tez.version>
         <mockito.version>5.14.2</mockito.version>
         <datanucleus.version>6.0.8</datanucleus.version>
-        <derby.version>10.17.1.0</derby.version>
+        <derby.version>10.15.2.0</derby.version>
 
         <hive.execution.engine>tez</hive.execution.engine>
         <license.maven.plugin.version>4.6</license.maven.plugin.version>
@@ -441,8 +441,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <source>21</source>
-          <target>21</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
       <plugin>
