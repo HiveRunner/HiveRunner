@@ -99,7 +99,7 @@ System property `hiveconf_hive.execution.engine` to 'tez'.
             </configuration>
         </plugin>
 
-Tun run unit/integration tests, configuration below can be used
+To run unit/integration tests, the configuration below can be used
 
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -130,7 +130,10 @@ Tun run unit/integration tests, configuration below can be used
                     </goals>
                 </execution>
             </executions>
-            <!-- A hack to run integration tests (*IT.java) if your production code uses org.antlr in version 3 -->
+            <!-- 
+                A workaround to run integration tests (*IT.java) if your production code uses org.antlr in version 3. For example it is used in spring-data-jpa.
+                If you have two versions of antlr in your project (version 3 and 4), you want to enforce version 4 in Hive based intregration tests.
+            -->
             <configuration>
                 <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
                 <classpathDependencyExcludes>
@@ -227,6 +230,7 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 # Hive version compatibility
 
 - This version of HiveRunner is built for Hive 4.0.x.
+- For Hive 3.x support please use HiveRunner 6.x. 
 - For Hive 2.x support please use HiveRunner 5.x.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 

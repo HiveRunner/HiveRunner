@@ -3,14 +3,45 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [6.2.0] - 2024-10-16
+## [7.0.0] - TBD
 ### Changed
-- Updated all dependency versions for hive, hadoop, datanucleus, reflections, guava, tez, mockito, junit and added them in pom.xml <properties> section
-- Updated all maven plugin versions
-- Adjusted code for Java21 and removed Guava Optional from the code
-- Changed Hive property names in StandaloneHiveServerContext
+- Updated `hadoop-mapreduce-client-common` from `3.1.0` to `3.4.1`.
+- Updated `hadoop-mapreduce-client-core` from `3.1.0` to `3.4.1`.
+- Updated `hadoop-client-runtime` from `3.1.0` to `3.4.1`.
+- Updated `hive-exec` from `3.1.2` to `4.0.1`.
+- Updated `hive-serde` from `3.1.0` to `3.4.1`.
+- Updated `hive-jdbc` from `3.1.0` to `3.4.1`.
+- Updated `hive-contrib` from `3.1.0` to `3.4.1`.
+- Updated `hive-webhcat-java-client` from `3.1.0` to `3.4.1`.
+- Updated `jackson-annotations` from `2.9.5` to `2.18.0`.
+- Updated `reflections` from `0.9.8` to `0.10.2`.
+- Updated `mockito-core` from `3.8.0` to `5.14.2`.
+- Updated `mockito-junit-jupiter` from `3.8.0` to `5.14.2`.
+- Updated `tez-common` from `0.9.1` to `0.10.4`.
+- Updated `tez-mapreduce` from `0.9.1` to `0.10.4`.
+- Updated `junit-jupiter` from `5.7.1` to `5.11.2`.
+- Updated `junit-vintage-engine` from `5.7.1` to `5.11.2`.
+- Added version `6.0.8` of `datanucleus-core`.
+- Added version `6.0.3` of `datanucleus-api-jdo`.
+- Added version `6.0.8` of `datanucleus-rdbms`.
+- Added version `1.3` of `javax.transaction-api`.
+- Added version `6.1.14` of `spring-jdbc`.
+- Added version `10.15.2.0` of `derby`.
+- Added version `10.15.2.0` of `derbytools`.
+- Added version `5.6.2` of `kryo`.
+- Added version `4.9.3` of `antlr4-runtime`.
+- Updated `maven-surefire-plugin` from `2.22.2` to `3.5.1`.
+- Updated `maven-compiler-plugin` from `3.7.0` to `3.13.0`.
+- Updated `maven-jar-plugin` from `3.2.0` to `3.4.2`.
+- Updated `maven-release-plugin` from `3.0.0-M1` to `3.1.1`.
+- Updated `nexus-staging-maven-plugin` from `1.6.8` to `1.7.0`.
+- Updated `maven-source-plugin` from `3.2.0` to `3.3.1`.
+- Updated `maven-javadoc-plugin` from `3.2.0` to `3.10.1`.
+- Updated `maven-gpg-plugin` from `1.6` to `3.2.7`.
+- Removed com.google.common.base.Predicates in HiveRunnerExtension/StandaloneHiveRunner as it is no longer using in a new version of reflections library
+- Updated HiveConf property names in StandaloneHiveServerContext
+- Set METASTORE_VALIDATE_CONSTRAINTS, METASTORE_VALIDATE_COLUMNS, METASTORE_VALIDATE_TABLES properties to false in StandaloneHiveServerContext
 - Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works on a new hive dependency versions
-- Fixed unit tests
 
 ## [6.1.0] - 2021-04-28
 ### Changed

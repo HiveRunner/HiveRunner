@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2013-2021 Klarna AB
- * Copyright (C) 2021-2024 The HiveRunner Contributors
+ * Copyright (C) 2021 The HiveRunner Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,47 +16,45 @@
  */
 package com.klarna.hiverunner.examples;
 
-import com.klarna.hiverunner.HiveRunnerExtension;
-import com.klarna.hiverunner.HiveShell;
-import com.klarna.hiverunner.annotations.HiveRunnerSetup;
-import com.klarna.hiverunner.annotations.HiveSQL;
-import com.klarna.hiverunner.config.HiveRunnerConfig;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.klarna.hiverunner.HiveRunnerExtension;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.annotations.HiveSQL;
 
 /**
  * A basic Hive Runner example showing how to use JUnit5's ParameterizedTest.
  */
 @ExtendWith(HiveRunnerExtension.class)
-public class HelloHiveRunnerParameterizedTest {
+public class HelloHiveRunnerParamaterizedTest {
 
     @HiveSQL(files = {})
     private HiveShell shell;
 
-    @HiveRunnerSetup
-    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
-        setHiveExecutionEngine("tez");
-    }};
+    @BeforeEach
+    public void setupSourceDatabase() {
+        shell.executeStatement("CREATE DATABASE source_db");
+    }
 
     @ParameterizedTest
-    @ValueSource(strings = {"SEQUENCEFILE", "ORC", "PARQUET"})
+    @ValueSource(strings = { "SEQUENCEFILE", "ORC", "PARQUET" })
     public void testFileFormats(String fileFormat) {
-        String dbName = "source_db_" + fileFormat.toLowerCase();
-        String tableName = "test_table_" + fileFormat.toLowerCase();
+      shell.executeStatement(new StringBuilder()
+          .append("CREATE TABLE source_db.test_table (")
+          .append("year STRING, value INT")
+          .append(") stored as ")
+          .append(fileFormat)
+          .toString());
 
-        shell.executeStatement("CREATE DATABASE " + dbName);
-
-        shell.executeStatement("CREATE TABLE " + dbName + "." + tableName + " (" +
-                "year STRING, value INT" +
-                ") stored as " + fileFormat);
-
-        shell.insertInto(dbName, tableName)
+        shell.insertInto("source_db", "test_table")
                 .withColumns("year", "value")
                 .addRow("2014", 3)
                 .addRow("2014", 4)
@@ -64,12 +62,10 @@ public class HelloHiveRunnerParameterizedTest {
                 .addRow("2015", 5)
                 .commit();
 
-        List<Object[]> result = shell.executeStatement("select year, max(value) from " + dbName + "." + tableName + " group by year");
+        List<Object[]> result = shell.executeStatement("select year, max(value) from source_db.test_table group by year");
 
         assertEquals(2, result.size());
         assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
         assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
-
-        shell.executeStatement("DROP DATABASE " + dbName + " CASCADE");
     }
 }

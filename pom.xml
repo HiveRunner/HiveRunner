@@ -3,7 +3,7 @@
 
   <groupId>io.github.hiverunner</groupId>
   <artifactId>hiverunner</artifactId>
-  <version>6.2.0-SNAPSHOT</version>
+  <version>7.0.0-SNAPSHOT</version>
   <name>HiveRunner</name>
   <description>HiveRunner is a unit test framework based on JUnit (4 or 5) that enables TDD development of Hive SQL without the need of any installed dependencies.</description>
   <url>https://github.com/HiveRunner/HiveRunner</url>
@@ -115,12 +115,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>33.3.1-jre</version>
         </dependency>
 
         <dependency>
@@ -246,8 +240,8 @@
         </dependency>
 
         <dependency>
-            <artifactId>tez-common</artifactId>
             <groupId>org.apache.tez</groupId>
+            <artifactId>tez-common</artifactId>
             <version>${tez.version}</version>
             <exclusions>
                 <exclusion>
@@ -270,9 +264,27 @@
         </dependency>
 
         <dependency>
-            <artifactId>tez-mapreduce</artifactId>
             <groupId>org.apache.tez</groupId>
+            <artifactId>tez-mapreduce</artifactId>
             <version>${tez.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -414,8 +426,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <!-- HiveRunner need this for some queries (property -XX:MaxPermSize
-            was removed in java 8) -->
+          <!-- HiveRunner need this bigger -Xmx for some queries, add-opens is needed to allow reflection api calls in Hive libraries -->
           <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens
                 java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens
                 java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens

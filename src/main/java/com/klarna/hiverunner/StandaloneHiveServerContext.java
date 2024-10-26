@@ -16,7 +16,27 @@
  */
 package com.klarna.hiverunner;
 
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.*;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HADOOP_BIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_CONVERT_JOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_HISTORY_FILE_LOC;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_METADATA_ONLY_QUERIES;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_OPT_INDEX_FILTER;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SKEW_JOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESTATSAUTOGATHER;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_CBO_ENABLED;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_INFER_BUCKET_SORT;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.LOCAL_SCRATCH_DIR;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_CONNECT_URL_KEY;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_WAREHOUSE;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.SCRATCH_DIR;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_COUNTERS_PULL_INTERVAL;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_IN_TEST;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -97,8 +117,8 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     // Disable to get rid of clean up exception when stopping the Session.
     hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
 
-        hiveConf.setVar(HADOOP_BIN, "NO_BIN!");
-    }
+    hiveConf.setVar(HADOOP_BIN, "NO_BIN!");
+  }
 
   protected void overrideHiveConf(HiveConf hiveConf) {
     for (Map.Entry<String, String> hiveConfEntry : hiveRunnerConfig.getHiveConfSystemOverride().entrySet()) {
@@ -201,7 +221,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
     /**
-    * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
+    * If hive.in.test=false (default), Hive will assume that the metastore rdbms has already been initialized
     * with some basic tables and will try to run initial test queries against them.
     * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
     */
@@ -209,16 +229,6 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "false");
     setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "false");
     setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "false");
-    setMetastoreProperty(HIVE_SERVER2_MATERIALIZED_VIEWS_REGISTRY_IMPL.varname, "DUMMY");
-    setMetastoreProperty(HIVE_SCHEDULED_QUERIES_EXECUTOR_ENABLED.varname, "false");
-    setMetastoreProperty(HIVE_NOTFICATION_EVENT_POLL_INTERVAL.varname, "-1");
-    setMetastoreProperty(HIVE_NOTFICATION_EVENT_CONSUMERS.varname, "");
-    setMetastoreProperty(HIVE_SERVER2_TRANSPORT_MODE.varname, "");
-
-    // To enable HS2 service discovery, but it is not needed for tests
-    // setMetastoreProperty(HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY.varname, "true");
-    // setMetastoreProperty(HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname, "true");
-    // setMetastoreProperty(HIVE_ZOOKEEPER_QUORUM.varname, "test");
   }
 
   private void configureDerbyLog() {

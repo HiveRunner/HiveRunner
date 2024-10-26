@@ -55,20 +55,17 @@ public class OrcSnappyTest {
         Assertions.assertEquals(expected, actual);
     }
 
-//    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
-//    @Test
-//    public void testCountOrcNocomp() {
-//        List<String> expected = Arrays.asList("3");
-//        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_nocomp");
-//        Assertions.assertEquals(expected, actual);
-//    }
-//
-//    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
-//    @Test
-//    public void testCountOrcSnappy() {
-//        List<String> expected = Arrays.asList("3");
-//        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_snappy");
-//        Assertions.assertEquals(expected, actual);
-//    }
+    @Test
+    public void testCountOrcNocomp() {
+        List<String> expected = Arrays.asList("3");
+        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_nocomp");
+        Assertions.assertEquals(expected, actual);
+    }
 
+    @Test
+    public void testCountOrcSnappy() {
+        List<String> expected = Arrays.asList("3");
+        List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_snappy");
+        Assertions.assertEquals(expected, actual);
+    }
 }

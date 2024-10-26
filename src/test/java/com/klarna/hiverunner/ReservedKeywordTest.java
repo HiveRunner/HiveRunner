@@ -17,11 +17,8 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.annotations.HiveSQL;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.io.IOException;
 
 @ExtendWith(HiveRunnerExtension.class)
 public class ReservedKeywordTest {
@@ -29,29 +26,12 @@ public class ReservedKeywordTest {
     @HiveSQL(files = {}, autoStart = false)
     private HiveShell hiveShell;
 
-
-    /**
-     * As of Hive 1.2 there are a number of new reserved keywords, e.g. date, timestamp and update.
-     * This test verifies that we still can have backwards compatibility by setting the HiveConf
-     * 'hive.support.sql11.reserved.keywords' to false.
-     */
-    @Test
-    @Disabled("Since Hive 2.3.0 this property is no longer available in hive see https://issues.apache.org/jira/browse/HIVE-14872, use backticks")
-    public void reservedKeywordsShouldBeAllowedWhenHiveConfIsSet() throws IOException {
-
-        hiveShell.setHiveConfValue("hive.support.sql11.reserved.keywords", "false");
-        hiveShell.addSetupScript("CREATE table FOO (date String, timestamp string, update string)");
-
-        hiveShell.start();
-
-    }
-
     /**
      * As of Hive 1.2 there are a number of new reserved keywords, e.g. date, timestamp and update.
      * This test verifies that we still can use the identifier by adding a backtick quote.
      */
     @Test
-    public void reservedKeywordsShouldBeAllowedWhenIdentifierHasBacktickQuote() throws IOException {
+    public void reservedKeywordsShouldBeAllowedWhenIdentifierHasBacktickQuote() {
 
         hiveShell.addSetupScript("CREATE table FOO (`date` String, `timestamp` string, `update` string)");
 
