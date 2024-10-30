@@ -1,9 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [7.0.0] - TBD
+## [7.0.0] - 2024-11-XY
+### Added
+- Added version `6.0.8` of `datanucleus-core`.
+- Added version `6.0.3` of `datanucleus-api-jdo`.
+- Added version `6.0.8` of `datanucleus-rdbms`.
+- Added version `1.3` of `javax.transaction-api`.
+- Added version `6.1.14` of `spring-jdbc`.
+- Added version `10.15.2.0` of `derby`.
+- Added version `10.15.2.0` of `derbytools`.
+- Added version `5.6.2` of `kryo`.
+- Added version `4.9.3` of `antlr4-runtime`.
+- Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works with a new Hive dependency versions.
+
 ### Changed
 - Updated `hadoop-mapreduce-client-common` from `3.1.0` to `3.4.1`.
 - Updated `hadoop-mapreduce-client-core` from `3.1.0` to `3.4.1`.
@@ -21,15 +33,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Updated `tez-mapreduce` from `0.9.1` to `0.10.4`.
 - Updated `junit-jupiter` from `5.7.1` to `5.11.2`.
 - Updated `junit-vintage-engine` from `5.7.1` to `5.11.2`.
-- Added version `6.0.8` of `datanucleus-core`.
-- Added version `6.0.3` of `datanucleus-api-jdo`.
-- Added version `6.0.8` of `datanucleus-rdbms`.
-- Added version `1.3` of `javax.transaction-api`.
-- Added version `6.1.14` of `spring-jdbc`.
-- Added version `10.15.2.0` of `derby`.
-- Added version `10.15.2.0` of `derbytools`.
-- Added version `5.6.2` of `kryo`.
-- Added version `4.9.3` of `antlr4-runtime`.
 - Updated `maven-surefire-plugin` from `2.22.2` to `3.5.1`.
 - Updated `maven-compiler-plugin` from `3.7.0` to `3.13.0`.
 - Updated `maven-jar-plugin` from `3.2.0` to `3.4.2`.
@@ -38,14 +41,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Updated `maven-source-plugin` from `3.2.0` to `3.3.1`.
 - Updated `maven-javadoc-plugin` from `3.2.0` to `3.10.1`.
 - Updated `maven-gpg-plugin` from `1.6` to `3.2.7`.
-- Removed com.google.common.base.Predicates in HiveRunnerExtension/StandaloneHiveRunner as it is no longer using in a new version of reflections library
-- Updated HiveConf property names in StandaloneHiveServerContext
-- Set METASTORE_VALIDATE_CONSTRAINTS, METASTORE_VALIDATE_COLUMNS, METASTORE_VALIDATE_TABLES properties to false in StandaloneHiveServerContext
-- Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works on a new hive dependency versions
+- Updated `HiveConf` property names in `StandaloneHiveServerContext`
+- Set `METASTORE_VALIDATE_CONSTRAINTS`, `METASTORE_VALIDATE_COLUMNS`, `METASTORE_VALIDATE_TABLES` properties to false in StandaloneHiveServerContext.
+
+### Removed
+- Removed `com.google.common.base.Predicates` in `HiveRunnerExtension`/`StandaloneHiveRunner` as it is no longer used in a new version of `org.reflections:reflections` library.
+
+### Fixed
+- Warning "org.apache.hadoop.hive.metastore.MetastoreDirectSqlUtils - Failed to execute [select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ? ]..." is not logged anymore.
+- Fixed `IgnoreClosePrintStream` as NPE was thrown after upgrading to Java >= 11
 
 ## [6.1.0] - 2021-04-28
 ### Changed
-- Maven Group Id changed from `com.klarna` to `io.github.hiverunner`.
+- Maven GroupId changed from `com.klarna` to `io.github.hiverunner`.
 - Set `HIVE_IN_TEST` to true in `StandaloneHiverServerContext` instead of `StandaloneHiveRunner` so checks for non-existent tables are skipped by both the JUnit4 runner and the JUnit5 extension (this removes a lot of log noise from tests using the latter).
 - Made `HiveRunnerScript` constructor public.
 - Made `scriptsUnderTest` variable in `HiveRunnerExtension` protected so it can be used in [MutantSwarm](https://github.com/HotelsDotCom/mutant-swarm).
