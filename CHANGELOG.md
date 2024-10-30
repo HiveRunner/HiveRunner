@@ -5,15 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/) a
 
 ## [7.0.0] - 2024-11-XY
 ### Added
-- Added version `6.0.8` of `datanucleus-core`.
-- Added version `6.0.3` of `datanucleus-api-jdo`.
-- Added version `6.0.8` of `datanucleus-rdbms`.
+- Added version `6.0.9` of `datanucleus-core`.
+- Added version `6.0.4` of `datanucleus-api-jdo`.
+- Added version `6.0.9` of `datanucleus-rdbms`.
 - Added version `1.3` of `javax.transaction-api`.
 - Added version `6.1.14` of `spring-jdbc`.
 - Added version `10.15.2.0` of `derby`.
 - Added version `10.15.2.0` of `derbytools`.
 - Added version `5.6.2` of `kryo`.
 - Added version `4.9.3` of `antlr4-runtime`.
+- Added version `4.0.1` of `kafka-handler`.
 - Added missing Hive & Datanucleus properties in StandaloneHiveServerContext so now the framework works with a new Hive dependency versions.
 
 ### Changed
@@ -25,13 +26,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/) a
 - Updated `hive-jdbc` from `3.1.0` to `3.4.1`.
 - Updated `hive-contrib` from `3.1.0` to `3.4.1`.
 - Updated `hive-webhcat-java-client` from `3.1.0` to `3.4.1`.
-- Updated `jackson-annotations` from `2.9.5` to `2.18.0`.
+- Updated `jackson-annotations` from `2.9.5` to `2.18.1`.
 - Updated `reflections` from `0.9.8` to `0.10.2`.
 - Updated `mockito-core` from `3.8.0` to `5.14.2`.
 - Updated `mockito-junit-jupiter` from `3.8.0` to `5.14.2`.
 - Updated `tez-common` from `0.9.1` to `0.10.4`.
 - Updated `tez-mapreduce` from `0.9.1` to `0.10.4`.
-- Updated `junit-jupiter` from `5.7.1` to `5.11.2`.
+- Updated `junit-jupiter` from `5.7.1` to `5.11.3`.
 - Updated `junit-vintage-engine` from `5.7.1` to `5.11.2`.
 - Updated `maven-surefire-plugin` from `2.22.2` to `3.5.1`.
 - Updated `maven-compiler-plugin` from `3.7.0` to `3.13.0`.
@@ -48,8 +49,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/) a
 - Removed `com.google.common.base.Predicates` in `HiveRunnerExtension`/`StandaloneHiveRunner` as it is no longer used in a new version of `org.reflections:reflections` library.
 
 ### Fixed
-- Warning "org.apache.hadoop.hive.metastore.MetastoreDirectSqlUtils - Failed to execute [select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ? ]..." is not logged anymore.
+- Fixed warning "org.apache.hadoop.hive.metastore.MetastoreDirectSqlUtils - Failed to execute [select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ? ]..." is not logged anymore.
 - Fixed `IgnoreClosePrintStream` as NPE was thrown after upgrading to Java >= 11
+- Fixed error "org.apache.hadoop.hive.ql.exec.tez.DagUtils - Failed to add credential supplier java.lang.ClassNotFoundException: org.apache.hadoop.hive.kafka.KafkaDagCredentialSupplier"
 
 ## [6.1.0] - 2021-04-28
 ### Changed

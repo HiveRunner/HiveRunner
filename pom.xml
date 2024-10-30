@@ -37,11 +37,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hadoop.version>3.4.1</hadoop.version>
         <hive.version>4.0.1</hive.version>
-        <junit.jupiter.version>5.11.2</junit.jupiter.version>
+        <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <junit.version>4.13.2</junit.version>
         <tez.version>0.10.4</tez.version>
         <mockito.version>5.14.2</mockito.version>
-        <datanucleus.version>6.0.8</datanucleus.version>
+        <datanucleus.version>6.0.9</datanucleus.version>
         <derby.version>10.15.2.0</derby.version>
 
         <hive.execution.engine>tez</hive.execution.engine>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.datanucleus</groupId>
             <artifactId>datanucleus-api-jdo</artifactId>
-            <version>6.0.3</version>
+            <version>6.0.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.18.0</version>
+            <version>2.18.1</version>
         </dependency>
 
         <dependency>
@@ -196,6 +196,26 @@
             <artifactId>hive-webhcat-java-client</artifactId>
             <version>${hive.version}</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>kafka-handler</artifactId>
+            <version>${hive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>*</artifactId>
