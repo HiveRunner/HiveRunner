@@ -44,7 +44,7 @@ public class ThrowOnTimeout extends Statement {
     @Override
     public void evaluate() throws Throwable {
         /*
-         * Reset the statementException before the test is run to prevent false errors during repeated execution. 
+         * Reset the statementException before the test is run to prevent false errors during repeated execution.
          */
         statementException = null;
         final StopWatch stopWatch = new StopWatch();

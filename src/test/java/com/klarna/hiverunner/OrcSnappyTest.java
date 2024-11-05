@@ -19,7 +19,6 @@ package com.klarna.hiverunner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -56,7 +55,6 @@ public class OrcSnappyTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
     @Test
     public void testCountOrcNocomp() {
         List<String> expected = Arrays.asList("3");
@@ -64,12 +62,10 @@ public class OrcSnappyTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
     @Test
     public void testCountOrcSnappy() {
         List<String> expected = Arrays.asList("3");
         List<String> actual = hiveShell.executeQuery("select count(*) from foo_orc_snappy");
         Assertions.assertEquals(expected, actual);
     }
-
 }

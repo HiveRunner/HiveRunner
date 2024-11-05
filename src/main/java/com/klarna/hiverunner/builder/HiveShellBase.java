@@ -178,7 +178,7 @@ class HiveShellBase implements HiveShell {
         for (Path script : scripts) {
             assertFileExists(script);
             try {
-                String setupScript = new String(Files.readAllBytes(script), charset);
+                String setupScript = Files.readString(script, charset);
                 setupScripts.add(setupScript);
             } catch (IOException e) {
                 throw new IllegalArgumentException(
@@ -417,7 +417,7 @@ class HiveShellBase implements HiveShell {
         assertStarted();
         assertFileExists(script);
         try {
-            String statements = new String(Files.readAllBytes(script), charset);
+            String statements = Files.readString(script, charset);
             List<Statement> splitStatements = new StatementSplitter(commandShellEmulator).split(statements);
             if (splitStatements.size() != 1) {
                 throw new IllegalArgumentException("Script '" + script + "' must contain a single valid statement.");

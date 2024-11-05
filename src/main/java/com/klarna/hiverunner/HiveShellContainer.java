@@ -31,7 +31,7 @@ public interface HiveShellContainer extends HiveShell {
      * no residue for coming test cases.
      */
     void tearDown();
-    
+
     /**
      * Returns a List of the scripts being tested. 
      */

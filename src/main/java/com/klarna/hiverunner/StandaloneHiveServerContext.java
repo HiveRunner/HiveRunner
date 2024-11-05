@@ -16,25 +16,26 @@
  */
 package com.klarna.hiverunner;
 
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HADOOPBIN;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVECONVERTJOIN;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEHISTORYFILELOC;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEMETADATAONLYQUERIES;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVEOPTINDEXFILTER;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESKEWJOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HADOOP_BIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_CONVERT_JOIN;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_HISTORY_FILE_LOC;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_METADATA_ONLY_QUERIES;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_OPT_INDEX_FILTER;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SKEW_JOIN;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVESTATSAUTOGATHER;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_CBO_ENABLED;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_INFER_BUCKET_SORT;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.LOCALSCRATCHDIR;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORECONNECTURLKEY;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTOREWAREHOUSE;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.LOCAL_SCRATCH_DIR;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_CONNECT_URL_KEY;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_WAREHOUSE;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.METASTORE_VALIDATE_TABLES;
-import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.SCRATCHDIR;
-import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.SCRATCH_DIR;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_COUNTERS_PULL_INTERVAL;
+import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_IN_TEST;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +117,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     // Disable to get rid of clean up exception when stopping the Session.
     hiveConf.setBoolVar(HIVE_SERVER2_LOGGING_OPERATION_ENABLED, false);
 
-    hiveConf.setVar(HADOOPBIN, "NO_BIN!");
+    hiveConf.setVar(HADOOP_BIN, "NO_BIN!");
   }
 
   protected void overrideHiveConf(HiveConf hiveConf) {
@@ -125,19 +126,19 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
   }
 
-  protected void configureMrExecutionEngine(HiveConf conf) {
-    /*
-     * Switch off all optimizers otherwise we didn't manage to contain the map reduction within this JVM.
-     */
-    conf.setBoolVar(HIVE_INFER_BUCKET_SORT, false);
-    conf.setBoolVar(HIVEMETADATAONLYQUERIES, false);
-    conf.setBoolVar(HIVEOPTINDEXFILTER, false);
-    conf.setBoolVar(HIVECONVERTJOIN, false);
-    conf.setBoolVar(HIVESKEWJOIN, false);
+    protected void configureMrExecutionEngine(HiveConf conf) {
+        /*
+         * Switch off all optimizers otherwise we didn't manage to contain the map reduction within this JVM.
+         */
+        conf.setBoolVar(HIVE_INFER_BUCKET_SORT, false);
+        conf.setBoolVar(HIVE_METADATA_ONLY_QUERIES, false);
+        conf.setBoolVar(HIVE_OPT_INDEX_FILTER, false);
+        conf.setBoolVar(HIVE_CONVERT_JOIN, false);
+        conf.setBoolVar(HIVE_SKEW_JOIN, false);
 
-    // Defaults to a 1000 millis sleep in. We can speed up the tests a bit by setting this to 1 millis instead.
-    // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
-    hiveConf.setLongVar(HiveConf.ConfVars.HIVECOUNTERSPULLINTERVAL, 1L);
+        // Defaults to a 1000 millis sleep in. We can speed up the tests a bit by setting this to 1 millis instead.
+        // org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.
+        hiveConf.setLongVar(HIVE_COUNTERS_PULL_INTERVAL, 1L);
 
     hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_RPC_QUERY_PLAN, true);
   }
@@ -195,29 +196,39 @@ public class StandaloneHiveServerContext implements HiveServerContext {
       throw new RuntimeException(e);
     }
 
+    // https://lists.apache.org/thread/crlomzvvn3hrzwc7t933rzkxpf8p9wgt
     // Set the Hive Metastore DB driver
-    metaStorageUrl = "jdbc:derby:memory:" + UUID.randomUUID().toString();
-    setMetastoreProperty("datanucleus.schema.autoCreateAll", "true");
-    setMetastoreProperty("datanucleus.schema.autoCreateTables", "true");
-    setMetastoreProperty("hive.metastore.schema.verification", "false");
-    setMetastoreProperty("metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl");
-
-    setMetastoreProperty("datanucleus.connectiondrivername", jdbcDriver);
-    setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
+    metaStorageUrl = "jdbc:derby:memory:db_" + UUID.randomUUID();
+    setMetastoreProperty("hive.metastore.local", "true");
+    setMetastoreProperty("hive.metastore.schema.verification.record.version", "false");
+    setMetastoreProperty("hive.metastore.fastpath", "true");
+    setMetastoreProperty("metastore.try.direct.sql", "false");
+    setMetastoreProperty("fs.permissions.umask-mode", "022");
 
     // No pooling needed. This will save us a lot of threads
     setMetastoreProperty("datanucleus.connectionPoolingType", "None");
+    setMetastoreProperty("datanucleus.schema.autoCreateColumns", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateTables", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateSchema", "true");
+    setMetastoreProperty("datanucleus.schema.autoCreateAll", "true");
+    setMetastoreProperty("datanucleus.fixedDatastore", "true");
+    setMetastoreProperty("datanucleus.autoStartMechanism", "SchemaTable");
+    setMetastoreProperty("datanucleus.connectiondrivername", jdbcDriver);
+    setMetastoreProperty("hive.metastore.schema.verification", "false");
+    setMetastoreProperty("metastore.filter.hook", "org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl");
+    setMetastoreProperty("javax.jdo.option.ConnectionUserName", "noUser");
+    setMetastoreProperty("javax.jdo.option.ConnectionPassword", "noPassword");
+    setMetastoreProperty("javax.jdo.option.ConnectionDriverName", jdbcDriver);
 
     /**
-     * If hive.in.test=false (default), Hive 3 will assume that the metastore rdbms has already been initialized
-     * with some basic tables and will try to run initial test queries against them.
-     * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
-     */
-    setMetastoreProperty(HIVE_IN_TEST.getVarname(), "true");
-    
-    setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "true");
-    setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "true");
-    setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "true");
+    * If hive.in.test=false (default), Hive will assume that the metastore rdbms has already been initialized
+    * with some basic tables and will try to run initial test queries against them.
+    * This results in multiple warning stacktraces if the rdbms has not actually been initialized.
+    */
+    setMetastoreProperty(HIVE_IN_TEST.varname, "true");
+    setMetastoreProperty(METASTORE_VALIDATE_CONSTRAINTS.varname, "false");
+    setMetastoreProperty(METASTORE_VALIDATE_COLUMNS.varname, "false");
+    setMetastoreProperty(METASTORE_VALIDATE_TABLES.varname, "false");
   }
 
   private void configureDerbyLog() {
@@ -232,16 +243,17 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
   }
 
-  protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
-    setMetastoreProperty(METASTORECONNECTURLKEY.varname, metaStorageUrl + ";create=true");
+    protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
+        setMetastoreProperty(METASTORE_CONNECT_URL_KEY.varname, metaStorageUrl + ";create=true");
 
-    createAndSetFolderProperty(METASTOREWAREHOUSE, "warehouse", conf, basedir);
-    createAndSetFolderProperty(SCRATCHDIR, "scratchdir", conf, basedir);
-    createAndSetFolderProperty(LOCALSCRATCHDIR, "localscratchdir", conf, basedir);
-    createAndSetFolderProperty(HIVEHISTORYFILELOC, "tmp", conf, basedir);
+        createAndSetFolderProperty(METASTORE_WAREHOUSE, "warehouse", conf, basedir);
+        createAndSetFolderProperty(SCRATCH_DIR, "scratch_dir", conf, basedir);
+        createAndSetFolderProperty(LOCAL_SCRATCH_DIR, "local_scratch_dir", conf, basedir);
+        createAndSetFolderProperty(HIVE_HISTORY_FILE_LOC, "tmp", conf, basedir);
 
-    createAndSetFolderProperty("hadoop.tmp.dir", "hadooptmp", conf, basedir);
-    createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
+        createAndSetFolderProperty("hadoop.tmp.dir", "hadoop_tmp_dir", conf, basedir);
+        createAndSetFolderProperty("test.log.dir", "logs", conf, basedir);
+        createAndSetFolderProperty("hive.metastore.metadb.dir", "warehouse", conf, basedir);
 
     /*
      * Tez specific configurations below

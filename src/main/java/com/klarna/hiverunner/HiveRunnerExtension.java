@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import com.klarna.hiverunner.annotations.HiveRunnerSetup;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import com.klarna.hiverunner.builder.Script;
@@ -57,7 +56,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
   public HiveRunnerExtension() {
     core = new HiveRunnerCore();
   }
-  
+
   protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
     return core.getScriptPaths(annotation);
   }
@@ -76,9 +75,7 @@ public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostP
 
   private void setupConfig(Object target) {
     Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-        Predicates.and(
-            withAnnotation(HiveRunnerSetup.class),
-            withType(HiveRunnerConfig.class)));
+            withType(HiveRunnerConfig.class).and(withAnnotation(HiveRunnerSetup.class)));
 
     Preconditions.checkState(fields.size() <= 1,
         "Only one field of type HiveRunnerConfig should be annotated with @HiveRunnerSetup");

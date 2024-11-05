@@ -86,6 +86,7 @@ public class HiveServerContainer {
         try {
             hiveServer2 = new HiveServer2();
             hiveServer2.init(hiveConf);
+            hiveServer2.start();
 
             // Locate the ClIService in the HiveServer2
             for (Service service : hiveServer2.getServices()) {

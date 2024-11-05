@@ -67,12 +67,12 @@ public class HiveShellBuilder {
     }
 
     public List<Script> fromScriptPaths(List<Path> scriptPaths, Charset charset) {
-        List<Script> scripts = new ArrayList();
+        List<Script> scripts = new ArrayList<>();
         int index = 0;
         for (Path path : scriptPaths) {
             Preconditions.checkState(Files.exists(path), "File %s does not exist", path);
             try {
-                String sqlText = new String(Files.readAllBytes(path), charset);
+                String sqlText = Files.readString(path, charset);
                 scripts.add(new HiveRunnerScript(index++, path, sqlText));
             } catch (IOException e) {
                 throw new IllegalArgumentException("Failed to load script file '" + path + "'");
@@ -80,7 +80,7 @@ public class HiveShellBuilder {
         }
         return scripts;
     }
-    
+
     public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
       this.commandShellEmulator = commandShellEmulator;
     }
@@ -88,7 +88,7 @@ public class HiveShellBuilder {
     public HiveShellContainer buildShell() {
         return new HiveShellTearable(hiveServerContainer, props, setupScripts, resources, scriptsUnderTest, commandShellEmulator);
     }
-    
+
     public void overrideScriptsUnderTest(List<? extends Script> scripts) {
       scriptsUnderTest = new ArrayList<>(scripts);
   }

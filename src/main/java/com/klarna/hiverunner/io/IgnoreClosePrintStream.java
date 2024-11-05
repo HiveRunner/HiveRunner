@@ -18,11 +18,12 @@ package com.klarna.hiverunner.io;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 public class IgnoreClosePrintStream extends PrintStream {
 
     public IgnoreClosePrintStream(OutputStream out) {
-        super(out);
+        super(out, false, StandardCharsets.UTF_8);
     }
 
     @Override

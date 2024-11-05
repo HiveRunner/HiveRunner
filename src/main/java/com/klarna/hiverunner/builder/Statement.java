@@ -27,5 +27,5 @@ public interface Statement {
    * Original sql of the statement
    */
   String getSql();
-  
+
 }

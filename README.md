@@ -41,12 +41,12 @@ Alternatively, if you want to build from source, clone this repo and build with:
 
 Then add the dependency as mentioned above.
 
-Also explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
+Also, explicitly add the surefire plugin and configure forkMode=always to avoid OutOfMemory when building big test suites.
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkMode>always</forkMode>
         </configuration>
@@ -57,7 +57,7 @@ As an alternative if this does not solve the OOM issues, try increase the -Xmx a
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkCount>1</forkCount>
             <reuseForks>false</reuseForks>
@@ -65,14 +65,16 @@ As an alternative if this does not solve the OOM issues, try increase the -Xmx a
         </configuration>
     </plugin>
 
-(please note that the forkMode option is deprecated and you should use forkCount and reuseForks instead)
+(please note that the forkMode option is deprecated, you should use forkCount and reuseForks instead)
+
+(please note that -XX:MaxPermSize will not work for Java > 8)
 
 With forkCount and reuseForks there is a possibility to reduce the test execution time drastically, depending on your hardware. A plugin configuration which are using one fork per CPU core and reuse threads would look like:
 
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <forkCount>1C</forkCount>
             <reuseForks>true</reuseForks>
@@ -88,12 +90,63 @@ System property `hiveconf_hive.execution.engine` to 'tez'.
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
+            <version>3.5.1</version>
             <configuration>
                 <systemProperties>
                     <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
                     <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
                 </systemProperties>
+            </configuration>
+        </plugin>
+
+To run unit/integration tests, the configuration below can be used
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+                <forkCount>1</forkCount>
+                <reuseForks>false</reuseForks>
+                <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
+                <systemProperties>
+                    <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
+                    <hiveconf_hive.exec.counters.pull.interval>1000</hiveconf_hive.exec.counters.pull.interval>
+                </systemProperties>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>3.5.1</version>
+            <executions>
+                <execution>
+                    <id>run-integration-tests</id>
+                    <phase>integration-test</phase>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <!-- 
+                A workaround to run integration tests (*IT.java) if your production code uses org.antlr in version 3. For example it is used in spring-data-jpa.
+                If you have two versions of antlr in your project (version 3 and 4), you want to enforce version 4 in Hive based intregration tests.
+            -->
+            <configuration>
+                <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED</argLine>
+                <classpathDependencyExcludes>
+                    <classpathDependencyExclude>org.antlr:*</classpathDependencyExclude>
+                </classpathDependencyExcludes>
+                <additionalClasspathDependencies>
+                    <!-- To make Hive partitions work (example: HQL WHERE statement throws an error if used without it) -->
+                    <additionalClasspathDependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-runtime</artifactId>
+                        <version>4.9.3</version>
+                    </additionalClasspathDependency>
+                </additionalClasspathDependencies>
             </configuration>
         </plugin>
 
@@ -106,7 +159,7 @@ A configuration which enables timeouts after 30 seconds and allows 2 retries wou
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.5.1</version>
         <configuration>
             <systemProperties>
                 <enableTimeout>true</enableTimeout>
@@ -132,13 +185,13 @@ Annotations and interactive mode can be mixed and matched, however you'll always
          @HiveSQL(files = {"serdeTest/create_table.sql", "serdeTest/hql_custom_serde.sql"}, autoStart = false)
          public HiveShell hiveShell;
 
-Note that the *autostart = false* is needed for the interactive mode. It can be left out when running with only annotations.
+Note that the *autoStart = false* is needed for the interactive mode. It can be left out when running with only annotations.
 
 ### Sequence files
 If you work with __sequence files__ (Or anything else than regular text files) make sure to take a look at [ResourceOutputStreamTest](/src/test/java/com/klarna/hiverunner/ResourceOutputStreamTest.java) 
 for an example of how to use the new method [HiveShell](src/main/java/com/klarna/hiverunner/HiveShell.java)\#getResourceOutputStream to manage test input data. 
 
-### Programatically create test input data
+### Programmatically create test input data
 
 Test data can be programmatically inserted into any Hive table using `HiveShell.insertInto(...)`. This seamlessly handles different storage formats and partitioning types allowing you to focus on the data required by your test scenarios:
 
@@ -176,14 +229,15 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 # Hive version compatibility
 
-- This version of HiveRunner is built for Hive 3.1.2.
+- This version of HiveRunner is built for Hive 4.0.x.
+- For Hive 3.x support please use HiveRunner 6.x. 
 - For Hive 2.x support please use HiveRunner 5.x.
 - Command shell emulations are provided to closely match the behaviour of both the Hive CLI and Beeline interactive shells. The desired emulation can be specified in your `pom.xml` file like so: 
 
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
+            <version>3.5.1</version>
             <configuration>
                 <systemProperties>
                     <!-- Defaults to HIVE_CLI, other options include BEELINE and HIVE_CLI_PRE_V200 -->
@@ -202,7 +256,11 @@ The [HiveShell](/src/main/java/com/klarna/hiverunner/HiveShell.java) field annot
 
 * HiveRunner runs Hive and Hive runs on top of Hadoop, and Hadoop has limited support for Windows machines. Installing [Cygwin](http://www.cygwin.com/ "Cygwin") might help out.
 
-* Currently the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging. See [#69](https://github.com/HiveRunner/HiveRunner/issues/69).
+* Currently, the HiveServer spins up and tears down for every test method. As a performance option it should be possible to clean the HiveServer and metastore between each test method invocation. The choice should probably be exposed to the test writer. By switching between different strategies, side effects/leakage can be ruled out during test case debugging. See [#69](https://github.com/HiveRunner/HiveRunner/issues/69).
+
+* Fix a warning from Datanucleus JDO: org.apache.hadoop.hive.metastore.MetastoreDirectSqlUtils:79 - Failed to execute [select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ? ] with parameters [hive]
+  javax.jdo.JDODataStoreException: Error executing SQL query "select "FUNCS"."FUNC_ID" from "FUNCS" LEFT JOIN "DBS" ON "FUNCS"."DB_ID" = "DBS"."DB_ID" where "DBS"."CTLG_NAME" = ?".
+  ... Caused by: org.apache.derby.iapi.error.StandardException: Table/View 'FUNCS' does not exist.
 
 # Known Issues
 
@@ -220,7 +278,7 @@ a timeout and retry functionality implemented in HiveRunner:
          <plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.21.0</version>
+             <version>3.5.1</version>
              <configuration>
                  <systemProperties>
                      <enableTimeout>true</enableTimeout>

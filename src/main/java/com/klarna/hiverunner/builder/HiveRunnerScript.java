@@ -19,11 +19,11 @@ package com.klarna.hiverunner.builder;
 import java.nio.file.Path;
 
 public class HiveRunnerScript implements Script {
-   
+
   private Path path;
   private String sqlText;
   private int index;
-  
+
   public HiveRunnerScript(int index, Path path, String sqlText) {
     this.index = index;
     this.path = path;
@@ -34,7 +34,7 @@ public class HiveRunnerScript implements Script {
   public int getIndex() {
     return index;
   }
-  
+
   /* (non-Javadoc)
    * @see com.klarna.hiverunner.builder.Script#getPath()
    */
@@ -89,5 +89,5 @@ public class HiveRunnerScript implements Script {
   public String toString() {
     return "HiveRunnerScript [path=" + path + ", sqlText=" + sqlText + ", index=" + index + "]";
   }
-  
+
 }

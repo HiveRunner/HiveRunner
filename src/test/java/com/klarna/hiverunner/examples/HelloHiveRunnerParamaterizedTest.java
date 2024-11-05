@@ -53,7 +53,7 @@ public class HelloHiveRunnerParamaterizedTest {
           .append(") stored as ")
           .append(fileFormat)
           .toString());
-      
+
         shell.insertInto("source_db", "test_table")
                 .withColumns("year", "value")
                 .addRow("2014", 3)

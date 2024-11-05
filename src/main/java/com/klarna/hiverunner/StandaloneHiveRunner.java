@@ -17,7 +17,6 @@
 package com.klarna.hiverunner;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import com.klarna.hiverunner.annotations.*;
 import com.klarna.hiverunner.builder.Script;
 import com.klarna.hiverunner.config.HiveRunnerConfig;
@@ -50,7 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars.HIVE_IN_TEST;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withType;
 
@@ -217,9 +215,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             @Override
             public Statement apply(Statement base, Description description) {
                 Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-                        Predicates.and(
-                                withAnnotation(HiveRunnerSetup.class),
-                                withType(HiveRunnerConfig.class)));
+                    withType(HiveRunnerConfig.class).and(withAnnotation(HiveRunnerSetup.class)));
 
                 Preconditions.checkState(fields.size() <= 1,
                         "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");

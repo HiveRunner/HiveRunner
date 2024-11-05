@@ -24,7 +24,7 @@ public interface Script {
    * index of script within all scripts in source
    */
   int getIndex();
-  
+
   Path getPath();
 
   String getSql();

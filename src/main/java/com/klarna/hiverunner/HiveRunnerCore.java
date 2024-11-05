@@ -98,7 +98,7 @@ class HiveRunnerCore {
       Field field = fields.iterator().next();
       HiveSQL annotation = field.getAnnotation(HiveSQL.class);
       List<Path> scriptPaths = getScriptPaths(annotation);
-      Charset charset = annotation.encoding().equals("") ?
+      Charset charset = annotation.encoding().isEmpty() ?
           Charset.defaultCharset() : Charset.forName(annotation.encoding());
 
       boolean isAutoStart = annotation.autoStart();
@@ -120,7 +120,7 @@ class HiveRunnerCore {
       throw new IllegalArgumentException("Failed to init field annotated with @HiveSQL: " + t.getMessage(), t);
     }
   }
-  
+
   protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
     List<Path> scriptPaths = new ArrayList<>();
     for (String scriptFilePath : annotation.files()) {

@@ -60,7 +60,7 @@ import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
  *          setCommandShellEmulation(CommandShellEmulation.BEELINE);
  *      }};
  * </pre>
- * 
+ *
  * See the test class<{@code com.klarna.hiverunner.DisabledTimeoutTest} for more information.
  */
 public class HiveRunnerConfig {
@@ -97,7 +97,7 @@ public class HiveRunnerConfig {
 
     /**
      * The shell's {@link CommandShellEmulator}.
-     * 
+     *
      * Defaults to {@code HIVE_CLI}
      */
     public static final String COMMAND_SHELL_EMULATOR_PROPERTY_NAME = "commandShellEmulator";
@@ -151,7 +151,7 @@ public class HiveRunnerConfig {
     public Map<String, String> getHiveConfSystemOverride() {
         return hiveConfSystemOverride;
     }
-    
+
     /**
      * Determines the statement parsing behaviour of the interactive shell. Provided to emulate slight differences
      * between different clients.
@@ -179,7 +179,7 @@ public class HiveRunnerConfig {
     public void setCommandShellEmulator(CommandShellEmulator commandShellEmulator) {
         config.put(COMMAND_SHELL_EMULATOR_PROPERTY_NAME, commandShellEmulator.getName());
     }
-    
+
     /**
      * Copy values from the inserted config to this config. Note that if properties has not been explicitly set,
      * the defaults will apply.

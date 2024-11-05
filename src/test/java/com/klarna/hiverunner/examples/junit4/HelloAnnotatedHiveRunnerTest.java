@@ -123,10 +123,10 @@ public class HelloAnnotatedHiveRunnerTest {
 
         List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
 
-        Assert.assertArrayEquals(new Object[]{null, "bar"}, actual.get(0));
-        Assert.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(1));
-        Assert.assertArrayEquals(new Object[]{2, "World"}, actual.get(2));
-        Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(3));
+        Assert.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(0));
+        Assert.assertArrayEquals(new Object[]{2, "World"}, actual.get(1));
+        Assert.assertArrayEquals(new Object[]{3, "!"}, actual.get(2));
+        Assert.assertArrayEquals(new Object[]{null, "bar"}, actual.get(3));
     }
 
     @Test

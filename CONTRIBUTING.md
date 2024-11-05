@@ -31,7 +31,7 @@ Please review all of the .md files in this project to see if they are impacted b
 
 ## 6. Add to CHANGELOG.md
 
-Any notable changes should be recorded in the CHANGELOG.md following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) conventions.
+Any notable changes should be recorded in the CHANGELOG.md following the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) conventions.
 
 ## 7. Submit a pull request and describe the change
 
