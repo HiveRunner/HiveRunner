@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2013-2021 Klarna AB
  * Copyright (C) 2021 The HiveRunner Contributors
  *
