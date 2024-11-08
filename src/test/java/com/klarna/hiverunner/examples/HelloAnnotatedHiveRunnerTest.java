@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,10 +60,10 @@ public class HelloAnnotatedHiveRunnerTest {
      * Note that the "hadoop.tmp.dir" is one of the dirs defined by the test harness
      */
     @HiveProperties
-    public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new Object[] {
+    public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new Object[]{
             "MY.HDFS.DIR", "${hadoop.tmp.dir}",
             "my.schema", "bar",
-        });
+    });
 
     /**
      * In this example, the scripts under test expects a schema to be already present in hive so
@@ -99,8 +99,8 @@ public class HelloAnnotatedHiveRunnerTest {
      * The HiveRunner instantiate and inject the HiveShell
      */
     @HiveSQL(files = {
-        "HelloHiveRunnerTest/create_table.sql",
-        "HelloHiveRunnerTest/create_ctas.sql"
+            "HelloHiveRunnerTest/create_table.sql",
+            "HelloHiveRunnerTest/create_ctas.sql"
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
@@ -124,10 +124,10 @@ public class HelloAnnotatedHiveRunnerTest {
 
         List<Object[]> actual = hiveShell.executeStatement("select * from foo order by i");
 
-        Assertions.assertArrayEquals(new Object[] { null, "bar" }, actual.get(0));
-        Assertions.assertArrayEquals(new Object[] { 1, "Hello" }, actual.get(1));
-        Assertions.assertArrayEquals(new Object[] { 2, "World" }, actual.get(2));
-        Assertions.assertArrayEquals(new Object[] { 3, "!" }, actual.get(3));
+        Assertions.assertArrayEquals(new Object[]{null, "bar"}, actual.get(0));
+        Assertions.assertArrayEquals(new Object[]{1, "Hello"}, actual.get(1));
+        Assertions.assertArrayEquals(new Object[]{2, "World"}, actual.get(2));
+        Assertions.assertArrayEquals(new Object[]{3, "!"}, actual.get(3));
     }
 
     @Test

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,13 +35,13 @@ public class BaseContextTest {
 
     @Mock
     private Consumer consumer;
-    
+
     private BaseContext context = new BaseContext(new StringTokenizer(""));
 
     @Test
     public void appendAndFlush() {
         context.append("abc");
-        assertThat(context.getStatements(), is(Collections.<String> emptyList()));
+        assertThat(context.getStatements(), is(Collections.<String>emptyList()));
         context.append("def");
         context.flush();
         assertThat(context.getStatements(), is(singletonList("abcdef")));
@@ -54,7 +54,7 @@ public class BaseContextTest {
         context.flush();
         assertThat(context.statement(), is(""));
     }
-    
+
     @Test
     public void appendWith() {
         when(consumer.consume(context)).thenReturn("statement");

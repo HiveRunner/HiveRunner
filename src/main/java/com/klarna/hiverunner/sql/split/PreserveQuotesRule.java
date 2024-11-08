@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /** A {@link TokenRule} for handling quoted character sequences. */
 public enum PreserveQuotesRule implements TokenRule {
     INSTANCE;
-    
+
     private static final Pattern LAST_CHAR_NOT_ESCAPED_PATTERN = Pattern.compile(".*[^\\\\].", Pattern.DOTALL);
 
     @Override
@@ -38,13 +38,13 @@ public enum PreserveQuotesRule implements TokenRule {
     }
 
     static class QuotedStringConsumer implements Consumer {
-        
+
         private final String token;
 
         QuotedStringConsumer(String token) {
             this.token = token;
         }
-        
+
         @Override
         public String consume(Context context) {
             String quotedString = token;
@@ -59,5 +59,5 @@ public enum PreserveQuotesRule implements TokenRule {
             return quotedString;
         }
     }
-    
+
 }

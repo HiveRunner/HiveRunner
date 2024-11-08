@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,7 +56,8 @@ public class OrcSnappyTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
+    @Disabled
+    // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
     @Test
     public void testCountOrcNocomp() {
         List<String> expected = Arrays.asList("3");
@@ -64,7 +65,8 @@ public class OrcSnappyTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @Disabled // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
+    @Disabled
+    // Fails with java.lang.UnsatisfiedLinkError: org.apache.hadoop.util.NativeCodeLoader.buildSupportsSnappy()Z
     @Test
     public void testCountOrcSnappy() {
         List<String> expected = Arrays.asList("3");

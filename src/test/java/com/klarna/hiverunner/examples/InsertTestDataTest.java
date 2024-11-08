@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,7 +71,7 @@ public class InsertTestDataTest {
                 .addRow("Value2", false)
                 .commit();
 
-      printResult(shell.executeStatement("select * from source_db.test_table"), "from code selected columns");
+        printResult(shell.executeStatement("select * from source_db.test_table"), "from code selected columns");
     }
 
     @Test
@@ -111,17 +111,17 @@ public class InsertTestDataTest {
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {
         File dataFile = new File("src/test/resources/InsertTestDataTest/data2.tsv");
         shell.execute(new StringBuilder()
-                  .append("CREATE TABLE source_db.test_table2 (")
-                  .append("col_a STRING, col_b INT")
-                  .append(")")
-                  .append("partitioned by (col_c string)")
-                  .append("stored as SEQUENCEFILE")
-                  .toString());
+                .append("CREATE TABLE source_db.test_table2 (")
+                .append("col_a STRING, col_b INT")
+                .append(")")
+                .append("partitioned by (col_c string)")
+                .append("stored as SEQUENCEFILE")
+                .toString());
 
         shell.insertInto("source_db", "test_table2")
-                  .withAllColumns()
-                  .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
-                  .commit();
+                .withAllColumns()
+                .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table2"), "long method name");
     }

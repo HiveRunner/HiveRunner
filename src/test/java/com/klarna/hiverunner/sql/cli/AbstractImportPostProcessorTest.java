@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,18 +39,18 @@ public class AbstractImportPostProcessorTest {
 
     private static final String PATH = "path";
     private static final String IMPORT_STATEMENT = "importStatement";
-    private static final String NON_IMPORT_STATEMENT ="nonImportStatement";
-    
+    private static final String NON_IMPORT_STATEMENT = "nonImportStatement";
+
     @Mock
     private StatementLexer lexer;
-    
+
     private List<String> expected;
 
     @BeforeEach
     public void setup() {
         expected = singletonList(NON_IMPORT_STATEMENT);
     }
-    
+
     @Test
     public void scriptImport() {
         when(lexer.applyToPath(Paths.get(PATH))).thenReturn(expected);
@@ -58,14 +58,14 @@ public class AbstractImportPostProcessorTest {
         List<String> actual = processor.statement(IMPORT_STATEMENT);
         assertThat(actual, is(equalTo(expected)));
     }
-    
+
     @Test
     public void nonScriptImport() {
         PostProcessor processor = new TestAbstractImportPostProcessor(false, null, lexer);
         List<String> actual = processor.statement(NON_IMPORT_STATEMENT);
         assertThat(actual, is(equalTo(expected)));
     }
-    
+
     private static class TestAbstractImportPostProcessor extends AbstractImportPostProcessor {
 
         private final String path;
@@ -86,6 +86,6 @@ public class AbstractImportPostProcessorTest {
         public boolean isImport(String statement) {
             return isImport;
         }
-        
+
     }
 }

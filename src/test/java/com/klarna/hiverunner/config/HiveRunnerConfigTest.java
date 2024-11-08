@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,27 +81,27 @@ public class HiveRunnerConfigTest {
 
     @Test
     public void testCommandShellEmulator() {
-      Properties sysProps = new Properties();
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BEELINE");
-      HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
-      Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
+        Properties sysProps = new Properties();
+        sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BEELINE");
+        HiveRunnerConfig config = new HiveRunnerConfig(new Properties(sysProps));
+        Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
 
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "beeline");
-      config = new HiveRunnerConfig(new Properties(sysProps));
-      Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
+        sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "beeline");
+        config = new HiveRunnerConfig(new Properties(sysProps));
+        Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
 
-      sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BeElInE");
-      config = new HiveRunnerConfig(new Properties(sysProps));
-      Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
+        sysProps.put(HiveRunnerConfig.COMMAND_SHELL_EMULATOR_PROPERTY_NAME, "BeElInE");
+        config = new HiveRunnerConfig(new Properties(sysProps));
+        Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 
     @Test
     public void testSetCommandShellEmulator() {
-      HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
-      config.setCommandShellEmulator(HiveCliEmulator.INSTANCE);
-      Assertions.assertEquals(HiveCliEmulator.INSTANCE, config.getCommandShellEmulator());
-      config.setCommandShellEmulator(BeelineEmulator.INSTANCE);
-      Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
+        HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
+        config.setCommandShellEmulator(HiveCliEmulator.INSTANCE);
+        Assertions.assertEquals(HiveCliEmulator.INSTANCE, config.getCommandShellEmulator());
+        config.setCommandShellEmulator(BeelineEmulator.INSTANCE);
+        Assertions.assertEquals(BeelineEmulator.INSTANCE, config.getCommandShellEmulator());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class HiveRunnerConfigTest {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());
         Assertions.assertEquals(HiveRunnerConfig.TIMEOUT_RETRIES_DEFAULT, config.getTimeoutRetries());
     }
-    
+
     @Test
     public void testCommandShellEmulatorDefault() {
         HiveRunnerConfig config = new HiveRunnerConfig(new Properties());

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.nio.file.Path;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -68,10 +69,10 @@ public class HiveRunnerRule implements TestRule {
         private StandaloneHiveRunner runner;
 
         private HiveRunnerRuleStatement(
-            StandaloneHiveRunner runner,
-            Object target,
-            Statement base,
-            Path testBaseDir) {
+                StandaloneHiveRunner runner,
+                Object target,
+                Statement base,
+                Path testBaseDir) {
             this.runner = runner;
             this.target = target;
             this.base = base;
