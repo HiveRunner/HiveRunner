@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,10 +48,10 @@ public class HelloHiveRunnerTest {
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
-            .append("CREATE TABLE source_db.test_table (")
-            .append("year STRING, value INT")
-            .append(")")
-            .toString());
+                .append("CREATE TABLE source_db.test_table (")
+                .append("year STRING, value INT")
+                .append(")")
+                .toString());
 
         shell.execute(Paths.get("src/test/resources/HelloHiveRunnerTest/create_max.sql"));
     }
@@ -80,7 +80,7 @@ public class HelloHiveRunnerTest {
         List<Object[]> result = shell.executeStatement("select * from my_schema.result");
 
         assertEquals(2, result.size());
-        assertArrayEquals(new Object[]{"2014",4}, result.get(0));
-        assertArrayEquals(new Object[]{"2015",5}, result.get(1));
+        assertArrayEquals(new Object[]{"2014", 4}, result.get(0));
+        assertArrayEquals(new Object[]{"2015", 5}, result.get(1));
     }
 }

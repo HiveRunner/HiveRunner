@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveVariablesTest {
-  
+
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
@@ -97,7 +97,7 @@ public class HiveVariablesTest {
         shell.execute("Create database ${system:bar}${system:foo}");
         Assertions.assertEquals("nice dog", shell.expandVariableSubstitutes("${system:bar} ${system:foo}"));
     }
-    
+
     @Test
     public void testEnvironmentVar() {
         environmentVariables.set("foo", "dog");

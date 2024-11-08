@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -105,84 +105,84 @@ public class HiveShellBaseTest {
 
     @Test
     public void executeScriptFile() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      Files.write(hiveSql, file, UTF_8);
+        File file = new File(tempFolder.getRoot(), "script.sql");
+        Files.write(hiveSql, file, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
-      shell.execute(file);
+        HiveShell shell = createHiveCliShell();
+        shell.start();
+        shell.execute(file);
 
-      verify(container).executeStatement(hiveSql);
+        verify(container).executeStatement(hiveSql);
     }
 
     @Test
     public void executeScriptCharsetFile() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      Files.write(hiveSql, file, UTF_8);
+        File file = new File(tempFolder.getRoot(), "script.sql");
+        Files.write(hiveSql, file, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
-      shell.execute(UTF_8, file);
+        HiveShell shell = createHiveCliShell();
+        shell.start();
+        shell.execute(UTF_8, file);
 
-      verify(container).executeStatement(hiveSql);
+        verify(container).executeStatement(hiveSql);
     }
-    
+
     @Test
     public void executeScriptPath() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      Files.write(hiveSql, file, UTF_8);
+        File file = new File(tempFolder.getRoot(), "script.sql");
+        Files.write(hiveSql, file, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
-      shell.execute(Paths.get(file.toURI()));
+        HiveShell shell = createHiveCliShell();
+        shell.start();
+        shell.execute(Paths.get(file.toURI()));
 
-      verify(container).executeStatement(hiveSql);
+        verify(container).executeStatement(hiveSql);
     }
 
     @Test
     public void executeScriptCharsetPath() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      Files.write(hiveSql, file, UTF_8);
+        File file = new File(tempFolder.getRoot(), "script.sql");
+        Files.write(hiveSql, file, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
-      shell.execute(UTF_8, Paths.get(file.toURI()));
+        HiveShell shell = createHiveCliShell();
+        shell.start();
+        shell.execute(UTF_8, Paths.get(file.toURI()));
 
-      verify(container).executeStatement(hiveSql);
+        verify(container).executeStatement(hiveSql);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void executeScriptFileNotExists() throws IOException {
-      File file = new File(tempFolder.getRoot(), "script.sql");
+        File file = new File(tempFolder.getRoot(), "script.sql");
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
-      shell.execute(UTF_8, Paths.get(file.toURI()));
+        HiveShell shell = createHiveCliShell();
+        shell.start();
+        shell.execute(UTF_8, Paths.get(file.toURI()));
     }
-    
+
     @Test(expected = IllegalStateException.class)
     public void executeScriptNotStarted() throws IOException {
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      
-      HiveShell shell = createHiveCliShell();
-      shell.execute(UTF_8, Paths.get(file.toURI()));
+        File file = new File(tempFolder.getRoot(), "script.sql");
+
+        HiveShell shell = createHiveCliShell();
+        shell.execute(UTF_8, Paths.get(file.toURI()));
     }
-    
+
     @Test
     public void executeQueryFromFile() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
 
         String statement = "select current_database(), NULL, 100";
-        when(container.executeStatement(statement)).thenReturn(Arrays.<Object[]> asList( new Object[] {"default", null, 100}));
+        when(container.executeStatement(statement)).thenReturn(Arrays.<Object[]>asList(new Object[]{"default", null, 100}));
         String hiveSql = statement + ";";
 
         File file = tempFolder.newFile("script.sql");
@@ -192,95 +192,96 @@ public class HiveShellBaseTest {
         assertThat(results.size(), is(1));
         assertThat(results.get(0), is("defaultxxxyyyxxx100"));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void executeQueryFromFileMoreThanOneStatement() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
-        
+
         String hiveSql = "use default;\nselect current_database(), NULL, 100;";
-        
+
         File file = new File(tempFolder.getRoot(), "script.sql");
         Files.write(hiveSql, file, UTF_8);
-        
+
         shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void executeQueryFromFileZeroStatements() throws IOException {
         HiveShell shell = createHiveCliShell();
         shell.start();
-        
+
         String hiveSql = "";
-        
+
         File file = new File(tempFolder.getRoot(), "script.sql");
         Files.write(hiveSql, file, UTF_8);
-        
+
         shell.executeQuery(UTF_8, Paths.get(file.toURI()), "xxx", "yyy");
     }
 
     @Test
     public void scriptFilesAreImportedInQueries() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File importedFile = new File(tempFolder.getRoot(), "imported_script.sql");
-      Files.write(hiveSql, importedFile, UTF_8);
+        File importedFile = new File(tempFolder.getRoot(), "imported_script.sql");
+        Files.write(hiveSql, importedFile, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
+        HiveShell shell = createHiveCliShell();
+        shell.start();
 
-      String importhiveSql = "source " + importedFile.getAbsolutePath();
-      List<String> results = shell.executeQuery(importhiveSql);
+        String importhiveSql = "source " + importedFile.getAbsolutePath();
+        List<String> results = shell.executeQuery(importhiveSql);
 
-      assertThat(results.size(), is(0));
-      verify(container).executeStatement(hiveSql);
+        assertThat(results.size(), is(0));
+        verify(container).executeStatement(hiveSql);
     }
 
     @Test
     public void scriptFilesAreImportedInOtherScriptsHiveCli() throws IOException {
-      String hiveSql = "use default";
+        String hiveSql = "use default";
 
-      File importedFile = new File(tempFolder.getRoot(), "imported_script.sql");
-      Files.write(hiveSql, importedFile, UTF_8);
+        File importedFile = new File(tempFolder.getRoot(), "imported_script.sql");
+        Files.write(hiveSql, importedFile, UTF_8);
 
-      HiveShell shell = createHiveCliShell();
-      shell.start();
+        HiveShell shell = createHiveCliShell();
+        shell.start();
 
-      String importhiveSql = "source " + importedFile.getAbsolutePath();
-      File file = new File(tempFolder.getRoot(), "script.sql");
-      Files.write(importhiveSql, file, UTF_8);
+        String importhiveSql = "source " + importedFile.getAbsolutePath();
+        File file = new File(tempFolder.getRoot(), "script.sql");
+        Files.write(importhiveSql, file, UTF_8);
 
-      shell.execute(file);
+        shell.execute(file);
 
-      verify(container).executeStatement(hiveSql);
+        verify(container).executeStatement(hiveSql);
     }
-    
+
     @Test
     public void scriptFilesAreImportedInOtherScriptsBeeline() throws IOException {
         String hiveSql = "use default";
-        
+
         File importedFile = new File(tempFolder.getRoot(), "imported_script.sql");
         Files.write(hiveSql, importedFile, UTF_8);
-        
+
         HiveShell shell = createBeelineShell();
         shell.start();
-        
+
         String importhiveSql = "!run " + importedFile.getAbsolutePath();
         File file = new File(tempFolder.getRoot(), "script.sql");
         Files.write(importhiveSql, file, UTF_8);
-        
+
         shell.execute(file);
-        
+
         verify(container).executeStatement(hiveSql);
     }
 
     private HiveShell createHiveCliShell(String... keyValues) {
         return createHiveShell(HiveCliEmulator.INSTANCE, keyValues);
     }
+
     private HiveShell createBeelineShell(String... keyValues) {
         return createHiveShell(BeelineEmulator.INSTANCE, keyValues);
     }
-    
+
     private HiveShell createHiveShell(CommandShellEmulator emulation, String... keyValues) {
         Map<String, String> hiveConf = MapUtils.putAll(new HashMap(), keyValues);
         HiveConf conf = createHiveconf(hiveConf);

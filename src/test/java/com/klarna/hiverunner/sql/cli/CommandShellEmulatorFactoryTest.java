@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,16 +44,18 @@ public class CommandShellEmulatorFactoryTest {
         assertThat(valueOf("HIVE_CLI"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
         assertThat(valueOf(" hIvE_cLi  "), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
     }
-    
+
     @Test
     public void hiveCliPreV130() {
-      assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-      assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-      assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
     }
 
     @Test
     public void unknown() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {valueOf("unknown");});
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            valueOf("unknown");
+        });
     }
 }

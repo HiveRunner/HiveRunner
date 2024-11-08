@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,19 +28,19 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 
 @ExtendWith(HiveRunnerExtension.class)
 public class CommentTest {
-  @HiveSQL(files = {"CommentTest/comment.sql"})
-  public HiveShell hiveShell;
-  
-  @Test
-  public void testPreceedingFullLineComment() {
-    List<String> results = hiveShell.executeQuery("set x");
-    assertEquals(Arrays.asList("x=1"), results);
-  }
-  
-  @Test
-  public void testFullLineCommentInsideDeclaration() {
-    List<String> results = hiveShell.executeQuery("set y");
-    assertEquals(Arrays.asList("y=\"", "\""), results);
-  }
+    @HiveSQL(files = {"CommentTest/comment.sql"})
+    public HiveShell hiveShell;
+
+    @Test
+    public void testPreceedingFullLineComment() {
+        List<String> results = hiveShell.executeQuery("set x");
+        assertEquals(Arrays.asList("x=1"), results);
+    }
+
+    @Test
+    public void testFullLineCommentInsideDeclaration() {
+        List<String> results = hiveShell.executeQuery("set y");
+        assertEquals(Arrays.asList("y=\"", "\""), results);
+    }
 
 }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,72 +46,72 @@ import com.klarna.reflection.ReflectionUtils;
 
 public class HiveRunnerExtension implements AfterEachCallback, TestInstancePostProcessor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveRunnerExtension.class);
 
-  private final HiveRunnerCore core;
-  private final HiveRunnerConfig config = new HiveRunnerConfig();
-  private Path basedir;
-  private HiveShellContainer container;
-  protected List<Script> scriptsUnderTest = new ArrayList<Script>();
+    private final HiveRunnerCore core;
+    private final HiveRunnerConfig config = new HiveRunnerConfig();
+    private Path basedir;
+    private HiveShellContainer container;
+    protected List<Script> scriptsUnderTest = new ArrayList<Script>();
 
-  public HiveRunnerExtension() {
-    core = new HiveRunnerCore();
-  }
-  
-  protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
-    return core.getScriptPaths(annotation);
-  }
-
-  @Override
-  public void postProcessTestInstance(Object target, ExtensionContext extensionContext) {
-    setupConfig(target);
-    try {
-      basedir = Files.createTempDirectory("hiverunner_test");
-      container = createHiveServerContainer(scriptsUnderTest, target, basedir);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+    public HiveRunnerExtension() {
+        core = new HiveRunnerCore();
     }
-    scriptsUnderTest = container.getScriptsUnderTest();
-  }
 
-  private void setupConfig(Object target) {
-    Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-        Predicates.and(
-            withAnnotation(HiveRunnerSetup.class),
-            withType(HiveRunnerConfig.class)));
-
-    Preconditions.checkState(fields.size() <= 1,
-        "Only one field of type HiveRunnerConfig should be annotated with @HiveRunnerSetup");
-
-    if (!fields.isEmpty()) {
-      config.override(ReflectionUtils
-          .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
+    protected List<Path> getScriptPaths(HiveSQL annotation) throws URISyntaxException {
+        return core.getScriptPaths(annotation);
     }
-  }
 
-  private void tearDown(Object target) {
-    if (container != null) {
-      LOGGER.info("Tearing down {}", target.getClass());
-      container.tearDown();
+    @Override
+    public void postProcessTestInstance(Object target, ExtensionContext extensionContext) {
+        setupConfig(target);
+        try {
+            basedir = Files.createTempDirectory("hiverunner_test");
+            container = createHiveServerContainer(scriptsUnderTest, target, basedir);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        scriptsUnderTest = container.getScriptsUnderTest();
     }
-    deleteTempFolder(basedir);
-  }
 
-  private void deleteTempFolder(Path directory) {
-    try {
-      FileUtils.deleteDirectory(directory.toFile());
-    } catch (IOException e) {
-      LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+    private void setupConfig(Object target) {
+        Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
+                Predicates.and(
+                        withAnnotation(HiveRunnerSetup.class),
+                        withType(HiveRunnerConfig.class)));
+
+        Preconditions.checkState(fields.size() <= 1,
+                "Only one field of type HiveRunnerConfig should be annotated with @HiveRunnerSetup");
+
+        if (!fields.isEmpty()) {
+            config.override(ReflectionUtils
+                    .getFieldValue(target, fields.iterator().next().getName(), HiveRunnerConfig.class));
+        }
     }
-  }
 
-  private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase, Path basedir)
-      throws IOException {
-    return core.createHiveServerContainer(scripts, testCase, basedir, config);
-  }
+    private void tearDown(Object target) {
+        if (container != null) {
+            LOGGER.info("Tearing down {}", target.getClass());
+            container.tearDown();
+        }
+        deleteTempFolder(basedir);
+    }
 
-  @Override
-  public void afterEach(ExtensionContext extensionContext) {
-    tearDown(extensionContext.getRequiredTestInstance());
-  }
+    private void deleteTempFolder(Path directory) {
+        try {
+            FileUtils.deleteDirectory(directory.toFile());
+        } catch (IOException e) {
+            LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+        }
+    }
+
+    private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase, Path basedir)
+            throws IOException {
+        return core.createHiveServerContainer(scripts, testCase, basedir, config);
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) {
+        tearDown(extensionContext.getRequiredTestInstance());
+    }
 }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -62,13 +62,13 @@ public class StatementSplitter {
 
         // Only add statement that is not empty
         context.flush();
-        
-        List<Statement> hiveRunnerStatements  = new ArrayList<>();
+
+        List<Statement> hiveRunnerStatements = new ArrayList<>();
         int index = 0;
         for (String statement : context.getStatements()) {
-          hiveRunnerStatements.add(new HiveRunnerStatement(index++, statement));
+            hiveRunnerStatements.add(new HiveRunnerStatement(index++, statement));
         }
-        
+
         return hiveRunnerStatements;
     }
 
