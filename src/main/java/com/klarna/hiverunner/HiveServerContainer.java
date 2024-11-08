@@ -142,12 +142,12 @@ public class HiveServerContainer {
 
             LOGGER.debug("ResultSet:\n"
                     + Joiner.on("\n").join(Iterables.transform(resultSet, new Function<Object[], String>() {
-                        @Nullable
-                        @Override
-                        public String apply(@Nullable Object[] objects) {
-                            return Joiner.on(", ").useForNull("null").join(objects);
-                        }
-                    })));
+                @Nullable
+                @Override
+                public String apply(@Nullable Object[] objects) {
+                    return Joiner.on(", ").useForNull("null").join(objects);
+                }
+            })));
 
             return resultSet;
         } catch (HiveSQLException e) {
@@ -186,7 +186,7 @@ public class HiveServerContainer {
             client.closeSession(sessionHandle);
         } catch (Throwable e) {
             LOGGER.warn(
-                "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
+                    "Failed to close client session: " + e.getMessage() + ". Turn on log level debug for stacktrace");
             LOGGER.debug(e.getMessage(), e);
         }
 

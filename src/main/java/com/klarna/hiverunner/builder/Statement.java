@@ -18,14 +18,14 @@ package com.klarna.hiverunner.builder;
 
 public interface Statement {
 
-  /**
-   * Index of statement within all statements of script
-   */
-  int getIndex();
+    /**
+     * Index of statement within all statements of script
+     */
+    int getIndex();
 
-  /**
-   * Original sql of the statement
-   */
-  String getSql();
+    /**
+     * Original sql of the statement
+     */
+    String getSql();
 
 }

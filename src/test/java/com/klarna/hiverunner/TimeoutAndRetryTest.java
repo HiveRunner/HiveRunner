@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 public class TimeoutAndRetryTest {
 
     @HiveRunnerSetup
-    public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
+    public final static HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
         setTimeoutEnabled(true);
         String timoutSeconds = System.getProperty("TimeoutAndRetryTest.timeout.seconds");
         setTimeoutSeconds(timoutSeconds == null ? 30 : Integer.parseInt(timoutSeconds));
@@ -100,7 +100,7 @@ public class TimeoutAndRetryTest {
             try {
                 hiveShell.executeQuery("select nonstop(bar) from foo");
             } catch (Throwable e) {
-                System.out.println("Ignoring exception: "+  e.getMessage());
+                System.out.println("Ignoring exception: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
@@ -122,7 +122,7 @@ public class TimeoutAndRetryTest {
             try {
                 hiveShell.executeQuery("select nonstop(bar) from foo");
             } catch (Throwable e) {
-                System.out.println("Ignoring exception: "+  e.getMessage());
+                System.out.println("Ignoring exception: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
@@ -143,15 +143,13 @@ public class TimeoutAndRetryTest {
             try {
                 hiveShell.executeQuery("select nonstop(bar) from foo");
             } catch (Throwable e) {
-                System.out.println("Ignoring exception: "+  e.getMessage());
+                System.out.println("Ignoring exception: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
             System.out.println("SECOND RUN!!!!");
         }
     }
-
-
 
 
 }

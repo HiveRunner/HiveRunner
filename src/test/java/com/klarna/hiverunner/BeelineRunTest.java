@@ -85,21 +85,21 @@ public class BeelineRunTest {
         hiveCliShell.setCwd(temp.getRoot().toPath());
         hiveCliShell.start();
         hiveCliShell.execute(new StringBuilder()
-            .append("create database ${db};")
-            .append("create table ${db}.src (")
-            .append("c0 string, ")
-            .append("c1 string")
-            .append(");")
-            .toString());
+                .append("create database ${db};")
+                .append("create table ${db}.src (")
+                .append("c0 string, ")
+                .append("c1 string")
+                .append(");")
+                .toString());
         hiveCliShell.insertInto(TEST_DB, "src")
-            .addRow("A", "x")
-            .addRow("A", "y")
-            .addRow("B", "z")
-            .addRow("B", "y")
-            .addRow("C", "z")
-            .commit();
-        
-        
+                .addRow("A", "x")
+                .addRow("A", "y")
+                .addRow("B", "z")
+                .addRow("B", "y")
+                .addRow("C", "z")
+                .commit();
+
+
         hiveCliShell.execute(main);
 
         List<String> results = hiveCliShell.executeQuery("select * from db_c.c");

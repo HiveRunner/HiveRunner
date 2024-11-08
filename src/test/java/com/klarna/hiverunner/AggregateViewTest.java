@@ -31,20 +31,20 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class AggregateViewTest {
 
-  @HiveSQL(files = {})
-  private HiveShell shell;
+    @HiveSQL(files = {})
+    private HiveShell shell;
 
-  /**
-   * Adding unit test to check that issue#70 (https://github.com/klarna/HiveRunner/issues/70) doesn't happen anymore.
-   * This bug is solved when upgrading HiveRunner to version 4.0.0 or above (most likely due to move from Hive 1.x to 2.x).
-   */
-  @Test
-  public void aggregateView() {
-    this.shell.execute(Paths.get("src/test/resources/AggregateViewTest/create_table.sql"));
-    shell.insertInto("db", "mvtdescriptionchangeinfo").addRow("123", "testname", "REMOVED", "contents of test...", "hostname", "6/21/17","20").commit();
-    List<String> result = shell.executeQuery("SELECT * FROM db.latesttestchangepairs");
-    List<String> expected = Arrays.asList("testname\tREMOVED");
-    assertThat(result,is(expected));
-  }
+    /**
+     * Adding unit test to check that issue#70 (https://github.com/klarna/HiveRunner/issues/70) doesn't happen anymore.
+     * This bug is solved when upgrading HiveRunner to version 4.0.0 or above (most likely due to move from Hive 1.x to 2.x).
+     */
+    @Test
+    public void aggregateView() {
+        this.shell.execute(Paths.get("src/test/resources/AggregateViewTest/create_table.sql"));
+        shell.insertInto("db", "mvtdescriptionchangeinfo").addRow("123", "testname", "REMOVED", "contents of test...", "hostname", "6/21/17", "20").commit();
+        List<String> result = shell.executeQuery("SELECT * FROM db.latesttestchangepairs");
+        List<String> expected = Arrays.asList("testname\tREMOVED");
+        assertThat(result, is(expected));
+    }
 
 }

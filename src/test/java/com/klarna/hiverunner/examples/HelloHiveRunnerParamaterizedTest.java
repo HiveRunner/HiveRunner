@@ -45,14 +45,14 @@ public class HelloHiveRunnerParamaterizedTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "SEQUENCEFILE", "ORC", "PARQUET" })
+    @ValueSource(strings = {"SEQUENCEFILE", "ORC", "PARQUET"})
     public void testFileFormats(String fileFormat) {
-      shell.executeStatement(new StringBuilder()
-          .append("CREATE TABLE source_db.test_table (")
-          .append("year STRING, value INT")
-          .append(") stored as ")
-          .append(fileFormat)
-          .toString());
+        shell.executeStatement(new StringBuilder()
+                .append("CREATE TABLE source_db.test_table (")
+                .append("year STRING, value INT")
+                .append(") stored as ")
+                .append(fileFormat)
+                .toString());
 
         shell.insertInto("source_db", "test_table")
                 .withColumns("year", "value")

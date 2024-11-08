@@ -28,7 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class SetHiveExecutionEngineTest {
 
     @HiveRunnerSetup
-    public HiveRunnerConfig config = new HiveRunnerConfig(){{
+    public HiveRunnerConfig config = new HiveRunnerConfig() {{
         setHiveExecutionEngine("tez");
     }};
 

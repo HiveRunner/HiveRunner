@@ -27,7 +27,6 @@ public class SlowlyFailingUdf extends UDF {
     private static final Logger LOGGER = LoggerFactory.getLogger(SlowlyFailingUdf.class);
 
 
-
     public Text evaluate(Text value) throws InterruptedException {
         /**
          * Sleep a little while so that the timeout thread will have time to take the synchronize lock

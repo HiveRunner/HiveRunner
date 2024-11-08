@@ -51,10 +51,10 @@ public class SourceCommandPostProcessorTest {
     public void isImport() {
         assertThat(processor.isImport("source x"), is(true));
     }
-    
+
     @Test
     public void isImportSpaces() {
-      assertThat(processor.isImport("    source x    "), is(true));
+        assertThat(processor.isImport("    source x    "), is(true));
     }
 
     @Test
@@ -79,13 +79,13 @@ public class SourceCommandPostProcessorTest {
 
         assertThat(processor.statement("source x"), is(expected));
     }
-    
+
     @Test
     public void importStatementSpaces() {
-      List<String> expected = asList("statement x");
-      when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
-      
-      assertThat(processor.statement("    source x   "), is(expected));
+        List<String> expected = asList("statement x");
+        when(lexer.applyToPath(Paths.get("x"))).thenReturn(expected);
+
+        assertThat(processor.statement("    source x   "), is(expected));
     }
 
     @Test

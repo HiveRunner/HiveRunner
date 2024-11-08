@@ -26,18 +26,18 @@ import java.nio.file.Paths;
 @ExtendWith(HiveRunnerExtension.class)
 public class SetTest {
 
-	@HiveSQL(files = {}, autoStart = true)
+    @HiveSQL(files = {}, autoStart = true)
     private HiveShell shell;
 
-	/**
-	 *  This test doesn't actually fail but if it shows up as terminated in IntelliJ (which we can't assert on)
-	 *  then there is a problem.
-	 *
-	 *  See https://github.com/klarna/HiveRunner/issues/94 for more details.
-	 */
-	@Test
-	public void testWithSet() {
-		this.shell.execute(Paths.get("src/test/resources/SetTest/test_with_set.hql"));
-	}
+    /**
+     * This test doesn't actually fail but if it shows up as terminated in IntelliJ (which we can't assert on)
+     * then there is a problem.
+     *
+     * See https://github.com/klarna/HiveRunner/issues/94 for more details.
+     */
+    @Test
+    public void testWithSet() {
+        this.shell.execute(Paths.get("src/test/resources/SetTest/test_with_set.hql"));
+    }
 
 }

@@ -30,6 +30,7 @@ public class CommentUtilTest {
     public void nothingToStrip() {
         assertThat(stripFullLineComments("a;\nb;\n"), is(equalTo("a;\nb;")));
     }
+
     @Test
     public void commentToStrip() {
         assertThat(stripFullLineComments("a;\n-- comment\nb;\n"), is(equalTo("a;\nb;")));

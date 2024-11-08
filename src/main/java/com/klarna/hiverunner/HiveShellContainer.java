@@ -33,7 +33,7 @@ public interface HiveShellContainer extends HiveShell {
     void tearDown();
 
     /**
-     * Returns a List of the scripts being tested. 
+     * Returns a List of the scripts being tested.
      */
     List<Script> getScriptsUnderTest();
 }

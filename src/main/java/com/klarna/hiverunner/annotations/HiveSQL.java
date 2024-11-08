@@ -47,5 +47,5 @@ public @interface HiveSQL {
      * The encoding of the given files. Will default to java.nio.charset.Charset#defaultCharset
      */
     String encoding() default "";
-    
+
 }

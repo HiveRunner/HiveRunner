@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/** Base {@link Context} implementation. */
+/**
+ * Base {@link Context} implementation.
+ */
 class BaseContext implements Context {
 
     private final StringTokenizer tokenizer;

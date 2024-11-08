@@ -47,10 +47,10 @@ public class HelloHiveRunnerTest {
     public void setupSourceDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
-            .append("CREATE TABLE source_db.test_table (")
-            .append("year STRING, value INT")
-            .append(")")
-            .toString());
+                .append("CREATE TABLE source_db.test_table (")
+                .append("year STRING, value INT")
+                .append(")")
+                .toString());
     }
 
     @Before
@@ -64,12 +64,12 @@ public class HelloHiveRunnerTest {
          * Insert some source data
          */
         shell.insertInto("source_db", "test_table")
-            .withColumns("year", "value")
-            .addRow("2014", 3)
-            .addRow("2014", 4)
-            .addRow("2015", 2)
-            .addRow("2015", 5)
-            .commit();
+                .withColumns("year", "value")
+                .addRow("2014", 3)
+                .addRow("2014", 4)
+                .addRow("2015", 2)
+                .addRow("2015", 5)
+                .commit();
 
         /*
          * Execute the query

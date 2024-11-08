@@ -24,8 +24,12 @@ import java.util.StringTokenizer;
  */
 public interface Context {
     StringTokenizer tokenizer();
+
     String statement();
+
     void append(String chars);
+
     void appendWith(Consumer consumer);
+
     void flush();
 }

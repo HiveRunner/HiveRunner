@@ -35,94 +35,94 @@ import com.google.common.collect.Multimap;
 @ExtendWith(MockitoExtension.class)
 public class InsertIntoTableTest {
 
-  @Mock
-  private TableDataBuilder builder;
-  @Mock
-  private TableDataInserter inserter;
+    @Mock
+    private TableDataBuilder builder;
+    @Mock
+    private TableDataInserter inserter;
 
-  private InsertIntoTable insert;
+    private InsertIntoTable insert;
 
-  @BeforeEach
-  public void before() {
-    insert = new InsertIntoTable(builder, inserter);
-  }
+    @BeforeEach
+    public void before() {
+        insert = new InsertIntoTable(builder, inserter);
+    }
 
-  @Test
-  public void withColumns() {
-    String[] columns = new String[] { "columnA", "columnB" };
-    insert.withColumns(columns);
+    @Test
+    public void withColumns() {
+        String[] columns = new String[]{"columnA", "columnB"};
+        insert.withColumns(columns);
 
-    verify(builder).withColumns(columns);
-  }
+        verify(builder).withColumns(columns);
+    }
 
-  @Test
-  public void withAllColumns() {
-    insert.withAllColumns();
+    @Test
+    public void withAllColumns() {
+        insert.withAllColumns();
 
-    verify(builder).withAllColumns();
-  }
+        verify(builder).withAllColumns();
+    }
 
-  @Test
-  public void newRow() {
-    insert.newRow();
+    @Test
+    public void newRow() {
+        insert.newRow();
 
-    verify(builder).newRow();
-  }
+        verify(builder).newRow();
+    }
 
-  @Test
-  public void addRow() {
-    Object[] row = new Object[] { "columnA" };
-    insert.addRow(row);
+    @Test
+    public void addRow() {
+        Object[] row = new Object[]{"columnA"};
+        insert.addRow(row);
 
-    verify(builder).addRow(row);
-  }
+        verify(builder).addRow(row);
+    }
 
-  @Test
-  public void setRow() {
-    Object[] row = new Object[] { "columnA" };
-    insert.setRow(row);
+    @Test
+    public void setRow() {
+        Object[] row = new Object[]{"columnA"};
+        insert.setRow(row);
 
-    verify(builder).setRow(row);
-  }
+        verify(builder).setRow(row);
+    }
 
-  @Test
-  public void addRows() {
-    File file = new File("foo");
-    insert.addRowsFromTsv(file);
+    @Test
+    public void addRows() {
+        File file = new File("foo");
+        insert.addRowsFromTsv(file);
 
-    verify(builder).addRowsFromTsv(file);
-  }
+        verify(builder).addRowsFromTsv(file);
+    }
 
-  @Test
-  public void addRowsWithFileParser() {
-    File file = new File("foo");
-    FileParser parser = new TsvFileParser();
-    insert.addRowsFrom(file, parser);
+    @Test
+    public void addRowsWithFileParser() {
+        File file = new File("foo");
+        FileParser parser = new TsvFileParser();
+        insert.addRowsFrom(file, parser);
 
-    verify(builder).addRowsFrom(file, parser);
-  }
+        verify(builder).addRowsFrom(file, parser);
+    }
 
-  @Test
-  public void copyRow() {
-    insert.copyRow();
+    @Test
+    public void copyRow() {
+        insert.copyRow();
 
-    verify(builder).copyRow();
-  }
+        verify(builder).copyRow();
+    }
 
-  @Test
-  public void set() {
-    insert.set("a", "b");
+    @Test
+    public void set() {
+        insert.set("a", "b");
 
-    verify(builder).set("a", "b");
-  }
+        verify(builder).set("a", "b");
+    }
 
-  @Test
-  public void commit() {
-    Multimap<Map<String, String>, HCatRecord> map = mock(Multimap.class);
-    when(builder.build()).thenReturn(map);
-    insert.commit();
+    @Test
+    public void commit() {
+        Multimap<Map<String, String>, HCatRecord> map = mock(Multimap.class);
+        when(builder.build()).thenReturn(map);
+        insert.commit();
 
-    verify(inserter).insert(map);
+        verify(inserter).insert(map);
 
-  }
+    }
 }
