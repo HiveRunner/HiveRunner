@@ -42,5 +42,4 @@ enum PreV200HiveCliPreProcessor implements PreProcessor {
         return statement;
     }
 
-    ;
 }
