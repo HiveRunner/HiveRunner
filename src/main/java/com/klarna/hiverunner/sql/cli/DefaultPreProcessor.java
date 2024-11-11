@@ -32,5 +32,4 @@ public enum DefaultPreProcessor implements PreProcessor {
         return CommentUtil.stripFullLineComments(statement);
     }
 
-    ;
 }
