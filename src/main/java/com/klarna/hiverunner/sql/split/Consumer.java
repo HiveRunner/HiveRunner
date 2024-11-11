@@ -25,7 +25,9 @@ public interface Consumer {
 
     String consume(Context context);
 
-    /** A {@link Consumer} that consumes tokens until the end of the line. */
+    /**
+     * A {@link Consumer} that consumes tokens until the end of the line.
+     */
     public static Consumer UNTIL_EOL = new Consumer() {
 
         @Override

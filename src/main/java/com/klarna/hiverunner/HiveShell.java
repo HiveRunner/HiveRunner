@@ -177,6 +177,7 @@ public interface HiveShell {
      * <p>
      * May only be called pre #start()
      * </p>
+     *
      * @deprecated Use {@link HiveShell#setHiveConfValue(String, String)} instead
      */
     @Deprecated
@@ -292,6 +293,7 @@ public interface HiveShell {
 
     /**
      * Resolve all substituted variables with the hive conf.
+     *
      * @throws IllegalArgumentException if not all substitutes could be resolved
      * @throws IllegalStateException    if the HiveShell was not started yet.
      */
@@ -305,8 +307,8 @@ public interface HiveShell {
      *
      * @param targetFile The path to the target file relative to the hive work space.
      *
-     * See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
-     * with sequence files.
+     *                   See test class {@code com.klarna.hiverunner.ResourceOutputStreamTest#sequenceFile()} for an example of how this works.
+     *                   with sequence files.
      */
     OutputStream getResourceOutputStream(String targetFile);
 
@@ -317,7 +319,7 @@ public interface HiveShell {
      * </p>
      *
      * @param databaseName The database name
-     * @param tableName The table name
+     * @param tableName    The table name
      */
     InsertIntoTable insertInto(String databaseName, String tableName);
 }

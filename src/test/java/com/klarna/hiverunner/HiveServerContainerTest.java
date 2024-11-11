@@ -60,14 +60,14 @@ public class HiveServerContainerTest {
     public void testExecuteStatementMR() {
         List<Object[]> actual = container.executeStatement("show databases");
         Assertions.assertEquals(1, actual.size());
-        Assertions.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+        Assertions.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
 
     @Test
     public void testExecuteStatementTez() {
         List<Object[]> actual = container.executeStatement("show databases");
         Assertions.assertEquals(1, actual.size());
-        Assertions.assertArrayEquals(new Object[] { "default" }, actual.get(0));
+        Assertions.assertArrayEquals(new Object[]{"default"}, actual.get(0));
     }
 
     @Test
@@ -100,7 +100,9 @@ public class HiveServerContainerTest {
         try {
             container.executeStatement("use foo");
         } catch (IllegalArgumentException e) {
-            Assertions.assertThrows(HiveSQLException.class, () -> {throw e.getCause();});
+            Assertions.assertThrows(HiveSQLException.class, () -> {
+                throw e.getCause();
+            });
         }
     }
 }

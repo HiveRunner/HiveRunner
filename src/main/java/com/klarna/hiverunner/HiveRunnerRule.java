@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.nio.file.Path;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -68,10 +69,10 @@ public class HiveRunnerRule implements TestRule {
         private StandaloneHiveRunner runner;
 
         private HiveRunnerRuleStatement(
-            StandaloneHiveRunner runner,
-            Object target,
-            Statement base,
-            Path testBaseDir) {
+                StandaloneHiveRunner runner,
+                Object target,
+                Statement base,
+                Path testBaseDir) {
             this.runner = runner;
             this.target = target;
             this.base = base;

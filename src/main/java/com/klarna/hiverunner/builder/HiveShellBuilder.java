@@ -82,7 +82,7 @@ public class HiveShellBuilder {
     }
 
     public void setCommandShellEmulation(CommandShellEmulator commandShellEmulator) {
-      this.commandShellEmulator = commandShellEmulator;
+        this.commandShellEmulator = commandShellEmulator;
     }
 
     public HiveShellContainer buildShell() {
@@ -90,7 +90,7 @@ public class HiveShellBuilder {
     }
 
     public void overrideScriptsUnderTest(List<? extends Script> scripts) {
-      scriptsUnderTest = new ArrayList<>(scripts);
-  }
+        scriptsUnderTest = new ArrayList<>(scripts);
+    }
 }
 

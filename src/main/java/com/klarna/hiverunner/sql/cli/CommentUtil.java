@@ -16,10 +16,13 @@
  */
 package com.klarna.hiverunner.sql.cli;
 
-/** Utility methods for handling SQL comments. */
+/**
+ * Utility methods for handling SQL comments.
+ */
 public final class CommentUtil {
 
-    private CommentUtil() {}
+    private CommentUtil() {
+    }
 
     public static String stripFullLineComments(String statement) {
         StringBuilder newStatement = new StringBuilder(statement.length());

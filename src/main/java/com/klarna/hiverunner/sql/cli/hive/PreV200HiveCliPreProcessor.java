@@ -40,5 +40,7 @@ enum PreV200HiveCliPreProcessor implements PreProcessor {
     @Override
     public String statement(String statement) {
         return statement;
-    };
+    }
+
+    ;
 }

@@ -22,7 +22,8 @@ import com.klarna.hiverunner.sql.cli.hive.HiveCliEmulator;
 
 public class CommandShellEmulatorFactory {
 
-    private CommandShellEmulatorFactory() {}
+    private CommandShellEmulatorFactory() {
+    }
 
     public static CommandShellEmulator valueOf(String name) {
         if ("beeline".equalsIgnoreCase(name.trim())) {

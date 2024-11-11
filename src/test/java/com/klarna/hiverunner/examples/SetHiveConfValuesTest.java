@@ -64,7 +64,7 @@ public class SetHiveConfValuesTest {
     @Test
     public void useHiveConfValues() {
         List<Object[]> result = shell.executeStatement(
-            "select message from source_db.table_a where value > ${hiveconf:cutoff}");
+                "select message from source_db.table_a where value > ${hiveconf:cutoff}");
 
         for (Object[] row : result) {
             System.out.print(row[0] + " ");

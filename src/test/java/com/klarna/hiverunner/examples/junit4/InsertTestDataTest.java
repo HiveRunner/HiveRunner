@@ -49,20 +49,20 @@ public class InsertTestDataTest {
     public void setupDatabase() {
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
-            .append("CREATE TABLE source_db.test_table (")
-            .append("col_a STRING, col_b INT, col_c BOOLEAN")
-            .append(")")
-            .toString());
+                .append("CREATE TABLE source_db.test_table (")
+                .append("col_a STRING, col_b INT, col_c BOOLEAN")
+                .append(")")
+                .toString());
     }
 
 
     @Test
     public void insertRowsFromCode() {
         shell.insertInto("source_db", "test_table")
-            .withAllColumns()
-            .addRow("Value1", 1, true)
-            .addRow("Value2", 99, false)
-            .commit();
+                .withAllColumns()
+                .addRow("Value1", 1, true)
+                .addRow("Value2", 99, false)
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
@@ -71,10 +71,10 @@ public class InsertTestDataTest {
     @Test
     public void insertRowsFromCodeWithSelectedColumns() {
         shell.insertInto("source_db", "test_table")
-            .withColumns("col_a", "col_c")
-            .addRow("Value1", true)
-            .addRow("Value2", false)
-            .commit();
+                .withColumns("col_a", "col_c")
+                .addRow("Value1", true)
+                .addRow("Value2", false)
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
@@ -84,9 +84,9 @@ public class InsertTestDataTest {
     public void insertRowsFromTsvFile() {
         File dataFile = new File("src/test/resources/InsertTestDataTest/data1.tsv");
         shell.insertInto("source_db", "test_table")
-            .withAllColumns()
-            .addRowsFromTsv(dataFile)
-            .commit();
+                .withAllColumns()
+                .addRowsFromTsv(dataFile)
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
@@ -97,8 +97,8 @@ public class InsertTestDataTest {
         File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader1.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
-            .addRowsFrom(dataFile, parser)
-            .commit();
+                .addRowsFrom(dataFile, parser)
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
@@ -108,8 +108,8 @@ public class InsertTestDataTest {
         File dataFile = new File("src/test/resources/InsertTestDataTest/dataWithHeader2.tsv");
         TsvFileParser parser = new TsvFileParser().withHeader();
         shell.insertInto("source_db", "test_table")
-            .addRowsFrom(dataFile, parser)
-            .commit();
+                .addRowsFrom(dataFile, parser)
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table"));
     }
@@ -119,24 +119,24 @@ public class InsertTestDataTest {
     public void insertRowsIntoPartitionedTableStoredAsSequencefileWithCustomDelimiterAndNullValue() {
         File dataFile = new File("src/test/resources/InsertTestDataTest/data2.tsv");
         shell.execute(new StringBuilder()
-            .append("CREATE TABLE source_db.test_table2 (")
-            .append("col_a STRING, col_b INT")
-            .append(")")
-            .append("partitioned by (col_c string)")
-            .append("stored as SEQUENCEFILE")
-            .toString());
+                .append("CREATE TABLE source_db.test_table2 (")
+                .append("col_a STRING, col_b INT")
+                .append(")")
+                .append("partitioned by (col_c string)")
+                .append("stored as SEQUENCEFILE")
+                .toString());
 
         shell.insertInto("source_db", "test_table2")
-            .withAllColumns()
-            .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
-            .commit();
+                .withAllColumns()
+                .addRowsFrom(dataFile, new TsvFileParser().withDelimiter(":").withNullValue("__NULL__"))
+                .commit();
 
         printResult(shell.executeStatement("select * from source_db.test_table2"));
     }
 
 
     public void printResult(List<Object[]> result) {
-        System.out.println(String.format("Result from %s:",name.getMethodName()));
+        System.out.println(String.format("Result from %s:", name.getMethodName()));
         for (Object[] row : result) {
             System.out.println(Arrays.asList(row));
         }

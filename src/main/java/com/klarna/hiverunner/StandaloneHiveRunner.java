@@ -72,7 +72,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
-      return config;
+        return config;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     protected final void runTestMethod(FrameworkMethod method,
-        EachTestNotifier notifier, int retriesLeft) {
+                                       EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -157,7 +157,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Drives the unit test.
      */
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-        Path temporaryFolder, Statement base) throws Throwable {
+                                                Path temporaryFolder, Statement base) throws Throwable {
         container = null;
         File temporaryFile = temporaryFolder.toFile();
         if (!temporaryFile.exists()) {
@@ -174,14 +174,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void tearDown(){
+    private void tearDown() {
         tearDownContainer();
         if (container != null) {
-          deleteTempFolder(container.getBaseDir());
+            deleteTempFolder(container.getBaseDir());
         }
     }
 
-    private void tearDownContainer(){
+    private void tearDownContainer() {
         if (container != null) {
             LOGGER.info("Tearing down {}", getName());
             try {
@@ -196,7 +196,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         try {
             FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
-          LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+            LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
         }
     }
 
@@ -204,8 +204,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
     private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-        Path baseDir)
-        throws IOException {
+                                                         Path baseDir)
+            throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
     }
@@ -215,7 +215,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
             @Override
             public Statement apply(Statement base, Description description) {
                 Set<Field> fields = ReflectionUtils.getAllFields(target.getClass(),
-                    withType(HiveRunnerConfig.class).and(withAnnotation(HiveRunnerSetup.class)));
+                        withType(HiveRunnerConfig.class).and(withAnnotation(HiveRunnerSetup.class)));
 
                 Preconditions.checkState(fields.size() <= 1,
                         "Exact one field of type HiveRunnerConfig should to be annotated with @HiveRunnerSetup");

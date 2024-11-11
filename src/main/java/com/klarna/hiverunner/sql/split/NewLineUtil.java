@@ -30,7 +30,7 @@ enum NewLineUtil {
 
     INSTANCE;
 
-    private static final Set<Character> LINE_BREAKS = new HashSet<>(Arrays.<Character> asList('\n', '\r', '\f'));
+    private static final Set<Character> LINE_BREAKS = new HashSet<>(Arrays.<Character>asList('\n', '\r', '\f'));
 
     static String removeLeadingTrailingNewLines(String in) {
         int leadingBreakPosition = -1;

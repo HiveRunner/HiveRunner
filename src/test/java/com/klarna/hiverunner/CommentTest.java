@@ -28,19 +28,19 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 
 @ExtendWith(HiveRunnerExtension.class)
 public class CommentTest {
-  @HiveSQL(files = {"CommentTest/comment.sql"})
-  public HiveShell hiveShell;
-  
-  @Test
-  public void testPreceedingFullLineComment() {
-    List<String> results = hiveShell.executeQuery("set x");
-    assertEquals(Arrays.asList("x=1"), results);
-  }
-  
-  @Test
-  public void testFullLineCommentInsideDeclaration() {
-    List<String> results = hiveShell.executeQuery("set y");
-    assertEquals(Arrays.asList("y=\"", "\""), results);
-  }
+    @HiveSQL(files = {"CommentTest/comment.sql"})
+    public HiveShell hiveShell;
+
+    @Test
+    public void testPreceedingFullLineComment() {
+        List<String> results = hiveShell.executeQuery("set x");
+        assertEquals(Arrays.asList("x=1"), results);
+    }
+
+    @Test
+    public void testFullLineCommentInsideDeclaration() {
+        List<String> results = hiveShell.executeQuery("set y");
+        assertEquals(Arrays.asList("y=\"", "\""), results);
+    }
 
 }

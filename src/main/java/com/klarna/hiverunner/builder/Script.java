@@ -20,13 +20,13 @@ import java.nio.file.Path;
 
 public interface Script {
 
-  /**
-   * index of script within all scripts in source
-   */
-  int getIndex();
+    /**
+     * index of script within all scripts in source
+     */
+    int getIndex();
 
-  Path getPath();
+    Path getPath();
 
-  String getSql();
+    String getSql();
 
 }

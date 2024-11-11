@@ -35,13 +35,13 @@ public class BaseContextTest {
 
     @Mock
     private Consumer consumer;
-    
+
     private BaseContext context = new BaseContext(new StringTokenizer(""));
 
     @Test
     public void appendAndFlush() {
         context.append("abc");
-        assertThat(context.getStatements(), is(Collections.<String> emptyList()));
+        assertThat(context.getStatements(), is(Collections.<String>emptyList()));
         context.append("def");
         context.flush();
         assertThat(context.getStatements(), is(singletonList("abcdef")));
@@ -54,7 +54,7 @@ public class BaseContextTest {
         context.flush();
         assertThat(context.statement(), is(""));
     }
-    
+
     @Test
     public void appendWith() {
         when(consumer.consume(context)).thenReturn("statement");

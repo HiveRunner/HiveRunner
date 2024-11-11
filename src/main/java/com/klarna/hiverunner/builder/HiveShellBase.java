@@ -66,7 +66,7 @@ class HiveShellBase implements HiveShell {
     protected Path cwd;
 
     HiveShellBase(HiveServerContainer hiveServerContainer, Map<String, String> hiveConf, List<String> setupScripts,
-            List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
+                  List<HiveResource> resources, List<Script> scriptsUnderTest, CommandShellEmulator commandShellEmulator) {
         this.hiveServerContainer = hiveServerContainer;
         this.hiveConf = hiveConf;
         this.commandShellEmulator = commandShellEmulator;
@@ -403,7 +403,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, File script, String rowValuesDelimitedBy,
-            String replaceNullWith) {
+                                     String replaceNullWith) {
         return executeQuery(charset, Paths.get(script.toURI()), rowValuesDelimitedBy, replaceNullWith);
     }
 
@@ -413,7 +413,7 @@ class HiveShellBase implements HiveShell {
 
     @Override
     public List<String> executeQuery(Charset charset, Path script, String rowValuesDelimitedBy,
-            String replaceNullWith) {
+                                     String replaceNullWith) {
         assertStarted();
         assertFileExists(script);
         try {

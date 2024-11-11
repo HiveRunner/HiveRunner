@@ -40,7 +40,7 @@ public class StatementSplitter {
     }
 
     /**
-     * @param rules Order of rules defines processing precedence. 
+     * @param rules Order of rules defines processing precedence.
      */
     public StatementSplitter(List<TokenRule> rules, String specialChars) {
         this.rules = rules;
@@ -62,13 +62,13 @@ public class StatementSplitter {
 
         // Only add statement that is not empty
         context.flush();
-        
-        List<Statement> hiveRunnerStatements  = new ArrayList<>();
+
+        List<Statement> hiveRunnerStatements = new ArrayList<>();
         int index = 0;
         for (String statement : context.getStatements()) {
-          hiveRunnerStatements.add(new HiveRunnerStatement(index++, statement));
+            hiveRunnerStatements.add(new HiveRunnerStatement(index++, statement));
         }
-        
+
         return hiveRunnerStatements;
     }
 

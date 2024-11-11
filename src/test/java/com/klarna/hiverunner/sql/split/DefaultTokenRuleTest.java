@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class DefaultTokenRuleTest {
 
     private static TokenRule rule = DefaultTokenRule.INSTANCE;
-    
+
     @Mock
     private Context context;
 
@@ -36,5 +36,5 @@ public class DefaultTokenRuleTest {
         rule.handle("x", context);
         verify(context).append("x");
     }
-    
+
 }

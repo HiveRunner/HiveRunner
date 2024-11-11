@@ -20,56 +20,56 @@ import com.klarna.hiverunner.builder.Statement;
 
 public class HiveRunnerStatement implements Statement {
 
-  private final int index;
-  private final String sql;
+    private final int index;
+    private final String sql;
 
-  public HiveRunnerStatement(int index, String sql) {
-    this.index = index;
-    this.sql = sql;
-  }
+    public HiveRunnerStatement(int index, String sql) {
+        this.index = index;
+        this.sql = sql;
+    }
 
-  @Override
-  public int getIndex() {
-    return index;
-  }
+    @Override
+    public int getIndex() {
+        return index;
+    }
 
-  @Override
-  public String getSql() {
-    return sql;
-  }
+    @Override
+    public String getSql() {
+        return sql;
+    }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + index;
-    result = prime * result + ((sql == null) ? 0 : sql.hashCode());
-    return result;
-  }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + index;
+        result = prime * result + ((sql == null) ? 0 : sql.hashCode());
+        return result;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    HiveRunnerStatement other = (HiveRunnerStatement) obj;
-    if (index != other.index)
-      return false;
-    if (sql == null) {
-      if (other.sql != null)
-        return false;
-    } else if (!sql.equals(other.sql))
-      return false;
-    return true;
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HiveRunnerStatement other = (HiveRunnerStatement) obj;
+        if (index != other.index)
+            return false;
+        if (sql == null) {
+            if (other.sql != null)
+                return false;
+        } else if (!sql.equals(other.sql))
+            return false;
+        return true;
+    }
 
-  @Override
-  public String toString() {
-    return "HiveRunnerStatement [index=" + index + ", sql=" + sql + "]";
-  }
+    @Override
+    public String toString() {
+        return "HiveRunnerStatement [index=" + index + ", sql=" + sql + "]";
+    }
 
-  
+
 }

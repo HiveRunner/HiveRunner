@@ -21,10 +21,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/** A {@link TokenRule} for handling quoted character sequences. */
+/**
+ * A {@link TokenRule} for handling quoted character sequences.
+ */
 public enum PreserveQuotesRule implements TokenRule {
     INSTANCE;
-    
+
     private static final Pattern LAST_CHAR_NOT_ESCAPED_PATTERN = Pattern.compile(".*[^\\\\].", Pattern.DOTALL);
 
     @Override
@@ -38,13 +40,13 @@ public enum PreserveQuotesRule implements TokenRule {
     }
 
     static class QuotedStringConsumer implements Consumer {
-        
+
         private final String token;
 
         QuotedStringConsumer(String token) {
             this.token = token;
         }
-        
+
         @Override
         public String consume(Context context) {
             String quotedString = token;
@@ -59,5 +61,5 @@ public enum PreserveQuotesRule implements TokenRule {
             return quotedString;
         }
     }
-    
+
 }

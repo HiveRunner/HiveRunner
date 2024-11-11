@@ -30,5 +30,7 @@ public enum DefaultPreProcessor implements PreProcessor {
     @Override
     public String statement(String statement) {
         return CommentUtil.stripFullLineComments(statement);
-    };
+    }
+
+    ;
 }

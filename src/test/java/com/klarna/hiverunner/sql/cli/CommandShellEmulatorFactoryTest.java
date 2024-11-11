@@ -44,16 +44,18 @@ public class CommandShellEmulatorFactoryTest {
         assertThat(valueOf("HIVE_CLI"), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
         assertThat(valueOf(" hIvE_cLi  "), is(equalTo((CommandShellEmulator) HiveCliEmulator.INSTANCE)));
     }
-    
+
     @Test
     public void hiveCliPreV130() {
-      assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-      assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
-      assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf("hive_cli_pre_v200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf("HIVE_CLI_PRE_V200"), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
+        assertThat(valueOf(" hIvE_cLi_PrE_v200  "), is(equalTo((CommandShellEmulator) PreV200HiveCliEmulator.INSTANCE)));
     }
 
     @Test
     public void unknown() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {valueOf("unknown");});
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            valueOf("unknown");
+        });
     }
 }

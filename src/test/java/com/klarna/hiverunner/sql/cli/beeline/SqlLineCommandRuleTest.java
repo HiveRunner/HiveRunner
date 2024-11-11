@@ -34,7 +34,7 @@ public class SqlLineCommandRuleTest {
 
     @Mock
     private Context context;
-    
+
     @Test
     public void handleStart() {
         when(context.statement()).thenReturn(" ");
@@ -43,7 +43,7 @@ public class SqlLineCommandRuleTest {
         verify(context).appendWith(Consumer.UNTIL_EOL);
         verify(context).flush();
     }
-    
+
     @Test
     public void handleOther() {
         when(context.statement()).thenReturn("statement");
@@ -52,5 +52,5 @@ public class SqlLineCommandRuleTest {
         verify(context, never()).appendWith(any(Consumer.class));
         verify(context, never()).flush();
     }
-    
+
 }

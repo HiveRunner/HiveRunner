@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(StandaloneHiveRunner.class)
 public class HiveVariablesTest {
-  
+
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
@@ -97,7 +97,7 @@ public class HiveVariablesTest {
         shell.execute("Create database ${system:bar}${system:foo}");
         Assertions.assertEquals("nice dog", shell.expandVariableSubstitutes("${system:bar} ${system:foo}"));
     }
-    
+
     @Test
     public void testEnvironmentVar() {
         environmentVariables.set("foo", "dog");
