@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -62,102 +62,102 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class Converters {
 
-  static final Map<PrimitiveTypeInfo, Class<?>> TYPES = ImmutableMap
-      .<PrimitiveTypeInfo, Class<?>> builder()
-      .put(stringTypeInfo, String.class)
-      .put(booleanTypeInfo, Boolean.class)
-      .put(byteTypeInfo, Byte.class)
-      .put(shortTypeInfo, Short.class)
-      .put(intTypeInfo, Integer.class)
-      .put(longTypeInfo, Long.class)
-      .put(floatTypeInfo, Float.class)
-      .put(doubleTypeInfo, Double.class)
-      .put(dateTypeInfo, Date.class)
-      .put(timestampTypeInfo, Timestamp.class)
-      .put(binaryTypeInfo, Byte[].class)
-      .build();
+    static final Map<PrimitiveTypeInfo, Class<?>> TYPES = ImmutableMap
+            .<PrimitiveTypeInfo, Class<?>>builder()
+            .put(stringTypeInfo, String.class)
+            .put(booleanTypeInfo, Boolean.class)
+            .put(byteTypeInfo, Byte.class)
+            .put(shortTypeInfo, Short.class)
+            .put(intTypeInfo, Integer.class)
+            .put(longTypeInfo, Long.class)
+            .put(floatTypeInfo, Float.class)
+            .put(doubleTypeInfo, Double.class)
+            .put(dateTypeInfo, Date.class)
+            .put(timestampTypeInfo, Timestamp.class)
+            .put(binaryTypeInfo, Byte[].class)
+            .build();
 
-  private static final ConvertUtilsBean CONVERTER;
+    private static final ConvertUtilsBean CONVERTER;
 
-  static {
-    CONVERTER = new ConvertUtilsBean();
-    CONVERTER.register(new StringConverter(), String.class);
-    CONVERTER.register(new BooleanConverter(), Boolean.class);
-    CONVERTER.register(new ByteConverter(), Byte.class);
-    CONVERTER.register(new ShortConverter(), Short.class);
-    CONVERTER.register(new IntegerConverter(), Integer.class);
-    CONVERTER.register(new LongConverter(), Long.class);
-    CONVERTER.register(new FloatConverter(), Float.class);
-    CONVERTER.register(new DoubleConverter(), Double.class);
-    CONVERTER.register(new SqlDateConverter(), Date.class);
-    CONVERTER.register(new SqlTimestampConverter(), Timestamp.class);
-    CONVERTER.register(new ByteArrayConverter(), Byte[].class);
-    CONVERTER.register(new HiveDecimalConverter(), HiveDecimal.class);
-    CONVERTER.register(new HiveVarcharConverter(), HiveVarchar.class);
-    CONVERTER.register(new HiveCharConverter(), HiveChar.class);
-  }
-
-  private Converters() {
-  }
-
-  static Class<?> type(PrimitiveTypeInfo typeInfo) {
-    Class<?> type = TYPES.get(typeInfo);
-    if (type == null) {
-      if (typeInfo instanceof DecimalTypeInfo) {
-        type = HiveDecimal.class;
-      } else if (typeInfo instanceof VarcharTypeInfo) {
-        type = HiveVarchar.class;
-      } else if (typeInfo instanceof CharTypeInfo) {
-        type = HiveChar.class;
-      } else {
-        type = String.class;
-      }
+    static {
+        CONVERTER = new ConvertUtilsBean();
+        CONVERTER.register(new StringConverter(), String.class);
+        CONVERTER.register(new BooleanConverter(), Boolean.class);
+        CONVERTER.register(new ByteConverter(), Byte.class);
+        CONVERTER.register(new ShortConverter(), Short.class);
+        CONVERTER.register(new IntegerConverter(), Integer.class);
+        CONVERTER.register(new LongConverter(), Long.class);
+        CONVERTER.register(new FloatConverter(), Float.class);
+        CONVERTER.register(new DoubleConverter(), Double.class);
+        CONVERTER.register(new SqlDateConverter(), Date.class);
+        CONVERTER.register(new SqlTimestampConverter(), Timestamp.class);
+        CONVERTER.register(new ByteArrayConverter(), Byte[].class);
+        CONVERTER.register(new HiveDecimalConverter(), HiveDecimal.class);
+        CONVERTER.register(new HiveVarcharConverter(), HiveVarchar.class);
+        CONVERTER.register(new HiveCharConverter(), HiveChar.class);
     }
-    return type;
-  }
 
-  /**
-   * Attempts to convert the input value into the target type. If the input value is {@code null} then {@code null} is
-   * returned. If the input value is a String then an attempt is made to convert it into the target type. If the input
-   * value is not a {@link String} then it is assumed the user has explicitly chosen the required type and no attempt is
-   * made to perform a conversion. This may result in Hive throwing an error if the incorrect type was chosen.
-   *
-   * @param value The input value.
-   * @param typeInfo The target Table's column type.
-   */
-  public static Object convert(Object value, PrimitiveTypeInfo typeInfo) {
-    if (value == null) {
-      return null;
+    private Converters() {
     }
-    if (value instanceof String) {
-      return CONVERTER.convert((String) value, type(typeInfo));
-    }
-    return value;
-  }
 
-  private static class HiveDecimalConverter implements Converter {
-    @Override
-    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
-      try {
-        return HiveDecimal.create(new BigDecimal(value.toString()));
-      } catch (NumberFormatException e) {
-        throw new ConversionException(e);
-      }
+    static Class<?> type(PrimitiveTypeInfo typeInfo) {
+        Class<?> type = TYPES.get(typeInfo);
+        if (type == null) {
+            if (typeInfo instanceof DecimalTypeInfo) {
+                type = HiveDecimal.class;
+            } else if (typeInfo instanceof VarcharTypeInfo) {
+                type = HiveVarchar.class;
+            } else if (typeInfo instanceof CharTypeInfo) {
+                type = HiveChar.class;
+            } else {
+                type = String.class;
+            }
+        }
+        return type;
     }
-  }
 
-  private static class HiveVarcharConverter implements Converter {
-    @Override
-    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
-      return new HiveVarchar(value.toString(), -1);
+    /**
+     * Attempts to convert the input value into the target type. If the input value is {@code null} then {@code null} is
+     * returned. If the input value is a String then an attempt is made to convert it into the target type. If the input
+     * value is not a {@link String} then it is assumed the user has explicitly chosen the required type and no attempt is
+     * made to perform a conversion. This may result in Hive throwing an error if the incorrect type was chosen.
+     *
+     * @param value The input value.
+     * @param typeInfo The target Table's column type.
+     */
+    public static Object convert(Object value, PrimitiveTypeInfo typeInfo) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof String) {
+            return CONVERTER.convert((String) value, type(typeInfo));
+        }
+        return value;
     }
-  }
 
-  private static class HiveCharConverter implements Converter {
-    @Override
-    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
-      return new HiveChar(value.toString(), -1);
+    private static class HiveDecimalConverter implements Converter {
+        @Override
+        public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+            try {
+                return HiveDecimal.create(new BigDecimal(value.toString()));
+            } catch (NumberFormatException e) {
+                throw new ConversionException(e);
+            }
+        }
     }
-  }
+
+    private static class HiveVarcharConverter implements Converter {
+        @Override
+        public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+            return new HiveVarchar(value.toString(), -1);
+        }
+    }
+
+    private static class HiveCharConverter implements Converter {
+        @Override
+        public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+            return new HiveChar(value.toString(), -1);
+        }
+    }
 
 }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -177,7 +177,7 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
     protected void configureAssertionStatus(HiveConf conf) {
         ClassLoader.getSystemClassLoader().setPackageAssertionStatus("org.apache.hadoop.hive.serde2.objectinspector",
-            false);
+                false);
     }
 
     protected void configureSupportConcurrency(HiveConf conf) {
@@ -211,15 +211,15 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     private void configureDerbyLog() {
-          // overriding default derby log path to not go to root of project
-          File derbyLogFile;
-          try {
-              derbyLogFile = File.createTempFile("derby", ".log");
-              LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
-          } catch (IOException e) {
-              throw new UncheckedIOException("Error creating temporary derby log file", e);
-          }
-          System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
+        // overriding default derby log path to not go to root of project
+        File derbyLogFile;
+        try {
+            derbyLogFile = File.createTempFile("derby", ".log");
+            LOGGER.debug("Derby set to log to " + derbyLogFile.getAbsolutePath());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error creating temporary derby log file", e);
+        }
+        System.setProperty("derby.stream.error.file", derbyLogFile.getAbsolutePath());
     }
 
     protected void configureFileSystem(Path basedir, HiveConf conf) throws IOException {
@@ -267,12 +267,12 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected final void createAndSetFolderProperty(HiveConf.ConfVars var, String folder, HiveConf conf, Path basedir)
-        throws IOException {
+            throws IOException {
         conf.setVar(var, newFolder(basedir, folder).toAbsolutePath().toString());
     }
 
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, Path basedir)
-        throws IOException {
+            throws IOException {
         conf.set(key, newFolder(basedir, folder).toAbsolutePath().toString());
     }
 }

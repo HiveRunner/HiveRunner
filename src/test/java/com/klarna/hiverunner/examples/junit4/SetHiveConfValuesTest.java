@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,17 +46,17 @@ public class SetHiveConfValuesTest {
 
         shell.execute("CREATE DATABASE source_db");
         shell.execute(new StringBuilder()
-            .append("CREATE TABLE source_db.table_a (")
-            .append("message STRING, value INT")
-            .append(")")
-            .toString());
+                .append("CREATE TABLE source_db.table_a (")
+                .append("message STRING, value INT")
+                .append(")")
+                .toString());
 
         shell.insertInto("source_db", "table_a")
-            .withAllColumns()
-            .addRow("An ignored message", 1)
-            .addRow("Hello", 51)
-            .addRow("World", 99)
-            .commit();
+                .withAllColumns()
+                .addRow("An ignored message", 1)
+                .addRow("Hello", 51)
+                .addRow("World", 99)
+                .commit();
     }
 
     @Test

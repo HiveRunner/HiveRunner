@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,7 +73,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
     }
 
     protected HiveRunnerConfig getHiveRunnerConfig() {
-      return config;
+        return config;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Runs a {@link Statement} that represents a leaf (aka atomic) test.
      */
     protected final void runTestMethod(FrameworkMethod method,
-        EachTestNotifier notifier, int retriesLeft) {
+                                       EachTestNotifier notifier, int retriesLeft) {
 
         Statement statement = methodBlock(method);
 
@@ -158,7 +158,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Drives the unit test.
      */
     public HiveShellContainer evaluateStatement(List<? extends Script> scripts, Object target,
-        Path temporaryFolder, Statement base) throws Throwable {
+                                                Path temporaryFolder, Statement base) throws Throwable {
         container = null;
         File temporaryFile = temporaryFolder.toFile();
         if (!temporaryFile.exists()) {
@@ -175,14 +175,14 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    private void tearDown(){
+    private void tearDown() {
         tearDownContainer();
         if (container != null) {
-          deleteTempFolder(container.getBaseDir());
+            deleteTempFolder(container.getBaseDir());
         }
     }
 
-    private void tearDownContainer(){
+    private void tearDownContainer() {
         if (container != null) {
             LOGGER.info("Tearing down {}", getName());
             try {
@@ -197,7 +197,7 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
         try {
             FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
-          LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
+            LOGGER.debug("Temporary folder was not deleted successfully: " + directory);
         }
     }
 
@@ -205,8 +205,8 @@ public class StandaloneHiveRunner extends BlockJUnit4ClassRunner {
      * Traverses the test case annotations. Will inject a HiveShell in the test case that envelopes the HiveServer.
      */
     private HiveShellContainer createHiveServerContainer(List<? extends Script> scripts, Object testCase,
-        Path baseDir)
-        throws IOException {
+                                                         Path baseDir)
+            throws IOException {
         HiveRunnerCore core = new HiveRunnerCore();
 
         return core.createHiveServerContainer(scripts, testCase, baseDir, config);
