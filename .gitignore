@@ -17,7 +17,7 @@ nbactions.xml
 
 # Maven target #
 ################
-*/target/**
+/target/**
 
 # H2 db files #
 ###############
@@ -29,7 +29,6 @@ mem.lock.db
 testdb.log
 testdb.properties
 testdb.script
-
 
 # Packages #
 ############
@@ -64,7 +63,6 @@ Thumbs.db
 # Temporary files #
 ###################
 *~
-/target/
 
 # Eclipse #
 ###########
@@ -77,4 +75,10 @@ Thumbs.db
 .gradle/
 *.eml
 
+# jEnv #
+########
+/.java-version
+
+# Misc #
+########
 /pubring.kbx
