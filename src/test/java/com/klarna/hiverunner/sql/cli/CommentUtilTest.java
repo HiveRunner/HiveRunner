@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,7 @@ public class CommentUtilTest {
     public void nothingToStrip() {
         assertThat(stripFullLineComments("a;\nb;\n"), is(equalTo("a;\nb;")));
     }
+
     @Test
     public void commentToStrip() {
         assertThat(stripFullLineComments("a;\n-- comment\nb;\n"), is(equalTo("a;\nb;")));

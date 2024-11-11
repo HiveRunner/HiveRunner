@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,15 +30,15 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 @ExtendWith(HiveRunnerExtension.class)
 public class HiveRunnerExtensionTest {
 
-  @HiveSQL(files = { "HiveRunnerExtensionTest/test_query.sql" })
-  private HiveShell shell;
+    @HiveSQL(files = {"HiveRunnerExtensionTest/test_query.sql"})
+    private HiveShell shell;
 
-  @Test
-  public void shellFindFiles(){
-    shell.insertInto("testdb", "test_table").addRow("v1", "v2").commit();
-    List<String> actual = shell.executeQuery("select * from testdb.test_table");
-    List<String> expected = Arrays.asList("v1\tv2");
-    assertThat(actual,is(expected));
-  }
+    @Test
+    public void shellFindFiles() {
+        shell.insertInto("testdb", "test_table").addRow("v1", "v2").commit();
+        List<String> actual = shell.executeQuery("select * from testdb.test_table");
+        List<String> expected = Arrays.asList("v1\tv2");
+        assertThat(actual, is(expected));
+    }
 
 }

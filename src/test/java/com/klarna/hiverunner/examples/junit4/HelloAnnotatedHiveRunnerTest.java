@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@ public class HelloAnnotatedHiveRunnerTest {
      * See {@link HiveRunnerConfig} for further details.
      */
     @HiveRunnerSetup
-    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig(){{
+    public final HiveRunnerConfig CONFIG = new HiveRunnerConfig() {{
         setHiveExecutionEngine("mr");
     }};
 
@@ -59,9 +59,9 @@ public class HelloAnnotatedHiveRunnerTest {
      */
     @HiveProperties
     public Map<String, String> hiveProperties = MapUtils.putAll(new HashMap(), new Object[]{
-        "MY.HDFS.DIR", "${hadoop.tmp.dir}",
-        "my.schema", "bar",
-        });
+            "MY.HDFS.DIR", "${hadoop.tmp.dir}",
+            "my.schema", "bar",
+    });
 
     /**
      * In this example, the scripts under test expects a schema to be already present in hive so
@@ -89,7 +89,7 @@ public class HelloAnnotatedHiveRunnerTest {
      */
     @HiveResource(targetFile = "${hiveconf:MY.HDFS.DIR}/foo/data_from_file.csv")
     private File dataFromFile =
-        new File(ClassLoader.getSystemResource("HelloHiveRunnerTest/hello_hive_runner.csv").getPath());
+            new File(ClassLoader.getSystemResource("HelloHiveRunnerTest/hello_hive_runner.csv").getPath());
 
     /**
      * Define the script files under test. The files will be loaded in the given order.
@@ -97,8 +97,8 @@ public class HelloAnnotatedHiveRunnerTest {
      * The HiveRunner instantiate and inject the HiveShell
      */
     @HiveSQL(files = {
-        "HelloHiveRunnerTest/create_table.sql",
-        "HelloHiveRunnerTest/create_ctas.sql"
+            "HelloHiveRunnerTest/create_table.sql",
+            "HelloHiveRunnerTest/create_ctas.sql"
     }, encoding = "UTF-8")
     private HiveShell hiveShell;
 
@@ -133,7 +133,7 @@ public class HelloAnnotatedHiveRunnerTest {
     public void testSelectFromCtas() {
         HashSet<String> expected = Sets.newHashSet("Hello", "World", "!");
         HashSet<String> actual = Sets.newHashSet(hiveShell
-            .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
+                .executeQuery("select a.s from (select s, i from foo_prim order by i) a where a.i is not null"));
         Assert.assertEquals(expected, actual);
     }
 }

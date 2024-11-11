@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,11 +23,11 @@ import java.util.regex.Pattern;
 /** A {@link TokenRule} for handling comments. */
 public enum PreserveCommentsRule implements TokenRule {
     INSTANCE;
-    
+
     static final Pattern START_OF_COMMENT_PATTERN = Pattern.compile(".*\\s--", Pattern.DOTALL);
 
     @Override
-    public  Set<String> triggers() {
+    public Set<String> triggers() {
         return Collections.singleton("-");
     }
 
