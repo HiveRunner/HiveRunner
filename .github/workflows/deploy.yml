@@ -11,12 +11,12 @@ jobs:
     name: Deploy SNAPSHOT to Sonatype
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.branch }}
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'adopt'
         java-package: 'jdk'
@@ -27,8 +27,8 @@ jobs:
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: SONATYPE_USERNAME # env variable for username in deploy
         server-password: SONATYPE_PASSWORD # env variable for token in deploy        
-        # only signed artifacts will be released to maven central. this sets up things for the maven-gpg-plugin
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+        # only signed artifacts will be released to maven central. this sets up things for the GP
+        gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }} # Value of the GPG private key to import
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
         cache: 'maven'
        
@@ -38,4 +38,4 @@ jobs:
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
