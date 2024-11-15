@@ -414,6 +414,14 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <configuration>
+                  <!-- This is required to make sure the plugin does not stop asking for -->
+                  <!-- user input on the passphrase -->
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                   </gpgArguments>
+                </configuration>
               </execution>
             </executions>
           </plugin>
