@@ -9,15 +9,17 @@ on:
 jobs:
   test:
     name: Package and run all tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Set up JDK
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
         distribution: 'adopt'
+        java-package: 'jdk'
         java-version: '11'
+        check-latest: true
     - name: Run Maven Targets
       run: mvn package --batch-mode --show-version --no-transfer-progress

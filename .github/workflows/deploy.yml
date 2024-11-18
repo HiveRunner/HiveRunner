@@ -23,7 +23,6 @@ jobs:
         java-version: '11'
         check-latest: true
         # this creates a settings.xml with the following server
-        #settings-path: ${{ github.workspace }}
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: SONATYPE_USERNAME # env variable for username in deploy
         server-password: SONATYPE_PASSWORD # env variable for token in deploy        
@@ -33,7 +32,6 @@ jobs:
         cache: 'maven'
        
     - name: Run Maven Targets
-      #run: mvn deploy --settings $GITHUB_WORKSPACE/settings.xml --batch-mode --show-version --no-transfer-progress --activate-profiles oss-release
       run: mvn deploy --batch-mode --show-version --no-transfer-progress --activate-profiles oss-release
       env:
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
