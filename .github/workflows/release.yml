@@ -36,8 +36,8 @@ jobs:
 
     - name: Configure Git User
       run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
+        git config user.email "hiverunnerproject@gmail.com"
+        git config user.name "hiverunner-bot"
 
     - name: Run Maven Targets
       run: mvn release:prepare release:perform --activate-profiles oss-release --batch-mode --show-version --no-transfer-progress
