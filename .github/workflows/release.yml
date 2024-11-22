@@ -17,6 +17,8 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.branch }}
+        # We need a personal access token to be able to push to a protected branch
+        token: ${{ secrets.HR_BOT_PERSONAL_ACCESS_TOKEN }}
 
     - name: Set up JDK
       uses: actions/setup-java@v4
