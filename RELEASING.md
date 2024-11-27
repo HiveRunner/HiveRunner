@@ -8,6 +8,7 @@ HiveRunner has been set up to build continuously and also to deploy SNAPSHOTS to
 * Click "Run workflow"
 * Select the branch to use to deploy a SNAPSHOT from:
   * Use `main` as the branch for a Hive 3.x release
+  * Use `hive-4.x` as the branch for a Hive 4.x release
   * Use `hive-2.x` as the branch for a Hive 2.x release
 * Run the workflow
 * SNAPSHOT artifacts will be available at https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/hiverunner/hiverunner/
@@ -20,6 +21,7 @@ HiveRunner has been set up to build continuously and also to deploy SNAPSHOTS to
 * Click "Run workflow"
 * Select the branch to use to deploy a release from:
   * Use `main` as the branch for a Hive 3.x release
+  * Use `hive-4.x` as the branch for a Hive 4.x release 
   * Use `hive-2.x` as the branch for a Hive 2.x release
 * Run the workflow
 * Release artifacts will be available at https://repo1.maven.org/maven2/io/github/hiverunner/hiverunner/
