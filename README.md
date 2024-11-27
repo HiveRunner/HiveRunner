@@ -324,4 +324,5 @@ This project was initially developed and maintained by [Klarna](https://klarna.g
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
 Copyright 2021-2024 The HiveRunner Contributors
+
 Copyright 2013-2021 Klarna AB
