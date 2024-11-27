@@ -7,20 +7,39 @@
 
 # HiveRunner
 
-Welcome to HiveRunner - Zero installation open source unit testing of Hive applications.
+Welcome to HiveRunner - Zero installation open source unit testing of [Hive](https://hive.apache.org/) applications.
 
 [Watch the HiveRunner teaser on youtube!](http://youtu.be/B7yEAHwgi2w)
 
-Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables TDD development of Hive SQL without the need for any installed dependencies. All you need is to add HiveRunner to your pom.xml as any other library and you're good to go.
+Welcome to the open source project HiveRunner. HiveRunner is a unit test framework based on JUnit (4 & 5) and enables 
+TDD development of Hive SQL without the need for any installed dependencies. All you need is to add HiveRunner to your 
+`pom.xml` as any other library and you're good to go.
 
-HiveRunner is under constant development. It is used extensively by many companies. Please feel free to suggest improvements both as pull requests and as written requests.
+HiveRunner is under constant development. It is used extensively by many companies. Please feel free to suggest 
+improvements both as pull requests and as written requests.
 
 
 ## Overview
 
-HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and modularize Hive SQL in order to make it testable. The bits and pieces of code should then be wired together with some orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, Maven, etc…) 
+HiveRunner enables you to write Hive SQL as releasable tested artifacts. It will require you to parametrize and 
+modularize Hive SQL in order to make it testable. The bits and pieces of code should then be wired together with some 
+orchestration/workflow/build tool of your choice, to be runnable in your environment (e.g. Oozie, Pentaho, Talend, 
+Maven, etc.) 
 
-So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java community.
+So, even though your current Hive SQL probably won't run off the shelf within HiveRunner, we believe the enforced 
+testability and enabling of a TDD workflow will do as much good to the scripting world of SQL as it has for the Java 
+community.
+
+## Versions
+
+Different versions of HiveRunner target different versions of Hive as follows:
+
+| HiveRunner Version | Hive Version | Status                     | Source Code Branch                                     |
+|--------------------|--------------|----------------------------|--------------------------------------------------------|
+| 7.x                | 4.x          | New, active development    | https://github.com/HiveRunner/HiveRunner/tree/hive-4.x |
+| 6.x                | 3.x          | Stable, active development | https://github.com/HiveRunner/HiveRunner (i.e. `main`) |
+| 5.x                | 2.x          | Stable, bug fixes only     | https://github.com/HiveRunner/HiveRunner/tree/hive-2.x |
+
 
 # Cook Book
 
@@ -304,5 +323,5 @@ This project was initially developed and maintained by [Klarna](https://klarna.g
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2021 The HiveRunner Contributors
+Copyright 2021-2024 The HiveRunner Contributors
 Copyright 2013-2021 Klarna AB
